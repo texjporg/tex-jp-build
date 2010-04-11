@@ -1,0 +1,134 @@
+#!/bin/sh
+# $Id$
+# Public domain.  Originally written many years ago by Sebastian Rahtz.
+# To build again, try Build --no-clean.
+# To build without optimization, try Build --debug.
+# 
+# Any other options given are passed along to configure, and everything can be
+# overridden with environment variables.
+
+# clean up environment
+unset TEXMFCNF; export TEXMFCNF
+LANG=C; export LANG
+
+# cd to our source directory.
+mydir=`dirname $0`
+cd $mydir || exit 1
+
+: ${TL_WORKDIR=Work}
+
+# allow override of install destination.
+if test -z "$TL_INSTALL_DEST"; then
+  H=`pwd`
+  test -d inst || mkdir -p inst/texmf  # avoid configure warnings
+  TL_INSTALL_DEST=$H/inst
+fi
+
+# allow override of make program.
+: ${TL_MAKE=make}
+
+# make flags
+: ${TL_MAKE_FLAGS=}
+
+# set MAKE to $TL_MAKE for configure
+: ${MAKE=${TL_MAKE}}
+export MAKE
+
+# and then also set GNUMAKE to that, for the sake of freetype2/configure.
+: ${GNUMAKE=${TL_MAKE}}
+export GNUMAKE
+
+if test "x$1" = x--no-clean; then
+  shift
+else
+  test -f Makefile && $TL_MAKE clean 
+  rm -rf $TL_WORKDIR $TL_INSTALL_DEST
+fi
+
+# For MacOSX PowerPC, we want to keep working on 10.3.
+# For MacOSX Intel, though, the earliest system is 10.4.
+if sh build-aux/config.guess | grep powerpc.*darwin >/dev/null \
+   && test -z "$MACOSX_DEPLOYMENT_TARGET"; then
+  MACOSX_DEPLOYMENT_TARGET=10.3
+  export MACOSX_DEPLOYMENT_TARGET
+fi
+
+: ${TL_BUILD_ENV=}
+if test "x$1" = x--debug || test "x$1" = x-g; then
+  shift
+  TL_BUILD_ENV="CFLAGS='-g $TL_GCFLAGS' CXXFLAGS=-g OBJCFLAGS=-g $TL_BUILD_ENV"
+fi
+
+test -d $TL_WORKDIR || mkdir $TL_WORKDIR
+cd $TL_WORKDIR || exit 1
+
+# allow override of configure location, just in case.
+: ${TL_CONFIGURE=../configure}
+
+# banner for TeX et al.
+: ${TL_CONF_BANNER=--with-tex-banner='"TeX Live 2010/dev"'}
+
+# longinteger and off_t declarations are still inconsistent, do not
+# enable this unless you are testing.
+: ${TL_CONF_LARGEFILE=--disable-largefile}
+
+# default to static linking.
+: ${TL_CONF_SHARED=--disable-shared}
+
+# default to terminate if requested programs or features must be disabled.
+: ${TL_CONF_MISSING=--disable-missing}
+
+# allow override of xdvi toolkit, default to standard xaw.
+: ${TL_CONF_XDVI_TOOLKIT=--with-xdvi-x-toolkit=xaw}
+
+# allow adding arbitrary other configure args, such as
+# --with-tex-banner='TeX Live 2009/SomeDistro'.
+: ${TL_CONFIGURE_ARGS=}
+
+# allow override of make target.
+: ${TL_TARGET=world}
+
+# Kpathsea is not going to be able to find its cnf files during the
+# build, so omit the warning about it.
+: ${KPATHSEA_WARNING=0}
+
+# configure && make.  Keep the tee outside, so that we can detect
+# failure at either step.
+{
+  echo starting `date`
+  echo "$0 $*"
+  echo
+  set -vx  # show the configure and make commands in the log.
+
+  eval $TL_BUILD_ENV time $TL_CONFIGURE \
+        --prefix=$TL_INSTALL_DEST \
+        --datadir=$TL_INSTALL_DEST \
+        $TL_CONF_BANNER \
+        $TL_CONF_SHARED \
+        $TL_CONF_MISSING \
+        $TL_CONF_LARGEFILE \
+        $TL_CONF_XDVI_TOOLKIT \
+        $TL_CONFIGURE_ARGS \
+        "$@" \
+  && eval $TL_BUILD_ENV time $TL_MAKE $TL_MAKE_FLAGS $TL_TARGET
+  
+  # Too arcane to try to propagate the exit status through a pipeline.
+  # Just use a temp file.
+  echo $? >exitstatus.txt
+} 2>&1 | tee build.log
+ 
+
+# report the number of binaries built.
+bindir=$TL_INSTALL_DEST/bin
+count=`find $bindir \! -type d -print | wc -l`
+if test "$count" -gt 0; then
+  echo
+  echo "$0: $count executables in $bindir."
+else
+  echo "$0: Build failed, no executables under $bindir."
+  exit 1
+fi | tee -a build.log
+
+echo done `date` | tee -a build.log
+
+exit `cat exitstatus.txt`

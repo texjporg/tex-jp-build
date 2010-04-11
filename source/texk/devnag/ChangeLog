@@ -1,0 +1,37 @@
+2009-08-21  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Avoid maximal compiler warnings.
+	* devnag.c: Constify various global strings and string args.
+	Drop global variable nbsub.
+
+2009-06-19  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* configure.ac, Makefile.am, src/Makefile.am: enable compiler
+	warnings.
+
+2009-05-27  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Adapt to TL2009 build system.
+
+2008-01-31  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* configure.in (removed): moved ...
+	* configure.ac (new): ... to here and adapted for TeX Live:
+	axiliary files in ../../build-aux, added AM_MAINTAINER_MODE,
+	modernized Autoconf idioms.
+
+2008-01-31  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Autoreconfed.
+
+ Version 2.01 is a bugfix release, containing two changes in
+ coding. (1) Previous versions of devnag have output "[" and "]"
+ for Devanagari half-"sa and half-gha. Under some circumstances
+ this can interact badly with LaTeX, and the form of output has
+ been changed to avoid the problem. (2) \cline has been added to
+ the list of LaTeX commands which devnag knows how to handle.
+
+ Version 2.0 of devnag is the first major revision of the program
+ since its original release. It is based on version 1.6 (there are
+ no releases 1.7, 1.8 or 1.9).
+

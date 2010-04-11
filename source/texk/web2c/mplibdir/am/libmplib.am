@@ -1,0 +1,60 @@
+## texk/web2c/mplibdir/am/libmplib.am: Makefile fragment for libmplib.
+##
+## Copyright (C) 2009 Peter Breitenlohner <tex-live@tug.org>
+## You may freely use, modify and/or distribute this file.
+
+## libmplib.a, used by MetaPost and luaTeX
+##
+EXTRA_LIBRARIES += libmplib.a
+
+libmplib_a_CPPFLAGS = -I$(srcdir)/mplibdir
+libmplib_a_CFLAGS = $(WARNING_CFLAGS)
+
+## libmplib C sources
+libmplib_a_SOURCES = mplibdir/avl.h mplibdir/avl.c
+nodist_libmplib_a_SOURCES = $(memio_c_h) $(mp_c_h) $(psout_c_h) $(svgout_c_h) $(tfmin_c_h)
+memio_c_h = memio.c mpmemio.h
+mp_c_h =  mp.c mplib.h mpmp.h
+psout_c_h = mppsout.h psout.c mplibps.h
+svgout_c_h = mplibsvg.h mpsvgout.h svgout.c
+tfmin_c_h = mptfmin.h tfmin.c
+
+$(memio_c_h): memio-tangle
+	@$(mp_ctangle_sh) memio
+memio-tangle: ctangle$(EXEEXT) mplibdir/memio.w tangle-sh
+	@$(mp_ctangle_sh) memio
+
+$(mp_c_h): mp-tangle
+	@$(mp_ctangle_sh) mp
+mp-tangle: ctangle$(EXEEXT) mplibdir/mp.w tangle-sh
+	@$(mp_ctangle_sh) mp
+
+$(psout_c_h): psout-tangle
+	@$(mp_ctangle_sh) psout
+psout-tangle: ctangle$(EXEEXT) mplibdir/psout.w tangle-sh
+	@$(mp_ctangle_sh) psout
+
+$(svgout_c_h): svgout-tangle
+	@$(mp_ctangle_sh) svgout
+svgout-tangle: ctangle$(EXEEXT) mplibdir/svgout.w tangle-sh
+	@$(mp_ctangle_sh) svgout
+
+$(tfmin_c_h): tfmin-tangle
+	@$(mp_ctangle_sh) tfmin
+tfmin-tangle: ctangle$(EXEEXT) mplibdir/tfmin.w tangle-sh
+	@$(mp_ctangle_sh) tfmin
+
+## libmplib CWeb sources
+libmplib_web = mplibdir/mp.w mplibdir/psout.w mplibdir/svgout.w
+libmplib_web += mplibdir/memio.w mplibdir/tfmin.w
+
+$(libmplib_a_OBJECTS): $(nodist_libmplib_a_SOURCES)
+
+EXTRA_DIST += $(libmplib_web)
+
+DISTCLEANFILES += $(nodist_libmplib_a_SOURCES) \
+	memio-tangle mp-tangle psout-tangle svgout-tangle tfmin-tangle
+
+## only used by luaTeX
+EXTRA_DIST += mplibdir/lmplib.c
+

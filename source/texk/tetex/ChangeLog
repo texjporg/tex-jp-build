@@ -1,0 +1,363 @@
+2010-03-12  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* texlinks (version): Add missing quote in svn id.
+
+2010-03-11  Karl Berry  <karl@tug.org>
+
+	* updmap,
+	* texlinks,
+	* texconfig (version): use svn id.
+	(help): regularize info at end of msg.
+
+	* fmtutil (help): describe mktexfmt operation.
+	(main): give more error message in mktexfmt mode.
+	Report from Ludovic Courtes, 08 Mar 2010 21:55:53.
+
+2010-01-17  Karl Berry  <karl@tug.org>
+
+	* updmap,
+	* fmtutil: tweak help messages.
+
+	* tcfmgr (setupMap),
+	* fmtutil (main),
+	* updmap (setupCfgFile): maybe ls-R missing when basic config
+	files not found.
+
+2009-12-23  Norbert Preining  <preining@logic.at>
+
+	* fmtutil: check for infinite loop only in mktexfmt mode so that
+	multiple defined format/engine combinations are accepted.
+
+2009-10-24  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Makefile.am (bin_links, man1_links):
+	New lists of symlinks within bindir and man1dir.
+	Moved handling of texhash symlinks to ../kpathsea/man/.
+	Moved handling of lambda, ctangle, cweave, odvicopy, odvitype,
+	mf-nowin, and pdflatex symlinks to ../web2c/man/.
+	(install-data-hook, install-exec-hook, uninstall-hook):
+	Use `bin_links' and `man1_links'.
+
+	* mkocp.man, mkofm.man, otp2ocp.man, outocp.man: Moved from
+	here to ../web2c/otps/.
+	* ofm2opl.man, opl2ofm.man, ovf2ovp.man, ovp2ovf.man,
+	ttf2afm.man: Moved from here to ../web2c/man/.
+	* Makefile.am (dist_man1_MANS): Adjusted.
+
+2009-10-09  Karl Berry  <karl@tug.org>
+
+	* fmtutil (run_initex): if it doesn't already exist, create
+	mplib-luatex.mem when we create mpost.mem.
+
+2009-08-24  Reinhard Kotucha  <reinhard.kotucha@web.de>
+
+	* updmap.pl (mkMaps): replace dir/ls shell commands by Perl code.
+
+2009-08-22  Tomek Trzeciak  <t.m.trzeciak@gmail.com>
+
+	* updmap.pl (mkmaps): remove unneeded COMSPEC from backticks
+
+2009-08-19  Karl Berry  <karl@tug.org>
+
+	* updmap.pl (mkmaps): quote invocation of COMSPEC.
+	From Dan Luecking, 19 Aug 2009 15:13:31.
+
+2009-08-15  Karl Berry  <karl@tug.org>
+
+	* fmtutil (--byengine): new option, from Norbert.
+	(help): mention it; other tweaks.
+	* fmtutil.man: also update.
+
+2009-07-23  Karl Berry  <karl@tug.org>
+
+	* updmap (help): mention tug.org/fonts/fontinstall.html.
+
+2009-06-23  Karl Berry  <karl@tug.org>
+
+	* Makefile.am (run_texlinks): add -e "$(EXEEXT)".
+	* texlinks: new option -e to specify executable extension (for
+	cygwin).	
+
+2009-06-11  Norbert Preining  <preining@logic.at>
+
+	* fmtutil (log_warning): new fn, related code, so that
+	LaTeX's five-year-old warning does not trigger failure.
+	Debian bug #531595.
+
+2009-05-28  Karl Berry  <karl@tug.org>
+
+	* texconfig.man: update from Frank K, 27 May 2009 23:17:49.
+
+2009-05-07  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Adapt to TL2009 build system.
+
+2009-04-03  Karl Berry  <karl@tug.org>
+
+	* Makefile.am (EXTRA_DIST): remove texdoc.man from list.
+	* texdoc.man: remove file; maintained separately now
+	(http://tug.org/texdoc)
+
+2009-03-17  Karl Berry  <karl@tug.org>
+
+	* updmap (main, cleanup): cd back to the original pwd instead of /,
+	to work around 
+	rm: cannot get current directory: Permission denied
+	error in (at least) coreutils 5.2.1 in some ill-defined circumstance.
+	Report from Lars Madsen.
+
+2008-10-27  Karl Berry  <karl@tug.org>
+
+	* updmap.pl: also adjust printed output.
+	From Aaron Chen, 25 Oct 2008 16:40:59.
+
+2008-10-24  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (run-texlinks): quote the PATH
+	argument in case there are spaces lurking.
+	Report from Angelo Graziosi, 23 Oct 2008 16:08:59.
+
+2008-10-22  Karl Berry  <karl@tug.org>
+
+	* updmap.pl (cfgval): only consider falsish strings to be 0, else
+	leave the value as-is, for the sake of LW35, which does not take a
+	boolean.  Report and patch from Aaron Chen, 17 Oct 2008 01:22:24.
+
+2008-09-22  Karl Berry  <karl@tug.org>
+
+	* fmtutil (parse_line): pass --format=mp to kpsewhich when
+	engine=mpost, instead of --format=mpost.
+
+2008-07-08  Karl Berry  <karl@tug.org>
+
+	* texconfig (hyphen, formats): disable these functions,
+	fmtutil.cnf and language.dat/def must not be manually edited,
+	since they are now automatically regenerated, as tlmgr regenerates.
+
+2008-07-05  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (run_texlinks): use -f $(web2cdir)/fmtutil.cnf.
+	(run_mktexlsr): no longer needed.
+	From Francois Charette, tldistro 04 Jul 2008 09:22:42.
+
+2008-06-18  Karl Berry  <karl@tug.org>
+
+	* texlinks: metafun is not created specially by ConTeXt, so we'll
+	create it here.
+
+2008-06-17  Norbert Preining  <preining@logic.at>
+
+	* fmtutil: add the engine setting to the infinite-loop-detection
+	variable.
+
+2008-06-15  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (run_mktexlsr): no need to set TEXMFDBS, cmdline
+	dir is respected again.
+	(CONTEXTSCRIPTS): remove texexec, the version here was old.
+
+2008-05-28  Karl Berry  <karl@tug.org>
+
+	* fmtutil.cnf: new file, a slave of Master/texmf/web2c/fmtutil.cnf,
+	which we keep in sync via TL infrastructure scripts.
+	* Makefile.in (install-data): install fmtutil.cnf.
+	(run-texlinks): new target, invoked by top-level make.
+	* texlinks: doc fixes.
+
+2008-05-19  Karl Berry  <karl@tug.org>
+
+	* texdoc: remove, master is now the lua version in texmf/scripts.
+
+2008-05-11  Norbert Preining <preining@logic.at>
+
+	* Makefile.in: do not install texdoc(.man) since we will use the
+	  texlua version from Frank (to be found in ../texlive)
+
+2008-05-08  Norbert Preining <preining@logic.at>
+
+	* updmap, tcfmgr: quote various calls containing env variables
+	  taken from texmf.cnf which could contain spaces
+
+2008-05-05  Karl Berry  <karl@tug.org>
+
+	* texconfig (generate): remove this, now done in tlmgr.
+
+2008-05-04  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKED_SCRIPTS): add ps4pdf.
+
+2008-04-25  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKED_SCRIPTS): now tlmgr.tlu.
+
+2008-04-16  Norbert Preining  <preining@logic.at>
+
+	* fmtutil: fix creation of dirs with spaces
+
+2008-04-14  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKED_SCRIPTS): no more *xindy, the xindy Makefile
+	itself takes care of those.
+
+2008-04-12  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKED_SCRIPTS): pdfcrop now in texmf-dist.
+	Add xindy.pl, texindy.pl.
+
+2008-03-18  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (install-linked-scripts): use $(LINKSUFFIX).
+	(LINKSUFFIX): new variable, for passing -sys.
+	(install-linked-sys-scripts): make install-linked-scripts
+	instead of repeating code.
+
+2008-03-15  Reinhard Kotucha  <reinhard.kotucha@web.de>
+
+	* Makefile.in (LINKEDSCRIPTS): add pdfthumb.
+
+2008-03-14  Reinhard Kotucha  <reinhard.kotucha@web.de>
+
+	* Makefile.in (LINKED_SYS_SCRIPTS): new list for -sys progs.
+	Add getnonfreefonts.pl.
+
+2008-03-14  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKEDSCRIPTS): add ppower4, no longer in tetex.
+
+	* fmtutil: check for infinite loops.
+	From Stepan Kasal, http://bugzilla.redhat.com/show_bug.cgi?id=437008.
+
+2008-03-07  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (LINKEDPLSCRIPTS): rename from LINKEDPERLSCRIPTS.
+	(LINKEDNOEXTSCRIPTS): new variable for makeglossaries.
+        (install-linkedscripts): install them.
+
+2008-03-03  Karl Berry  <karl@tug.org>
+
+	* latex.info, latex2e.texi: remove; this will become a separate
+	package.
+	* Makefile.in: remove info-related stuff.
+	(LINKEDPERLSCRIPTS): add e2pall, pkfix, ps2eps.
+
+2008-03-02  Karl Berry  <karl@tug.org>
+
+	* Makefile.in: more doc
+
+2008-02-16  Karl Berry  <karl@tug.org>
+
+	* texconfig (doGenerate): new fn to call generate-* scripts.
+	(help): document it.
+
+2008-01-30  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Convert from autoconf-2.13 to autoconf-2.59+:
+	* Makefile.in: Add @configure_input@ line.
+	* aclocal.m4 (new): Generated (aclocal -I ../m4).
+	* configure: Regenerated (autoconf).
+
+2008-01-14  Karl Berry  <karl@tug.org>
+
+	* pdfcrop: update to 1.8 from CTAN.
+
+2007-11-03  Karl Berry  <karl@tug.org>
+
+	* texlinks.man: --unlink, sort.  From Edd.
+
+2007-10-25  Karl Berry  <karl@tug.org>
+
+	* updmap: make last bit of log nicer, since we may have copies
+	instead of symlinks now.
+
+2007-10-24  Karl Berry  <karl@tug.org>
+
+	* texconfig: update and augment help message;
+	accept version and --version;
+	show TeX Live version info from release-texlive.txt.
+
+2007-10-19  Karl Berry  <karl@tug.org>
+
+	* updmap (processOptions): add --copy and -n options.
+	(setupSymlinks): with --copy, cp instead of ln -s.
+	We want this for TL.
+	(mkMaps): with -n, exit before actually doing anything.
+	(setupLog): with -n, do not log.
+	(help): update and augment.
+
+2007-10-12  Karl Berry  <karl@tug.org>
+
+	* texlinks: new option -u[nlink] for uninstall.
+	From Edd Barrett, 10 Oct 2007 11:05:55.
+
+2007-09-30  Karl Berry  <karl@tug.org>
+
+	* texconfig-sys: export texconfig_sys.
+	* texconfig <init>: use it to figure out which fmtutil/updmap.
+	Report from Frank K, 11 Jun 2007 17:05:43.
+
+2007-09-10  Karl Berry  <karl@tug.org>
+
+	* updmap.pl: TEXMFVAR rather than VARTEXMF.
+
+2007-09-04  Karl Berry  <karl@tug.org>
+
+	* updmap.pl: ! to clearly check against both empty string and
+	undef, rather than eq undef (Jjgod 3 Sep 2007 16:16:50).
+
+2007-07-16  Karl Berry  <karl@tug.org>
+
+	* texconfig (findDialogProg, runDialog): these fns not used here,
+	remove.
+	(findprog): new mode of operation, like which(1).
+	* texconfig-dialog (findDialog): check for whiptail/dialog on any
+		system, not just FreeBSD, Linux, cygwin.
+
+2007-05-31  Karl Berry  <karl@tug.org>
+
+	* fmtutil (run_initex): do not remove the log file.
+
+2007-01-16  Karl Berry  <karl@tug.org>
+
+	* texconfig (init): only run texlinks and updmap if fmtutil succeeds.
+
+2007-01-14  Karl Berry  <karl@tug.org>
+
+	* texconfig: check for pdftex rather than pdfetex.
+	Reported by Artemio, 13 Jan 2007 14:54:40.
+
+2006-12-29  Karl Berry  <karl@tug.org>
+
+	* texconfig: replace sort +1 with sort -k 2.  I hate POSIX.
+	Reported by gnwiii, 28 Dec 2006 14:53:54.
+
+2006-12-27  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (install-exec): now the binary is named pdftex again.
+
+2006-12-25  Karl Berry  <karl@tug.org>
+
+	* updmap: update version.
+
+2006-12-13  Karl Berry  <karl@tug.org>
+
+	* latex2e.texi: FSF never held copyright (checked with authors).
+	Starting latexrefman project at gna.org, with hopes.
+
+2006-11-20  Karl Berry  <karl@tug.org>
+
+	* Makefile.in (CONTEXTSCRIPTS): new variable.
+	(context): new subdir of stubs, updated from Hans' releases.
+
+2006-11-14  Karl Berry  <karl@tug.org>
+
+	* updmap (normalizeLines): remove CR characters (for skaknew), so
+	that the generted map files have consistent line endings for svn.
+
+2006-07-13  Karl Berry  <karl@tug.org>
+
+	* ps4pdf (tmpdir): don't lose check for TMPDIR and TEMP which te
+	had.
+
+Sat Dec 18 14:19:43 CET 1999 te
+	* added manpages for epstopdf and dvi2fax (contributed by "James
+	R. Van Zandt" <jrv@vanzandt.mv.com>)

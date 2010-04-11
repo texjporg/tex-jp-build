@@ -1,0 +1,29 @@
+2010-02-27  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Makefile.am: List all t1lib source files.
+
+2009-12-18  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* configure.ac: Exchange role of t1lib.h and lib/t1lib/t1lib.h
+	to work around an Autoconf bug when srcdir as an absolute path.
+	Bug reported by Nikola Lecic <nikola.lecic@anthesphoria.net>.
+
+2009-12-11  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* configure.ac: Check if libm is required for sqrt().
+	* type1afm.test: Avoid GNU-ism (sed -e EXPR FILE).
+	Reported by Nikola Lecic <nikola.lecic@anthesphoria.net>.
+
+2009-02-05  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Adapt to TL2009 build system.
+	Add a test case for 'make check'.
+
+2008-01-31  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Convert from autoconf-2.13 to autoconf-2.59+:
+	* t1lib.ac: Fixed a typo (that was ignored by autoconf-2.13).
+	* Makefile.in: Add @configure_input@ line.
+	* aclocal.m4 (new): Generated (aclocal -I ../../texk/m4).
+	* configure: Regenerated (autoconf).
+

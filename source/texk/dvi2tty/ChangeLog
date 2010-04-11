@@ -1,0 +1,56 @@
+2010-02-22  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* dvi2tty.c (readable_file) [WIN32]: Remove unused variable err.
+	* dvi2tty.h: Remove pre-ANSI C prototypes.
+
+2010-02-12  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* disdvi.c, dvi2tty.h: #define NO_DEBUG as 1, to avoid warning.
+
+2009-08-23  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Avoid maximal compiler warnings.
+	* disdvi.c, dvi2tty.c, dvistuff.c: Ignore RCS strings.
+	ANSI C function definitions.
+	* disdvi.c (fontname): Constify string return type.
+	* dvi2tty.c (path, OUTfilename): Constify global strings.
+	(getpages, getfname, getinteger, setoption, getargs):
+	Constify string params and local vars.
+
+2009-06-22  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* dvi2tty.c (readable_file): declare as static.
+	* disdvi.c, dvi2tty.h: do not #include <kpathsea/c-proto.h>.
+
+2009-06-20  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Makefile.am: enable compiler warnings.
+	* disdvi.c, dvi2tty.c, dvi2tty.h, dvistuff.c: ANSI C prototypes.
+
+2009-06-15  Karl Berry  <karl@tug.org>
+
+	* dvi2tty.c,
+	* README: clarify that it's GPLv2+, per
+	http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=424018.
+	(I do not agree that the VMS folks contributed under the nonfree
+	license.)
+
+2009-06-12  Francois Charette  <firmicus@ankabut.net>
+
+	* dvistuff.c: rename getline to texlive_getline.
+
+2009-05-27  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Adapt to TL2009 build system.
+
+2008-02-29  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* configure.in: added AC_CONFIG_HEADERS.
+
+2008-01-30  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	Convert from autoconf-2.13 to autoconf-2.59+:
+	* Makefile.in: Add @configure_input@ line.
+	* aclocal.m4 (new): Generated (aclocal -I ../m4).
+	* configure: Regenerated (autoconf).
+
