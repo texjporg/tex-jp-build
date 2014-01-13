@@ -1,15 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl   Copyright (C) 2013 Peter Breitenlohner <tex-live@tug.org>
+dnl   Copyright (C) 2013, 2014 Peter Breitenlohner <tex-live@tug.org>
 dnl
 dnl   This file is free software; the copyright holder
 dnl   gives unlimited permission to copy and/or distribute it,
 dnl   with or without modifications, as long as this notice is preserved.
 dnl
-m4_include([version.ac])[] dnl define paper_version
-AC_INIT([paper (TeX Live)], paper_version, [tex-k@tug.org])
+m4_include([version.ac])[] dnl define libpaper_version
+AC_INIT([libpaper (TeX Live)], libpaper_version, [tex-k@tug.org])
 AC_PREREQ([2.65])
-AC_CONFIG_SRCDIR([libpaper-]paper_version[/lib/paper.h])
+AC_CONFIG_SRCDIR([libpaper-]libpaper_version[/lib/paper.h])
 AC_CONFIG_AUX_DIR([../../build-aux])
 AC_CONFIG_MACRO_DIRS([../../m4])
 
@@ -39,10 +39,10 @@ AC_SUBST([PAPERSIZEVAR], [PAPERSIZE])
 AC_DEFINE_UNQUOTED([PAPERSIZEVAR], ["$PAPERSIZEVAR"],
                    [Environment variable that overrides the default paper size])
 
-AC_SUBST([PAPER_TREE], [libpaper-]paper_version)
+AC_SUBST([LIBPAPER_TREE], [libpaper-]libpaper_version)
 
 AC_CONFIG_FILES([Makefile 
                 include/Makefile
-                paperconf.1:libpaper-]paper_version[/man/paperconf.1.in])
+                paperconf.1:libpaper-]libpaper_version[/man/paperconf.1.in])
 
 AC_OUTPUT

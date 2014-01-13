@@ -1,6 +1,6 @@
-## Proxy Makefile.am to build paper for TeX Live.
+## Proxy Makefile.am to build libpaper for TeX Live.
 ##
-##   Copyright (C) 2013 Peter Breitenlohner <tex-live@tug.org>
+##   Copyright (C) 2013, 2014 Peter Breitenlohner <tex-live@tug.org>
 ##
 ##   This file is free software; the copyright holder
 ##   gives unlimited permission to copy and/or distribute it,
@@ -8,34 +8,34 @@
 ##
 ## We want to re-distribute the whole original harfbuzz source tree.
 ##
-EXTRA_DIST = $(PAPER_TREE)
+EXTRA_DIST = $(LIBPAPER_TREE)
 
 ## Changes applied to the original source tree
 ##
-EXTRA_DIST += $(PAPER_TREE)-PATCHES
+EXTRA_DIST += $(LIBPAPER_TREE)-PATCHES
 
 # in case of an SVN repository
 dist-hook:
 	rm -rf `find $(distdir) -name .svn -o -name .deps -o -name .dirstamp -o -name '*.$(OBJEXT)'`
 
-AM_CPPFLAGS = -I$(top_srcdir)/$(PAPER_TREE)/lib $(WARNING_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/$(LIBPAPER_TREE)/lib $(WARNING_CFLAGS)
 
 SUBDIRS = . include
 
 noinst_LIBRARIES = libpaper.a
 
 libpaper_a_SOURCES = \
-	@PAPER_TREE@/lib/dimen.c \
-	@PAPER_TREE@/lib/dimen.h \
-	@PAPER_TREE@/lib/paper.c \
-	@PAPER_TREE@/lib/paper.h \
-	@PAPER_TREE@/lib/paperspecs.h
+	@LIBPAPER_TREE@/lib/dimen.c \
+	@LIBPAPER_TREE@/lib/dimen.h \
+	@LIBPAPER_TREE@/lib/paper.c \
+	@LIBPAPER_TREE@/lib/paper.h \
+	@LIBPAPER_TREE@/lib/paperspecs.h
 
 LDADD = libpaper.a
 
 bin_PROGRAMS = paperconf
 
-paperconf_SOURCES = @PAPER_TREE@/src/paperconf.c
+paperconf_SOURCES = @LIBPAPER_TREE@/src/paperconf.c
 
 man_MANS = paperconf.1
 
@@ -54,7 +54,7 @@ CLEANFILES =
 include $(srcdir)/../../am/rebuild.am
 
 if MAINTAINER_MODE
-BUILT_SOURCES = $(PAPER_TREE)/lib/paperspecs.h
+BUILT_SOURCES = $(LIBPAPER_TREE)/lib/paperspecs.h
 
 paperspecs.h: paperspecs Makefile
 	echo '    /* This file has been automaticaly generated.' >$@

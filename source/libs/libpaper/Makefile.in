@@ -116,12 +116,12 @@ am__v_AR_1 =
 libpaper_a_AR = $(AR) $(ARFLAGS)
 libpaper_a_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
-am_libpaper_a_OBJECTS = @PAPER_TREE@/lib/dimen.$(OBJEXT) \
-	@PAPER_TREE@/lib/paper.$(OBJEXT)
+am_libpaper_a_OBJECTS = @LIBPAPER_TREE@/lib/dimen.$(OBJEXT) \
+	@LIBPAPER_TREE@/lib/paper.$(OBJEXT)
 libpaper_a_OBJECTS = $(am_libpaper_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_paperconf_OBJECTS = @PAPER_TREE@/src/paperconf.$(OBJEXT)
+am_paperconf_OBJECTS = @LIBPAPER_TREE@/src/paperconf.$(OBJEXT)
 paperconf_OBJECTS = $(am_paperconf_OBJECTS)
 paperconf_LDADD = $(LDADD)
 paperconf_DEPENDENCIES = libpaper.a
@@ -473,6 +473,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
+LIBPAPER_TREE = @LIBPAPER_TREE@
 LIBS = @LIBS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
@@ -489,7 +490,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PAPERSIZE = @PAPERSIZE@
 PAPERSIZEVAR = @PAPERSIZEVAR@
-PAPER_TREE = @PAPER_TREE@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
@@ -539,19 +539,19 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = $(PAPER_TREE) $(PAPER_TREE)-PATCHES
-AM_CPPFLAGS = -I$(top_srcdir)/$(PAPER_TREE)/lib $(WARNING_CFLAGS)
+EXTRA_DIST = $(LIBPAPER_TREE) $(LIBPAPER_TREE)-PATCHES
+AM_CPPFLAGS = -I$(top_srcdir)/$(LIBPAPER_TREE)/lib $(WARNING_CFLAGS)
 SUBDIRS = . include
 noinst_LIBRARIES = libpaper.a
 libpaper_a_SOURCES = \
-	@PAPER_TREE@/lib/dimen.c \
-	@PAPER_TREE@/lib/dimen.h \
-	@PAPER_TREE@/lib/paper.c \
-	@PAPER_TREE@/lib/paper.h \
-	@PAPER_TREE@/lib/paperspecs.h
+	@LIBPAPER_TREE@/lib/dimen.c \
+	@LIBPAPER_TREE@/lib/dimen.h \
+	@LIBPAPER_TREE@/lib/paper.c \
+	@LIBPAPER_TREE@/lib/paper.h \
+	@LIBPAPER_TREE@/lib/paperspecs.h
 
 LDADD = libpaper.a
-paperconf_SOURCES = @PAPER_TREE@/src/paperconf.c
+paperconf_SOURCES = @LIBPAPER_TREE@/src/paperconf.c
 man_MANS = paperconf.1
 @build_TRUE@dist_check_SCRIPTS = paper.test
 @build_TRUE@TESTS = paper.test
@@ -560,7 +560,7 @@ man_MANS = paperconf.1
 rebuild_prereq = 
 rebuild_target = all
 CLEANFILES = rebuild.stamp
-@MAINTAINER_MODE_TRUE@BUILT_SOURCES = $(PAPER_TREE)/lib/paperspecs.h
+@MAINTAINER_MODE_TRUE@BUILT_SOURCES = $(LIBPAPER_TREE)/lib/paperspecs.h
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -621,16 +621,18 @@ paperconf.1: $(top_builddir)/config.status $(top_srcdir)/libpaper-1.1.24+nmu2/ma
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-@PAPER_TREE@/lib/$(am__dirstamp):
-	@$(MKDIR_P) @PAPER_TREE@/lib
-	@: > @PAPER_TREE@/lib/$(am__dirstamp)
-@PAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) @PAPER_TREE@/lib/$(DEPDIR)
-	@: > @PAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
-@PAPER_TREE@/lib/dimen.$(OBJEXT): @PAPER_TREE@/lib/$(am__dirstamp) \
-	@PAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
-@PAPER_TREE@/lib/paper.$(OBJEXT): @PAPER_TREE@/lib/$(am__dirstamp) \
-	@PAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
+@LIBPAPER_TREE@/lib/$(am__dirstamp):
+	@$(MKDIR_P) @LIBPAPER_TREE@/lib
+	@: > @LIBPAPER_TREE@/lib/$(am__dirstamp)
+@LIBPAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) @LIBPAPER_TREE@/lib/$(DEPDIR)
+	@: > @LIBPAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
+@LIBPAPER_TREE@/lib/dimen.$(OBJEXT):  \
+	@LIBPAPER_TREE@/lib/$(am__dirstamp) \
+	@LIBPAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
+@LIBPAPER_TREE@/lib/paper.$(OBJEXT):  \
+	@LIBPAPER_TREE@/lib/$(am__dirstamp) \
+	@LIBPAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
 
 libpaper.a: $(libpaper_a_OBJECTS) $(libpaper_a_DEPENDENCIES) $(EXTRA_libpaper_a_DEPENDENCIES) 
 	$(AM_V_at)-rm -f libpaper.a
@@ -678,15 +680,15 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-@PAPER_TREE@/src/$(am__dirstamp):
-	@$(MKDIR_P) @PAPER_TREE@/src
-	@: > @PAPER_TREE@/src/$(am__dirstamp)
-@PAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) @PAPER_TREE@/src/$(DEPDIR)
-	@: > @PAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
-@PAPER_TREE@/src/paperconf.$(OBJEXT):  \
-	@PAPER_TREE@/src/$(am__dirstamp) \
-	@PAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
+@LIBPAPER_TREE@/src/$(am__dirstamp):
+	@$(MKDIR_P) @LIBPAPER_TREE@/src
+	@: > @LIBPAPER_TREE@/src/$(am__dirstamp)
+@LIBPAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) @LIBPAPER_TREE@/src/$(DEPDIR)
+	@: > @LIBPAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
+@LIBPAPER_TREE@/src/paperconf.$(OBJEXT):  \
+	@LIBPAPER_TREE@/src/$(am__dirstamp) \
+	@LIBPAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
 
 paperconf$(EXEEXT): $(paperconf_OBJECTS) $(paperconf_DEPENDENCIES) $(EXTRA_paperconf_DEPENDENCIES) 
 	@rm -f paperconf$(EXEEXT)
@@ -694,15 +696,15 @@ paperconf$(EXEEXT): $(paperconf_OBJECTS) $(paperconf_DEPENDENCIES) $(EXTRA_paper
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f @PAPER_TREE@/lib/*.$(OBJEXT)
-	-rm -f @PAPER_TREE@/src/*.$(OBJEXT)
+	-rm -f @LIBPAPER_TREE@/lib/*.$(OBJEXT)
+	-rm -f @LIBPAPER_TREE@/src/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@@PAPER_TREE@/lib/$(DEPDIR)/dimen.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@PAPER_TREE@/lib/$(DEPDIR)/paper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@@PAPER_TREE@/src/$(DEPDIR)/paperconf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@@LIBPAPER_TREE@/lib/$(DEPDIR)/dimen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@@LIBPAPER_TREE@/lib/$(DEPDIR)/paper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@@LIBPAPER_TREE@/src/$(DEPDIR)/paperconf.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1258,10 +1260,10 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f @PAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
-	-rm -f @PAPER_TREE@/lib/$(am__dirstamp)
-	-rm -f @PAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
-	-rm -f @PAPER_TREE@/src/$(am__dirstamp)
+	-rm -f @LIBPAPER_TREE@/lib/$(DEPDIR)/$(am__dirstamp)
+	-rm -f @LIBPAPER_TREE@/lib/$(am__dirstamp)
+	-rm -f @LIBPAPER_TREE@/src/$(DEPDIR)/$(am__dirstamp)
+	-rm -f @LIBPAPER_TREE@/src/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1274,7 +1276,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-noinstLIBRARIES \
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf @PAPER_TREE@/lib/$(DEPDIR) @PAPER_TREE@/src/$(DEPDIR)
+	-rm -rf @LIBPAPER_TREE@/lib/$(DEPDIR) @LIBPAPER_TREE@/src/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -1322,7 +1324,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf @PAPER_TREE@/lib/$(DEPDIR) @PAPER_TREE@/src/$(DEPDIR)
+	-rm -rf @LIBPAPER_TREE@/lib/$(DEPDIR) @LIBPAPER_TREE@/src/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

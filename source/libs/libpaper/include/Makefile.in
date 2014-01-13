@@ -137,6 +137,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
+LIBPAPER_TREE = @LIBPAPER_TREE@
 LIBS = @LIBS@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
@@ -153,7 +154,6 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PAPERSIZE = @PAPERSIZE@
 PAPERSIZEVAR = @PAPERSIZEVAR@
-PAPER_TREE = @PAPER_TREE@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
@@ -203,8 +203,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-PAPER_LIB = $(top_srcdir)/$(PAPER_TREE)/lib
-hdr_links = $(PAPER_LIB)/paper.h
+LIBPAPER_LIB = $(top_srcdir)/$(LIBPAPER_TREE)/lib
+hdr_links = $(LIBPAPER_LIB)/paper.h
 all: all-am
 
 .SUFFIXES:
