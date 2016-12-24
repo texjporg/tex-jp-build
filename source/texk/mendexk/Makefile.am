@@ -46,7 +46,7 @@ EXTRA_DIST = \
 ##
 EXTRA_DIST += \
 	indexsty \
-	mendex.doc mendex.1.ja
+	mendex.doc mendex.1 mendex.1.ja
 
 ## Tests
 ##
