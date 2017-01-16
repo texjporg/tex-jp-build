@@ -49,7 +49,7 @@ mpfr 3.1.5 - checked 28sep16
 pixman 0.34.0 - checked 04feb16
   http://cairographics.org/releases/
 
-poppler 0.50.0 - checked 16dec16
+poppler 0.51.0 - checked 15jan17
   http://poppler.freedesktop.org/ - used by luatex and xetex
 
 potrace 1.13 - checked 28dec15
@@ -62,7 +62,7 @@ xpdf 3.04 - checked 28may14
   ftp://ftp.foolabs.com/pub/xpdf/
   with modifications for pdftex
 
-zlib 1.2.10 - checked 03jan17
+zlib 1.2.11 - checked 15jan17
   http://www.zlib.net/ - used by many
 
 zziplib 0.13.62 - checked 31mar16
