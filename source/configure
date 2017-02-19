@@ -637,14 +637,14 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+subdirs
 cross_FALSE
 cross_TRUE
 ICU_CONFIG
 FT2_CONFIG
 PKG_CONFIG
-CONF_SUBDIRS
 MAKE_SUBDIRS
-subdirs
+CONF_SUBDIRS
 CXXCPP
 WARNING_CXXFLAGS
 am__fastdepCXX_FALSE
@@ -864,10 +864,6 @@ with_gs
 enable_dvipos
 enable_dvipsk
 enable_dvisvgm
-with_libgs
-with_system_libgs
-with_libgs_includes
-with_libgs_libdir
 enable_gregorio
 enable_gsftopk
 enable_lcdf_typetools
@@ -967,9 +963,7 @@ CXX
 CXXFLAGS
 CCC
 CXXCPP'
-ac_subdirs_all='texk/ptexenc
-texk/kpathsea
-auxdir/auxsub libs utils texk'
+ac_subdirs_all='auxdir/auxsub libs utils texk'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -1749,12 +1743,6 @@ Optional Packages:
                           [texworks --position=%d "%s"]
   --with-mf-x-toolkit     use X toolkit for METAFONT
   --with-gs=/PATH/TO/gs   Hard-wire the location of GhostScript
-  --without-libgs         build dvisvgm without PostScript support
-  --with-system-libgs     build dvisvgm with installed gs headers and library
-                          [default: no]
-  --with-libgs-includes=DIR
-                          libgs headers installed in DIR
-  --with-libgs-libdir=DIR libgs library installed in DIR
   --with-xdvi-x-toolkit=KIT
                           Use toolkit KIT (motif/xaw/xaw3d/neXtaw) for xdvi
                           [default: Motif if available, else Xaw]
@@ -5221,7 +5209,7 @@ test "x$enable_dvipsk" = xno || {
   need_kpathsea=yes
 }
 
-## texk/dvisvgm/ac/withenable.ac: configure.ac fragment for the TeX Live subdirectory texk/dvisvgm/
+# texk/dvisvgm/ac/withenable.ac: configure.ac fragment
 ## configure options and TL libraries required for dvisvgm
 # Check whether --enable-dvisvgm was given.
 if test "${enable_dvisvgm+set}" = set; then :
@@ -5245,39 +5233,6 @@ test "x$enable_dvisvgm" = xno || {
   need_freetype2=yes
   need_zlib=yes
 }
-
-## texk/dvisvgm/ac/dvisvgm.ac: configure.ac fragment for the TeX Live subdirectory texk/dvisvgm/
-## configure options for dvisvgm
-
-# Check whether --with-libgs was given.
-if test "${with_libgs+set}" = set; then :
-  withval=$with_libgs;
-fi
-
-
-# Check whether --with-system-libgs was given.
-if test "${with_system_libgs+set}" = set; then :
-  withval=$with_system_libgs;
-fi
-
-
-# Check whether --with-libgs-includes was given.
-if test "${with_libgs_includes+set}" = set; then :
-  withval=$with_libgs_includes;
-fi
-
-
-# Check whether --with-libgs-libdir was given.
-if test "${with_libgs_libdir+set}" = set; then :
-  withval=$with_libgs_libdir;
-fi
-
-
-## texk/dvisvgm/ac/libgs.ac: configure.ac fragment for the TeX Live subdirectory texk/dvisvgm/
-## configure checks for dvisvgm and libgs
-if test "x$enable_native_texlive_build:$with_system_libgs" = xyes:yes; then
-  as_fn_error $? "you can not use system libraries for a native TeX Live build" "$LINENO" 5
-fi
 
 ## texk/gregorio/ac/withenable.ac: configure.ac fragment for the TeX Live subdirectory texk/gregorio/
 ## configure options and TL libraries required for gregorio
@@ -21121,27 +21076,17 @@ $as_echo "$as_me:     which requires to locate the <kpathsea/paths.h> header fil
   fi
 fi
 
-
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for TeX specific libraries to build" >&5
 $as_echo_n "checking for TeX specific libraries to build... " >&6; }
-MAKE_SUBDIRS=
 CONF_SUBDIRS=
-if test -x $srcdir/texk/ptexenc/configure; then
-  test "x$with_system_ptexenc" != xyes && test "x$need_ptexenc" = xyes && MAKE_SUBDIRS="texk/ptexenc $MAKE_SUBDIRS"
+MAKE_SUBDIRS=
+if test -x $srcdir/texk/ptexenc/configure && test "x$with_system_ptexenc" != xyes && test "x$need_ptexenc" = xyes; then
   CONF_SUBDIRS="texk/ptexenc $CONF_SUBDIRS"
-  if false; then
-    subdirs="$subdirs texk/ptexenc"
-
-  fi
+  MAKE_SUBDIRS="texk/ptexenc $MAKE_SUBDIRS"
 fi
-if test -x $srcdir/texk/kpathsea/configure; then
-  test "x$with_system_kpathsea" != xyes && test "x$need_kpathsea" = xyes && MAKE_SUBDIRS="texk/kpathsea $MAKE_SUBDIRS"
+if test -x $srcdir/texk/kpathsea/configure && test "x$with_system_kpathsea" != xyes && test "x$need_kpathsea" = xyes; then
   CONF_SUBDIRS="texk/kpathsea $CONF_SUBDIRS"
-  if false; then
-    subdirs="$subdirs texk/kpathsea"
-
-  fi
+  MAKE_SUBDIRS="texk/kpathsea $MAKE_SUBDIRS"
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MAKE_SUBDIRS" >&5
@@ -22195,6 +22140,8 @@ else
   cross_TRUE='#'
   cross_FALSE=
 fi
+
+
 
 
 subdirs="$subdirs auxdir/auxsub libs utils texk"
