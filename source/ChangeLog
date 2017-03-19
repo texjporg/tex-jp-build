@@ -1,6 +1,6 @@
-2017-03-10  Karl Berry  <karl@tug.org>
+2017-03-18  Karl Berry  <karl@tug.org>
 
-	* Makefile.am (reauto): convenience target.
+	* version.ac (tex_live_version): 2017/dev => 2017 for TL17.
 
 2016-11-16  Karl Berry  <karl@tug.org>
 

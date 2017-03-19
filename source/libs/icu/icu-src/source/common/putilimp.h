@@ -1,7 +1,9 @@
+// Copyright (C) 2016 and later: Unicode, Inc. and others.
+// License & terms of use: http://www.unicode.org/copyright.html
 /*
 ******************************************************************************
 *
-*   Copyright (C) 1997-2015, International Business Machines
+*   Copyright (C) 1997-2016, International Business Machines
 *   Corporation and others.  All Rights Reserved.
 *
 ******************************************************************************
@@ -477,6 +479,12 @@ U_INTERNAL int32_t  U_EXPORT2 uprv_timezone(void);
  * @internal
  */
 U_INTERNAL const char* U_EXPORT2 uprv_tzname(int n);
+
+/**
+ * Reset the global tzname cache.
+ * @internal
+ */
+U_INTERNAL void uprv_tzname_clear_cache();
 
 /**
  * Get UTC (GMT) time measured in milliseconds since 0:00 on 1/1/1970.
