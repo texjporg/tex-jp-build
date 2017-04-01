@@ -1,3 +1,8 @@
+2017-04-02  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Fix a bug in single-letter control sequence
+	when \endlinechar=-1.
+
 2017-03-12  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
 
 	* ptex-base.ch: Fix a typo pointed out at

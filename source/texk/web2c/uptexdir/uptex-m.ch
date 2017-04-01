@@ -390,11 +390,11 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
     else reswitch: cur_cmd:=cat_code(cur_chr);
 @y
   begin
-    cur_chr:=fromBUFF(ustringcast(buffer), limit, loc);
+    cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
     cur_cmd:=kcat_code(kcatcodekey(cur_chr));
-    if (multistrlen(ustringcast(buffer), limit, loc)>1) and check_kcat_code(cur_cmd) then begin
+    if (multistrlen(ustringcast(buffer), limit+1, loc)>1) and check_kcat_code(cur_cmd) then begin
       if (cur_cmd=not_cjk) then cur_cmd:=other_kchar;
-      loc:=loc+multistrlen(ustringcast(buffer), limit, loc) end
+      loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc) end
     else begin
       cur_chr:=buffer[loc]; incr(loc);
       reswitch: cur_cmd:=cat_code(cur_chr);
@@ -432,11 +432,11 @@ start_cs:
   if (cat=letter)or(cat=kanji)or(cat=kana) then state:=skip_blanks
 @y
 else  begin k:=loc;
-  cur_chr:=fromBUFF(ustringcast(buffer), limit, k);
+  cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
-  if (multistrlen(ustringcast(buffer), limit, k)>1) and check_kcat_code(cat) then begin
+  if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat) then begin
     if (cat=not_cjk) then cat:=other_kchar;
-    k:=k+multistrlen(ustringcast(buffer), limit, k) end
+    k:=k+multistrlen(ustringcast(buffer), limit+1, k) end
   else begin {not multi-byte char}
     cur_chr:=buffer[k];
     cat:=cat_code(cur_chr);
@@ -453,6 +453,12 @@ start_cs:
 @z
 
 @x
+  if (cat=kanji)or(cat=kana) then
+@y
+  if (cat=kanji)or(cat=kana)or(cat=hangul) then
+@z
+
+@x
 begin repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); incr(k);
@@ -460,11 +466,11 @@ begin repeat cur_chr:=buffer[k]; incr(k);
   else cat:=cat_code(cur_chr);
 @y
 begin repeat
-  cur_chr:=fromBUFF(ustringcast(buffer), limit, k);
+  cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
-  if (multistrlen(ustringcast(buffer), limit, k)>1) and check_kcat_code(cat) then begin
+  if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat) then begin
     if (cat=not_cjk) then cat:=other_kchar;
-    k:=k+multistrlen(ustringcast(buffer), limit, k) end
+    k:=k+multistrlen(ustringcast(buffer), limit+1, k) end
   else begin {not multi-byte char}
     cur_chr:=buffer[k];
     cat:=cat_code(cur_chr);
