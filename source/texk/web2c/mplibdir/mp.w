@@ -73,12 +73,12 @@ undergoes any modifications, so that it will be clear which version of
 @^extensions to \MP@>
 @^system dependencies@>
 
-@d default_banner "This is MetaPost, Version 1.9991" /* printed when \MP\ starts */
+@d default_banner "This is MetaPost, Version 2.000" /* printed when \MP\ starts */
 @d true 1
 @d false 0
 
 @<Metapost version header@>=
-#define metapost_version "1.9991"
+#define metapost_version "2.000"
 
 @ The external library header for \MP\ is |mplib.h|. It contains a
 few typedefs and the header defintions for the externally used
@@ -33232,9 +33232,15 @@ We may need to cancel skips that span more than 127 lig/kern steps.
 
 
 @ The header could contain ASCII zeroes, so can't use |strdup|.
+The index |j| can be beyond the index |header_last|, hence we 
+have to sure  to update the end of stream marker to reflect the
+actual position.
 
 @<Store a list of header bytes@>=
 j--;
+if (mp->header_last<j){
+  mp->header_last=j;
+}
 do {
   if (j >= mp->header_size) {
     size_t l = (size_t) (mp->header_size + (mp->header_size / 4));
@@ -33246,8 +33252,10 @@ do {
     mp->header_size = (int) l;
   }
   mp->header_byte[j] = (char) mp_get_code (mp);
+  if (mp->header_last<j){
+    incr (mp->header_last);
+  }
   incr (j);
-  incr (mp->header_last);
 } while (cur_cmd() == mp_comma)
 
 @ @<Store a list of font dimensions@>=

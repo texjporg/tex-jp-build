@@ -553,7 +553,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = $(DVI2TTY_TREE) dvi2tty-PATCHES $(TESTS) ligtest.dis \
+EXTRA_DIST = $(DVI2TTY_TREE) TLpatches $(TESTS) ligtest.dis \
 	ligtest.tty test.tty testc.tty tests.tty testu.tty
 NEVER_DIST = `find . $(NEVER_NAMES)`
 
@@ -581,7 +581,7 @@ man1_MANS = \
 	$(DVI2TTY_TREE)/dvi2tty.1
 
 TESTS = disdvi.test dvi2tty.test
-TESTS_ENVIRONMENT = DVI2TTY_TREE=$(DVI2TTY_TREE)
+AM_TESTS_ENVIRONMENT = DVI2TTY_TREE=$(DVI2TTY_TREE); export DVI2TTY_TREE;
 DISTCLEANFILES = ligtest.dout ligtest.out test.out testc.out tests.out \
 	testu.out table.out tablec.out tables.out tableu.out \
 	tableuC.out tableEu.out tableEu1.out tableEuC.out tableEua.out
