@@ -1,0 +1,30 @@
+\font\x=ecrm1000 \x
+\parindent0pt\noautoxspacing
+\output{\shipout\box255}
+\def\あ{ア}
+\def\，{イ}
+
+1a\，
+
+2a\あ
+
+\endlinechar=-1
+
+3a\，
+% previous pTeX, upTeX: Undefined cs.
+
+4a\あ
+% prev. pTeX: Undefined cs.
+
+5a，
+% prev. upTeX: byte-seq.
+
+6aあ
+% prev. upTeX: byte-seq.
+
+7a\^^e3^^81^^82
+% エラーが出るが，これは正しい．
+
+\bye
+
+
