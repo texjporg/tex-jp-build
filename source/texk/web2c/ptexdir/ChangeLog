@@ -2,6 +2,7 @@
 
 	* ptex-base.ch: Fix a bug in single-letter control sequence
 	when \endlinechar=-1.
+	* tests/endlinechar.tex: Added.
 
 2017-04-06  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
