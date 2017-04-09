@@ -1,4 +1,4 @@
-% This is a change file for upTeX u1.21
+% This is a change file for upTeX u1.22
 % By Takuji Tanaka.
 %
 % (02/26/2007) TTK  upTeX u0.01
@@ -35,6 +35,7 @@
 % (12/29/2014) TTK  upTeX u1.20
 % (02/20/2016) TTK  upTeX u1.21
 % (01/15/2017) TTK  upTeX u1.22
+% (09/04/2017) TTK  Hironori Kitagawa fixed a bug in \endlinechar.
 
 @x upTeX: banner
   {printed when p\TeX\ starts}
