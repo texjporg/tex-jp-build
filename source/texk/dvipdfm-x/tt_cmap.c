@@ -1,6 +1,6 @@
 /* This is dvipdfmx, an eXtended version of dvipdfm by Mark A. Wicks.
 
-    Copyright (C) 2007-2016 by Jin-Hwan Cho and Shunsaku Hirata,
+    Copyright (C) 2007-2017 by Jin-Hwan Cho and Shunsaku Hirata,
     the dvipdfmx project team.
     
     This program is free software; you can redistribute it and/or modify
@@ -817,8 +817,8 @@ handle_CIDFont (sfnt *sfont,
 	  count = ranges[i].n_left + 1;
 	  while (count-- > 0 &&
 		 gid <= num_glyphs) {
-	    map[gid] = (cid >> 8) & 0xff;
-	    map[gid] = cid & 0xff;
+	    map[2*gid] = (cid >> 8) & 0xff;
+	    map[2*gid+1] = cid & 0xff;
 	    gid++; cid++;
 	  }
 	}
