@@ -6731,9 +6731,9 @@ end
 @ @<Insert ligature surround spacing@>=
 begin t:=lig_ptr(p);
 if is_char_node(t) then
-  begin ax:=qo(character(t));
+  begin ax:=qo(character(t)); incr(i);
   if insert_skip=after_wchar then @<Insert KANJI-ASCII spacing@>;
-  while link(t)<>null do t:=link(t);
+  while link(t)<>null do begin incr(i); t:=link(t); end;
   if is_char_node(t) then
     begin ax:=qo(character(t));
     if auto_xsp_code(ax)>=2 then
@@ -6744,7 +6744,7 @@ end
 
 @ @<Insert penalty or displace surround spacing@>=
 begin if is_char_node(link(p)) then
-  begin q:=p; p:=link(p);
+  begin q:=p; p:=link(p); incr(i);
   if font_dir[font(p)]<>dir_default then
     begin KANJI(cx):=info(link(p));
     if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>
@@ -6829,18 +6829,29 @@ end;
 while(p<>null) do
 begin if is_char_node(p) then
   begin if font_dir[font(p)]<>dir_default then
-    begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx)); k:=0;
+    begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
     if (i=kanji)or(i=kana) then begin t:=q; s:=p; end;
     p:=link(p); q:=p;
     end
-  else begin k:=k+1;
-    if k>1 then begin q:=p; s:=null; end;
-    end;
+  else begin q:=p; s:=null; end;
   end
 else begin case type(p) of
   penalty_node,mark_node,adjust_node,whatsit_node,
-  glue_node,kern_node,math_node,disp_node:
+  glue_node,math_node,disp_node,ins_node:
     do_nothing;
+  kern_node:
+    if subtype(p)=acc_kern then begin
+      p:=link(p); { now |p| must be a char node or hlist }
+      if is_char_node(p) then
+        if font_dir[font(p)]<>dir_default then p:=link(p);
+      p:=link(link(p)); { now |p| is the accentee }
+      if font_dir[font(p)]<>dir_default then
+        begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
+        if (i=kanji)or(i=kana) then begin t:=q; s:=p; end;
+        p:=link(p); q:=p; end
+      else begin q:=p; s:=null; end
+    end
+    else begin q:=p; s:=null; end;
   othercases begin q:=p; s:=null; end;
   endcases;
   end;

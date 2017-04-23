@@ -1,0 +1,23 @@
+%#!ptex jcharwidowpenalty.tex ; echo
+\tracingonline1\scrollmode\showboxbreadth10000
+\errorcontextlines=-1
+\long\def\TEST#1{%
+  \setbox0\vbox{\noindent#1\par\global\setbox2\lastbox}%
+  \showbox2 }
+
+
+\TEST{あああfiああ}      % あり，「ああ」間
+\TEST{あああああ\.い}    % あり，「あ」とアクセント位置補正カーンの間
+
+\TEST{ああああいa}       % なし
+\TEST{ああああいaう}     % あり，「aう」間
+\TEST{ああああいaうう}   % あり，「うう」間
+\TEST{ああああいaa}      % なし
+\TEST{ああああいaaう}    % あり，「aう」間
+\TEST{ああああいaaうう}  % あり，「うう」間
+
+\TEST{あああ」い（}      % あり，」と「い」間のグルー直前
+\TEST{ああああい．}      % あり，「あい」間
+
+\TEST{ああああだfi．}    % なし
+\bye
