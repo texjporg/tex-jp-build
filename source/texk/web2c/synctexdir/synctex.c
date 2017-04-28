@@ -4,7 +4,7 @@
  This file is part of the SyncTeX package.
  
  Version 1
- Latest Revision: Sat Apr 22 10:07:05 UTC 2017
+ Latest Revision: Tue Apr 25 14:46:32 UTC 2017
  
  License:
  --------
@@ -406,18 +406,20 @@ static struct {
     integer form_depth;        /*  pdf forms are an example of nested sheets */
     struct _flags {
         unsigned int option_read:1; /*  Command line option read (in case of problem or at the end) */
+        unsigned int content_ready:1; /*  Command line option read (in case of problem or at the end) */
         unsigned int off:1;         /*  Definitely turn off synctex, corresponds to cli option -synctex=0 */
         unsigned int no_gz:1;       /*  Whether zlib is used or not */
         unsigned int not_void:1;    /*  Whether it really contains synchronization material */
         unsigned int warn:1;        /*  One shot warning flag */
         unsigned int quoted:1;      /*  Whether the input file name was quoted by tex or not, for example "\"my input file.tex\"", unused by XeTeX */
         unsigned int output_p:1;    /*  Whether the output_directory is used */
-        unsigned int reserved:SYNCTEX_BITS_PER_BYTE*sizeof(int)-7; /* Align */
+        unsigned int reserved:SYNCTEX_BITS_PER_BYTE*sizeof(int)-8; /* Align */
     } flags;
 } synctex_ctxt = {
-    NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, {0,0,0,0,0,0,0,0}}; /* last_v_recorded is initialized to -1. */
+    NULL, NULL, NULL, NULL, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, {0,0,0,0,0,0,0,0,0}}; /* last_v_recorded is initialized to -1. */
 
 #   define SYNCTEX_FILE synctex_ctxt.file
+#   define SYNCTEX_CONTENT_READY (synctex_ctxt.flags.content_ready)
 #   define SYNCTEX_IS_OFF (synctex_ctxt.flags.off)
 #   define SYNCTEX_NO_GZ (synctex_ctxt.flags.no_gz)
 #   define SYNCTEX_NOT_VOID (synctex_ctxt.flags.not_void)
@@ -431,13 +433,15 @@ static struct {
 #   define SYNCTEX_WITH_FORMS (((synctex_ctxt.options)&4)!=0)
 #   define SYNCTEX_H_COMPRESS (((synctex_ctxt.options)&8)!=0)
 
-/*  Initialize the options, synchronize the variables.
- *  This is sent by *tex.web before any TeX macro is used.
- *  */
-void synctexinitcommand(void)
-{
+static inline void _synctex_read_command_line_option(void) {
+#   if SYNCTEX_DEBUG
+    printf("\nSynchronize DEBUG: _synctex_read_command_line_option\n");
+#   endif
     /*  This is a one shot function, any subsequent call is void */
     if (synctex_ctxt.flags.option_read) {
+#   if SYNCTEX_DEBUG
+        printf("\nSynchronize DEBUG: skipped\n");
+#   endif
         return;
     }
     if (SYNCTEX_NO_OPTION == synctex_options) {
@@ -457,10 +461,22 @@ void synctexinitcommand(void)
             SYNCTEX_NO_GZ = SYNCTEX_NO;
             synctex_ctxt.options =  synctex_options;
         }
+        synctex_options|=1; /* Do it when positive */
         /*  Initialize the content of the \synctex primitive */
         SYNCTEX_VALUE = synctex_options;
     }
     synctex_ctxt.flags.option_read = SYNCTEX_YES;
+    return;
+}
+/*  Initialize the options, synchronize the variables.
+ *  This is sent by *tex.web before any TeX macro is used.
+ *  */
+void synctexinitcommand(void)
+{
+#   if SYNCTEX_DEBUG
+    printf("\nSynchronize DEBUG: synctexinitcommand\n");
+#   endif
+    _synctex_read_command_line_option();
     return;
 }
 
@@ -564,9 +580,6 @@ static int fsyscp_rename(char *s1, char *s2)
 #define rename fsyscp_rename
 #endif
 
-static inline int synctex_record_content(void);
-static inline int synctex_record_settings(void);
-
 /*  synctex_dot_open ensures that the foo.synctex file is open.
  *  In case of problem, it definitely disables synchronization.
  *  Now all the output synchronization info is gathered in only one file.
@@ -582,7 +595,7 @@ static void *synctex_dot_open(void)
 #   if SYNCTEX_DEBUG
     printf("\nwarning: Synchronize DEBUG: synctex_dot_open\n");
     printf("\nwarning: SYNCTEX_VALUE=%0X\n", SYNCTEX_VALUE);
-    printf("\nwarning: synctex_options=%0X\n", synctex_options);
+    printf("\nwarning: synctex_options=%0X\n", synctex_ctxt.options);
 #   endif
     if (SYNCTEX_IS_OFF || !SYNCTEX_VALUE) {
         return NULL;            /*  synchronization is disabled: do nothing  */
@@ -590,18 +603,7 @@ static void *synctex_dot_open(void)
     if (SYNCTEX_FILE) {
         return SYNCTEX_FILE;    /*  synchronization is already enabled  */
     }
-    if (synctex_options < 0) {
-        SYNCTEX_NO_GZ = SYNCTEX_YES;
-        synctex_ctxt.options = -synctex_options;
-    } else if (synctex_options == 0) {
-        /*  \synctex=0 was given: SyncTeX must be definitely disabled,
-         *  any subsequent \synctex=N will have no effect at all */
-        SYNCTEX_IS_OFF = SYNCTEX_YES;
-        SYNCTEX_VALUE = 0;
-   } else {
-        SYNCTEX_NO_GZ = SYNCTEX_NO;
-        synctex_ctxt.options =  synctex_options;
-    }
+    _synctex_read_command_line_option();
 #   if SYNCTEX_DEBUG
     printf("\nwarning: Synchronize DEBUG: synctex_dot_open 1\n");
 #   endif
@@ -655,11 +657,6 @@ static void *synctex_dot_open(void)
             tmp = NULL;
             strcat(the_busy_name, synctex_suffix);
             /*  Initialize SYNCTEX_NO_GZ with the content of \synctex to let the user choose the format. */
-#define SYNCTEX_GZ_LEN(WHAT)\
-(SYNCTEX_NO_GZ_AUX_NAME?0:strlen(WHAT))
-            if (!SYNCTEX_NO_GZ_AUX_NAME) {
-                strcat(the_busy_name, synctex_suffix_gz);
-            }
             strcat(the_busy_name, synctex_suffix_busy);
             if (SYNCTEX_NO_GZ) {
                 SYNCTEX_FILE = fopen(the_busy_name, FOPEN_W_MODE);
@@ -692,10 +689,7 @@ static void *synctex_dot_open(void)
 #   endif
                     SYNCTEX_FREE(the_busy_name);
                     the_busy_name = NULL;
-                    if ((SYNCTEX_NO_ERROR == synctex_record_settings())
-                        && (SYNCTEX_NO_ERROR == synctex_record_content())) {
-                        return SYNCTEX_FILE;
-                    }
+                    return SYNCTEX_FILE;
                 } else {
                     printf("\nSyncTeX warning: no synchronization, problem with %s\n",
                            the_busy_name);
@@ -717,6 +711,37 @@ static void *synctex_dot_open(void)
 #   endif
     }
     return SYNCTEX_FILE;
+}
+
+static inline int synctex_record_content(void);
+static inline int synctex_record_settings(void);
+
+/**
+ *  synctex_record_settings must be called very late,
+ *  only once there is an opportunity to know whether
+ *  in pdf or dvi mode.
+ */
+static void * synctex_prepare_content(void)
+{
+#   if SYNCTEX_DEBUG
+    printf("\nwarning: Synchronize DEBUG: synctex_prepare_content\n");
+    printf("\nwarning: SYNCTEX_VALUE=%0X\n", SYNCTEX_VALUE);
+    printf("\nwarning: synctex_options=%0X\n", synctex_ctxt.options);
+#   endif
+    if (SYNCTEX_CONTENT_READY) {
+        return SYNCTEX_FILE;
+    }
+    if ((NULL != synctex_dot_open())
+        && (SYNCTEX_NO_ERROR == synctex_record_settings())
+        && (SYNCTEX_NO_ERROR == synctex_record_content())) {
+        SYNCTEX_CONTENT_READY = SYNCTEX_YES;
+#       if SYNCTEX_DEBUG
+            printf("\nwarning: DONE");
+#       endif
+        return SYNCTEX_FILE;
+    }
+    synctexabort(0);
+    return NULL;
 }
 
 /*  Each time TeX opens a file, it sends a synctexstartinput message and enters
@@ -741,12 +766,14 @@ void synctexstartinput(void)
 {
     static unsigned int synctex_tag_counter = 0;
     
+    _synctex_read_command_line_option();
+
     SYNCTEX_RETURN_IF_DISABLED;
 #   if SYNCTEX_DEBUG
     printf("\nwarning: Synchronize DEBUG: synctexstartinput %i",
            synctex_tag_counter);
     printf("\nwarning: SYNCTEX_VALUE=%i", SYNCTEX_VALUE);
-    printf("\nwarning: synctex_options=%0X", synctex_options);
+    printf("\nwarning: synctex_options=%0X\n", synctex_ctxt.options);
 #   endif
 
     if (SYNCTEX_IS_OFF) {
@@ -788,7 +815,7 @@ void synctexstartinput(void)
         return;
     }
     if (SYNCTEX_FILE
-        || (SYNCTEX_NO_ERROR != synctex_dot_open())) {
+        || (NULL != synctex_dot_open())) {
 #ifdef W32UPTEXSYNCTEX
         char *tmpb = SYNCTEX_GET_CURRENT_NAME();
         char *tmp = chgto_oem(tmpb);
@@ -796,7 +823,10 @@ void synctexstartinput(void)
 #else
         char *tmp = SYNCTEX_GET_CURRENT_NAME();
 #endif
-        /* Always record the input, even if SYNCTEX_VALUE is 0 */
+        /*  Always record the input, even if SYNCTEX_VALUE is 0.
+         *  It may happen when \synctex=0 was given temporarily
+         *  in the source file.
+         */
         synctex_record_input(SYNCTEX_CURRENT_TAG,tmp);
         SYNCTEX_FREE(tmp);
     }
@@ -840,7 +870,7 @@ void synctexterminate(boolean log_opened)
         the_real_syncname =
         xmalloc((unsigned)(strlen(tmp)
                            + strlen(synctex_suffix)
-                           + SYNCTEX_GZ_LEN(synctex_suffix_gz)
+                           + strlen(synctex_suffix_gz)
                            + 1));
         if (!the_real_syncname) {
             SYNCTEX_FREE(tmp);
@@ -892,17 +922,35 @@ void synctexterminate(boolean log_opened)
                             tmp += strlen(output_directory) + strlen(DIR_SEP_STRING);
                         }
 #                       endif
+#ifndef SYNCTEX_interaction
+#   define SYNCTEX_interaction 1
+#endif
+                        if (SYNCTEX_interaction>0) {
 #ifdef W32UPTEXSYNCTEX
                         {
                         char *stmp = chgto_oem(tmp);
-                        printf((synctex_ctxt.flags.quoted ? "SyncTeX written on \"%s\"" : "\nSyncTeX written on %s.\n"),
+                        printf((synctex_ctxt.flags.quoted ? "SyncTeX written on \"%s\"\n" : "\nSyncTeX written on %s.\n"),
                                stmp);
                         free(stmp);
                         }
 #else
-                        printf((synctex_ctxt.flags.quoted ? "SyncTeX written on \"%s\"\n" : "SyncTeX written on %s.\n"),
+#ifndef SYNCTEX_PRE_NL
+#   define SYNCTEX_PRE_NL "\n"
+#endif
+#ifndef SYNCTEX_POST_NL
+#   define SYNCTEX_POST_NL ""
+#endif
+                        printf((synctex_ctxt.flags.quoted ?
+                                SYNCTEX_PRE_NL
+                                "SyncTeX written on \"%s\""
+                                SYNCTEX_POST_NL :
+                                SYNCTEX_PRE_NL
+                                "SyncTeX written on %s."
+                                SYNCTEX_POST_NL
+                                ),
                                tmp);
 #endif
+                        }
                         tmp = NULL;
                     }
                 } else {
@@ -934,7 +982,7 @@ void synctexterminate(boolean log_opened)
         the_real_syncname = xmalloc((size_t)
                                     (len
                                      + strlen(synctex_suffix)
-                                     + SYNCTEX_GZ_LEN(synctex_suffix_gz)
+                                     + strlen(synctex_suffix_gz)
                                      + 1));
         if (!the_real_syncname) {
             SYNCTEX_FREE(tmp);
@@ -999,8 +1047,7 @@ void synctexsheet(integer mag)
         }
         return;
     }
-    if (SYNCTEX_FILE
-        || (SYNCTEX_VALUE && (SYNCTEX_NO_ERROR != synctex_dot_open()))) {
+    if (NULL != synctex_prepare_content()) {
         /*  First possibility: the .synctex file is already open because SyncTeX was activated on the CLI
          *  or it was activated with the \synctex macro and the first page is already shipped out.
          *  Second possibility: tries to open the .synctex, useful if synchronization was enabled
@@ -1045,18 +1092,18 @@ void synctexteehs(void)
  *  details in the implementation of the functions below.  */
 #   define SYNCTEX_IGNORE(NODE) SYNCTEX_IS_OFF || !SYNCTEX_VALUE || !SYNCTEX_FILE || (synctex_ctxt.form_depth>0 && !SYNCTEX_WITH_FORMS)
 #define SYNCTEX_RECORD_LEN_OR_RETURN_ERR do {\
-if (len > 0) {\
-synctex_ctxt.total_length += len;\
-++synctex_ctxt.count;\
-} else {\
-return -1;\
-} } while(false)
+    if (len > 0) {\
+        synctex_ctxt.total_length += len;\
+        ++synctex_ctxt.count;\
+    } else {\
+        return -1;\
+    } } while(false)
 #define SYNCTEX_RECORD_LEN_AND_RETURN_NOERR do {\
-if (len > 0) {\
-synctex_ctxt.total_length += len;\
-++synctex_ctxt.count;\
-return SYNCTEX_NOERR;\
-} } while(false)
+    if (len > 0) {\
+        synctex_ctxt.total_length += len;\
+        ++synctex_ctxt.count;\
+        return SYNCTEX_NOERR;\
+    } } while(false)
 
 /*  Recording a "}..." or a ">" line  */
 static inline int synctex_record_teehs(integer sheet)
@@ -1099,8 +1146,7 @@ void synctexpdfxform(halfword p)
         }
         return;
     }
-    if (SYNCTEX_FILE
-        || (SYNCTEX_VALUE && (SYNCTEX_NO_ERROR != synctex_dot_open()))) {
+    if (NULL != synctex_prepare_content()) {
         synctex_record_pdfxform(p);
     }
 #   if SYNCTEX_DEBUG
@@ -1118,7 +1164,9 @@ void synctexmrofxfdp(void)
 #   if SYNCTEX_DEBUG
     printf("\nSynchronize DEBUG: synctexmrofxfdp\n");
 #   endif
-    synctex_record_mrofxfdp();
+    if (SYNCTEX_FILE) {
+        synctex_record_mrofxfdp();
+    }
 #   if SYNCTEX_DEBUG
     printf("\nSynchronize DEBUG: synctexmrofxfdp END\n");
 #   endif
@@ -1135,7 +1183,7 @@ void synctexpdfrefxform(int objnum)
 #   if SYNCTEX_DEBUG
     printf("\nSynchronize DEBUG: synctexpdfrefxform\n");
 #   endif
-    if (SYNCTEX_WITH_FORMS) {
+    if (SYNCTEX_FILE) {
         synctex_record_node_pdfrefxform(objnum);
     }
 #   if SYNCTEX_DEBUG
@@ -1694,8 +1742,13 @@ static inline int synctex_record_anchor(void)
     int len = 0;
 #   if SYNCTEX_DEBUG > 999
     printf("\nSynchronize DEBUG: synctex_record_anchor\n");
+    printf("\nSYNCTEX_FILE:%p\n",SYNCTEX_FILE);
+    printf("\ntotal_length:%i\n",synctex_ctxt.total_length);
 #   endif
     len = SYNCTEX_fprintf(SYNCTEX_FILE, "!%i\n", synctex_ctxt.total_length);
+#   if SYNCTEX_DEBUG > 999
+    printf("\nSynchronize DEBUG: synctex_record_anchor 1\n");
+#   endif
     if (len > 0) {
         synctex_ctxt.total_length = len;
         ++synctex_ctxt.count;
