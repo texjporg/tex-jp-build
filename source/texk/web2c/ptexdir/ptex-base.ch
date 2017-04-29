@@ -6861,9 +6861,6 @@ while p<>null do
 	  begin if pf then
           begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
 	  p:=link(p); end;
-        math_node:
-          begin while is_char_node(p) or not((type(p)=math_node)and(subtype(p)=after)) do p:=link(p);
-          x:=p; do_ins:=false; end;
 	othercases p:=link(p)
       endcases@/;
     end;
