@@ -6579,7 +6579,7 @@ creating a widow KANJI character line.
 
 @<Declare procedures needed in |hlist_out|, |vlist_out|@>=
 procedure adjust_hlist(p:pointer;pf:boolean);
-label exit;
+label exit,done,done1,found;
 var q,s,t,u,v,x,z:pointer;
   i,k:halfword;
   a: pointer; { temporary pointer for accent }
@@ -6587,6 +6587,7 @@ var q,s,t,u,v,x,z:pointer;
   cx:KANJI_code; {temporaly register for KANJI character}
   ax:ASCII_code; {temporaly register for ASCII character}
   do_ins:boolean; {for inserting |xkanji_skip| into prevous (or after) KANJI}
+  t_cont: boolean; 
 begin if link(p)=null then goto exit;
 if auto_spacing>0 then
   begin delete_glue_ref(space_ptr(p)); space_ptr(p):=kanji_skip;
@@ -6608,11 +6609,6 @@ while p<>null do
   begin if is_char_node(p) then
     begin repeat @<Insert a space around the character |p|@>;
       q:=p; p:=link(p); incr(i);
-      if (i>5)and pf then
-        begin if is_char_node(v) then
-        if font_dir[font(v)]<>dir_default then v:=link(v);
-        v:=link(v);
-        end;
     until not is_char_node(p);
     end
   else
@@ -6639,11 +6635,6 @@ while p<>null do
             if font_dir[font(t)]<>dir_default then t:=link(t);
           t:=link(link(t)); link(q):=t; p:=t;
           @<Insert a space around the character |p|@>; incr(i);
-          if (i>5)and pf then
-            begin if is_char_node(v) then
-            if font_dir[font(v)]<>dir_default then v:=link(v);
-            v:=link(v);
-            end;
           if link(q)<>t then link(link(q)):=a else link(q):=a;
           end;
         end;
@@ -6661,7 +6652,7 @@ if not is_char_node(q)and(type(q)=glue_node)and(subtype(q)=jfm_skip+1) then
   glue_ptr(q):=zero_glue; add_glue_ref(zero_glue);
   end;
 delete_glue_ref(u); delete_glue_ref(s);
-if (v<>null)and pf and(i>5) then @<Make |jchr_widow_penalty| node@>;
+if pf and(i>5) then @<Make |jchr_widow_penalty| node@>;
 exit:
 end;
 
@@ -6809,62 +6800,109 @@ begin z:=new_glue(u); subtype(z):=kanji_skip_code+1;
 link(z):=link(p); link(p):=z; p:=link(z); q:=z;
 end
 
-@ @<Make |jchr_widow_penalty| node@>=
-begin q:=v; p:=link(v);
-if is_char_node(v)and(font_dir[font(v)]<>dir_default) then
-  begin q:=p; p:=link(p);
+@ @<DDD@>=
+  if p=null then begin print("NULL");  print_ln; end
+  else begin if is_char_node(p) then begin
+    print_int(p); print("CHAR");
+    if font_dir[font(p)]<>dir_default then print_int(info(link(p)))
+    else print_int(character(p));
+    print_ln;end
+  else begin
+    print_int(p); print(" ");
+    print_int(type(p)); print(" "); print_int(subtype(p));
+    print_ln; end; 
   end;
-t:=q; s:=null;
-@<Seek list and make |t| pointing widow penalty position@>;
-if s<>null then
-  begin s:=link(t);
-    if not is_char_node(s)and(type(s)=penalty_node) then
-      penalty(s):=penalty(s)+jchr_widow_penalty
-    else if jchr_widow_penalty<>0 then
-      begin s:=new_penalty(jchr_widow_penalty); subtype(s):=widow_pena;
-      link(s):=link(t); link(t):=s; t:=link(s);
-      while(not is_char_node(t)) do
-        begin if (type(t)=glue_node)or(type(t)=kern_node) then goto exit;
-        t:=link(t);
-        end;
-      z:=new_glue(u); subtype(z):=kanji_skip_code+1;
-      link(z):=link(s); link(s):=z;
+
+@ @<Make |jchr_widow_penalty| node@>=
+begin p:=v; do_ins:=false; t:=null;
+if is_char_node(v) then
+  if font_dir[font(v)]<>dir_default then begin 
+    p:=link(p); do_ins:=true; end;
+x:=p; p:=link(p);
+while p<>null do begin
+  pf:=true; z:=p;
+  @<|jchr_widow_penalty|: Skip discardable nodes@>;
+  done: @<|jchr_widow_penalty|: Ignore |ins_node| and co.@>;
+  done1: if p=null then goto found;
+  if is_char_node(p) then
+    begin if pf and(font_dir[font(p)]<>dir_default) then
+      begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
+      if (i=kanji)or(i=kana) then begin t:=x; t_cont:=do_ins; end;
+      p:=link(p); do_ins:=true; end
+    else begin t:=null; do_ins:=false; end;
+    end
+  else begin t:=null; do_ins:=false; end;
+  x:=p; p:=link(p);
+  @<|jchr_widow_penalty|: Seek list for the next breakpoint@>;
+end;
+found: if t<>null then
+  begin if (not is_char_node(t))and(type(t)=penalty_node) then 
+    { |t|: penalty from kinsoku } 
+    penalty(t):=penalty(t)+jchr_widow_penalty
+  else if jchr_widow_penalty<>0 then
+    begin s:=new_penalty(jchr_widow_penalty); subtype(s):=widow_pena;
+      link(s):=link(t); link(t):=s;
+      if t_cont then 
+        begin q:=new_glue(u); subtype(q):=kanji_skip_code+1;
+        link(q):=link(s); link(s):=q; end;
       end;
   end;
 end;
 
-@ @<Seek list and make |t| pointing widow penalty position@>=
-while(p<>null) do
-begin if is_char_node(p) then
-  begin if font_dir[font(p)]<>dir_default then
-    begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
-    if (i=kanji)or(i=kana) then begin t:=q; s:=p; end;
-    p:=link(p); q:=p;
-    end
-  else begin q:=p; s:=null; end;
-  end
-else begin case type(p) of
-  penalty_node,mark_node,adjust_node,whatsit_node,
-  glue_node,math_node,disp_node,ins_node:
-    do_nothing;
-  kern_node:
-    if subtype(p)=acc_kern then begin
-      p:=link(p); { now |p| must be a char node or hlist }
-      if is_char_node(p) then
-        if font_dir[font(p)]<>dir_default then p:=link(p);
-      p:=link(link(p)); { now |p| is the accentee }
-      if font_dir[font(p)]<>dir_default then
-        begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
-        if (i=kanji)or(i=kana) then begin t:=q; s:=p; end;
-        p:=link(p); q:=p; end
-      else begin q:=p; s:=null; end
-    end
-    else begin q:=p; s:=null; end;
-  othercases begin q:=p; s:=null; end;
-  endcases;
+@ @<|jchr_widow_penalty|: Skip discardable nodes@>=
+while p<>null do
+  if is_char_node(p) then break
+  else begin
+    if non_discardable(p) then goto done
+    else begin
+      case type(p) of
+        kern_node: if subtype(p)=acc_kern then break else p:=link(p);
+        penalty_node: 
+	  begin if pf then
+          begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
+	  p:=link(p); end;
+        math_node:
+          begin while is_char_node(p) or not((type(p)=math_node)and(subtype(p)=after)) do p:=link(p);
+          x:=p; do_ins:=false; end;
+	othercases p:=link(p)
+      endcases@/;
+    end;
   end;
-p:=link(p);
-end
+
+
+@ @<|jchr_widow_penalty|: Ignore |ins_node| and co.@>=
+  if p=null then goto found;
+  while p<>null do
+    if is_char_node(p) then goto done1
+    else
+      case type(p) of
+      ins_node, mark_node, adjust_node, disp_node: p:=link(p);
+      kern_node: { |p| is a kern node for an accent }
+        begin p:=link(p);
+        if is_char_node(p) then
+          if font_dir[font(p)]<>dir_default then p:=link(p);
+        p:=link(p); end;
+      othercases goto done1
+      endcases@/;
+
+@ @<|jchr_widow_penalty|: Seek list for the next breakpoint@>=
+while p<>null do
+  begin if is_char_node(p) then
+    begin if font_dir[font(p)]<>dir_default then
+      begin if do_ins then break else do_ins:=true; end
+    else begin t:=null; do_ins:=false; end; end
+  else
+    begin do_ins:=false;
+    if non_discardable(p) then do_nothing;
+    if (type(p)=kern_node)and(subtype(p)=acc_kern) then
+      begin p:=link(p);
+      if font_dir[font(p)]<>dir_default then p:=link(p);
+      p:=link(p); end 
+    else break;
+    end;
+  x:=p; p:=link(p);
+end;
+
 
 @ @<Declare procedures needed in |hlist_out|, |vlist_out|@>=
 procedure dir_out;
