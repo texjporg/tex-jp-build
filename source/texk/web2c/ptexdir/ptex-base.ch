@@ -6887,7 +6887,7 @@ while p<>null do
   begin if is_char_node(p) then
     begin if font_dir[font(p)]<>dir_default then
       begin if do_ins then break else do_ins:=true; end
-    else begin t:=null; do_ins:=false; end; end
+    else do_ins:=false; end
   else
     begin do_ins:=false;
     if non_discardable(p) then do_nothing;

@@ -1112,23 +1112,26 @@ else if font_dir[font(first_char)]<>dir_default then
 
 @x
 begin if is_char_node(link(p)) then
-  begin q:=p; p:=link(p);
+  begin q:=p; p:=link(p); incr(i);
   if font_dir[font(p)]<>dir_default then
     begin KANJI(cx):=info(link(p));
 @y
 begin if is_char_node(link(p)) then
-  begin q:=p; p:=link(p);
+  begin q:=p; p:=link(p); incr(i);
   if font_dir[font(p)]<>dir_default then
     begin KANJI(cx):=info(link(p)) mod max_cjk_val;
 @z
 
 @x
-    begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx)); k:=0;
-    if (i=kanji)or(i=kana) then begin t:=q; s:=p; end;
+    begin if pf and(font_dir[font(p)]<>dir_default) then
+      begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
+      if (i=kanji)or(i=kana) then begin t:=x; t_cont:=do_ins; end;
+      p:=link(p); do_ins:=true; end
 @y
-    begin KANJI(cx):=info(link(p)) mod max_cjk_val;
-    i:=info(link(p)) div max_cjk_val; k:=0;
-    if (i=kanji)or(i=kana)or(i=hangul) then begin t:=q; s:=p; end;
+    begin if pf and(font_dir[font(p)]<>dir_default) then
+      begin KANJI(cx):=info(link(p)); i:=kcat_code(kcatcodekey(cx));
+      if (i=kanji)or(i=kana)or(i=hangul) then begin t:=x; t_cont:=do_ins; end;
+      p:=link(p); do_ins:=true; end
 @z
 
 @x
