@@ -26,8 +26,8 @@
   begin case m of
     input_line_no_code: cur_val:=line;
     badness_code: cur_val:=last_badness;
-	ptex_version_code: cur_val:=pTeX_version;
-	eptex_version_code: cur_val:=epTeX_version_number;
+    ptex_version_code: cur_val:=pTeX_version;
+    eptex_version_code: cur_val:=epTeX_version_number;
   end; {there and no other cases}
 @y
  if m>=eTeX_glue then @<Process an expression and |return|@>@;

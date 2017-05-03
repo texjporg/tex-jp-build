@@ -168,10 +168,10 @@ end
 @z
 
 @x
-	ptex_version_code: cur_val:=pTeX_version;
+    ptex_version_code: cur_val:=pTeX_version;
 @y
-	ptex_version_code: cur_val:=pTeX_version;
-	eptex_version_code: cur_val:=epTeX_version_number;
+    ptex_version_code: cur_val:=pTeX_version;
+    eptex_version_code: cur_val:=epTeX_version_number;
 @z
 
 @x [26.424] e-pTeX: node char
