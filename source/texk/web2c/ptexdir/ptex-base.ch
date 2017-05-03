@@ -2128,7 +2128,7 @@ if not is_char_node(tx) then
   begin case m of
     input_line_no_code: cur_val:=line;
     badness_code: cur_val:=last_badness;
-	ptex_version_code: cur_val:=pTeX_version;
+    ptex_version_code: cur_val:=pTeX_version;
   end; {there and no other cases}
 @z
 
@@ -2323,7 +2323,7 @@ primitive("jis",convert,jis_code);
 primitive("kuten",convert,kuten_code);
 @!@:kuten_}{\.{\\kuten} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
-@!@:kuten_}{\.{\\ptexrevision} primitive@>
+@!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
 
 @x [27.469] l.9558 - pTeX:
