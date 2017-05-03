@@ -6800,10 +6800,11 @@ begin z:=new_glue(u); subtype(z):=kanji_skip_code+1;
 link(z):=link(p); link(p):=z; p:=link(z); q:=z;
 end
 
-@ @<DDD@>=
+@ This section is only used for debugging.
+@<Show the node |p| (only for debug)@>=
   if p=null then begin print("NULL");  print_ln; end
   else begin if is_char_node(p) then begin
-    print_int(p); print("CHAR");
+    print_int(p); print(" CHAR ");
     if font_dir[font(p)]<>dir_default then print_int(info(link(p)))
     else print_int(character(p));
     print_ln;end
@@ -6861,8 +6862,18 @@ while p<>null do
 	  begin if pf then
           begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
 	  p:=link(p); end;
+        math_node:
+          if subtype(p)=before then begin p:=link(p);
+            while p<>null do
+	      if is_char_node(p) then p:=link(p)
+	      else begin 
+	        if (type(p)=math_node)and(subtype(p)=after) then begin
+                  p:=link(p); break end
+	        else p:=link(p); end;
+            x:=p; do_ins:=false; end;
+	    { now |p| should be the node following |math_off| }
 	othercases p:=link(p)
-      endcases@/;
+      endcases@/
     end;
   end;
 
@@ -6880,7 +6891,7 @@ while p<>null do
           if font_dir[font(p)]<>dir_default then p:=link(p);
         p:=link(p); end;
       othercases goto done1
-      endcases@/;
+      endcases@/
 
 @ @<|jchr_widow_penalty|: Seek list for the next breakpoint@>=
 while p<>null do
@@ -6891,10 +6902,15 @@ while p<>null do
   else
     begin do_ins:=false;
     if non_discardable(p) then do_nothing;
-    if (type(p)=kern_node)and(subtype(p)=acc_kern) then
-      begin p:=link(p);
-      if font_dir[font(p)]<>dir_default then p:=link(p);
-      p:=link(p); end 
+    if type(p)=kern_node then
+      if subtype(p)=acc_kern then
+        begin p:=link(p);
+        if font_dir[font(p)]<>dir_default then p:=link(p);
+        p:=link(p); end
+      else
+        begin q:=link(p);
+	if q=null then break
+	else if type(q)=glue_node then break; end
     else break;
     end;
   x:=p; p:=link(p);
