@@ -726,9 +726,9 @@ ignore_spaces: {trap unexpandable primitives}
 @z
 
 @x
-@d eptex_version_code=ptex_version_code+1 {code for \.{\\eptexversion}}
+@d eptex_version_code=ptex_version_code+1 {code for \.{\\epTeXversion}}
 @y
-@d eptex_version_code=ptex_version_code+1 {code for \.{\\eptexversion}}
+@d eptex_version_code=ptex_version_code+1 {code for \.{\\epTeXversion}}
 @d pdf_last_x_pos_code=eptex_version_code+1 {code for \.{\\pdflastxpos}}
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}

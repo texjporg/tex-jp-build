@@ -83,7 +83,7 @@ var m:halfword; {|chr_code| part of the operand token}
 @d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
 @y
 @d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
-@d eptex_version_code=ptex_version_code+1 {code for \.{\\eptexversion}}
+@d eptex_version_code=ptex_version_code+1 {code for \.{\\epTeXversion}}
 @z
 
 @x
@@ -92,15 +92,15 @@ primitive("ptexversion",last_item,ptex_version_code);
 @y
 primitive("ptexversion",last_item,ptex_version_code);
 @!@:ptexversion_}{\.{\\ptexversion} primitive@>
-primitive("eptexversion",last_item,eptex_version_code);
-@!@:eptexversion_}{\.{\\eptexversion} primitive@>
+primitive("epTeXversion",last_item,eptex_version_code);
+@!@:epTeXversion_}{\.{\\epTeXversion} primitive@>
 @z
 
 @x
   ptex_version_code: print_esc("ptexversion");
 @y
   ptex_version_code: print_esc("ptexversion");
-  eptex_version_code: print_esc("eptexversion");
+  eptex_version_code: print_esc("epTeXversion");
 @z
 
 

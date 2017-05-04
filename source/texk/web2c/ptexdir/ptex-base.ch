@@ -71,8 +71,8 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=308
-@d pTeX_revision==""
-@d pTeX_version_string=='-p3.8' {current \pTeX\ version}
+@d pTeX_revision=='0'
+@d pTeX_version_string=='-p3.8.',pTeX_revision {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner

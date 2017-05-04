@@ -13,9 +13,9 @@
 @z
 
 @x
-  eptex_version_code: print_esc("eptexversion");
+  eptex_version_code: print_esc("epTeXversion");
 @y
-  eptex_version_code: print_esc("eptexversion");
+  eptex_version_code: print_esc("epTeXversion");
   uptex_version_code: print_esc("uptexversion");
 @z
 
