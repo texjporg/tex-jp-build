@@ -1,3 +1,8 @@
+2017-05-05  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: New primitives: \ptexversion and \ptexrevision.
+	* ptex_version.h: pTeX version p3.8.0.
+
 2017-04-24  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* ptex-base.ch: p\TeX -> \pTeX.

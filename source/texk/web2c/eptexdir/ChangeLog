@@ -1,3 +1,8 @@
+2017-05-05  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* eptex.ech, etex.ch0, etex.ch1, pdfutils.ch: New primitive \epTeXversion.
+	* eptex.ech, eptex_version.h: e-pTeX version 170503.
+
 2017-04-24  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* eptex.ech, etex.ch1, euptex.ch0, pdfutils.ch:
