@@ -61,7 +61,12 @@
 #define	DT_PRE		24
 #define	DT_POST		25
 #define	DT_POSTPOST	26
+#ifdef ASCIIJTEX
+#define	DT_DIR		27
+#define	DT_UNDEF	28
+#else /* !ASCIIJTEX */
 #define	DT_UNDEF	27
+#endif /* !ASCIIJTEX */
 
 /*
  * Symbolic names for parameter lengths, obtained via the macro

@@ -28,6 +28,9 @@
 
 /* shorthand---in lowercase for contrast (read on!) */
 #define	four(x)		x, x, x, x
+#ifdef ASCIIJTEX
+#define	five(x)		four(x), x
+#endif /* ASCIIJTEX */
 #define	six(x)		four(x), x, x
 #define	sixteen(x)	four(x), four(x), four(x), four(x)
 #define	sixty_four(x)	sixteen(x), sixteen(x), sixteen(x), sixteen(x)
@@ -72,7 +75,12 @@ char dvi_oplen[256] = {
 	DPL_NONE,		/* DVI_PRE */
 	DPL_NONE,		/* DVI_POST */
 	DPL_NONE,		/* DVI_POSTPOST */
+#ifdef ASCIIJTEX
+	five(DPL_NONE),		/* 250 through 254 */
+	DPL_UNS1,		/* DVI_DIR */
+#else /* !ASCIIJTEX */
 	six(DPL_NONE)		/* 250 through 255 */
+#endif /* !ASCIIJTEX */
 };
 
 char dvi_dt[256] = {
@@ -104,5 +112,10 @@ char dvi_dt[256] = {
 	DT_PRE,			/* DVI_PRE */
 	DT_POST,		/* DVI_POST */
 	DT_POSTPOST,		/* DVI_POSTPOST */
+#ifdef ASCIIJTEX
+	five(DT_UNDEF),		/* 250 through 254 */
+	DT_DIR,			/* DVI_DIR */
+#else /* !ASCIIJTEX */
 	six(DT_UNDEF)		/* 250 through 255 */
+#endif /* !ASCIIJTEX */
 };
