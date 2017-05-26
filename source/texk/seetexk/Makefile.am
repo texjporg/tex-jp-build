@@ -52,6 +52,8 @@ EXTRA_DIST = $(TESTS)
 ## seetexk.test
 EXTRA_DIST += \
 	tests/play.dvi tests/playbook.2 tests/playconc.2 \
-	tests/playdvi.2 tests/playnot.2 tests/playsel.2
-DISTCLEANFILES = play*.2 play*.dvi
+	tests/playdvi.2 tests/playnot.2 tests/playsel.2 \
+	tests/playtate.dvi tests/playbook.3 tests/playbook.4 \
+	tests/playconc.3 tests/playdvi.3 tests/playsel.3
+DISTCLEANFILES = play*.2 play*.3 play*.4 play*.dvi
 
