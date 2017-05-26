@@ -107,7 +107,7 @@ int	UseThisPage;		/* true => current page is selected */
 
 i32	InputPageNumber;	/* current absolute page in old DVI file */
 int	NumberOfOutputPages;	/* number of pages in new DVI file */
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 int	ptexdvi;		/* true if dvi file is extended (TATEKUMI) */
 int	inverse;		/* true if 'left-side-open' */
 #endif
@@ -146,7 +146,7 @@ static void WriteFont(struct fontinfo *fi);
 static void PutFontSelector(i32 index);
 static void ScanDVIFile(void);
 static void HandleDVIFile(void);
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 static void HandleDVIFileLefty(void);
 #endif
 static int HandlePage(void);
@@ -300,7 +300,7 @@ HandlePostAmble(void)
 
 	putbyte(outf, DVI_POSTPOST);
 	PutLong(outf, StartOfLastPage);	/* actually start of postamble */
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	if(ptexdvi)
 		putbyte(outf, DVI_PTEXVERSION);
 	else
@@ -400,13 +400,13 @@ main(int argc, char **argv)
 
 	Signature = 0;
 
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	inverse = 0;
 #endif
 	ProgName = *argv;
 	setbuf(stderr, serrbuf);
 
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	while ((c = getopt(argc, argv, "i:o:s:ql")) != EOF) {
 #else
 	while ((c = getopt(argc, argv, "i:o:s:q")) != EOF) {
@@ -439,7 +439,7 @@ main(int argc, char **argv)
 			   error(1, -1,
 				 "-s parameter must be a multiple of 4");
 			break;
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 		case 'l':
 			inverse = 1;
 			break;
@@ -447,7 +447,7 @@ main(int argc, char **argv)
 
 		case '?':
 usage:
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 			(void) fprintf(stderr, "\
 Usage: %s [-s signature] [-q] [-i infile] [-o outfile] [-l] [infile [outfile]]\n",
 				ProgName);
@@ -493,14 +493,14 @@ Usage: %s [-s signature] [-q] [-i infile] [-o outfile] [infile [outfile]]\n",
 	if ((inf = SeekFile(inf)) == NULL) {
 	        error(1, 0, "can't seek file");
 	}
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	ptexdvi = 0;
 #endif
 	InputPageNumber = 0;
 	StartOfLastPage = -1;
 	HandlePreAmble();
 	ScanDVIFile();
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	if(inverse)
 		HandleDVIFileLefty();
 	else
@@ -695,7 +695,7 @@ char	oplen[128] = {
 	0,			/* DVI_PRE */
 	0,			/* DVI_POST */
 	0,			/* DVI_POSTPOST */
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	0, 0, 0, 0, 0,		/* 250 .. 254 */
 	0,			/* DVI_DIR */
 #else
@@ -757,7 +757,7 @@ HandleDVIFile(void)
 	        error(1, -1, "can't seek last page");
 }
 
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 /*
  * Here we read the input DVI file and write relevant pages to the
  * output DVI file. We also keep track of font changes, handle font
@@ -928,7 +928,7 @@ HandlePage(void)
 				HandleFontDef(p);
 				continue;
 
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 			case DT_DIR:
 				ptexdvi = 1;
 

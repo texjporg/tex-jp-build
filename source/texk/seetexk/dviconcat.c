@@ -85,9 +85,9 @@ long	StartOfLastPage;	/* The file position just before we started
 long	CurrentPosition;	/* The current position of the file */
 
 int	NumberOfOutputPages;	/* number of pages in new DVI file */
-#ifdef ASCIIJTEX
+#ifdef ASCIIPTEX
 int	ptexdvi;		/* true => dvi format is extended (TATEKUMI) */
-#endif /* ASCIIJTEX */
+#endif /* ASCIIPTEX */
 
 i32	Numerator;		/* numerator from current DVI file */
 i32	Denominator;		/* denominator from current DVI file */
@@ -228,11 +228,11 @@ WritePostAmble(void)
 
 	putbyte(outf, DVI_POSTPOST);
 	PutLong(outf, postpos);
-#ifdef ASCIIJTEX
+#ifdef ASCIIPTEX
 	if (ptexdvi)
 	  putbyte(outf, DVI_PTEXVERSION);
 	else
-#endif /* ASCIIJTEX */
+#endif /* ASCIIPTEX */
 	putbyte(outf, DVI_VERSION);
 	putbyte(outf, DVI_FILLER);
 	putbyte(outf, DVI_FILLER);
@@ -380,7 +380,7 @@ doit(const char *name, FILE *fp)
 {
 	static int started;
 
-#ifdef	ASCIIJTEX
+#ifdef	ASCIIPTEX
 	ptexdvi = 0;
 #endif
 	DVIFileName = name;
@@ -671,12 +671,12 @@ char	oplen[128] = {
 	0,			/* DVI_PRE */
 	0,			/* DVI_POST */
 	0,			/* DVI_POSTPOST */
-#ifdef ASCIIJTEX
+#ifdef ASCIIPTEX
 	0, 0, 0, 0, 0,		/* 250 .. 254 */
 	0,			/* DVI_DIR */
-#else /* !ASCIIJTEX */
+#else /* !ASCIIPTEX */
 	0, 0, 0, 0, 0, 0,	/* 250 .. 255 */
-#endif /* !ASCIIJTEX */
+#endif /* !ASCIIPTEX */
 };
 
 /*
@@ -763,7 +763,7 @@ HandleDVIFile(void)
 				HandleFontDef(p);
 				continue;
 
-#ifdef ASCIIJTEX
+#ifdef ASCIIPTEX
 			case DT_DIR:
 				ptexdvi = 1;
 
@@ -771,7 +771,7 @@ HandleDVIFile(void)
 				putbyte(outf, p);
 				CurrentPosition += 2;
 				continue;
-#endif /* ASCIIJTEX */
+#endif /* ASCIIPTEX */
 
 			default:
 				panic("HandleDVIFile DVI_DT(%d)=%d",
