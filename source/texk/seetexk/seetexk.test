@@ -43,7 +43,6 @@ cat $srcdir/tests/play.dvi | ./dviselect =5:15 >playsel.dvi \
 
 echo dviselect with stdin and stdout tests OK
 
-rm -rf play*
 ./dviselect =5:15 $srcdir/tests/playtate.dvi playselt.dvi \
 	2>playsel.3 \
 	&& diff playsel.3 $srcdir/tests/playsel.3 \
