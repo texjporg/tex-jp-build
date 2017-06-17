@@ -753,7 +753,7 @@ HandleDVIFile(void)
 				     "can't seek page %d", ActualPage+1);
 		        HandlePage();
 		} else
-    	                PutEmptyPage();
+		        PutEmptyPage();
 	}
 	if (fseek(inf, StartOfPage[InputPageNumber]+1, 0) == -1)
 	        error(1, -1, "can't seek last page");
