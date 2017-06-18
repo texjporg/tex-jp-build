@@ -1,9 +1,9 @@
 2017-06-18  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* dvidvi.c: Add support for pTeX tate-kumi DVI.
-	* Makefile.am: Adjusted for pTeX support.
 	* dvidvi.test: Add tests for pTeX support.
 	* playout.3, playtate.dvi: Added.
+	* Makefile.am: Adjusted for pTeX support.
 
 2015-07-07  Peter Breitenlohner  <peb@mppmu.mpg.de>
 
