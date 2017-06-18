@@ -109,7 +109,7 @@ i32	InputPageNumber;	/* current absolute page in old DVI file */
 int	NumberOfOutputPages;	/* number of pages in new DVI file */
 #ifdef	ASCIIPTEX
 int	ptexdvi;		/* true if dvi file is extended (TATEKUMI) */
-int	inverse;		/* true if 'right-hand-opening' */
+int	inverse;		/* true if 'right-hand side binding' */
 #endif
 
 i32	Numerator;		/* numerator from DVI file */

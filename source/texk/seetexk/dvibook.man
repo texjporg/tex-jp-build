@@ -37,10 +37,11 @@ should be a multiple of four. The default is to use one signature for the
 whole file. Extra blank sides will be added if the file does not contain a
 multiple of four pages.
 .PP
-By default, dvibook rearranges the pages into left\-opening signatures; the
+By default, dvibook rearranges the pages into left\-hand side binding
+signatures; the
 .I \-r
-option switches to right\-opening signatures. This might be useful for
-pTeX vertical writing (tate-kumi) documents.
+option switches to right\-hand side binding signatures. This might be useful
+for pTeX vertical writing (tate\-kumi) documents.
 .PP
 Dvibook normally prints the page numbers of the pages rearranged; the
 .I \-q
