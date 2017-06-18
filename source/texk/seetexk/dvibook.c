@@ -407,7 +407,7 @@ main(int argc, char **argv)
 	setbuf(stderr, serrbuf);
 
 #ifdef	ASCIIPTEX
-	while ((c = getopt(argc, argv, "i:o:s:ql")) != EOF) {
+	while ((c = getopt(argc, argv, "i:o:s:qr")) != EOF) {
 #else
 	while ((c = getopt(argc, argv, "i:o:s:q")) != EOF) {
 #endif
