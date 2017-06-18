@@ -36,6 +36,7 @@ dvidvi.log: dvidvi$(EXEXXT)
 EXTRA_DIST += $(TESTS)
 
 ## dvidvi.test
-EXTRA_DIST += tests/play.dvi tests/playout.2
-DISTCLEANFILES = play*.2 play*.dvi
+EXTRA_DIST += tests/play.dvi tests/playout.2 \
+	tests/playtate.dvi tests/playout.3
+DISTCLEANFILES = play*.2 play*.3 play*.dvi
 
