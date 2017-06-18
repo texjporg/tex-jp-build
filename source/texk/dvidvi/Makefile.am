@@ -3,7 +3,7 @@
 ## Copyright (C) 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 ##
-AM_CPPFLAGS = $(KPATHSEA_INCLUDES) -DKPATHSEA -DUNIX
+AM_CPPFLAGS = $(KPATHSEA_INCLUDES) -DKPATHSEA -DASCIIPTEX -DUNIX
 AM_CFLAGS = $(WARNING_CFLAGS)
 
 bin_PROGRAMS = dvidvi
