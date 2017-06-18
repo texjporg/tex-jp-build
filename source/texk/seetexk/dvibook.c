@@ -109,7 +109,7 @@ i32	InputPageNumber;	/* current absolute page in old DVI file */
 int	NumberOfOutputPages;	/* number of pages in new DVI file */
 #ifdef	ASCIIPTEX
 int	ptexdvi;		/* true if dvi file is extended (TATEKUMI) */
-int	inverse;		/* true if 'left-side-open' */
+int	inverse;		/* true if 'right-hand-opening' */
 #endif
 
 i32	Numerator;		/* numerator from DVI file */
@@ -147,7 +147,7 @@ static void PutFontSelector(i32 index);
 static void ScanDVIFile(void);
 static void HandleDVIFile(void);
 #ifdef	ASCIIPTEX
-static void HandleDVIFileLefty(void);
+static void HandleDVIFileRighty(void);
 #endif
 static int HandlePage(void);
 static void PutEmptyPage(void);
@@ -440,7 +440,7 @@ main(int argc, char **argv)
 				 "-s parameter must be a multiple of 4");
 			break;
 #ifdef	ASCIIPTEX
-		case 'l':
+		case 'r':
 			inverse = 1;
 			break;
 #endif
@@ -449,7 +449,7 @@ main(int argc, char **argv)
 usage:
 #ifdef	ASCIIPTEX
 			(void) fprintf(stderr, "\
-Usage: %s [-s signature] [-q] [-i infile] [-o outfile] [-l] [infile [outfile]]\n",
+Usage: %s [-s signature] [-q] [-i infile] [-o outfile] [-r] [infile [outfile]]\n",
 				ProgName);
 #else
 			(void) fprintf(stderr, "\
@@ -504,7 +504,7 @@ Usage: %s [-s signature] [-q] [-i infile] [-o outfile] [infile [outfile]]\n",
 	ScanDVIFile();
 #ifdef	ASCIIPTEX
 	if(inverse)
-		HandleDVIFileLefty();
+		HandleDVIFileRighty();
 	else
 #endif
 	HandleDVIFile();
@@ -766,7 +766,7 @@ HandleDVIFile(void)
  * definitions, and perform some other housekeeping.
  */
 static void
-HandleDVIFileLefty(void)
+HandleDVIFileRighty(void)
 {
         int CurrentPage, ActualPage, MaxPage;
 

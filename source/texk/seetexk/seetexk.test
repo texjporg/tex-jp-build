@@ -91,7 +91,7 @@ echo dvibook with stdin and stdout tests OK
 	&& diff playbook.3 $srcdir/tests/playbook.3 \
 	|| exit 1
 
-./dvibook -l -s4 playselt.dvi playbook.dvi \
+./dvibook -r -s4 playselt.dvi playbook.dvi \
 	2>playbook.4 \
 	&& diff playbook.4 $srcdir/tests/playbook.4 \
 	|| exit 1
