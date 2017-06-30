@@ -1,3 +1,24 @@
+2017-06-27  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* pdfdoc.c: Simplify the change in pdf_doc_get_page().
+	* configure.ac: Change version number to distinguish from TL 2017.
+
+2017-06-25  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* pdfdoc.c: Discard the backward compatibility for pdf BoundingBox
+	in pdf_doc_get_page(), to be consistent with the latex
+	driver dvipdfmx.def.
+
+2017-06-25  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* tt_cmap.c: Fix a bug that different CMaps are not attached
+	to each instances of font using different OpenType layout features.
+	Fix a bug that ToUnicode support for substituted glyph was incomplete.
+
+2017-06-24  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* spc_pdfm.c: Remove unused variable attr in spc_handler_pdfm_image().
+
 2017-05-19  Karl Berry  <karl@tug.org>
 
 	* Version 20170318 for TeX Live 2017 release.
