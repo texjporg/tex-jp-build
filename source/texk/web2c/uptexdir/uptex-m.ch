@@ -237,22 +237,23 @@ for k:=0 to 511 do
 if (isinternalUPTEX) then begin
   { default: |other_kchar| }
   @t\hskip10pt@>kcat_code(@"0):=not_cjk;
-  @t\hskip10pt@>kcat_code(@"23):=hangul; { Hangul Jamo }
-  @+@t\1@>for k:=@"65 to @"67 do kcat_code(k):=kanji; { CJK Radicals Supplement .. Ideographic Description Characters }
-  @+@t\1@>for k:=@"69 to @"6A do kcat_code(k):=kana;  { Hiragana, Katakana }
-  @t\hskip10pt@>kcat_code(@"6B):=kanji; { Bopomofo }
-  @t\hskip10pt@>kcat_code(@"6C):=hangul; { Hangul Compatibility Jamo }
-  @+@t\1@>for k:=@"6D to @"6F do kcat_code(k):=kanji; { Kanbun .. CJK Strokes }
-  @t\hskip10pt@>kcat_code(@"70):=kana; { Katakana Phonetic Extensions }
-  @t\hskip10pt@>kcat_code(@"73):=kanji; { CJK Unified Ideographs Extension A }
-  @t\hskip10pt@>kcat_code(@"75):=kanji; { CJK Unified Ideographs }
-  @t\hskip10pt@>kcat_code(@"85):=hangul; { Hangul Jamo Extended-A }
-  @t\hskip10pt@>kcat_code(@"90):=hangul; { Hangul Syllables }
-  @t\hskip10pt@>kcat_code(@"91):=hangul; { Hangul Jamo Extended-B }
-  @t\hskip10pt@>kcat_code(@"96):=kanji; { CJK Compatibility Ideographs }
-  { \hskip10pt|kcat_code(@"9F):=other_kchar;| Halfwidth and Fullwidth Forms }
-  @t\hskip10pt@>kcat_code(@"ED):=kana; { Kana Supplement }
-  @+@t\1@>for k:=@"108 to @"10C do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. CJK Compatibility Ideographs Supplement }
+  @t\hskip10pt@>kcat_code(@"24):=hangul; { Hangul Jamo }
+  @+@t\1@>for k:=@"66 to @"68 do kcat_code(k):=kanji; { CJK Radicals Supplement .. Ideographic Description Characters }
+  @+@t\1@>for k:=@"6A to @"6B do kcat_code(k):=kana;  { Hiragana, Katakana }
+  @t\hskip10pt@>kcat_code(@"6C):=kanji; { Bopomofo }
+  @t\hskip10pt@>kcat_code(@"6D):=hangul; { Hangul Compatibility Jamo }
+  @+@t\1@>for k:=@"6E to @"70 do kcat_code(k):=kanji; { Kanbun .. CJK Strokes }
+  @t\hskip10pt@>kcat_code(@"71):=kana; { Katakana Phonetic Extensions }
+  @t\hskip10pt@>kcat_code(@"74):=kanji; { CJK Unified Ideographs Extension A }
+  @t\hskip10pt@>kcat_code(@"76):=kanji; { CJK Unified Ideographs }
+  @t\hskip10pt@>kcat_code(@"86):=hangul; { Hangul Jamo Extended-A }
+  @t\hskip10pt@>kcat_code(@"91):=hangul; { Hangul Syllables }
+  @t\hskip10pt@>kcat_code(@"92):=hangul; { Hangul Jamo Extended-B }
+  @t\hskip10pt@>kcat_code(@"97):=kanji; { CJK Compatibility Ideographs }
+  { \hskip10pt|kcat_code(@"A0):=other_kchar;| Halfwidth and Fullwidth Forms }
+  @t\hskip10pt@>kcat_code(@"F1):=kana; { Kana Supplement }
+  @t\hskip10pt@>kcat_code(@"F2):=kana; { Kana Extended-A }
+  @+@t\1@>for k:=@"10E to @"113 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. CJK Compatibility Ideographs Supplement }
   @t\hskip10pt@>kcat_code(@"1FE):=kana; { Fullwidth digit and latin alphabet }
   @t\hskip10pt@>kcat_code(@"1FF):=kana; { Halfwidth katakana }
 end else begin
