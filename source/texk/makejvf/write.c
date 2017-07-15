@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int pstfm_codes[256];
+
 FILE *vfopen(char *name)
 {
 	FILE *fp;
@@ -433,6 +435,7 @@ void writevfu(int code, FILE *fp)
 				fputnum2(skip2,fp);
 			}
 			if (kanatfm) fputc(173+fidshift,fp); /* FONT_NUM_2 */
+			fputc(129,fp); /* SET2 */
 			if (code == 0x2018)
 				fputnum(0x2032,2,fp); /* char code */
 			else
@@ -519,9 +522,9 @@ void writevfu(int code, FILE *fp)
 		if (jfm_id == 9 && minute) { /* 縦書き時はミニュートへ変換 */
 			if (afp) {
 				if (code == 0x2019)
-					sprintf(buf2,"CH <216C>");
+					sprintf(buf2,"CH <2032>");
 				else
-					sprintf(buf2,"CH <216D>");
+					sprintf(buf2,"CH <2033>");
 				rewind(afp);
 				while (fgets(buf,255,afp)!=NULL) {
 					if (jfm_id==9 && !strncmp(buf,"FontBBox ",9)) {
@@ -653,7 +656,10 @@ void writevfu(int code, FILE *fp)
 	case 0xFF90: case 0xFF91: case 0xFF92: case 0xFF93: case 0xFF94: case 0xFF95: case 0xFF96: case 0xFF97:
 	case 0xFF98: case 0xFF99: case 0xFF9A: case 0xFF9B: case 0xFF9C: case 0xFF9D: case 0xFF9E: case 0xFF9F:
 		if (jfm_id == 11 && hankana) { /* 半角片仮名、横書き時 */
-			cc=3;
+			if (kanatfm)
+				cc=4;
+			else
+				cc=3;
 			if (skip2)
 				cc+=numcount(skip2)+1;
 			fputnum(cc,4,fp);
@@ -663,13 +669,16 @@ void writevfu(int code, FILE *fp)
 				fputc(157+numcount(skip2)-1,fp); /* DOWN */
 				fputnum2(skip2,fp);
 			}
+			if (kanatfm) fputc(173+fidshift,fp); /* FONT_NUM_2 */
 			fputc(129,fp); /* SET2 */
 			fputnum(code,2,fp); /* char code */
+			pstfm_codes[pstfm_nt-1]=code;
+			pstfm_nt+=1;
 			return;
 		}
 	default:
 		if (w != zw) {
-			if (((code >= 0x3041 && code <= 0x30F6) || code == 0x30FC ) && kanatume>=0) {
+			if (!uniblock_iskanji && kanatume>=0) {
 				sprintf(buf2,"CH <%X>",code);
 				rewind(afp);
 				while (fgets(buf,255,afp)!=NULL) {
@@ -761,10 +770,12 @@ void writevfu(int code, FILE *fp)
 			}
 		}
 		else {
-			if (kanatfm || code>=0x10000)
+			if (kanatfm)
 				cc=4;
 			else
 				cc=3;
+			if (code>=0x10000)
+				cc+=1;
 			if (skip)
 				cc+=numcount(skip)+1;
 			if (skip2)
@@ -785,7 +796,7 @@ void writevfu(int code, FILE *fp)
 		fputnum2(skip2,fp);
 	}
 	if (kanatfm) {
-		if (code <= 0x30F6)
+		if (!uniblock_iskanji)
 			fputc(173+fidshift,fp); /* FONT_NUM_2 */
 		else
 			fputc(172+fidshift,fp); /* FONT_NUM_1 */
@@ -814,6 +825,7 @@ void maketfm(char *name)
 {
 	char nbuf[256];
 	FILE *fp;
+	int i;
 
 	strcpy(nbuf,name);
 	strcat(nbuf,".tfm");
@@ -824,12 +836,22 @@ void maketfm(char *name)
 	}
 
 	fputnum(jfm_id,2,fp); /* JFM ID */
-	fputnum(1,2,fp); /* number of char type */
-	fputnum(27,2,fp); /* file words */
+	fputnum(pstfm_nt,2,fp); /* number of char type */
+	if (pstfm_nt>1)
+		fputnum(27+pstfm_nt+1,2,fp); /* file words */
+	else
+		fputnum(27,2,fp); /* file words */
 	fputnum(2,2,fp); /* header words */
-	fputnum(0,2,fp); /* min of char type */
-	fputnum(0,2,fp); /* max of char type */
-	fputnum(2,2,fp); /* width words */
+	if (pstfm_nt>1) {
+		fputnum(0,2,fp); /* min of char type */
+		fputnum(1,2,fp); /* max of char type */
+		fputnum(3,2,fp); /* width words */
+	}
+	else {
+		fputnum(0,2,fp); /* min of char type */
+		fputnum(0,2,fp); /* max of char type */
+		fputnum(2,2,fp); /* width words */
+	}
 	fputnum(2,2,fp); /* height words */
 	fputnum(2,2,fp); /* depth words */
 	fputnum(1,2,fp); /* italic words */
@@ -841,12 +863,24 @@ void maketfm(char *name)
 	fputnum(0,4,fp); /* check sum */
 	fputnum(10*(1<<20),4,fp); /* design size */
 
+	/* others */
 	fputnum(0,2,fp); /* char code */
 	fputnum(0,2,fp); /* char type */
+	/* hankaku-kana */
+	for (i=0;i<pstfm_nt-1;i++) {
+		fputnum(pstfm_codes[i],2,fp); /* char code */
+		fputnum(1,2,fp); /* char type */
+	}
 
+	/* hankaku-kana */
+	if (pstfm_nt>1)
+		fputnum((2<<24)+(1<<20)+(1<<16),4,fp); /* char info */
+	/* others */
 	fputnum((1<<24)+(1<<20)+(1<<16),4,fp); /* char info */
 	fputnum(0,4,fp); /* width */
-	fputnum(1<<20,4,fp); /* width */
+	if (pstfm_nt>1)
+		fputnum(1<<19,4,fp); /* width, hankaku-kana */
+	fputnum(1<<20,4,fp); /* width, others */
 	if (jfm_id == 11) {
 		fputnum(0,4,fp); /* height */
 		fputnum((int)((1<<20)*0.9),4,fp); /* height */

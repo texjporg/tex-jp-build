@@ -10,6 +10,7 @@
 FILE *vfp,*afp=NULL;
 char *atfmname,*vtfmname,*afmname,*vfname,*kanatfm,*jistfm,*ucsqtfm;
 int kanatume=-1,chotai=0,baseshift=0,minute=0,useset3=0,hankana=0,fidzero=0;
+int pstfm_nt;
 long ucs=0;
 
 int main(int argc, char ** argv)
@@ -120,31 +121,9 @@ int main(int argc, char ** argv)
 
 	tfmget(atfmname);
 
-	maketfm(vtfmname);
-
-	if (kanatfm) {
-		if (FILESTRCASEEQ(&kanatfm[strlen(kanatfm)-4], ".tfm")) {
-			kanatfm[strlen(kanatfm)-4] = '\0';
-		}
-		maketfm(kanatfm);
-	}
-
-	if (jistfm) {
-		if (FILESTRCASEEQ(&jistfm[strlen(jistfm)-4], ".tfm")) {
-			jistfm[strlen(jistfm)-4] = '\0';
-		}
-		maketfm(jistfm);
-	}
-
-	if (ucsqtfm) {
-		if (FILESTRCASEEQ(&ucsqtfm[strlen(ucsqtfm)-4], ".tfm")) {
-			ucsqtfm[strlen(ucsqtfm)-4] = '\0';
-		}
-		maketfm(ucsqtfm);
-	}
-
 	vfp = vfopen(vfname);
 
+	pstfm_nt=1; /* initialize */
 	if (ucs) {
 		ib=0;
 		for (i=0;i<(useset3*2+1);i++)
@@ -160,6 +139,31 @@ int main(int argc, char ** argv)
 	}
 
 	vfclose(vfp);
+
+	if (kanatfm) {
+		if (FILESTRCASEEQ(&kanatfm[strlen(kanatfm)-4], ".tfm")) {
+			kanatfm[strlen(kanatfm)-4] = '\0';
+		}
+		maketfm(kanatfm);
+		pstfm_nt=1; /* already done*/
+	}
+
+	maketfm(vtfmname);
+	pstfm_nt=1; /* already done*/
+
+	if (jistfm) {
+		if (FILESTRCASEEQ(&jistfm[strlen(jistfm)-4], ".tfm")) {
+			jistfm[strlen(jistfm)-4] = '\0';
+		}
+		maketfm(jistfm);
+	}
+
+	if (ucsqtfm) {
+		if (FILESTRCASEEQ(&ucsqtfm[strlen(ucsqtfm)-4], ".tfm")) {
+			ucsqtfm[strlen(ucsqtfm)-4] = '\0';
+		}
+		maketfm(ucsqtfm);
+	}
 
 	exit(0);
 }
