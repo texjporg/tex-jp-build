@@ -1,3 +1,23 @@
+2017-07-24  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmread.c, makejvf.h: More efficient code. Note that
+	GLUEKERN table parser is still not working for nl > 255.
+
+2017-07-23  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Trivial change to avoid round-off error in
+	tmin10.vf test on i386 environment. Report from Mojca:
+	http://tug.org/pipermail/tlbuild/2017q3/003866.html
+
+2017-07-20  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170720.
+	* tfmread.c, makejvf.h: Declare "rightamount" as signed,
+	to be consistent with "skip" in write.c.
+	* write.c: Improve -m option for UCS mode.
+	* version.h: Adjusted.
+	* makejvf.1: Add documentation of -m option.
+
 2017-07-17  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	makejvf version 20170717.
