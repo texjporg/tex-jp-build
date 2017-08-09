@@ -6148,13 +6148,13 @@ if not is_char_kanji(cur_val) then
   begin print_err("Invalid KANSUJI char (");
   print_hex(cur_val); print_char(")");
 @.Invalid KANSUJI char@>
-  help1("I'm skip this control sequences.");@/
+  help1("I'm skipping this control sequences.");@/
   error; return;
   end
 else if (n<0)or(n>9) then
   begin print_err("Invalid KANSUJI number ("); print_int(n); print_char(")");
 @.Invalid KANSUJI number@>
-  help1("I'm skip this control sequences.");@/
+  help1("I'm skipping this control sequences.");@/
   error; return;
   end
 else
@@ -6284,7 +6284,7 @@ if is_char_kanji(n) then
   begin j:=get_inhibit_pos(tokanji(n),new_pos);
   if j=no_entry then
     begin print_err("Inhibit table is full!!");
-    help1("I'm skip this control sequences.");@/
+    help1("I'm skipping this control sequences.");@/
     error; return;
   end;
   define(inhibit_xsp_code_base+j,cur_val,n);
@@ -6292,7 +6292,7 @@ if is_char_kanji(n) then
 else
   begin print_err("Invalid KANJI code ("); print_hex(n); print_char(")");
 @.Invalid KANJI code@>
-  help1("I'm skip this control sequences.");@/
+  help1("I'm skipping this control sequences.");@/
   error; return;
   end;
 end;
@@ -6358,7 +6358,7 @@ if is_char_ascii(n) or is_char_kanji(n) then
   begin j:=get_kinsoku_pos(tokanji(n),new_pos);
   if j=no_entry then
     begin print_err("KINSOKU table is full!!");
-    help1("I'm skip this control sequences.");@/
+    help1("I'm skipping this control sequences.");@/
     error; return;
     end;
   if (p=pre_break_penalty_code)or(p=post_break_penalty_code) then
@@ -6375,7 +6375,7 @@ else
   else print_char("?");
   print("breakpenalty ("); print_hex(n); print_char(")");
 @.Invalid KANJI code@>
-  help1("I'm skip this control sequences.");@/
+  help1("I'm skipping this control sequences.");@/
   error; return;
   end;
 end;
