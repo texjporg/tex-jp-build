@@ -24,7 +24,7 @@ gmp 6.1.2 - checked 16dec16
 graphite2 1.3.10 - checked 20jun17
   http://sourceforge.net/projects/silgraphite/files/graphite2/
 
-harfbuzz 1.4.7 - checked 18jul17
+harfbuzz 1.4.8 - checked 09aug17
   http://www.freedesktop.org/software/harfbuzz/release/
 
 icu 58.2 - checked 13mar17
@@ -52,7 +52,7 @@ pixman 0.34.0 - checked 04feb16
 poppler 0.52.0 - checked 17feb17
   http://poppler.freedesktop.org/ - used by luatex and xetex
 
-potrace 1.14 - checked 22feb17
+potrace 1.15 - checked 07aug17
   http://potrace.sourceforge.net
 
 teckit 2.5.7 - checked 27jun17
