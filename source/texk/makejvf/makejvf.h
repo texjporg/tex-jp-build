@@ -2,7 +2,7 @@
 #define MAX_TABLE 1024
 extern char *vtfmname,*kanatfm,*jistfm,*ucsqtfm,*usertable;
 extern int unit,zh,zw,jfm_id,rightamount;
-extern int usertable_replace_max,usertable_move_max;
+extern int usertable_replace_max,usertable_move_max,usertable_charset_max;
 extern int kanatume,chotai,baseshift,minute,hankana,fidzero,enhanced;
 extern int pstfm_nt;
 extern FILE *afp;
@@ -18,6 +18,11 @@ struct USERTABLE_MOVE {
 	double movedown;
 };
 extern struct USERTABLE_MOVE usertable_move[1024];
+struct USERTABLE_CHARSET {
+	long min;
+	long max;
+};
+extern struct USERTABLE_CHARSET usertable_charset[1024];
 
 /* main.c */
 void usage(void);

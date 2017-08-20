@@ -4,18 +4,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int usertable_replace_max,usertable_move_max;
+int usertable_replace_max,usertable_move_max,usertable_charset_max;
 struct USERTABLE_REPLACE usertable_replace[1024];
 struct USERTABLE_MOVE usertable_move[1024];
+struct USERTABLE_CHARSET usertable_charset[1024];
 
 void get_usertable(char *name)
 {
 	FILE *fp;
-	char *tok,*endptr,buf[BUF_SIZE];
-	int l;
+	char *tok,*endptr,buf[BUF_SIZE],str1[8],str2[8];
+	int charset_mode=0,l;
+	long char_max=-1,ch0;
 
 	usertable_replace_max = 0;
 	usertable_move_max = 0;
+	usertable_charset_max = 0;
 	fp = fopen(name,"r");
 	if (fp == NULL) {
 		fprintf(stderr,"Cannot find %s!\n",name);
@@ -24,6 +27,7 @@ void get_usertable(char *name)
 	for (l = 0; l < MAX_TABLE;) {
 		if (fgets(buf, BUF_SIZE, fp) == NULL) break;
 		tok = strtok(buf, "\t");
+		if (!strncmp(tok, "%", 1)) goto rep;
 		if (!strcmp(tok, "REPLACE")) {
 			usertable_replace[usertable_replace_max].codepoint = strtol(strtok(NULL, "\t\n"), &endptr, 16);
 			if (*endptr != '\0') goto taberr;
@@ -42,6 +46,29 @@ void get_usertable(char *name)
 			if (*endptr != '\0') goto taberr;
 			if (strtok(NULL, "\t\n") != NULL) goto taberr;
 			usertable_move_max++;
+			goto rep;
+		}
+		if ((!strcmp(tok, "+") && charset_mode) || !strcmp(tok, "CHARSET")) {
+			charset_mode = 1;
+			while( (tok = strtok(NULL, ",\t\n")) != NULL) {
+				if (!strncmp(tok, "%", 1)) goto rep;
+				if (strstr(tok,"..") != NULL) {
+					if (sscanf(tok,"%6s..%6s",str1,str2) != 2) goto taberr;
+					ch0 = strtol(str1, &endptr, 16);
+					if (*endptr != '\0' || ch0<=char_max) goto taberr;
+					usertable_charset[usertable_charset_max].min = char_max = ch0;
+					ch0 = strtol(str2, &endptr, 16);
+					if (*endptr != '\0' || ch0<=char_max) goto taberr;
+					usertable_charset[usertable_charset_max].max = char_max = ch0;
+				} else {
+					if (sscanf(tok,"%6s",str1) != 1) goto taberr;
+					ch0 = strtol(str1, &endptr, 16);
+					if (*endptr != '\0' || ch0<=char_max) goto taberr;
+					usertable_charset[usertable_charset_max].min =
+					usertable_charset[usertable_charset_max].max = char_max = ch0;
+				}
+				usertable_charset_max++;
+			}
 			goto rep;
 		}
 		fprintf(stderr, "Unknown setting %s found in %s (line %d)!\n", tok, name, l+1);
