@@ -1,5 +1,6 @@
 #define BUF_SIZE 1024
 #define MAX_TABLE 1024
+#define MAX_CHAR_TABLE 32768
 extern char *vtfmname,*kanatfm,*jistfm,*ucsqtfm,*usertable;
 extern int unit,zh,zw,jfm_id,rightamount;
 extern int usertable_replace_max,usertable_move_max,usertable_charset_max;
@@ -11,18 +12,18 @@ struct USERTABLE_REPLACE {
 	int codepoint;
 	int newcodepoint;
 };
-extern struct USERTABLE_REPLACE usertable_replace[1024];
+extern struct USERTABLE_REPLACE usertable_replace[];
 struct USERTABLE_MOVE {
 	int codepoint;
 	double moveright;
 	double movedown;
 };
-extern struct USERTABLE_MOVE usertable_move[1024];
+extern struct USERTABLE_MOVE usertable_move[];
 struct USERTABLE_CHARSET {
 	long min;
 	long max;
 };
-extern struct USERTABLE_CHARSET usertable_charset[1024];
+extern struct USERTABLE_CHARSET usertable_charset[];
 
 /* main.c */
 void usage(void);
