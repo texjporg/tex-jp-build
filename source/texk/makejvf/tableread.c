@@ -14,7 +14,7 @@ void get_usertable(char *name)
 	FILE *fp;
 	char *tok,*endptr,buf[BUF_SIZE],str1[8],str2[8];
 	int charset_mode=0,l;
-	long char_max=-1,ch0;
+	long char_max=-2,ch0,ch1;
 
 	usertable_replace_max = 0;
 	usertable_move_max = 0;
@@ -56,18 +56,22 @@ void get_usertable(char *name)
 					if (sscanf(tok,"%6s..%6s",str1,str2) != 2) goto taberr;
 					ch0 = strtol(str1, &endptr, 16);
 					if (*endptr != '\0' || ch0<=char_max) goto taberr;
-					usertable_charset[usertable_charset_max].min = char_max = ch0;
-					ch0 = strtol(str2, &endptr, 16);
-					if (*endptr != '\0' || ch0<=char_max) goto taberr;
-					usertable_charset[usertable_charset_max].max = char_max = ch0;
+					ch1 = strtol(str2, &endptr, 16);
+					if (*endptr != '\0' || ch1<=ch0) goto taberr;
 				} else {
 					if (sscanf(tok,"%6s",str1) != 1) goto taberr;
 					ch0 = strtol(str1, &endptr, 16);
 					if (*endptr != '\0' || ch0<=char_max) goto taberr;
-					usertable_charset[usertable_charset_max].min =
-					usertable_charset[usertable_charset_max].max = char_max = ch0;
+					ch1 = ch0;
 				}
-				usertable_charset_max++;
+				if (char_max==ch0-1) {
+					usertable_charset[usertable_charset_max-1].max = ch1;
+				} else {
+					usertable_charset[usertable_charset_max].min = ch0;
+					usertable_charset[usertable_charset_max].max = ch1;
+					usertable_charset_max++;
+				}
+				char_max = ch1;
 			}
 			goto rep;
 		}
