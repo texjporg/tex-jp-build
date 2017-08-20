@@ -12,6 +12,7 @@ void get_usertable(char *name)
 {
 	FILE *fp;
 	char *tok,*endptr,buf[BUF_SIZE];
+	int l;
 
 	usertable_replace_max = 0;
 	usertable_move_max = 0;
@@ -20,9 +21,9 @@ void get_usertable(char *name)
 		fprintf(stderr,"Cannot find %s!\n",name);
 		exit(1);
 	}
-	for (int l = 0; l < MAX_TABLE;) {
+	for (l = 0; l < MAX_TABLE;) {
 		if (fgets(buf, BUF_SIZE, fp) == NULL) break;
-		char *tok = strtok(buf, "\t");
+		tok = strtok(buf, "\t");
 		if (!strcmp(tok, "REPLACE")) {
 			usertable_replace[usertable_replace_max].codepoint = strtol(strtok(NULL, "\t\n"), &endptr, 16);
 			if (*endptr != '\0') goto taberr;

@@ -85,7 +85,7 @@ void writevf(int code, FILE *fp)
 {
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
-	int fidshift=0;
+	int fidshift=0,l;
 	int outcode=code;
 
 	if (fidzero) fidshift=-1;
@@ -307,14 +307,14 @@ void writevf(int code, FILE *fp)
 		break;
 	}
 
-	for (int l = 0; l < usertable_replace_max;) {
+	for (l = 0; l < usertable_replace_max;) {
 		if (code == usertable_replace[l].codepoint) {
 			outcode = usertable_replace[l].newcodepoint;
 			break;
 		}
 		l++;
 	}
-	for (int l = 0; l < usertable_move_max;) {
+	for (l = 0; l < usertable_move_max;) {
 		if (code == usertable_move[l].codepoint) {
 			skip = usertable_move[l].moveright * zw;
 			skip2 = usertable_move[l].movedown * zh;
@@ -365,7 +365,7 @@ void writevfu(int code, FILE *fp)
 {
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
-	int fidshift=0;
+	int fidshift=0,l;
 	int outcode=code;
 
 	if (fidzero) fidshift=-1;
@@ -710,14 +710,14 @@ void writevfu(int code, FILE *fp)
 		break;
 	}
 
-	for (int l = 0; l < usertable_replace_max;) {
+	for (l = 0; l < usertable_replace_max;) {
 		if (code == usertable_replace[l].codepoint) {
 			outcode = usertable_replace[l].newcodepoint;
 			break;
 		}
 		l++;
 	}
-	for (int l = 0; l < usertable_move_max;) {
+	for (l = 0; l < usertable_move_max;) {
 		if (code == usertable_move[l].codepoint) {
 			skip = usertable_move[l].moveright * zw;
 			skip2 = usertable_move[l].movedown * zh;
