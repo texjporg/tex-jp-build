@@ -1,6 +1,7 @@
 #include <kpathsea/config.h>
 #include "makejvf.h"
 #include "uniblock.h"
+#include "usrtable.h"
 
 #include <stdio.h>
 #include <stdlib.h>

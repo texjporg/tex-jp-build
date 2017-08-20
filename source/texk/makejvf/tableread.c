@@ -1,10 +1,11 @@
 #include <kpathsea/config.h>
 #include "makejvf.h"
+#include "usrtable.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int usertable_replace_max,usertable_move_max,usertable_charset_max;
+int usertable_replace_max=0,usertable_move_max=0,usertable_charset_max=0;
 struct USERTABLE_REPLACE usertable_replace[MAX_TABLE];
 struct USERTABLE_MOVE usertable_move[MAX_TABLE];
 struct USERTABLE_CHARSET usertable_charset[MAX_CHAR_TABLE];
@@ -16,9 +17,6 @@ void get_usertable(char *name)
 	int charset_mode=0,l;
 	long char_max=-2,ch0,ch1;
 
-	usertable_replace_max = 0;
-	usertable_move_max = 0;
-	usertable_charset_max = 0;
 	fp = fopen(name,"r");
 	if (fp == NULL) {
 		fprintf(stderr,"Cannot find %s!\n",name);

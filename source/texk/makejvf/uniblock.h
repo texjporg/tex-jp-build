@@ -2,6 +2,7 @@
 #define ENTRY_NO    0x01
 /* for JIS, quote only */
 /* for GB, CNS, JIS, KS */
+#define ENTRY_CUSTOM   0x10000
 #define ENTRY_JQ    0x1000
 #define ENTRY_G     0x02
 #define ENTRY_C     0x04

@@ -11,7 +11,7 @@ bin_PROGRAMS = makejvf
 
 makejvf_SOURCES = \
 	main.c makejvf.h tableread.c tfmread.c tool.c \
-	uniblock.c uniblock.h version.h write.c
+	uniblock.c uniblock.h usrtable.h version.h write.c
 
 $(makejvf_OBJECTS): $(KPATHSEA_DEPEND) $(PTEXENC_DEPEND)
 

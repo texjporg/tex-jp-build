@@ -3,6 +3,7 @@
 #include "version.h"
 #include "makejvf.h"
 #include "uniblock.h"
+#include "usrtable.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +19,7 @@ int main(int argc, char ** argv)
 {
 	int i,j;
 	int c;
-	long ch;
+	long ch,ch_max;
 
 	kpse_set_program_name(argv[0], "makejvf");
 	set_enc_string("sjis", "euc");
@@ -67,6 +68,8 @@ int main(int argc, char ** argv)
 				ucs = ENTRY_J;
 			else if (!strcmp(optarg, "ks"))
 				ucs = ENTRY_K;
+			else if (!strcmp(optarg, "custom"))
+				ucs = ENTRY_CUSTOM;
 			else {
 				fprintf(stderr,"Charset is not set\n");
 				ucs = ENTRY_NO;
@@ -131,17 +134,22 @@ int main(int argc, char ** argv)
 	if (usertable) {
 		get_usertable(usertable);
 	}
+	if (ucs==ENTRY_CUSTOM && usertable_charset_max<1) {
+		fprintf(stderr,"No custom charset definition in usertable.\n");
+		exit(101);
+	}
 
 	vfp = vfopen(vfname);
 
 	pstfm_nt=1; /* initialize */
 	if (ucs) {
-		for (i=0;i<(useset3*2+1);i++)
-			for (j=0;j<65536;j++) {
-				ch=i*65536+j;
-				if (search_cjk_entry(ch,ucs))
-					writevfu(ch,vfp);
-			}
+		if (ucs==ENTRY_CUSTOM) ch_max=usertable_charset[usertable_charset_max-1].max;
+		else if (useset3) ch_max=0x2FFFF;
+		else ch_max=0xFFFF;
+		for (ch=0;ch<=ch_max;ch++) {
+			if (search_cjk_entry(ch,ucs))
+				writevfu(ch,vfp);
+		}
 	} else {
 		for (i=0;i<94;i++)
 			for (j=0;j<94;j++)
