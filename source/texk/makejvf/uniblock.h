@@ -19,7 +19,7 @@
 #define ENTRY_CJK           ENTRY_C|ENTRY_J|ENTRY_K
 #define ENTRY_GCJK  ENTRY_G|ENTRY_C|ENTRY_J|ENTRY_K
 
-extern int search_cjk_entry(int *ib, long ch, long cjk);
+extern int search_cjk_entry(long ch, long cjk);
 extern int uniblock_iskanji;
 
 #define U_OPEN_SQUOTE   0x2018

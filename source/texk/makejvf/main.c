@@ -16,7 +16,7 @@ long ucs=0;
 
 int main(int argc, char ** argv)
 {
-	int i,j,ib;
+	int i,j;
 	int c;
 	long ch;
 
@@ -136,11 +136,10 @@ int main(int argc, char ** argv)
 
 	pstfm_nt=1; /* initialize */
 	if (ucs) {
-		ib=0;
 		for (i=0;i<(useset3*2+1);i++)
 			for (j=0;j<65536;j++) {
 				ch=i*65536+j;
-				if (search_cjk_entry(&ib,ch,ucs))
+				if (search_cjk_entry(ch,ucs))
 					writevfu(ch,vfp);
 			}
 	} else {

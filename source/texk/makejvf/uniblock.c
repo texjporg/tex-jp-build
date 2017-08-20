@@ -306,16 +306,17 @@ static struct ublock ublock_data[] = {
 };
 
 
-int search_cjk_entry(int *ib, long ch, long cjk) {
+int search_cjk_entry(long ch, long cjk) {
+  static int ib = 0;
   uniblock_iskanji = 0; /* initialize */
   if (cjk==ENTRY_NO) return 1;
   if (cjk==ENTRY_JQ) return
 	(ch==U_OPEN_SQUOTE || ch==U_CLOSE_SQUOTE
 	 || ch==U_OPEN_DQUOTE || ch==U_CLOSE_DQUOTE);
-  while(ublock_data[*ib].max<ch) (*ib)++;
-  if (ublock_data[*ib].min<=ch && ch<=ublock_data[*ib].max) {
-    uniblock_iskanji = ublock_data[*ib].kanji;
-    return ublock_data[*ib].cjk & cjk;
+  while(ublock_data[ib].max<ch) ib++;
+  if (ublock_data[ib].min<=ch && ch<=ublock_data[ib].max) {
+    uniblock_iskanji = ublock_data[ib].kanji;
+    return ublock_data[ib].cjk & cjk;
   } else {
     return 0;
   }
@@ -330,10 +331,10 @@ int main() {
   ib=0;
   for (ch=0x0;ch<0x10000;ch++) {
     printf(" %05x %2d %2d %2d %2d %2d\n", ch, ib,
-	   search_cjk_entry(&ib,ch,ENTRY_G),
-	   search_cjk_entry(&ib,ch,ENTRY_C),
-	   search_cjk_entry(&ib,ch,ENTRY_J),
-	   search_cjk_entry(&ib,ch,ENTRY_K));
+	   search_cjk_entry(ch,ENTRY_G),
+	   search_cjk_entry(ch,ENTRY_C),
+	   search_cjk_entry(ch,ENTRY_J),
+	   search_cjk_entry(ch,ENTRY_K));
   }
 
 }
