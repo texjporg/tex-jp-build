@@ -86,6 +86,7 @@ void writevf(int code, FILE *fp)
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
 	int fidshift=0;
+	int outcode=code;
 
 	if (fidzero) fidshift=-1;
 
@@ -306,6 +307,21 @@ void writevf(int code, FILE *fp)
 		break;
 	}
 
+	for (int l = 0; l < usertable_replace_max;) {
+		if (code == usertable_replace[l].codepoint) {
+			outcode = usertable_replace[l].newcodepoint;
+			break;
+		}
+		l++;
+	}
+	for (int l = 0; l < usertable_move_max;) {
+		if (code == usertable_move[l].codepoint) {
+			skip = usertable_move[l].moveright * zw;
+			skip2 = usertable_move[l].movedown * zh;
+			goto outputj;
+		}
+		l++;
+	}
 	if (skip != -rightamount && enhanced) {
 		fprintf(stderr,
 			"[Warning] Conflicting MOVERIGHT value for code %x,\n"
@@ -314,6 +330,8 @@ void writevf(int code, FILE *fp)
 			code, skip, -rightamount);
 		skip=-rightamount;
 	}
+
+outputj:
 	if (kanatfm)
 		cc=4;
 	else
@@ -340,7 +358,7 @@ void writevf(int code, FILE *fp)
 			fputc(172+fidshift,fp); /* FONT_NUM_1 */
 	}
 	fputc(129,fp); /* SET2 */
-	fputnum(code,2,fp); /* char code */
+	fputnum(outcode,2,fp); /* char code */
 }
 
 void writevfu(int code, FILE *fp)
@@ -348,6 +366,7 @@ void writevfu(int code, FILE *fp)
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
 	int fidshift=0;
+	int outcode=code;
 
 	if (fidzero) fidshift=-1;
 
@@ -691,6 +710,21 @@ void writevfu(int code, FILE *fp)
 		break;
 	}
 
+	for (int l = 0; l < usertable_replace_max;) {
+		if (code == usertable_replace[l].codepoint) {
+			outcode = usertable_replace[l].newcodepoint;
+			break;
+		}
+		l++;
+	}
+	for (int l = 0; l < usertable_move_max;) {
+		if (code == usertable_move[l].codepoint) {
+			skip = usertable_move[l].moveright * zw;
+			skip2 = usertable_move[l].movedown * zh;
+			goto outputu;
+		}
+		l++;
+	}
 	if (skip != -rightamount && enhanced) {
 		fprintf(stderr,
 			"[Warning] Conflicting MOVERIGHT value for code %x,\n"
@@ -699,11 +733,13 @@ void writevfu(int code, FILE *fp)
 			code, skip, -rightamount);
 		skip=-rightamount;
 	}
+
+outputu:
 	if (kanatfm)
 		cc=4;
 	else
 		cc=3;
-	if (code>=0x10000)
+	if (outcode>=0x10000)
 		cc+=1;
 	if (skip)
 		cc+=numcount(skip)+1;
@@ -726,12 +762,12 @@ void writevfu(int code, FILE *fp)
 		else
 			fputc(172+fidshift,fp); /* FONT_NUM_1 */
 	}
-	if (code>=0x10000) {
+	if (outcode>=0x10000) {
 		fputc(130,fp); /* SET3 */
-		fputnum(code,3,fp); /* char code */
+		fputnum(outcode,3,fp); /* char code */
 	} else {
 		fputc(129,fp); /* SET2 */
-		fputnum(code,2,fp); /* char code */
+		fputnum(outcode,2,fp); /* char code */
 	}
 }
 

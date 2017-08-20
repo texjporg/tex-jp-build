@@ -9,7 +9,7 @@
 #include <string.h>
 
 FILE *vfp,*afp=NULL;
-char *atfmname,*vtfmname,*afmname,*vfname,*kanatfm,*jistfm,*ucsqtfm;
+char *atfmname,*vtfmname,*afmname,*vfname,*kanatfm,*jistfm,*ucsqtfm,*usertable;
 int kanatume=-1,chotai=0,baseshift=0,minute=0,useset3=0,hankana=0,fidzero=0,enhanced=0;
 int pstfm_nt;
 long ucs=0;
@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
 	kpse_set_program_name(argv[0], "makejvf");
 	set_enc_string("sjis", "euc");
 
-	while ((c = getopt (argc, argv, "k:K:Ca:b:mu:3J:U:Hie")) != -1)
+	while ((c = getopt (argc, argv, "k:K:Ca:b:mu:3J:U:Hiet:")) != -1)
 		switch (c) {
 
 
@@ -90,6 +90,9 @@ int main(int argc, char ** argv)
 		case 'e':
 			enhanced=1;
 			break;
+		case 't':
+			usertable = xstrdup(optarg);
+			break;
 		default:
 			usage();
 			exit(0);
@@ -124,6 +127,10 @@ int main(int argc, char ** argv)
 	}
 
 	tfmget(atfmname);
+
+	if (usertable) {
+		get_usertable(usertable);
+	}
 
 	vfp = vfopen(vfname);
 
@@ -196,5 +203,6 @@ void usage(void)
 	fputs2("-i           font ID from No.0\n", stderr);
 	fputs2("-e           enhanced mode; the horizontal shift amount is determined\n", stderr);
 	fputs2("             from the glue/kern table of <TFMfile> input\n", stderr);
+	fputs2("-t <CNFfile> use <CNFfile> as a configuration file\n", stderr);
 	fprintf(stderr, "Email bug reports to %s.\n", BUG_ADDRESS);
 }

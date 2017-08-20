@@ -1,11 +1,23 @@
-
-
-extern char *vtfmname,*kanatfm,*jistfm,*ucsqtfm;
+#define BUF_SIZE 1024
+#define MAX_TABLE 1024
+extern char *vtfmname,*kanatfm,*jistfm,*ucsqtfm,*usertable;
 extern int unit,zh,zw,jfm_id,rightamount;
+extern int usertable_replace_max,usertable_move_max;
 extern int kanatume,chotai,baseshift,minute,hankana,fidzero,enhanced;
 extern int pstfm_nt;
 extern FILE *afp;
 extern long ucs;
+struct USERTABLE_REPLACE {
+	int codepoint;
+	int newcodepoint;
+};
+extern struct USERTABLE_REPLACE usertable_replace[1024];
+struct USERTABLE_MOVE {
+	int codepoint;
+	double moveright;
+	double movedown;
+};
+extern struct USERTABLE_MOVE usertable_move[1024];
 
 /* main.c */
 void usage(void);
@@ -32,3 +44,6 @@ void writevf(int code, FILE *fp);
 void writevfu(int code, FILE *fp);
 void vfclose(FILE *fp);
 void maketfm(char *name);
+
+/* tableread.c */
+void get_usertable(char *name);
