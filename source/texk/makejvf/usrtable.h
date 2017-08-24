@@ -15,8 +15,7 @@ struct USERTABLE_MOVE {
 };
 extern struct USERTABLE_MOVE usertable_move[];
 struct USERTABLE_CHARSET {
-	long min;
-	long max;
+	long min, max;
 };
 extern struct USERTABLE_CHARSET usertable_charset[];
 
