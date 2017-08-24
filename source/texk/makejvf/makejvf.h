@@ -30,6 +30,3 @@ void writevf(int code, FILE *fp);
 void writevfu(int code, FILE *fp);
 void vfclose(FILE *fp);
 void maketfm(char *name);
-
-/* tableread.c */
-void get_usertable(char *name);

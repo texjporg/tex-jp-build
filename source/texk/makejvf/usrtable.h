@@ -19,3 +19,6 @@ struct USERTABLE_CHARSET {
 	long max;
 };
 extern struct USERTABLE_CHARSET usertable_charset[];
+
+/* usrtable.c */
+void get_usertable(char *name);
