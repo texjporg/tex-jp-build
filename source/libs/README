@@ -24,7 +24,7 @@ gmp 6.1.2 - checked 16dec16
 graphite2 1.3.10 - checked 20jun17
   http://sourceforge.net/projects/silgraphite/files/graphite2/
 
-harfbuzz 1.4.8 - checked 09aug17
+harfbuzz 1.5.0 - checked 24aug17
   http://www.freedesktop.org/software/harfbuzz/release/
 
 icu 58.2 - checked 13mar17
@@ -33,7 +33,7 @@ icu 58.2 - checked 13mar17
 libpaper 1.1.24+nmu2 - checked 24oct13
   ftp://ftp.de.debian.org/debian/pool/main/libp/libpaper/
 
-libpng 1.6.31 - checked 27jul17
+libpng 1.6.32 - checked 24aug17
   http://www.libpng.org/ - used by many
   http://www.libpng.org/pub/png/pngcode.html
 
