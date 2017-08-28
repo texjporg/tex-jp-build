@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
 			else if (!strcmp(optarg, "custom"))
 				ucs = ENTRY_CUSTOM;
 			else {
-				fprintf(stderr,"Charset is not set\n");
+				fprintf(stderr,"[Warning] Charset is not set.\n");
 				ucs = ENTRY_NO;
 			}
 			break;
@@ -133,6 +133,11 @@ int main(int argc, char ** argv)
 
 	if (usertable) {
 		get_usertable(usertable);
+	}
+	if (ucs!=ENTRY_CUSTOM && usertable_charset_max>0) {
+		fprintf(stderr,
+			"[Warning] Custom charset is defined in usertable\n"
+			"[Warning]   but it will be ignored.\n");
 	}
 	if (ucs==ENTRY_CUSTOM && usertable_charset_max<1) {
 		fprintf(stderr,"No custom charset definition in usertable.\n");
