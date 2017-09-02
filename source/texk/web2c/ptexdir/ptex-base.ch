@@ -4801,7 +4801,24 @@ any_mode(make_box): begin_box(0);
 any_mode(make_box): begin_box(0);
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
-    if head=tail then
+    if mode=hmode then 
+      begin print_err("Improper `"); print_cmd_chr(cur_cmd,cur_chr);
+      print("'"); 
+      help2("You cannot change the direction in unrestricted")
+      ("horizontal mode."); error;
+      end
+    else if abs(mode)=mmode then
+      begin print_err("Improper `"); print_cmd_chr(cur_cmd,cur_chr);
+      print("'");
+      help1("You cannot change the direction in math mode."); error;
+      end
+    else if (nest_ptr=0) and ((head<>tail)or(page_contents<>empty)) then
+      begin print_err("Use `"); print_cmd_chr(cur_cmd,cur_chr);
+      print("' at top of the page");
+      help2("You can change the direction of the page only when")
+      ("the current page consists of only marks and whatsits."); error;
+      end
+    else if head=tail then
       begin direction:=cur_chr;
       if mode=vmode then page_dir:=cur_chr;
       end
