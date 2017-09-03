@@ -4812,16 +4812,8 @@ any_mode(chg_dir):
       print("'");
       help1("You cannot change the direction in math mode."); error;
       end
-    else if (nest_ptr=0) and ((head<>tail)or(page_contents<>empty)) then
-      begin print_err("Use `"); print_cmd_chr(cur_cmd,cur_chr);
-      print("' at top of the page");
-      help2("You can change the direction of the page only when")
-      ("the current page consists of only marks and whatsits."); error;
-      end
-    else if head=tail then
-      begin direction:=cur_chr;
-      if mode=vmode then page_dir:=cur_chr;
-      end
+    else if nest_ptr=0 then change_page_direction(cur_chr)
+    else if head=tail then direction:=cur_chr
     else begin print_err("Use `"); print_cmd_chr(cur_cmd,cur_chr);
       print("' at top of list");
       help2("Direction change command is available only while")
@@ -7108,6 +7100,36 @@ begin
 if s>255 then
   begin print_char(Hi(s)); print_char(Lo(s));
   end else print_char(s);
+end;
+
+@ This procedure changes the direction of the page, if |page_contents|
+is |empty| and ``recent contributions'' does not contains any boxes,
+rules nor insertions.
+
+@<Declare act...@>=
+procedure change_page_direction(@!d: halfword);
+label done;
+var p: pointer; flag:boolean;
+begin flag:=(page_contents=empty);
+if flag and (head<>tail) then begin
+  p:=link(head);
+  while p<>null do
+    case type(p) of
+      hlist_node,vlist_node,rule_node, ins_node:
+        begin flag:=false; goto done; end;
+      { |glue_node|, |kern_node|, |penalty_node| are discarded }
+      othercases p:=link(p);
+    endcases;
+  done: do_nothing;
+end;
+if flag then begin direction:=d; page_dir:=d; end
+else begin
+  print_err("Use `"); print_cmd_chr(cur_cmd,d);
+  print("' at top of the page");
+  help3("You can change the direction of the page only when")
+  ("the current page and recent contributions consist of only")
+  ("marks and whatsits."); error;
+  end;
 end;
 
 @* \[56] System-dependent changes.
