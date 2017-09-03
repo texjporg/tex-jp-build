@@ -7115,7 +7115,7 @@ if flag and (head<>tail) then begin
   p:=link(head);
   while p<>null do
     case type(p) of
-      hlist_node,vlist_node,rule_node, ins_node:
+      hlist_node,vlist_node,dir_node,rule_node,ins_node:
         begin flag:=false; goto done; end;
       { |glue_node|, |kern_node|, |penalty_node| are discarded }
       othercases p:=link(p);
