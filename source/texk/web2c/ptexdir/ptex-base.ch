@@ -7103,7 +7103,7 @@ if s>255 then
 end;
 
 @ This procedure changes the direction of the page, if |page_contents|
-is |empty| and ``recent contributions'' does not contains any boxes,
+is |empty| and ``recent contributions'' does not contain any boxes,
 rules nor insertions.
 
 @<Declare act...@>=
