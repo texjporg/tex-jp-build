@@ -4762,7 +4762,7 @@ end;
 var p,@!q:pointer; {for short-term use}
 @y
 var p,@!q:pointer; {for short-term use}
-@!r:pointer; {temporaly}
+@!r:pointer; {temporary}
 @z
 
 @x [47.1071] l.21485 - pTeX: \tate, \yoko, \dtou
@@ -6593,9 +6593,9 @@ var q,s,t,u,v,x,z:pointer;
   i,k:halfword;
   a: pointer; { temporary pointer for accent }
   insert_skip:no_skip..after_wchar;
-  cx:KANJI_code; {temporaly register for KANJI character}
-  ax:ASCII_code; {temporaly register for ASCII character}
-  do_ins:boolean; {for inserting |xkanji_skip| into prevous (or after) KANJI}
+  cx:KANJI_code; {temporary register for KANJI character}
+  ax:ASCII_code; {temporary register for ASCII character}
+  do_ins:boolean; {for inserting |xkanji_skip| into previous (or after) KANJI}
 begin if link(p)=null then goto exit;
 if auto_spacing>0 then
   begin delete_glue_ref(space_ptr(p)); space_ptr(p):=kanji_skip;
