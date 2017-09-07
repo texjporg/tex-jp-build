@@ -6,6 +6,7 @@
 	 - In external vertical mode, direction change is allowed only if
 	   both the current page nor recent contributions do not contain
 	   any boxes and rules.
+	* ptex_version.h: pTeX version p3.7.2.
 
 2017-04-24  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
