@@ -358,12 +358,11 @@ begin
   if (j>=0) or (j=-1) or (j=-18) then begin
     k:=true;
     if j>= 0 then k:=setinfileenc(input_file[j],stringcast(name_of_file+1))
-    else k:=setinfileenc(0,stringcast(name_of_file+1));
+    else k:=setstdinenc(stringcast(name_of_file+1));
     if k = false then
-      begin wlog_cr;
-      wlog('Unknown encoding `');
-      fputs(stringcast(name_of_file + 1), log_file);
-      wlog('''');
+      begin begin_diagnostic;
+      print_nl("Unknown encoding `"); print(stringcast(name_of_file + 1));
+      print("'"); end_diagnostic(false);
       end
     end
   else 
@@ -373,7 +372,7 @@ begin
     print_nl("from ");
     if j>=18 then print("a pseudo file created by \scantokens.")
     else begin print("input stream "); print_int(j); print("."); end;
-    end_diagnostic(true);
+    end_diagnostic(false);
     end
 end;
 

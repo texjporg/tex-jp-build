@@ -846,8 +846,16 @@ boolean setinfileenc(FILE *fp, const char *str)
     int enc;
     enc = string_to_enc(str);
     if (enc < 0) return false;
-    if (fp == NULL) infile_enc[fileno(stdin)] = enc;
-    else infile_enc[fileno(fp)] = enc;
+    infile_enc[fileno(fp)] = enc;
+    return true;
+}
+
+boolean setstdinenc(const char *str)
+{
+    int enc;
+    enc = string_to_enc(str);
+    if (enc < 0) return false;
+    infile_enc[fileno(stdin)] = enc;
     return true;
 }
 
