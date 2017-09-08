@@ -355,8 +355,11 @@ begin
       end
     end
   else if name>19 then j:=index else j:=-(name+1);
-  if j>=0 then begin
-    if setinfileenc(input_file[j],stringcast(name_of_file+1)) = false then
+  if (j>=0) or (j=-1) or (j=-18) then begin
+    k:=true;
+    if j>= 0 then k:=setinfileenc(input_file[j],stringcast(name_of_file+1))
+    else k:=setinfileenc(0,stringcast(name_of_file+1));
+    if k = false then
       begin wlog_cr;
       wlog('Unknown encoding `');
       fputs(stringcast(name_of_file + 1), log_file);
@@ -368,8 +371,7 @@ begin
     print_ln;
     print_nl("Warning: \epTeXinputencoding is ignored, since I am current reading");
     print_nl("from ");
-    if (j=0)or(j=17) then print("the terminal.") 
-    else if j>=18 then print("a pseudo file created by \scantokens.")
+    if j>=18 then print("a pseudo file created by \scantokens.")
     else begin print("input stream "); print_int(j); print("."); end;
     end_diagnostic(true);
     end

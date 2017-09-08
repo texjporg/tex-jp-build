@@ -840,12 +840,14 @@ long input_line2(FILE *fp, unsigned char *buff, long pos,
     return last;
 }
 
+// set encode of stdin if fp = NULL
 boolean setinfileenc(FILE *fp, const char *str)
 {
     int enc;
     enc = string_to_enc(str);
     if (enc < 0) return false;
-    infile_enc[fileno(fp)] = enc;
+    if (fp == NULL) infile_enc[fileno(stdin)] = enc;
+    else infile_enc[fileno(fp)] = enc;
     return true;
 }
 
