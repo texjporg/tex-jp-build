@@ -1,3 +1,98 @@
+2017-08-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* makejvf.1: Updated manual based on version 20170828.
+
+2017-08-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	makejvf version 20170828.
+	Largely contributed by H. Yamashita-san.
+	* usrtable.[ch]: New files to support a configuration file.
+	* main.c, write.c, uniblock.[ch], makejvf.h: Support a configuration file.
+	* Makefile.{am,in}: Add usrtable.[ch].
+	* version.h: Bump version.
+
+2017-08-01  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170801.
+	* write.c: Simplify code, add more hankaku characters.
+	* version.h: Bump version.
+
+2017-07-31  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170731.
+	* tfmread.c: Support large GLUEKERN table.
+	* write.c: Add support for 0x00AB and 0x00BB in writevfu().
+	* version.h: Bump version.
+
+2017-07-24  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmread.c, makejvf.h: More efficient code. Note that
+	GLUEKERN table parser is still not working for nl > 255.
+
+2017-07-23  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Trivial change to avoid round-off error in
+	tmin10.vf test on i386 environment. Report from Mojca:
+	http://tug.org/pipermail/tlbuild/2017q3/003866.html
+
+2017-07-20  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170720.
+	* tfmread.c, makejvf.h: Declare "rightamount" as signed,
+	to be consistent with "skip" in write.c.
+	* write.c: Improve -m option for UCS mode.
+	* version.h: Bump version.
+	* makejvf.1: Add documentation of -m option.
+
+2017-07-17  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170717.
+	* Makefile.am: Add version.h.
+	* main.c: Move version declaration to version.h.
+	* makejvf.h, tfmread.c, write.c: Improve enhanced mode;
+	More compatible with normal mode, by reading glue/kern table
+	more deliberately.
+	* version.h: Added.
+	* makejvf.1: Update.
+
+2017-07-16  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	makejvf version 20170716.
+	* COPYRIGHT: Add Takuji Tanaka and Japanese TeX Development
+	Community to the author.
+	* main.c, makejvf.h, tfmread.c, write.c: Add enhanced mode;
+	If -e option is specified, horizontal shift amount for each
+	characters are determined from glue/kern table of input JFM.
+
+2017-07-15  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* main.c, makejvf.h, uniblock.[ch], write.c: Move more non-Kanji
+	Unicode blocks to non-Kanji TFM on UCS mode. Support output of
+	Hankaku-kana PS TFM.
+
+2017-07-12  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Fix a bug in generating non-Kanji TFM on UCS mode.
+	Now all non-Kanji char codes are included in non-Kanji TFM.
+	* makejvf.1: -a and -k options are never supported, per README.txt.
+
+2017-07-11  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Fix a bug which occurs when -3 and -K are used at
+	the same time (Thanks Takayuki YATO). Char code consistency in
+	AFM parsing (though -a option is never supported).
+
+2017-07-10  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Fix a bug in -m option on UCS mode.
+
+2017-07-01  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* makejvf.1: More detailed description in English.
+	* tests/min10.{tfm,vf}: Remove redundant entry JIS 2577.
+	* tests/tmin10.vf, makejvf.test: Correct command-line option.
+	Now all test files are the same with ptex-fonts.
+
 2017-01-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	Update for upTeX-1.22.
