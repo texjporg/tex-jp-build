@@ -6295,13 +6295,10 @@ if is_char_kanji(n) then
   if (j<>no_entry)and(cur_val>inhibit_after)and(global or cur_level=level_one) then
     begin n:=0; cur_val:=0 end
     { remove the entry from inhibit table }
-  else if j=no_entry then begin
-    if (cur_val<=inhibit_after) and not(cur_level=level_one or not global) then
-      begin print_err("Inhibit table is full!!");
-      help1("I'm skipping this control sequences.");@/
-      error; end;
-    return;
-    end;
+  else if j=no_entry then
+    begin print_err("Inhibit table is full!!");
+    help1("I'm skipping this control sequences.");@/
+    error; return; end;
   define(inhibit_xsp_code_base+j,cur_val,n);
   end
 else
@@ -6375,12 +6372,9 @@ if is_char_ascii(n) or is_char_kanji(n) then
     define(kinsoku_base+j,0,0) { remove the entry from KINSOKU table }
   else begin
     if j=no_entry then begin
-      if (cur_val<>0) and not(cur_level=level_one or not global) then
-        begin print_err("KINSOKU table is full!!");
-        help1("I'm skipping this control sequences.");@/
-        error; end;
-      return;
-      end;
+      print_err("KINSOKU table is full!!");
+      help1("I'm skipping this control sequences.");@/
+      error; return; end;
     if (p=pre_break_penalty_code)or(p=post_break_penalty_code) then
       begin define(kinsoku_base+j,p,tokanji(n));
       word_define(kinsoku_penalty_base+j,cur_val);
