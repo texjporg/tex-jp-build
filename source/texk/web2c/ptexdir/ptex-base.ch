@@ -6409,13 +6409,14 @@ begin kp:=get_kinsoku_pos(cx,cur_pos);
 if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
   begin if kinsoku_type(kp)=pre_break_penalty_code then
     begin if not is_char_node(cur_q)and(type(cur_q)=penalty_node) then
-      if (penalty(cur_q)>-10000)and(penalty(cur_q)<10000) then
+      begin if (penalty(cur_q)>-10000)and(penalty(cur_q)<10000) then
         if (kinsoku_penalty(kp)>=10000) then penalty(cur_q):=10000
         else if (kinsoku_penalty(kp)<=-10000) then penalty(cur_q):=-10000
         else begin penalty(cur_q):=penalty(cur_q)+kinsoku_penalty(kp);
           if (penalty(cur_q)>=10000) then penalty(cur_q):=10000
           else if (penalty(cur_q)<=-10000) then penalty(cur_q):=-10000;
           end
+      end
     else
       begin main_p:=link(cur_q); link(cur_q):=new_penalty(kinsoku_penalty(kp));
       subtype(link(cur_q)):=kinsoku_pena; link(link(cur_q)):=main_p;
@@ -6433,7 +6434,14 @@ begin kp:=get_kinsoku_pos(cur_chr,cur_pos);
 if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
   begin if kinsoku_type(kp)=pre_break_penalty_code then
     if not is_char_node(tail)and(type(tail)=penalty_node) then
-      penalty(tail):=penalty(tail)+kinsoku_penalty(kp)
+      begin if (penalty(tail)>-10000)and(penalty(tail)<10000) then
+        if (kinsoku_penalty(kp)>=10000) then penalty(tail):=10000
+        else if (kinsoku_penalty(kp)<=-10000) then penalty(tail):=-10000
+        else begin penalty(tail):=penalty(tail)+kinsoku_penalty(kp);
+          if (penalty(tail)>=10000) then penalty(tail):=10000
+          else if (penalty(tail)<=-10000) then penalty(tail):=-10000;
+          end
+      end
     else
       begin tail_append(new_penalty(kinsoku_penalty(kp)));
       subtype(tail):=kinsoku_pena;
