@@ -449,7 +449,8 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @d prim_prime=1777 {about 85\pct! of |primitive_size|}
 @d prim_base=1
 @d prim_next(#) == prim[#].lh {link for coalesced lists}
-@d prim_text(#) == prim[#].rh {string number for control sequence name}
+@d prim_text(#) == prim[#].rh {string number for control sequence name, plus one}
+   {one represents an one-letter control sequence }
 @d prim_is_full == (prim_used=prim_base) {test if all positions are occupied}
 @d prim_eq_level_field(#)==#.hh.b1
 @d prim_eq_type_field(#)==#.hh.b0
@@ -515,8 +516,8 @@ else begin
   if s = str_ptr then l := cur_length else l := length(s);
   @<Compute the primitive code |h|@>;
   p:=h+prim_base; {we start searching here; note that |0<=h<hash_prime|}
-  loop@+begin if prim_text(p)>0 then if length(prim_text(p))=l then
-    if str_eq_str(prim_text(p),s) then goto found;
+  loop@+begin if prim_text(p)>1 then if length(prim_text(p)-1)=l then
+    if str_eq_str(prim_text(p)-1,s) then goto found;
     if prim_next(p)=0 then
       begin if no_new_control_sequence then
         p:=undefined_primitive
@@ -538,7 +539,7 @@ begin if prim_text(p)>0 then
   until prim_text(prim_used)=0; {search for an empty location in |prim|}
   prim_next(p):=prim_used; p:=prim_used;
   end;
-prim_text(p):=s;
+prim_text(p):=s+1;
 end
 
 @ The value of |prim_prime| should be roughly 85\pct! of
@@ -569,7 +570,7 @@ begin if s<256 then cur_val:=s+single_base
 @y
 begin if s<256 then begin
   cur_val:=s+single_base;
-  prim_val:=s;
+  prim_val:=s; prim_text(s):=1;
 end
 @z
 
