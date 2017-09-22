@@ -459,6 +459,7 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @d prim_eq_type(#)==prim_eq_type_field(prim_eqtb[#]) {command code for equivalent}
 @d prim_equiv(#)==prim_equiv_field(prim_eqtb[#]) {equivalent value}
 @d undefined_primitive=0
+@d biggest_char=255 { 65535 in XeTeX } 
 
 @<Glob...@>=
 @!prim: array [0..prim_size] of two_halves;  {the primitives table}
@@ -494,8 +495,8 @@ text(frozen_primitive):="pdfprimitive";
 @z
 
 @x \[if]pdfprimitive
-@ Single-character control sequences do not need to be looked up in a hash
-table, since we can use the character code itself as a direct address.
+@ Both single-character control sequences and multi-letter control sequences
+are looked up in a hash table.
 @y
 @ Here is the subroutine that searches the primitive table for an identifier
 
@@ -506,41 +507,35 @@ var h:integer; {hash code}
 @!k:pointer; {index in string pool}
 @!j,@!l:integer;
 begin
-if s<256 then begin
-  p := s; {we start searching here}
-  loop@+begin 
-    if prim_text(p)=1+s then goto found;
-    if prim_next(p)=0 then
-      begin if no_new_control_sequence then
-        p:=undefined_primitive
-      else @<Insert a new single-letter primitive after |p|, then make
-        |p| point to it@>;
-      goto found;
-      end;
-    p:=prim_next(p);
-    end;
+if s<=biggest_char then begin
+  if s<0 then begin p:=undefined_primitive; goto found; end
+  else p:=(s mod prim_prime)+prim_base; {we start searching here}
   end
 else begin
   j:=str_start[s];
   if s = str_ptr then l := cur_length else l := length(s);
   @<Compute the primitive code |h|@>;
-  p:=h+prim_base; {we start searching here; note that |0<=h<hash_prime|}
-  loop@+begin if prim_text(p)>257 then if length(prim_text(p)-257)=l then
-    if str_eq_str(prim_text(p)-257,s) then goto found;
-    if prim_next(p)=0 then
-      begin if no_new_control_sequence then
-        p:=undefined_primitive
-      else @<Insert a new multiletter primitive after |p|, then make
-        |p| point to it@>;
-      goto found;
-      end;
-    p:=prim_next(p);
+  p:=h+prim_base; {we start searching here; note that |0<=h<prim_prime|}
+  end;
+loop@+begin 
+  if prim_text(p)>1+biggest_char then { |p| points a multi-letter primitive }
+    begin if length(prim_text(p)-1)=l then
+      if str_eq_str(prim_text(p)-1,s) then goto found;
+    end
+  else if prim_text(p)=1+s then goto found; { |p| points a single-letter primitive }
+  if prim_next(p)=0 then
+    begin if no_new_control_sequence then
+      p:=undefined_primitive
+    else @<Insert a new primitive after |p|, then make
+      |p| point to it@>;
+    goto found;
     end;
+  p:=prim_next(p);
   end;
 found: prim_lookup:=p;
 end;
 
-@ @<Insert a new single-letter primitive...@>=
+@ @<Insert a new primitive...@>=
 begin if prim_text(p)>0 then
   begin repeat if prim_is_full then overflow("primitive size",prim_size);
 @:TeX capacity exceeded primitive size}{\quad primitive size@>
@@ -549,17 +544,6 @@ begin if prim_text(p)>0 then
   prim_next(p):=prim_used; p:=prim_used;
   end;
 prim_text(p):=s+1;
-end
-
-@ @<Insert a new multiletter primitive...@>=
-begin if prim_text(p)>0 then
-  begin repeat if prim_is_full then overflow("primitive size",prim_size);
-@:TeX capacity exceeded primitive size}{\quad primitive size@>
-  decr(prim_used);
-  until prim_text(prim_used)=0; {search for an empty location in |prim|}
-  prim_next(p):=prim_used; p:=prim_used;
-  end;
-prim_text(p):=s+257;
 end
 
 @ The value of |prim_prime| should be roughly 85\pct! of
@@ -670,7 +654,7 @@ temporary file.
 begin save_scanner_status := scanner_status; scanner_status:=normal;
 get_token; scanner_status:=save_scanner_status;
 if cur_cs < hash_base then
-  cur_cs := prim_lookup(cur_cs-257)
+  cur_cs := prim_lookup(cur_cs-single_base)
 else
   cur_cs := prim_lookup(text(cur_cs));
 if cur_cs<>undefined_primitive then begin
@@ -1017,7 +1001,7 @@ if_pdfprimitive_code: begin
   get_next;
   scanner_status:=save_scanner_status;
   if cur_cs < hash_base then
-    m := prim_lookup(cur_cs-257)
+    m := prim_lookup(cur_cs-single_base)
   else
     m := prim_lookup(text(cur_cs));
   b :=((cur_cmd<>undefined_cs) and
@@ -1050,7 +1034,7 @@ any_mode(ignore_spaces): begin
     get_next;
     scanner_status:=t;
     if cur_cs < hash_base then
-      cur_cs := prim_lookup(cur_cs-257)
+      cur_cs := prim_lookup(cur_cs-single_base)
     else
       cur_cs  := prim_lookup(text(cur_cs));
     if cur_cs<>undefined_primitive then begin
