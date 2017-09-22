@@ -507,21 +507,30 @@ var h:integer; {hash code}
 @!j,@!l:integer;
 begin
 if s<256 then begin
-  p := s;
-  if (p<0) or (prim_eq_level(p)<>level_one) then
-    p := undefined_primitive;
-end
+  p := s; {we start searching here}
+  loop@+begin 
+    if prim_text(p)=1+s then goto found;
+    if prim_next(p)=0 then
+      begin if no_new_control_sequence then
+        p:=undefined_primitive
+      else @<Insert a new single-letter primitive after |p|, then make
+        |p| point to it@>;
+      goto found;
+      end;
+    p:=prim_next(p);
+    end;
+  end
 else begin
   j:=str_start[s];
   if s = str_ptr then l := cur_length else l := length(s);
   @<Compute the primitive code |h|@>;
   p:=h+prim_base; {we start searching here; note that |0<=h<hash_prime|}
-  loop@+begin if prim_text(p)>1 then if length(prim_text(p)-1)=l then
-    if str_eq_str(prim_text(p)-1,s) then goto found;
+  loop@+begin if prim_text(p)>257 then if length(prim_text(p)-257)=l then
+    if str_eq_str(prim_text(p)-257,s) then goto found;
     if prim_next(p)=0 then
       begin if no_new_control_sequence then
         p:=undefined_primitive
-      else @<Insert a new primitive after |p|, then make
+      else @<Insert a new multiletter primitive after |p|, then make
         |p| point to it@>;
       goto found;
       end;
@@ -531,7 +540,7 @@ else begin
 found: prim_lookup:=p;
 end;
 
-@ @<Insert a new primitive...@>=
+@ @<Insert a new single-letter primitive...@>=
 begin if prim_text(p)>0 then
   begin repeat if prim_is_full then overflow("primitive size",prim_size);
 @:TeX capacity exceeded primitive size}{\quad primitive size@>
@@ -540,6 +549,17 @@ begin if prim_text(p)>0 then
   prim_next(p):=prim_used; p:=prim_used;
   end;
 prim_text(p):=s+1;
+end
+
+@ @<Insert a new multiletter primitive...@>=
+begin if prim_text(p)>0 then
+  begin repeat if prim_is_full then overflow("primitive size",prim_size);
+@:TeX capacity exceeded primitive size}{\quad primitive size@>
+  decr(prim_used);
+  until prim_text(prim_used)=0; {search for an empty location in |prim|}
+  prim_next(p):=prim_used; p:=prim_used;
+  end;
+prim_text(p):=s+257;
 end
 
 @ The value of |prim_prime| should be roughly 85\pct! of
@@ -570,8 +590,8 @@ begin if s<256 then cur_val:=s+single_base
 @y
 begin if s<256 then begin
   cur_val:=s+single_base;
-  prim_val:=s; prim_text(s):=1;
-end
+  prim_val:=prim_lookup(s);
+  end
 @z
 
 @x \[if]pdfprimitive
