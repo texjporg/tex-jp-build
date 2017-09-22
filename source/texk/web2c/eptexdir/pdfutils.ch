@@ -449,8 +449,8 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @d prim_prime=1777 {about 85\pct! of |primitive_size|}
 @d prim_base=1
 @d prim_next(#) == prim[#].lh {link for coalesced lists}
-@d prim_text(#) == prim[#].rh {string number for control sequence name, plus one}
-   {one represents an one-letter control sequence }
+@d prim_text(#) == prim[#].rh {string number for control sequence name, plus 257}
+   {the value between 0 and 256 represents an one-letter control sequence }
 @d prim_is_full == (prim_used=prim_base) {test if all positions are occupied}
 @d prim_eq_level_field(#)==#.hh.b1
 @d prim_eq_type_field(#)==#.hh.b0
