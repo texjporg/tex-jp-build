@@ -20,9 +20,9 @@
 %%
 %% \pdfprimitive and \ifpdfprimitive: for LaTeX3 (2015/07/15)
 %%
-%% \pdfuniformdeviate and co.: 
+%% \pdfuniformdeviate and co.:
 %%  (\pdfnormaldeviate, \pdfrandomseed, \pdfsetrandomseed)
-%% 
+%%
 %% \pdfelapsedtime and \pdfresettimer
 %%
 
@@ -449,8 +449,7 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @d prim_prime=1777 {about 85\pct! of |primitive_size|}
 @d prim_base=1
 @d prim_next(#) == prim[#].lh {link for coalesced lists}
-@d prim_text(#) == prim[#].rh {string number for control sequence name, plus 257}
-   {the value between 0 and 256 represents an one-letter control sequence }
+@d prim_text(#) == prim[#].rh {string number for control sequence name, plus one}
 @d prim_is_full == (prim_used=prim_base) {test if all positions are occupied}
 @d prim_eq_level_field(#)==#.hh.b1
 @d prim_eq_type_field(#)==#.hh.b0
@@ -498,9 +497,7 @@ text(frozen_primitive):="pdfprimitive";
 @ Single-character control sequences do not need to be looked up in a hash
 table, since we can use the character code itself as a direct address.
 @y
-@ Both single-character control sequences and multi-letter control sequences
-are looked up in a hash table. Here is the subroutine that searches the
-primitive table for an identifier.
+@ Here is the subroutine that searches the primitive table for an identifier
 
 @p function prim_lookup(@!s:str_number):pointer; {search the primitives table}
 label found; {go here if you found it}
@@ -519,7 +516,7 @@ else begin
   @<Compute the primitive code |h|@>;
   p:=h+prim_base; {we start searching here; note that |0<=h<prim_prime|}
   end;
-loop@+begin 
+loop@+begin
   if prim_text(p)>1+biggest_char then { |p| points a multi-letter primitive }
     begin if length(prim_text(p)-1)=l then
       if str_eq_str(prim_text(p)-1,s) then goto found;
@@ -577,7 +574,7 @@ begin if s<256 then cur_val:=s+single_base
 begin if s<256 then begin
   cur_val:=s+single_base;
   prim_val:=prim_lookup(s);
-  end
+end
 @z
 
 @x \[if]pdfprimitive

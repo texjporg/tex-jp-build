@@ -1,6 +1,6 @@
-2017-09-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+2017-09-24  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
-	* pdfutils.ch: Avoid overwriting prim_* entries  by primitive().
+	* pdfutils.ch: Avoid overwriting prim_* entries by primitive().
 	* eptex.ech: Change version to 170921.
 
 2017-09-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
