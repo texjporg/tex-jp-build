@@ -459,7 +459,7 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @d prim_eq_type(#)==prim_eq_type_field(prim_eqtb[#]) {command code for equivalent}
 @d prim_equiv(#)==prim_equiv_field(prim_eqtb[#]) {equivalent value}
 @d undefined_primitive=0
-@d biggest_char=255 { 65535 in XeTeX } 
+@d biggest_char=255 { 65535 in XeTeX }
 
 @<Glob...@>=
 @!prim: array [0..prim_size] of two_halves;  {the primitives table}
@@ -495,10 +495,12 @@ text(frozen_primitive):="pdfprimitive";
 @z
 
 @x \[if]pdfprimitive
-@ Both single-character control sequences and multi-letter control sequences
-are looked up in a hash table.
+@ Single-character control sequences do not need to be looked up in a hash
+table, since we can use the character code itself as a direct address.
 @y
-@ Here is the subroutine that searches the primitive table for an identifier
+@ Both single-character control sequences and multi-letter control sequences
+are looked up in a hash table. Here is the subroutine that searches the
+primitive table for an identifier.
 
 @p function prim_lookup(@!s:str_number):pointer; {search the primitives table}
 label found; {go here if you found it}
