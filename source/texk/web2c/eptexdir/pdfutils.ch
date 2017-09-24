@@ -1039,6 +1039,7 @@ any_mode(ignore_spaces): begin
     if cur_cs<>undefined_primitive then begin
       cur_cmd := prim_eq_type(cur_cs);
       cur_chr := prim_equiv(cur_cs);
+      cur_tok := (cur_cmd*@'400)+cur_chr;
       goto reswitch;
       end;
     end;
