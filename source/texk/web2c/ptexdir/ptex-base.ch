@@ -5326,6 +5326,48 @@ begin if tail<>head then
   end;
 @z
 
+@x pTeX: direction check in \discretionary 
+@!n:integer; {length of discretionary list}
+@y
+@!n:integer; {length of discretionary list}
+@!d:integer; {direction}
+@z
+
+@x pTeX: direction check in \discretionary 
+p:=link(head); pop_nest;
+case saved(-1) of
+0:pre_break(tail):=p;
+1:post_break(tail):=p;
+@y
+p:=link(head); d:=abs(direction); pop_nest;
+case saved(-1) of
+0:if abs(direction)=d then pre_break(tail):=p
+  else begin 
+    print_err("Direction Incompatible.");
+    help2("\discretionary's argument and outer hlist must have same direction.")@/
+    ("I delete your first part."); error; pre_break(tail):=null; flush_node_list(p);
+  end;
+1:if abs(direction)=d then post_break(tail):=p
+  else begin 
+    print_err("Direction Incompatible.");
+    help2("\discretionary's argument and outer hlist must have same direction.")@/
+    ("I delete your second part."); error; post_break(tail):=null; flush_node_list(p);
+  end;
+@z
+
+@x pTeX: direction check in \discretionary 
+else link(tail):=p;
+if n<=max_quarterword then replace_count(tail):=n
+@y
+else if (n>0)and(abs(direction)<>d) then
+  begin print_err("Direction Incompatible.");
+  help2("\discretionary's argument and outer hlist must have same direction.")@/
+  ("I delete your third part."); flush_node_list(p); n:=0; error;
+  end
+else link(tail):=p;
+if n<=max_quarterword then replace_count(tail):=n
+@z 
+
 @x [47.1120] l.22119 - pTeX: discretionary with disp_node
 decr(save_ptr); return;
 @y
