@@ -1414,7 +1414,7 @@ tats
 procedure print_cs(@!p:integer); {prints a purported control sequence}
 @y
 procedure print_cs(@!p:integer); {prints a purported control sequence}
-var j,@!t:pool_pointer;
+var j, l:pool_pointer;
 @!cat:0..max_char_code;
 @z
 
@@ -1424,14 +1424,14 @@ else  begin print_esc(text(p));
   end;
 @y
 else  begin print_esc(text(p));
-  j:=str_start[text(p)];
-  t:=so(str_pool[j])*@"100+so(str_pool[j+1]); {2bytes assumed}
-  if check_kanji(t) then begin
-    cat:=kcat_code(Hi(toDVI(t)));
-    if (cat=kanji)or(cat=kana) then print_char(" ");
-    end
-  else
-    print_char(" ");
+  j:=str_start[text(p)]; l:=str_start[text(p)+1];
+  if l>j+1 then begin
+    if l-j=multistrlen(ustringcast(str_pool), l, j) then
+      begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(str_pool), l, j)));
+      if (cat=kanji)or(cat=kana) then print_char(" ");
+      end
+    else print_char(" "); end
+  else print_char(" ");
   end;
 @z
 
