@@ -1410,6 +1410,31 @@ end;
 tats
 @z
 
+@x [17.???] l.???? - pTeX multibyte control symbol
+procedure print_cs(@!p:integer); {prints a purported control sequence}
+@y
+procedure print_cs(@!p:integer); {prints a purported control sequence}
+var j,@!t:pool_pointer;
+@!cat:0..max_char_code;
+@z
+
+@x
+else  begin print_esc(text(p));
+  print_char(" ");
+  end;
+@y
+else  begin print_esc(text(p));
+  j:=str_start[text(p)];
+  t:=so(str_pool[j])*@"100+so(str_pool[j+1]); {2bytes assumed}
+  if check_kanji(t) then begin
+    cat:=kcat_code(Hi(toDVI(t)));
+    if (cat=kanji)or(cat=kana) then print_char(" ");
+    end
+  else
+    print_char(" ");
+  end;
+@z
+
 @x [18.265] l.5903 - pTeX: \jfont \tfont
 primitive("font",def_font,0);@/
 @!@:font_}{\.{\\font} primitive@>
