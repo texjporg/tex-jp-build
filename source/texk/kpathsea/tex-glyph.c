@@ -201,7 +201,10 @@ try_fallback_resolutions (kpathsea kpse,
   /* First find the fallback size closest to DPI, even including DPI.  */
   for (s = 0; kpse->fallback_resolutions[s] != 0; s++)
     {
-      unsigned this_diff = abs (kpse->fallback_resolutions[s] - dpi);
+      unsigned this_diff =
+        kpse->fallback_resolutions[s] > dpi
+          ? kpse->fallback_resolutions[s] - dpi
+          : dpi - kpse->fallback_resolutions[s];
       if (this_diff < closest_diff)
         {
           closest_diff = this_diff;
