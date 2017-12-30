@@ -5,13 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-int nt,unit,zh,zw,jfm_id;
-int *width,*height,*depth,*italic,*glue_kern,*kern,*glue,*param;
-unsigned char *header,*char_type,*char_info;
+int nt,nl,unit,zh,zw,jfm_id,rightamount;
+int *width,*height,*depth,*italic,*kern,*glue,*param;
+unsigned char *header,*char_type,*char_info,*glue_kern;
 
 int jfmread(int kcode)
 {
-	int i,ctype = 0,w_ind,w;
+	int i,ctype=0,w_ind,w,ll=0,rr=0,tag,gk_ind,gk2_ind;
 
 	for (i = 0 ; i < nt ; i++) {
 		if (upair(&char_type[i*4]) == kcode) {
@@ -20,9 +20,64 @@ int jfmread(int kcode)
 		}
 	}
 
+	/* get character width of <kcode> */
 	w_ind = char_info[ctype*4];
-
 	w = width[w_ind];
+
+	rightamount = 0;
+	if (w != zw && ctype > 0) {
+		/* get natural length of JFM glue between <type0> and <type of kcode> */
+		tag = char_info[ctype*4+2] % 4;
+		if (tag == 1) {
+			gk_ind = char_info[0*4+3]; /* remainder for <type0> */
+			if (glue_kern[gk_ind*4] == 254) /* support for large gluekern table */
+				gk_ind = upair(&glue_kern[gk_ind*4+2]);
+			for (i = 0 ; i < nl-gk_ind ; i++) {
+				if (glue_kern[(gk_ind+i)*4+1] == ctype) {
+					if (glue_kern[(gk_ind+i)*4+2] >= 128) {
+						gk2_ind = glue_kern[(gk_ind+i)*4+3];
+						ll = kern[gk2_ind];
+					}
+					else {
+						gk2_ind = glue_kern[(gk_ind+i)*4+3];
+						ll = glue[3*gk2_ind];
+					}
+					break;
+				}
+				if (glue_kern[(gk_ind+i)*4] >= 128)
+					break;
+			}
+		}
+		/* get natural length of JFM glue between <type of kcode> and <type0> */
+		tag = char_info[ctype*4+2] % 4;
+		if (tag == 1) {
+			gk_ind = char_info[ctype*4+3]; /* remainder for <type of kcode> */
+			if (glue_kern[gk_ind*4] == 254) /* support for large gluekern table */
+				gk_ind = upair(&glue_kern[gk_ind*4+2]);
+			for (i = 0 ; i < nl-gk_ind ; i++) {
+				if (glue_kern[(gk_ind+i)*4+1] == 0) {
+					if (glue_kern[(gk_ind+i)*4+2] >= 128) {
+						gk2_ind = glue_kern[(gk_ind+i)*4+3];
+						rr = kern[gk2_ind];
+					}
+					else {
+						gk2_ind = glue_kern[(gk_ind+i)*4+3];
+						rr = glue[3*gk2_ind];
+					}
+					break;
+				}
+				if (glue_kern[(gk_ind+i)*4] >= 128)
+					break;
+			}
+		}
+		if (abs(zw - ll - w - rr) <= 1) /* allow round-off error */
+			/* character width is truncated,
+			   and metric glue/kern is inserted as a substitute to fill zenkaku */
+			rightamount = ll;
+		else
+			/* character width is actually truncated */
+			rightamount = (zw - w)/2;
+	}
 
 	return(w);
 }
@@ -53,7 +108,7 @@ int tfmget(char *name)
 int tfmidx(FILE *fp)
 {
 	int i;
-	int lh,ec,nw,nh,nd,ni,nl,nk,ng,np;
+	int lh,ec,nw,nh,nd,ni,nk,ng,np;
 
 	jfm_id = fpair(fp);
 
@@ -96,7 +151,22 @@ int tfmidx(FILE *fp)
 		for (i = 0 ; i < nd ; i++) {
 			depth[i] = fquad(fp);
 		}
-		fseek(fp,(ni+nl+nk+ng)*4,SEEK_CUR);
+		italic = xmalloc(ni*sizeof(int));
+		for (i = 0 ; i < ni ; i++) {
+			italic[i] = fquad(fp);
+		}
+		glue_kern = xmalloc(nl*4);
+		for (i = 0 ; i < nl*4 ; i++) {
+			glue_kern[i] = fgetc(fp);
+		}
+		kern = xmalloc(nk*sizeof(int));
+		for (i = 0 ; i < nk ; i++) {
+			kern[i] = fquad(fp);
+		}
+		glue = xmalloc(ng*sizeof(int));
+		for (i = 0 ; i < ng ; i++) {
+			glue[i] = fquad(fp);
+		}
 		param = xmalloc(np*sizeof(int));
 		for (i = 0 ; i < np ; i++) {
 			param[i] = fquad(fp);

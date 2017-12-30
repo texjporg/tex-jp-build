@@ -1,3 +1,57 @@
+2017-12-21  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* jpegimage.c: If j_info->xdpi and j_info->ydpi are not
+	determined in JPEG_scan_file(), they are assumed to be 72.0.
+
+2017-12-09  Jiang Jiang  <gzjjgod@gmail.com>
+
+	* tt_cmap.c (is_PUA_or_presentation, add_to_cmap_if_used):
+	Skip KANGXI RADICALs which are commonly double encoded.
+	http://tug.org/pipermail/xetex/2017-June/027147.html
+
+2017-10-02  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* dvi.c: Initialize direction mode in clear_state(). See
+	https://github.com/texjporg/tex-jp-build/issues/30
+
+2017-09-18  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* tt_gsub.c: Fixed a bug that only last specified OTL GSUB
+	feature was enabled.
+	* configure.ac: Version 20170918.
+
+2017-08-25  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* pdfximage.h, spc_pdfm.c: Remove MAX_IMAGES which is not
+	needed.
+
+2017-08-06  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* dpxutil.[ch], epdf.c, pdfdoc.[ch], pdfximage.c, xbb.c:
+	Support for /Rotate page attribute in PDF inclusion.
+	* configure.ac: Version 20170806.
+
+2017-06-27  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* pdfdoc.c: Simplify the change in pdf_doc_get_page().
+	* configure.ac: Change version number to distinguish from TL 2017.
+
+2017-06-25  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* pdfdoc.c: Discard the backward compatibility for pdf BoundingBox
+	in pdf_doc_get_page(), to be consistent with the latex
+	driver dvipdfmx.def.
+
+2017-06-25  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* tt_cmap.c: Fix a bug that different CMaps are not attached
+	to each instances of font using different OpenType layout features.
+	Fix a bug that ToUnicode support for substituted glyph was incomplete.
+
+2017-06-24  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* spc_pdfm.c: Remove unused variable attr in spc_handler_pdfm_image().
+
 2017-05-19  Karl Berry  <karl@tug.org>
 
 	* Version 20170318 for TeX Live 2017 release.

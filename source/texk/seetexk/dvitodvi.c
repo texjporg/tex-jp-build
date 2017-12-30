@@ -35,6 +35,9 @@
 #include <kpathsea/config.h>
 #include <kpathsea/c-fopen.h>
 #include <kpathsea/getopt.h>
+#if defined(WIN32)
+#include <kpathsea/variable.h>
+#endif
 #else
 #define FOPEN_RBIN_MODE  "rb"
 #define FOPEN_WBIN_MODE  "wb"
@@ -52,11 +55,16 @@ extern int   optind;
 #include "search.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "seek.h"
+
+#if defined(WIN32) && defined(KPATHSEA)
+#undef fopen
+#define fopen  fsyscp_fopen
+#endif
 
 #define white(x) ((x) == ' ' || (x) == '\t' || (x) == ',')
 
 #define MAXDVIPAGES 1000 /* max (absolute) pages in DVI file */
-#include "seek.h"
 
 char  *ProgName;
 
@@ -114,6 +122,9 @@ int	WritingPage;		/* true while writing a page */
 
 i32	InputPageNumber;	/* current absolute page in old DVI file */
 int	NumberOfOutputPages;	/* number of pages in new DVI file */
+#ifdef	ASCIIPTEX
+int	ptexdvi;		/* true if dvi file is extended (TATEKUMI) */
+#endif
 
 i32	Numerator;		/* numerator from DVI file */
 i32	Denominator;		/* denominator from DVI file */
@@ -520,6 +531,11 @@ HandlePostAmble(void)
 
 	putbyte(outf, DVI_POSTPOST);
 	PutLong(outf, StartOfLastPage);	/* actually start of postamble */
+#ifdef	ASCIIPTEX
+	if(ptexdvi)
+		putbyte(outf, DVI_PTEXVERSION);
+	else
+#endif
 	putbyte(outf, DVI_VERSION);
 	putbyte(outf, DVI_FILLER);
 	putbyte(outf, DVI_FILLER);
@@ -613,6 +629,17 @@ main(int argc, char **argv)
 	register char *s;
 	char *outname = NULL;
 	char *specstring = NULL;
+#if defined(WIN32) && defined(KPATHSEA)
+	int ac;
+	char **av, *enc;
+
+	kpse_set_program_name(argv[0], "dvitodvi");
+	enc = kpse_var_value("command_line_encoding");
+	if (get_command_line_args_utf8(enc, &ac, &av)) {
+		argc = ac;
+		argv = av;
+	}
+#endif
 
 	Width = 0;
 	Height = 0;
@@ -708,6 +735,9 @@ Usage: %s [-q] [-i infile] [-o outfile] [-w width] [-h height] <pagespecs> [infi
 	        error(1, 0, "can't seek file");
 	}
 
+#ifdef	ASCIIPTEX
+	ptexdvi = 0;
+#endif
 	InputPageNumber = 0;
 	StartOfLastPage = -1;
 	HandlePreAmble();
@@ -914,7 +944,12 @@ char	oplen[128] = {
 	0,			/* DVI_PRE */
 	0,			/* DVI_POST */
 	0,			/* DVI_POSTPOST */
+#ifdef	ASCIIPTEX
+	0, 0, 0, 0, 0,	 	/* 250 .. 254 */
+	0,			/* DVI_DIR */
+#else
 	0, 0, 0, 0, 0, 0,	/* 250 .. 255 */
+#endif
 };
 
 static int
@@ -1045,6 +1080,18 @@ HandlePage(int first, int last, i32 hoffset, i32 voffset)
 			case DT_FNTDEF:
 				HandleFontDef(p);
 				continue;
+
+#ifdef	ASCIIPTEX
+			case DT_DIR:
+				if (!UseThisPage)
+					continue;
+				ptexdvi = 1;
+
+				putbyte(outf, c);
+				putbyte(outf, p);
+				CurrentPosition += 2;
+				continue;
+#endif
 
 			default:
 				panic("HandleDVIFile DVI_DT(%d)=%d",

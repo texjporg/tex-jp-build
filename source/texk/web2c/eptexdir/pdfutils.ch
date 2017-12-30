@@ -20,9 +20,9 @@
 %%
 %% \pdfprimitive and \ifpdfprimitive: for LaTeX3 (2015/07/15)
 %%
-%% \pdfuniformdeviate and co.: 
+%% \pdfuniformdeviate and co.:
 %%  (\pdfnormaldeviate, \pdfrandomseed, \pdfsetrandomseed)
-%% 
+%%
 %% \pdfelapsedtime and \pdfresettimer
 %%
 
@@ -410,7 +410,9 @@ end;
   {permanent `\.{\\special}'}
 @d frozen_primitive=frozen_control_sequence+11
   {permanent `\.{\\pdfprimitive}'}
-@d frozen_null_font=frozen_control_sequence+12
+@d prim_eqtb_base=frozen_primitive+1
+@d prim_size=2100 {maximum number of primitives }
+@d frozen_null_font=prim_eqtb_base+prim_size+1
   {permanent `\.{\\nullfont}'}
 @z
 
@@ -445,24 +447,23 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 
 @ Primitive support needs a few extra variables and definitions
 
-@d prim_size=2100 {maximum number of primitives }
 @d prim_prime=1777 {about 85\pct! of |primitive_size|}
 @d prim_base=1
 @d prim_next(#) == prim[#].lh {link for coalesced lists}
-@d prim_text(#) == prim[#].rh {string number for control sequence name}
+@d prim_text(#) == prim[#].rh {string number for control sequence name, plus one}
 @d prim_is_full == (prim_used=prim_base) {test if all positions are occupied}
 @d prim_eq_level_field(#)==#.hh.b1
 @d prim_eq_type_field(#)==#.hh.b0
 @d prim_equiv_field(#)==#.hh.rh
-@d prim_eq_level(#)==prim_eq_level_field(prim_eqtb[#]) {level of definition}
-@d prim_eq_type(#)==prim_eq_type_field(prim_eqtb[#]) {command code for equivalent}
-@d prim_equiv(#)==prim_equiv_field(prim_eqtb[#]) {equivalent value}
+@d prim_eq_level(#)==prim_eq_level_field(eqtb[prim_eqtb_base+#]) {level of definition}
+@d prim_eq_type(#)==prim_eq_type_field(eqtb[prim_eqtb_base+#]) {command code for equivalent}
+@d prim_equiv(#)==prim_equiv_field(eqtb[prim_eqtb_base+#]) {equivalent value}
 @d undefined_primitive=0
+@d biggest_char=255 { 65535 in XeTeX }
 
 @<Glob...@>=
 @!prim: array [0..prim_size] of two_halves;  {the primitives table}
 @!prim_used:pointer; {allocation pointer for |prim|}
-@!prim_eqtb:array[0..prim_size] of memory_word;
 @z
 
 @x \[if]pdfprimitive
@@ -473,10 +474,6 @@ no_new_control_sequence:=true; {new identifiers are usually forbidden}
 no_new_control_sequence:=true; {new identifiers are usually forbidden}
 prim_next(0):=0; prim_text(0):=0;
 for k:=1 to prim_size do prim[k]:=prim[0];
-prim_eq_level(0) := level_zero;
-prim_eq_type(0) := undefined_cs;
-prim_equiv(0) := null;
-for k:=1 to prim_size do prim_eqtb[k]:=prim_eqtb[0];
 @z
 
 @x \[if]pdfprimitive
@@ -505,27 +502,30 @@ var h:integer; {hash code}
 @!k:pointer; {index in string pool}
 @!j,@!l:integer;
 begin
-if s<256 then begin
-  p := s;
-  if (p<0) or (prim_eq_level(p)<>level_one) then
-    p := undefined_primitive;
-end
+if s<=biggest_char then begin
+  if s<0 then begin p:=undefined_primitive; goto found; end
+  else p:=(s mod prim_prime)+prim_base; {we start searching here}
+  end
 else begin
   j:=str_start[s];
   if s = str_ptr then l := cur_length else l := length(s);
   @<Compute the primitive code |h|@>;
-  p:=h+prim_base; {we start searching here; note that |0<=h<hash_prime|}
-  loop@+begin if prim_text(p)>0 then if length(prim_text(p))=l then
-    if str_eq_str(prim_text(p),s) then goto found;
-    if prim_next(p)=0 then
-      begin if no_new_control_sequence then
-        p:=undefined_primitive
-      else @<Insert a new primitive after |p|, then make
-        |p| point to it@>;
-      goto found;
-      end;
-    p:=prim_next(p);
+  p:=h+prim_base; {we start searching here; note that |0<=h<prim_prime|}
+  end;
+loop@+begin
+  if prim_text(p)>1+biggest_char then { |p| points a multi-letter primitive }
+    begin if length(prim_text(p)-1)=l then
+      if str_eq_str(prim_text(p)-1,s) then goto found;
+    end
+  else if prim_text(p)=1+s then goto found; { |p| points a single-letter primitive }
+  if prim_next(p)=0 then
+    begin if no_new_control_sequence then
+      p:=undefined_primitive
+    else @<Insert a new primitive after |p|, then make
+      |p| point to it@>;
+    goto found;
     end;
+  p:=prim_next(p);
   end;
 found: prim_lookup:=p;
 end;
@@ -538,7 +538,7 @@ begin if prim_text(p)>0 then
   until prim_text(prim_used)=0; {search for an empty location in |prim|}
   prim_next(p):=prim_used; p:=prim_used;
   end;
-prim_text(p):=s;
+prim_text(p):=s+1;
 end
 
 @ The value of |prim_prime| should be roughly 85\pct! of
@@ -555,6 +555,23 @@ for k:=j+1 to j+l-1 do
 table, since we can use the character code itself as a direct address.
 @z
 
+@x print_cs: \pdfprimitive
+else  begin l:=text(p);
+@y
+else  begin
+  if (p>=prim_eqtb_base)and(p<frozen_null_font) then
+    l:=prim_text(p-prim_eqtb_base)-1 else l:=text(p);
+@z
+
+@x
+else print_esc(text(p));
+@y
+else if (p>=prim_eqtb_base)and(p<frozen_null_font) then
+    print_esc(prim_text(p-prim_eqtb_base)-1)
+else print_esc(text(p));
+@z
+
+
 @x \[if]pdfprimitive
 @p @!init procedure primitive(@!s:str_number;@!c:quarterword;@!o:halfword);
 var k:pool_pointer; {index into |str_pool|}
@@ -569,7 +586,7 @@ begin if s<256 then cur_val:=s+single_base
 @y
 begin if s<256 then begin
   cur_val:=s+single_base;
-  prim_val:=s;
+  prim_val:=prim_lookup(s);
 end
 @z
 
@@ -649,7 +666,7 @@ temporary file.
 begin save_scanner_status := scanner_status; scanner_status:=normal;
 get_token; scanner_status:=save_scanner_status;
 if cur_cs < hash_base then
-  cur_cs := prim_lookup(cur_cs-257)
+  cur_cs := prim_lookup(cur_cs-single_base)
 else
   cur_cs := prim_lookup(text(cur_cs));
 if cur_cs<>undefined_primitive then begin
@@ -666,12 +683,6 @@ if cur_cs<>undefined_primitive then begin
     p:=get_avail; info(p):=cs_token_flag+frozen_primitive;
     link(p):=loc; loc:=p; start:=p;
     end;
-  end
-else begin
-  print_err("Missing primitive name");
-  help2("The control sequence marked <to be read again> does not")@/
-    ("represent any known primitive.");
-  back_error;
   end;
 end
 
@@ -685,11 +696,15 @@ expansion creating new errors.
 @<Reset |cur_tok| for unexpandable primitives, goto restart @>=
 begin
 get_token;
-cur_cs := prim_lookup(text(cur_cs));
+if cur_cs < hash_base then
+  cur_cs := prim_lookup(cur_cs-single_base)
+else
+  cur_cs  := prim_lookup(text(cur_cs));
 if cur_cs<>undefined_primitive then begin
   cur_cmd := prim_eq_type(cur_cs);
   cur_chr := prim_equiv(cur_cs);
-  cur_tok := (cur_cmd*@'400)+cur_chr;
+  cur_cs  := prim_eqtb_base+cur_cs;
+  cur_tok := cs_token_flag+cur_cs;
   end
 else begin
   cur_cmd := relax;
@@ -699,6 +714,23 @@ else begin
   end;
 goto restart;
 end
+@z
+
+@x scan_keyword
+@!k:pool_pointer; {index into |str_pool|}
+begin p:=backup_head; link(p):=null; k:=str_start[s];
+@y
+@!k:pool_pointer; {index into |str_pool|}
+@!save_cur_cs:pointer; {to save |cur_cs|}
+begin p:=backup_head; link(p):=null; k:=str_start[s];
+save_cur_cs:=cur_cs;
+@z
+
+@x scan_keyword
+    scan_keyword:=false; return;
+@y
+    cur_cs:=save_cur_cs;
+    scan_keyword:=false; return;
 @z
 
 @x \[if]pdfprimitive : scan_something_internal
@@ -828,10 +860,12 @@ eTeX_revision_code: do_nothing;
 pdf_strcmp_code:
   begin
     save_scanner_status := scanner_status;
+    save_warning_index := warning_index;
     save_def_ref := def_ref;
     save_cur_string;
     compare_strings;
     def_ref := save_def_ref;
+    warning_index := save_warning_index;
     scanner_status := save_scanner_status;
     restore_cur_string;
   end;
@@ -996,7 +1030,7 @@ if_pdfprimitive_code: begin
   get_next;
   scanner_status:=save_scanner_status;
   if cur_cs < hash_base then
-    m := prim_lookup(cur_cs-257)
+    m := prim_lookup(cur_cs-single_base)
   else
     m := prim_lookup(text(cur_cs));
   b :=((cur_cmd<>undefined_cs) and
@@ -1029,12 +1063,13 @@ any_mode(ignore_spaces): begin
     get_next;
     scanner_status:=t;
     if cur_cs < hash_base then
-      cur_cs := prim_lookup(cur_cs-257)
+      cur_cs := prim_lookup(cur_cs-single_base)
     else
       cur_cs  := prim_lookup(text(cur_cs));
     if cur_cs<>undefined_primitive then begin
       cur_cmd := prim_eq_type(cur_cs);
       cur_chr := prim_equiv(cur_cs);
+      cur_tok := cs_token_flag+prim_eqtb_base+cur_cs;
       goto reswitch;
       end;
     end;
@@ -1046,7 +1081,6 @@ any_mode(ignore_spaces): begin
 @y
 @<Dump the hash table@>=
 for p:=0 to prim_size do dump_hh(prim[p]);
-for p:=0 to prim_size do dump_wd(prim_eqtb[p]);
 @z
 
 @x \[if]pdfprimitive: undump prim table
@@ -1054,7 +1088,6 @@ for p:=0 to prim_size do dump_wd(prim_eqtb[p]);
 @y
 @ @<Undump the hash table@>=
 for p:=0 to prim_size do undump_hh(prim[p]);
-for p:=0 to prim_size do undump_wd(prim_eqtb[p]);
 @z
 
 @x
@@ -1304,11 +1337,12 @@ procedure compare_strings; {to implement \.{\\pdfstrcmp}}
 label done;
 var s1, s2: str_number;
     i1, i2, j1, j2: pool_pointer;
+    save_cur_cs: pointer;
 begin
-    call_func(scan_toks(false, true));
+    save_cur_cs:=cur_cs; call_func(scan_toks(false, true));
     isprint_utf8:=true; s1 := tokens_to_string(def_ref); isprint_utf8:=false;
     delete_token_ref(def_ref);
-    call_func(scan_toks(false, true));
+    cur_cs:=save_cur_cs; call_func(scan_toks(false, true));
     isprint_utf8:=true; s2 := tokens_to_string(def_ref); isprint_utf8:=false;
     delete_token_ref(def_ref);
     i1 := str_start[s1];

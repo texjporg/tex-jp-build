@@ -40,7 +40,7 @@
  * http://www.microsoft.com/typography/specs/default.htm
  */
 
-#define _BSD_SOURCE /* for snprintf(), strdup() */
+#define _DEFAULT_SOURCE /* for snprintf(), strdup() */
 #include "cairoint.h"
 
 #include "cairo-array-private.h"
@@ -202,13 +202,17 @@ _cairo_truetype_font_create (cairo_scaled_font_subset_t  *scaled_font_subset,
     if (unlikely (status))
 	goto fail1;
 
-    font->glyphs = calloc (font->num_glyphs_in_face + 1, sizeof (subset_glyph_t));
+    /* Add 2: +1 case font does not contain .notdef, and +1 because an extra
+     * entry is required to contain the end location of the last glyph.
+     */
+    font->glyphs = calloc (font->num_glyphs_in_face + 2, sizeof (subset_glyph_t));
     if (unlikely (font->glyphs == NULL)) {
 	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto fail1;
     }
 
-    font->parent_to_subset = calloc (font->num_glyphs_in_face, sizeof (int));
+    /* Add 1 in case font does not contain .notdef */
+    font->parent_to_subset = calloc (font->num_glyphs_in_face + 1, sizeof (int));
     if (unlikely (font->parent_to_subset == NULL)) {
 	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto fail2;
@@ -247,7 +251,8 @@ _cairo_truetype_font_create (cairo_scaled_font_subset_t  *scaled_font_subset,
                  scaled_font_subset->subset_id);
     }
 
-    font->base.widths = calloc (font->num_glyphs_in_face, sizeof (int));
+    /* Add 1 in case font does not contain .notdef */
+    font->base.widths = calloc (font->num_glyphs_in_face + 1, sizeof (int));
     if (unlikely (font->base.widths == NULL)) {
 	status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	goto fail4;
@@ -1310,11 +1315,14 @@ _cairo_truetype_reverse_cmap (cairo_scaled_font_t *scaled_font,
 
     /* search for glyph in segments with rangeOffset=0 */
     for (i = 0; i < num_segments; i++) {
+	uint16_t start = be16_to_cpu (start_code[i]);
+	uint16_t end = be16_to_cpu (end_code[i]);
+
+	if (start == 0xffff && end == 0xffff)
+	    break;
+
 	c = index - be16_to_cpu (delta[i]);
-	if (range_offset[i] == 0 &&
-	    c >= be16_to_cpu (start_code[i]) &&
-	    c <= be16_to_cpu (end_code[i]))
-	{
+	if (range_offset[i] == 0 && c >= start && c <= end) {
 	    *ucs4 = c;
 	    goto found;
 	}
@@ -1322,9 +1330,15 @@ _cairo_truetype_reverse_cmap (cairo_scaled_font_t *scaled_font,
 
     /* search for glyph in segments with rangeOffset=1 */
     for (i = 0; i < num_segments; i++) {
+	uint16_t start = be16_to_cpu (start_code[i]);
+	uint16_t end = be16_to_cpu (end_code[i]);
+
+	if (start == 0xffff && end == 0xffff)
+	    break;
+
 	if (range_offset[i] != 0) {
 	    uint16_t *glyph_ids = &range_offset[i] + be16_to_cpu (range_offset[i])/2;
-	    int range_size = be16_to_cpu (end_code[i]) - be16_to_cpu (start_code[i]) + 1;
+	    int range_size = end - start + 1;
 	    uint16_t g_id_be = cpu_to_be16 (index);
 	    int j;
 
@@ -1334,7 +1348,7 @@ _cairo_truetype_reverse_cmap (cairo_scaled_font_t *scaled_font,
 
 		for (j = 0; j < range_size; j++) {
 		    if (glyph_ids[j] == g_id_be) {
-			*ucs4 = be16_to_cpu (start_code[i]) + j;
+			*ucs4 = start + j;
 			goto found;
 		    }
 		}
@@ -1411,6 +1425,12 @@ cleanup:
     return status;
 }
 
+/*
+ * Sanity check on font name length as some broken fonts may return very long
+ * strings of garbage. 127 is maximum length of a PS name.
+ */
+#define MAX_FONT_NAME_LENGTH 127
+
 static cairo_status_t
 find_name (tt_name_t *name, int name_id, int platform, int encoding, int language, char **str_out)
 {
@@ -1429,11 +1449,17 @@ find_name (tt_name_t *name, int name_id, int platform, int encoding, int languag
             be16_to_cpu (record->encoding) == encoding &&
 	    (language == -1 || be16_to_cpu (record->language) == language)) {
 
-	    str = malloc (be16_to_cpu (record->length) + 1);
+	    len = be16_to_cpu (record->length);
+	    if (platform == 3 && len > MAX_FONT_NAME_LENGTH*2) /* UTF-16 name */
+		break;
+
+	    if (len > MAX_FONT_NAME_LENGTH)
+		break;
+
+	    str = malloc (len + 1);
 	    if (str == NULL)
 		return _cairo_error (CAIRO_STATUS_NO_MEMORY);
 
-	    len = be16_to_cpu (record->length);
 	    memcpy (str,
 		    ((char*)name) + be16_to_cpu (name->strings_offset) + be16_to_cpu (record->offset),
 		    len);

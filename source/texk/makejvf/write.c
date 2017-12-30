@@ -1,9 +1,12 @@
 #include <kpathsea/config.h>
 #include "makejvf.h"
 #include "uniblock.h"
+#include "usrtable.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+
+int pstfm_codes[256];
 
 FILE *vfopen(char *name)
 {
@@ -83,11 +86,12 @@ void writevf(int code, FILE *fp)
 {
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
-	int fidshift=0;
+	int fidshift=0,l;
+	int outcode=code;
 
 	if (fidzero) fidshift=-1;
 
-	w = jfmread(code);
+	w = jfmread(code); /* rightamount is also obtained */
 
 	fputc(242,fp); /* long_char */
 
@@ -120,7 +124,7 @@ void writevf(int code, FILE *fp)
 				skip2+=-(int)((0.65)*zh);
 			}
 			else {
-				skip2+=-(int)((0.6)*zh);
+				skip2+=-(int)(zh*3/5.0); /* skip2+=-(int)((0.6)*zh); */
 			}
 
 			if (kanatfm)
@@ -160,15 +164,6 @@ void writevf(int code, FILE *fp)
 	case 0x2158: /* 『 */
 	case 0x215a: /* 【 */
 		skip = -(zw-w);
-		if (kanatfm)
-			cc=4;
-		else
-			cc=3;
-		if (skip)
-			cc+=numcount(skip)+1;
-		if (skip2)
-			cc+=numcount(skip2)+1;
-		fputnum(cc,4,fp);
 		break;
 	case 0x2147: /* ’ */
 	case 0x2149: /* ” */
@@ -197,7 +192,7 @@ void writevf(int code, FILE *fp)
 				skip2+=(int)((0.65)*zh);
 			}
 			else {
-				skip2+=(int)((0.6)*zh);
+				skip2+=(int)(zh*3/5.0); /* skip2+=(int)((0.6)*zh); */
 			}
 
 			if (kanatfm)
@@ -252,13 +247,6 @@ void writevf(int code, FILE *fp)
 	case 0x216b: /* ° */
 	case 0x216c: /* ′ */
 	case 0x216d: /* ″ */
-		if (kanatfm)
-			cc=4;
-		else
-			cc=3;
-		if (skip2)
-			cc+=numcount(skip2)+1;
-		fputnum(cc,4,fp);
 		break;
 	default:
 		if (w != zw) {
@@ -309,46 +297,49 @@ void writevf(int code, FILE *fp)
 						else {
 							skip=-(int)(((double)(cc-kanatume)/1000.0)*zw);
 						}
-						if (kanatfm)
-							cc=4;
-						else
-							cc=3;
-						if (skip)
-							cc+=numcount(skip)+1;
-						if (skip2)
-							cc+=numcount(skip2)+1;
-						fputnum(cc,4,fp);
 						break;
 					}
 				}
 			}
 			else {
 				skip = -(zw-w)/2;
-				if (kanatfm)
-					cc=4;
-				else
-					cc=3;
-				if (skip)
-					cc+=numcount(skip)+1;
-				if (skip2)
-					cc+=numcount(skip2)+1;
-				fputnum(cc,4,fp);
 			}
-		}
-		else {
-			if (kanatfm)
-				cc=4;
-			else
-				cc=3;
-			if (skip)
-				cc+=numcount(skip)+1;
-			if (skip2)
-				cc+=numcount(skip2)+1;
-			fputnum(cc,4,fp);
 		}
 		break;
 	}
 
+	for (l = 0; l < usertable_replace_max; l++) {
+		if (code == usertable_replace[l].codepoint) {
+			outcode = usertable_replace[l].newcodepoint;
+			break;
+		}
+	}
+	for (l = 0; l < usertable_move_max; l++) {
+		if (code == usertable_move[l].codepoint) {
+			skip = usertable_move[l].moveright * zw;
+			skip2 = usertable_move[l].movedown * zh;
+			goto outputj;
+		}
+	}
+	if (skip != -rightamount && enhanced) {
+		fprintf(stderr,
+			"[Warning] Conflicting MOVERIGHT value for code %x,\n"
+			"[Warning]   makejvf default:    %08x\n"
+			"[Warning]   suggested from JFM: %08x <= I'll use this ...\n",
+			code, skip, -rightamount);
+		skip=-rightamount;
+	}
+
+outputj:
+	if (kanatfm)
+		cc=4;
+	else
+		cc=3;
+	if (skip)
+		cc+=numcount(skip)+1;
+	if (skip2)
+		cc+=numcount(skip2)+1;
+	fputnum(cc,4,fp);
 	fputnum(code,4,fp); /* char code */
 	fputnum(w,4,fp); /* char width */
 	if (skip) {
@@ -366,18 +357,19 @@ void writevf(int code, FILE *fp)
 			fputc(172+fidshift,fp); /* FONT_NUM_1 */
 	}
 	fputc(129,fp); /* SET2 */
-	fputnum(code,2,fp); /* char code */
+	fputnum(outcode,2,fp); /* char code */
 }
 
 void writevfu(int code, FILE *fp)
 {
 	int cc,cc2,cc3,cc4,w,skip=0,skip2=0,height=1000;
 	char buf[256],buf2[256];
-	int fidshift=0;
+	int fidshift=0,l;
+	int outcode=code;
 
 	if (fidzero) fidshift=-1;
 
-	w = jfmread(code);
+	w = jfmread(code); /* rightamount is also obtained */
 
 	fputc(242,fp); /* long_char */
 
@@ -405,12 +397,12 @@ void writevfu(int code, FILE *fp)
 				}
 			}
 			else
-				skip=(int)((0.1)*zw);
+				skip = -(zw-w); /* skip=(int)((0.1)*zw); */
 			if (code == 0x2018) {
-				skip2+=-(int)((0.65)*zh);
+				skip2+=0; /* skip2+=-(int)((0.65)*zh); */
 			}
 			else {
-				skip2+=-(int)((0.6)*zh);
+				skip2+=0; /* skip2+=-(int)((0.6)*zh); */
 			}
 
 			if (kanatfm)
@@ -433,6 +425,7 @@ void writevfu(int code, FILE *fp)
 				fputnum2(skip2,fp);
 			}
 			if (kanatfm) fputc(173+fidshift,fp); /* FONT_NUM_2 */
+			fputc(129,fp); /* SET2 */
 			if (code == 0x2018)
 				fputnum(0x2032,2,fp); /* char code */
 			else
@@ -501,27 +494,19 @@ void writevfu(int code, FILE *fp)
 	case 0xFF5F: /* JIS X 0213  1-02-54 始め二重バーレーン */
 	case 0x3018: /* JIS X 0213  1-02-56 始め二重亀甲括弧 */
 	case 0x3016: /* JIS X 0213  1-02-58 始めすみ付き括弧(白) */
+	case 0x00AB: /* JIS X 0213  1-09-08 始め二重山括弧引用記号/始めギュメ */
 	case 0x301D: /* JIS X 0213  1-13-64 始めダブルミニュート */
 		if (ucs != ENTRY_JQ)
 			skip = -(zw-w);
-		if (kanatfm)
-			cc=4;
-		else
-			cc=3;
-		if (skip)
-			cc+=numcount(skip)+1;
-		if (skip2)
-			cc+=numcount(skip2)+1;
-		fputnum(cc,4,fp);
 		break;
 	case 0x2019: /* ’ */
 	case 0x201d: /* ” */
 		if (jfm_id == 9 && minute) { /* 縦書き時はミニュートへ変換 */
 			if (afp) {
 				if (code == 0x2019)
-					sprintf(buf2,"CH <216C>");
+					sprintf(buf2,"CH <2032>");
 				else
-					sprintf(buf2,"CH <216D>");
+					sprintf(buf2,"CH <2033>");
 				rewind(afp);
 				while (fgets(buf,255,afp)!=NULL) {
 					if (jfm_id==9 && !strncmp(buf,"FontBBox ",9)) {
@@ -536,12 +521,12 @@ void writevfu(int code, FILE *fp)
 				}
 			}
 			else
-				skip=(int)((0.4)*zw);
+				skip = zw; /* skip=(int)((0.4)*zw); */
 			if (code == 0x2019) {
-				skip2+=(int)((0.65)*zh);
+				skip2+=0; /* skip2+=(int)((0.65)*zh); */
 			}
 			else {
-				skip2+=(int)((0.6)*zh);
+				skip2+=0; /* skip2+=(int)((0.6)*zh); */
 			}
 
 			if (kanatfm)
@@ -632,44 +617,23 @@ void writevfu(int code, FILE *fp)
 	case 0xFF60: /* JIS X 0213  1-02-55 終わり二重バーレーン */
 	case 0x3019: /* JIS X 0213  1-02-57 終わり二重亀甲括弧 */
 	case 0x3017: /* JIS X 0213  1-02-59 終わりすみ付き括弧(白) */
+	case 0x00BB: /* JIS X 0213  1-09-18 終わり二重山括弧引用記号/終わりギュメ */
 	case 0x301F: /* JIS X 0213  1-13-65 終わりダブルミニュート */
 	case 0x00B0: /* ° */
 	case 0x2032: /* ′ */
 	case 0x2033: /* ″ */
-		if (kanatfm)
-			cc=4;
-		else
-			cc=3;
-		if (skip2)
-			cc+=numcount(skip2)+1;
-		fputnum(cc,4,fp);
 		break;
-	case 0xFF61: case 0xFF62: case 0xFF63: case 0xFF64: case 0xFF65: case 0xFF66: case 0xFF67:
-	case 0xFF68: case 0xFF69: case 0xFF6A: case 0xFF6B: case 0xFF6C: case 0xFF6D: case 0xFF6E: case 0xFF6F:
-	case 0xFF70: case 0xFF71: case 0xFF72: case 0xFF73: case 0xFF74: case 0xFF75: case 0xFF76: case 0xFF77:
-	case 0xFF78: case 0xFF79: case 0xFF7A: case 0xFF7B: case 0xFF7C: case 0xFF7D: case 0xFF7E: case 0xFF7F:
-	case 0xFF80: case 0xFF81: case 0xFF82: case 0xFF83: case 0xFF84: case 0xFF85: case 0xFF86: case 0xFF87:
-	case 0xFF88: case 0xFF89: case 0xFF8A: case 0xFF8B: case 0xFF8C: case 0xFF8D: case 0xFF8E: case 0xFF8F:
-	case 0xFF90: case 0xFF91: case 0xFF92: case 0xFF93: case 0xFF94: case 0xFF95: case 0xFF96: case 0xFF97:
-	case 0xFF98: case 0xFF99: case 0xFF9A: case 0xFF9B: case 0xFF9C: case 0xFF9D: case 0xFF9E: case 0xFF9F:
-		if (jfm_id == 11 && hankana) { /* 半角片仮名、横書き時 */
-			cc=3;
-			if (skip2)
-				cc+=numcount(skip2)+1;
-			fputnum(cc,4,fp);
-			fputnum(code,4,fp); /* char code */
-			fputnum(w,4,fp); /* char width */
-			if (skip2) {
-				fputc(157+numcount(skip2)-1,fp); /* DOWN */
-				fputnum2(skip2,fp);
-			}
-			fputc(129,fp); /* SET2 */
-			fputnum(code,2,fp); /* char code */
-			return;
-		}
 	default:
 		if (w != zw) {
-			if (((code >= 0x3041 && code <= 0x30F6) || code == 0x30FC ) && kanatume>=0) {
+			if ((code >= 0xFF61 && code <= 0xFFDC) || (code >= 0xFFE8 && code <= 0xFFEE)) {
+				if (jfm_id == 11 && hankana) { /* 半角片仮名など、横書き時 */
+					pstfm_codes[pstfm_nt-1]=code;
+					pstfm_nt+=1;
+					rightamount=0; /* discard jfmread() result */
+					break;
+				}
+			}
+			if (!uniblock_iskanji && kanatume>=0) {
 				sprintf(buf2,"CH <%X>",code);
 				rewind(afp);
 				while (fgets(buf,255,afp)!=NULL) {
@@ -734,46 +698,51 @@ void writevfu(int code, FILE *fp)
 						else {
 							skip=-(int)(((double)(cc-kanatume)/1000.0)*zw);
 						}
-						if (kanatfm)
-							cc=4;
-						else
-							cc=3;
-						if (skip)
-							cc+=numcount(skip)+1;
-						if (skip2)
-							cc+=numcount(skip2)+1;
-						fputnum(cc,4,fp);
 						break;
 					}
 				}
 			}
 			else {
 				skip = -(zw-w)/2;
-				if (kanatfm)
-					cc=4;
-				else
-					cc=3;
-				if (skip)
-					cc+=numcount(skip)+1;
-				if (skip2)
-					cc+=numcount(skip2)+1;
-				fputnum(cc,4,fp);
 			}
-		}
-		else {
-			if (kanatfm || code>=0x10000)
-				cc=4;
-			else
-				cc=3;
-			if (skip)
-				cc+=numcount(skip)+1;
-			if (skip2)
-				cc+=numcount(skip2)+1;
-			fputnum(cc,4,fp);
 		}
 		break;
 	}
 
+	for (l = 0; l < usertable_replace_max; l++) {
+		if (code == usertable_replace[l].codepoint) {
+			outcode = usertable_replace[l].newcodepoint;
+			break;
+		}
+	}
+	for (l = 0; l < usertable_move_max; l++) {
+		if (code == usertable_move[l].codepoint) {
+			skip = usertable_move[l].moveright * zw;
+			skip2 = usertable_move[l].movedown * zh;
+			goto outputu;
+		}
+	}
+	if (skip != -rightamount && enhanced) {
+		fprintf(stderr,
+			"[Warning] Conflicting MOVERIGHT value for code %x,\n"
+			"[Warning]   makejvf default:    %08x\n"
+			"[Warning]   suggested from JFM: %08x <= I'll use this ...\n",
+			code, skip, -rightamount);
+		skip=-rightamount;
+	}
+
+outputu:
+	if (kanatfm)
+		cc=4;
+	else
+		cc=3;
+	if (outcode>=0x10000)
+		cc+=1;
+	if (skip)
+		cc+=numcount(skip)+1;
+	if (skip2)
+		cc+=numcount(skip2)+1;
+	fputnum(cc,4,fp);
 	fputnum(code,4,fp); /* char code */
 	fputnum(w,4,fp); /* char width */
 	if (skip) {
@@ -785,17 +754,17 @@ void writevfu(int code, FILE *fp)
 		fputnum2(skip2,fp);
 	}
 	if (kanatfm) {
-		if (code <= 0x30F6)
+		if (!uniblock_iskanji)
 			fputc(173+fidshift,fp); /* FONT_NUM_2 */
 		else
 			fputc(172+fidshift,fp); /* FONT_NUM_1 */
 	}
-	if (code>=0x10000) {
+	if (outcode>=0x10000) {
 		fputc(130,fp); /* SET3 */
-		fputnum(code,3,fp); /* char code */
+		fputnum(outcode,3,fp); /* char code */
 	} else {
 		fputc(129,fp); /* SET2 */
-		fputnum(code,2,fp); /* char code */
+		fputnum(outcode,2,fp); /* char code */
 	}
 }
 
@@ -814,6 +783,7 @@ void maketfm(char *name)
 {
 	char nbuf[256];
 	FILE *fp;
+	int i;
 
 	strcpy(nbuf,name);
 	strcat(nbuf,".tfm");
@@ -824,12 +794,22 @@ void maketfm(char *name)
 	}
 
 	fputnum(jfm_id,2,fp); /* JFM ID */
-	fputnum(1,2,fp); /* number of char type */
-	fputnum(27,2,fp); /* file words */
+	fputnum(pstfm_nt,2,fp); /* number of char type */
+	if (pstfm_nt>1)
+		fputnum(27+pstfm_nt+1,2,fp); /* file words */
+	else
+		fputnum(27,2,fp); /* file words */
 	fputnum(2,2,fp); /* header words */
-	fputnum(0,2,fp); /* min of char type */
-	fputnum(0,2,fp); /* max of char type */
-	fputnum(2,2,fp); /* width words */
+	if (pstfm_nt>1) {
+		fputnum(0,2,fp); /* min of char type */
+		fputnum(1,2,fp); /* max of char type */
+		fputnum(3,2,fp); /* width words */
+	}
+	else {
+		fputnum(0,2,fp); /* min of char type */
+		fputnum(0,2,fp); /* max of char type */
+		fputnum(2,2,fp); /* width words */
+	}
 	fputnum(2,2,fp); /* height words */
 	fputnum(2,2,fp); /* depth words */
 	fputnum(1,2,fp); /* italic words */
@@ -843,10 +823,18 @@ void maketfm(char *name)
 
 	fputnum(0,2,fp); /* char code */
 	fputnum(0,2,fp); /* char type */
+	for (i=0;i<pstfm_nt-1;i++) {
+		fputnum(pstfm_codes[i],2,fp); /* char code */
+		fputnum(1,2,fp); /* char type */
+	}
 
+	if (pstfm_nt>1)
+		fputnum((2<<24)+(1<<20)+(1<<16),4,fp); /* char info */
 	fputnum((1<<24)+(1<<20)+(1<<16),4,fp); /* char info */
 	fputnum(0,4,fp); /* width */
-	fputnum(1<<20,4,fp); /* width */
+	if (pstfm_nt>1)
+		fputnum(1<<19,4,fp); /* width, hankaku-kana */
+	fputnum(1<<20,4,fp); /* width, others */
 	if (jfm_id == 11) {
 		fputnum(0,4,fp); /* height */
 		fputnum((int)((1<<20)*0.9),4,fp); /* height */

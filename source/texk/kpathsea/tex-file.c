@@ -1,7 +1,7 @@
 /* tex-file.c: high-level file searching by format.
 
    Copyright 1993, 1994, 1995, 1996, 1997, 2007, 2008, 2009, 2010, 2011
-             2012, 2014, 2016 Karl Berry.
+             2012, 2014, 2016, 2017 Karl Berry.
    Copyright 1998-2005 Olaf Weber.
 
    This library is free software; you can redistribute it and/or
@@ -730,14 +730,16 @@ kpathsea_init_format_return_varlist(kpathsea kpse,kpse_file_format_type format)
       break;
     case kpse_program_text_format:
       INIT_FORMAT ("other text files",
-                   concatn (".", ENV_SEP_STRING, "$TEXMF/",
-                            kpse->program_name, "//", NULL),
+                   concatn (".", ENV_SEP_STRING, "$TEXMF", DIR_SEP_STRING,
+                            kpse->program_name,
+                            DIR_SEP_STRING, DIR_SEP_STRING, NULL),
                    concat (uppercasify (kpse->program_name), "INPUTS"));
       break;
     case kpse_program_binary_format:
       INIT_FORMAT ("other binary files",
-                   concatn (".", ENV_SEP_STRING, "$TEXMF/",
-                            kpse->program_name, "//", NULL),
+                   concatn (".", ENV_SEP_STRING, "$TEXMF", DIR_SEP_STRING,
+                            kpse->program_name,
+                            DIR_SEP_STRING, DIR_SEP_STRING, NULL),
                    concat (uppercasify (kpse->program_name), "INPUTS"));
       FMT_INFO.binmode = true;
       break;
@@ -1011,6 +1013,9 @@ kpathsea_find_file_generic (kpathsea kpse, const_string const_name,
                             kpse_file_format_type format,
                             boolean must_exist, boolean all)
 {
+#if defined(_WIN32) && !defined(__MINGW32__)
+  char tmpbuffer1[512], tmpbuffer2[512];
+#endif
   string *target, name;
   const_string *ext;
   unsigned count;
@@ -1133,7 +1138,27 @@ kpathsea_find_file_generic (kpathsea kpse, const_string const_name,
   }
 
   free (name);
-
+#if defined(_WIN32) && !defined(__MINGW32__)
+  if (ret && *ret) {
+    if (all) {
+      for (count = 0; ret[count] != NULL; count++) {
+        strcpy (tmpbuffer2, ret[count]);
+        if (kpathsea_getlongpath (kpse, tmpbuffer1, tmpbuffer2, 500)) {
+          if (strlen (tmpbuffer1) > strlen (ret[count]))
+            ret[count] = realloc (ret[count], strlen (tmpbuffer1) + 1);
+          strcpy (ret[count], tmpbuffer1);
+        }
+      }
+    } else {
+      strcpy (tmpbuffer2, *ret);
+      if (kpathsea_getlongpath (kpse, tmpbuffer1, tmpbuffer2, 500)) {
+        if (strlen (tmpbuffer1) > strlen (*ret))
+          *ret = realloc (*ret, strlen (tmpbuffer1) + 1);
+        strcpy (*ret, tmpbuffer1);
+      }
+    } 
+  }
+#endif
   return ret;
 }
 
