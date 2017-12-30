@@ -561,10 +561,10 @@ char_given,math_given: scanned_result(cur_chr)(int_val);
 @z
 
 @x
-@d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
+@d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
 @y
-@d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
-@d uptex_version_code=ptex_version_code+1 {code for \.{\\uptexversion}}
+@d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
+@d uptex_version_code=ptex_minor_version_code+1 {code for \.{\\uptexversion}}
 @z
 
 @x

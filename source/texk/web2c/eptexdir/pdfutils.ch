@@ -758,9 +758,9 @@ ignore_spaces: {trap unexpandable primitives}
 @z
 
 @x
-@d eptex_version_code=ptex_version_code+1 {code for \.{\\epTeXversion}}
+@d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
 @y
-@d eptex_version_code=ptex_version_code+1 {code for \.{\\epTeXversion}}
+@d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
 @d pdf_last_x_pos_code=eptex_version_code+1 {code for \.{\\pdflastxpos}}
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}
@@ -769,7 +769,7 @@ ignore_spaces: {trap unexpandable primitives}
 @z
 
 @x
-@d eTeX_int=ptex_version_code+1 {first of \eTeX\ codes for integers}
+@d eTeX_int=ptex_minor_version_code+1 {first of \eTeX\ codes for integers}
 @y
 @d eTeX_int=random_seed_code+1 {first of \eTeX\ codes for integers}
 @z

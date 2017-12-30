@@ -12,7 +12,7 @@
 @z
 
 @x
-@d uptex_version_code=ptex_version_code+2 {code for \.{\\uptexversion}}
+@d uptex_version_code=ptex_minor_version_code+2 {code for \.{\\uptexversion}}
 @y
 @z
 

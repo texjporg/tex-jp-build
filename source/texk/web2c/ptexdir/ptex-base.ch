@@ -71,7 +71,8 @@
 @d banner==TeX_banner
 @d banner_k==TeX_banner_k
 @y
-@d pTeX_version=308
+@d pTeX_version=3
+@d pTeX_minor_version=8
 @d pTeX_revision=='0'
 @d pTeX_version_string=='-p3.8.',pTeX_revision {current \pTeX\ version}
 @#
@@ -2075,6 +2076,7 @@ else { \.{\\delcode} }
 @y
 @d badness_code=glue_val+2 {code for \.{\\badness}}
 @d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
+@d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
 @z
 
 @x pTeX: \ptexversion
@@ -2085,6 +2087,8 @@ primitive("badness",last_item,badness_code);
 @!@:badness_}{\.{\\badness} primitive@>
 primitive("ptexversion",last_item,ptex_version_code);
 @!@:ptexversion_}{\.{\\ptexversion} primitive@>
+primitive("ptexminorversion",last_item,ptex_minor_version_code);
+@!@:ptexminorversion_}{\.{\\ptexminorversion} primitive@>
 @z
 
 @x pTeX: \ptexversion
@@ -2092,6 +2096,7 @@ primitive("ptexversion",last_item,ptex_version_code);
 @y
   input_line_no_code: print_esc("inputlineno");
   ptex_version_code: print_esc("ptexversion");
+  ptex_minor_version_code: print_esc("ptexminorversion");
 @z
 
 @x [26.420] l.8474 - pTeX: Fetch a box dimension: dir_node
@@ -2154,6 +2159,7 @@ if not is_char_node(tx) then
     input_line_no_code: cur_val:=line;
     badness_code: cur_val:=last_badness;
     ptex_version_code: cur_val:=pTeX_version;
+    ptex_minor_version_code: cur_val:=pTeX_minor_version;
   end; {there and no other cases}
 @z
 
