@@ -254,6 +254,7 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"F1):=kana; { Kana Supplement }
   @t\hskip10pt@>kcat_code(@"F2):=kana; { Kana Extended-A }
   @+@t\1@>for k:=@"10E to @"113 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. CJK Compatibility Ideographs Supplement }
+  @t\hskip10pt@>kcat_code(@"1FD):=not_cjk; { Latin-1 Letters }
   @t\hskip10pt@>kcat_code(@"1FE):=kana; { Fullwidth digit and latin alphabet }
   @t\hskip10pt@>kcat_code(@"1FF):=kana; { Halfwidth katakana }
 end else begin

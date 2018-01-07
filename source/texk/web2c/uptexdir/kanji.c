@@ -395,6 +395,14 @@ binary_search (long x, long *a, int left, int right)
     return left - 1;
 }
 
+#define FEMININE_ORDINAL_INDICATOR             0x00AA
+#define MASCULINE_ORDINAL_INDICATOR            0x00BA
+#define LATIN_CAPITAL_LETTER_A_WITH_GRAVE      0x00C0
+#define LATIN_CAPITAL_LETTER_O_WITH_DIAERESIS  0x00D6
+#define LATIN_CAPITAL_LETTER_O_WITH_STROKE     0x00D8
+#define LATIN_SMALL_LETTER_O_WITH_DIAERESIS    0x00F6
+#define LATIN_SMALL_LETTER_O_WITH_STROKE       0x00F8
+#define LATIN_SMALL_LETTER_Y_WITH_DIAERESIS    0x00FF
 #define FULLWIDTH_DIGIT_0    0xFF10
 #define FULLWIDTH_DIGIT_9    0xFF19
 #define FULLWIDTH_CAPITAL_A  0xFF21
@@ -409,10 +417,19 @@ binary_search (long x, long *a, int left, int right)
 integer kcatcodekey(integer c)
 {
     if (is_internalUPTEX()) {
+        /* Latin-1 Letters */
+      if (   FEMININE_ORDINAL_INDICATOR ==c
+         ||  MASCULINE_ORDINAL_INDICATOR==c
+         || (LATIN_CAPITAL_LETTER_A_WITH_GRAVE <=c && c<=LATIN_CAPITAL_LETTER_O_WITH_DIAERESIS)
+         || (LATIN_CAPITAL_LETTER_O_WITH_STROKE<=c && c<=LATIN_SMALL_LETTER_O_WITH_DIAERESIS  )
+         || (LATIN_SMALL_LETTER_O_WITH_STROKE  <=c && c<=LATIN_SMALL_LETTER_Y_WITH_DIAERESIS  ) )
+        return 0x1FD;
+        /* Fullwidth ASCII variants  except for U+FF01..FF0F, U+FF1A..FF20, U+FF3B..FF40, U+FF5B..FF5E */
       if (  (FULLWIDTH_DIGIT_0  <=c && c<=FULLWIDTH_DIGIT_9  )
          || (FULLWIDTH_CAPITAL_A<=c && c<=FULLWIDTH_CAPITAL_Z)
          || (FULLWIDTH_SMALL_A  <=c && c<=FULLWIDTH_SMALL_Z  ) )
         return 0x1FE;
+        /* Halfwidth Katakana variants  except for U+FF65, U+FF70, U+FF9E..FF9F */
       if (  (HALFWIDTH_KATAKANA_WO <=c && c<=HALFWIDTH_KATAKANA_SMALL_TSU )
          || (HALFWIDTH_KATAKANA_A  <=c && c<=HALFWIDTH_KATAKANA_N  ) )
         return 0x1FF;
