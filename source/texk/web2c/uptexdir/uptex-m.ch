@@ -237,7 +237,11 @@ for k:=0 to 511 do
 if (isinternalUPTEX) then begin
   { default: |other_kchar| }
   @t\hskip10pt@>kcat_code(@"0):=not_cjk;
+  @+@t\1@>for k:=@"2 to @"4 do kcat_code(k):=not_cjk; { Latin Extended-A .. IPA Extensions }
+  @t\hskip10pt@>kcat_code(@"B):=not_cjk; { Hebrew }
   @t\hskip10pt@>kcat_code(@"24):=hangul; { Hangul Jamo }
+  @t\hskip10pt@>kcat_code(@"44):=not_cjk; { Latin Extended Additional }
+  @t\hskip10pt@>kcat_code(@"5F):=not_cjk; { Latin Extended-C }
   @+@t\1@>for k:=@"66 to @"68 do kcat_code(k):=kanji; { CJK Radicals Supplement .. Ideographic Description Characters }
   @+@t\1@>for k:=@"6A to @"6B do kcat_code(k):=kana;  { Hiragana, Katakana }
   @t\hskip10pt@>kcat_code(@"6C):=kanji; { Bopomofo }
@@ -246,10 +250,13 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"71):=kana; { Katakana Phonetic Extensions }
   @t\hskip10pt@>kcat_code(@"74):=kanji; { CJK Unified Ideographs Extension A }
   @t\hskip10pt@>kcat_code(@"76):=kanji; { CJK Unified Ideographs }
+  @t\hskip10pt@>kcat_code(@"7E):=not_cjk; { Latin Extended-D }
   @t\hskip10pt@>kcat_code(@"86):=hangul; { Hangul Jamo Extended-A }
+  @t\hskip10pt@>kcat_code(@"8E):=not_cjk; { Latin Extended-E }
   @t\hskip10pt@>kcat_code(@"91):=hangul; { Hangul Syllables }
   @t\hskip10pt@>kcat_code(@"92):=hangul; { Hangul Jamo Extended-B }
   @t\hskip10pt@>kcat_code(@"97):=kanji; { CJK Compatibility Ideographs }
+  @t\hskip10pt@>kcat_code(@"98):=not_cjk; { Alphabetic Presentation Forms }
   { \hskip10pt|kcat_code(@"A0):=other_kchar;| Halfwidth and Fullwidth Forms }
   @t\hskip10pt@>kcat_code(@"F1):=kana; { Kana Supplement }
   @t\hskip10pt@>kcat_code(@"F2):=kana; { Kana Extended-A }
