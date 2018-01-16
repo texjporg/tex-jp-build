@@ -36,7 +36,15 @@ i:byte; {index of array}
 begin dig[0]:=(jis_code div 65536) div 16; dig[1]:=(jis_code div 65536) mod 16;
 dig[2]:=(jis_code div 4096) mod 16; dig[3]:=(jis_code div 256) mod 16;
 dig[4]:=(jis_code div 16) mod 16; dig[5]:=jis_code mod 16;
-for i:=0 to 5 do
+for i:=0 to 1 do
+  if (dig[i]<>0)or(dig[0]<>0) then begin { if dig[0]<>0, dig[1] should be always printed }
+    if dig[i]<10 then print(dig[i]) else
+    case dig[i] of
+       10: print('A'); 11: print('B'); 12: print('C');
+       13: print('D'); 14: print('E'); 15: print('F');
+    end;
+  end;
+for i:=2 to 5 do
 @z
 
 @x function valid_jis_code
