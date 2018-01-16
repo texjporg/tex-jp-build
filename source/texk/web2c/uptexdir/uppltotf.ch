@@ -15,13 +15,28 @@
 @x
 max_kanji=7237; { maximam number of 2byte characters }
 @y
-max_kanji=65535; { maximam number of 2byte characters }
+max_kanji=1114111; { maximam number of 2byte characters }
 @z
 
 @x function get_next_raw
 if multistrlen(ustringcast(buffer),loc+2,loc)=2 then cur_char:=" "
 @y
 if multistrlen(ustringcast(buffer),loc+3,loc)>1 then cur_char:=" "
+@z
+
+@x procedure print_jis_hex
+var dig:array[0..3] of byte; {holds jis hex codes}
+i:byte; {index of array}
+begin dig[0]:=Hi(jis_code) div 16; dig[1]:=Hi(jis_code) mod 16;
+dig[2]:=Lo(jis_code) div 16; dig[3]:=Lo(jis_code) mod 16;
+for i:=0 to 3 do
+@y
+var dig:array[0..5] of byte; {holds jis hex codes}
+i:byte; {index of array}
+begin dig[0]:=(jis_code div 65536) div 16; dig[1]:=(jis_code div 65536) mod 16;
+dig[2]:=(jis_code div 4096) mod 16; dig[3]:=(jis_code div 256) mod 16;
+dig[4]:=(jis_code div 16) mod 16; dig[5]:=jis_code mod 16;
+for i:=0 to 5 do
 @z
 
 @x function valid_jis_code
@@ -34,7 +49,7 @@ if (first_byte<@"21)
 if (second_byte<@"21)or(second_byte>@"7E) then valid_jis_code:=false;
 @y
 begin valid_jis_code:=true;
-if (cx>@"FFFF)or(not is_char_kanji(fromDVI(cx)))
+if (cx>@"10FFFF)or(not is_char_kanji(fromDVI(cx)))
   or(toDVI(fromDVI(cx))<>cx) then valid_jis_code:=false;
 @z
 

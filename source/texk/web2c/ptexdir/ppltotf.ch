@@ -230,6 +230,13 @@ else
     memory[italic]+nl+lk_offset+nk+ne+np;
 @z
 
+@x [131] pTeX:
+@ @d out_size(#)==out((#) div 256); out((#) mod 256)
+@y
+@ @d out_size(#)==out((#) div 256); out((#) mod 256)
+@d out_size_three(#)==out_size((#) mod 65536); out((#) div 65536)
+@z
+
 @x [131] l.2256 - pTeX:
 out_size(lf); out_size(lh); out_size(bc); out_size(ec);
 out_size(memory[width]); out_size(memory[height]);
@@ -577,8 +584,8 @@ end
 begin out_size(0); out_size(0); { the default }
 for kanji_type_index:=0 to max_kanji do
   begin if kanji_type[kanji_type_index]>0 then
-    begin out_size(index_to_jis(kanji_type_index));
-    out_size(kanji_type[kanji_type_index]);
+    begin out_size_three(index_to_jis(kanji_type_index));
+    out(kanji_type[kanji_type_index]);
     if verbose then begin
       print('char index = ', kanji_type_index);
       print(' (jis ');
@@ -616,7 +623,7 @@ else  begin skip_error('This expression is out of JIS-code encoding.');
 end;
 @#
 procedure print_jis_hex(jis_code:integer); {prints jiscode as four digits}
-var dig:array[0..4] of byte; {holds jis hex codes}
+var dig:array[0..3] of byte; {holds jis hex codes}
 i:byte; {index of array}
 begin dig[0]:=Hi(jis_code) div 16; dig[1]:=Hi(jis_code) mod 16;
 dig[2]:=Lo(jis_code) div 16; dig[3]:=Lo(jis_code) mod 16;
