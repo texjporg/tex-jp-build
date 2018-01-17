@@ -437,11 +437,12 @@ else
   end;
 end
 
-@ list the |char_type| table in a similar way to the type table
+@ list the |char_type| table in a similar way to the type table.
+The code is based on the new JFM spec by texjporg.
 
 @d char_type(#)==4*(type_base+#) {here \#\ is an index, not a character}
-@d JIS_code(#)==tfm[char_type(#)+0]*@'400+tfm[char_type(#)+1] {JIS code from |char_type| table}
-@d JIS_type(#)==tfm[char_type(#)+2]*@'400+tfm[char_type(#)+3] {JIS type from |char_type| table}
+@d JIS_code(#)==tfm[char_type(#)+0]*@'400+tfm[char_type(#)+1]+tfm[char_type(#)+2]*@'400*@'400 {JIS code from |char_type| table}
+@d JIS_type(#)==tfm[char_type(#)+3] {JIS type from |char_type| table}
 
 @<list |char_type| table@>=
 this_code:=JIS_code(0);
@@ -491,7 +492,7 @@ for k:=@'40 to 255 do xchr[k]:=k;
 @ @<declare kanji conversion functions@>=
 procedure out_kanji(jis_code:integer); { prints a kanji character }
 var @!cx:integer; {KANJI code}
-i:0..4; {index of array}
+i:0..3; {index of array}
 begin@/
 if charcode_format=charcode_octal then
   begin cx:=jis_code; out('J '); {specify jiscode format}
