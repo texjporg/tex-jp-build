@@ -151,9 +151,9 @@ if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d xspace_ptr(#) == info(#+space_offset)
 @y
 @d xspace_ptr(#) == info(#+space_offset)
-@d read_sixteenx(#)==begin #:=fbyte;
-  if #>255 then abort;
+@d read_twentyfourx(#)==begin #:=fbyte;
   fget; #:=#*@'400+fbyte;
+  fget; #:=#+fbyte*@'1000;
   end
 @z
 
@@ -671,8 +671,10 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 
 @x
     fget; read_sixteen(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; read_sixteen(cx); font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
 @y
-    fget; read_sixteenx(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; read_twentyfourx(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; cx:=fbyte; font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
 @z
 
 @x
