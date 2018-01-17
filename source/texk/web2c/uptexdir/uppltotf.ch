@@ -96,6 +96,20 @@ else if (ch='U')or(ch='u') then
   incr(loc); ch:=xord[buffer[loc]]; cx:=cx+todig(ch)*@"100;
   incr(loc); ch:=xord[buffer[loc]]; cx:=cx+todig(ch)*@"10;
   incr(loc); ch:=xord[buffer[loc]]; cx:=cx+todig(ch);
+  { Uxxxx done, following code supports Uxxxxx and Uxxxxxx }
+  incr(loc); ch:=xord[buffer[loc]];
+  if (ch<>' ') then begin
+    cx:=cx*@"10+todig(ch);
+    incr(loc); ch:=xord[buffer[loc]];
+    if (ch<>' ') then
+      cx:=cx*@"10+todig(ch)
+    else begin
+      decr(loc); ch:=xord[buffer[loc]];
+      end
+    end
+  else begin
+    decr(loc); ch:=xord[buffer[loc]];
+    end;
   jis_code:=toDVI(fromUCS(cx));
   cur_char:=ch;
   if not valid_jis_code(jis_code) then
