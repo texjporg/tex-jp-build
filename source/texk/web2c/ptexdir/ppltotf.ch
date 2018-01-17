@@ -234,7 +234,7 @@ else
 @ @d out_size(#)==out((#) div 256); out((#) mod 256)
 @y
 @ @d out_size(#)==out((#) div 256); out((#) mod 256)
-@d out_size_three(#)==out_size((#) mod 65536); out((#) div 65536)
+@d out_kanji_code(#)==out_size((#) mod 65536); out((#) div 65536)
 @z
 
 @x [131] l.2256 - pTeX:
@@ -579,12 +579,22 @@ skip_to_paren;
 end
 
 @ Next codes used to write |kanji_type| to \.{JFM}.
+In the original JFM spec by ASCII Corporation, |jis_code| and |char_type|
+were packed into upper (2~bytes) and lower (2~bytes) halfword respectively.
+However, |char_type| is allowed only 0..255,
+so the upper byte of lower halfword was always 0.
+
+In the new JFM spec by texjporg, |jis_code| ``XXyyzz'' is packed into
+first 3~bytes in the form ``yy zz XX'', and |char_type| is packed into
+remaining 1~byte. The new spec is effectively upper compatible with
+the original, and it allows |jis_code| larger than 0x10000 (not really
+useful for me \.{pPLtoTF} but necessary for \.{upPLtoTF}).
 
 @<Output the kanji character type info@>=
 begin out_size(0); out_size(0); { the default }
 for kanji_type_index:=0 to max_kanji do
   begin if kanji_type[kanji_type_index]>0 then
-    begin out_size_three(index_to_jis(kanji_type_index));
+    begin out_kanji_code(index_to_jis(kanji_type_index));
     out(kanji_type[kanji_type_index]);
     if verbose then begin
       print('char index = ', kanji_type_index);
