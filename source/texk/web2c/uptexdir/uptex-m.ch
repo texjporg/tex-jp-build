@@ -152,8 +152,8 @@ if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @y
 @d xspace_ptr(#) == info(#+space_offset)
 @d read_twentyfourx(#)==begin #:=fbyte;
-  fget; #:=#*@'400+fbyte;
-  fget; #:=#+fbyte*@'1000;
+  fget; #:=#*@"100+fbyte;
+  fget; #:=#+fbyte*@"10000;
   end
 @z
 
