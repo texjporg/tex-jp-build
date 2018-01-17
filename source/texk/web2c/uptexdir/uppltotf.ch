@@ -98,16 +98,16 @@ else if (ch='U')or(ch='u') then
   incr(loc); ch:=xord[buffer[loc]]; cx:=cx+todig(ch);
   { Uxxxx done, following code supports Uxxxxx and Uxxxxxx }
   incr(loc); ch:=xord[buffer[loc]];
-  if (ch<>' ') then begin
+  if (ch<>' ') then begin {5th digit found, proceed}
     cx:=cx*@"10+todig(ch);
     incr(loc); ch:=xord[buffer[loc]];
-    if (ch<>' ') then
+    if (ch<>' ') then {6th digit found, proceed}
       cx:=cx*@"10+todig(ch)
-    else begin
+    else begin {6th digit not found, recover}
       decr(loc); ch:=xord[buffer[loc]];
       end
     end
-  else begin
+  else begin {5th digit not found, recover}
     decr(loc); ch:=xord[buffer[loc]];
     end;
   jis_code:=toDVI(fromUCS(cx));
