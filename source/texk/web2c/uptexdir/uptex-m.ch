@@ -148,16 +148,6 @@ if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @z
 
 @x
-@d xspace_ptr(#) == info(#+space_offset)
-@y
-@d xspace_ptr(#) == info(#+space_offset)
-@d read_twentyfourx(#)==begin #:=fbyte;
-  fget; #:=#*@"100+fbyte;
-  fget; #:=#+fbyte*@"10000;
-  end
-@z
-
-@x
 @d kanji=16 {kanji}
 @d kana=17 {hiragana, katakana, alphabet}
 @d other_kchar=18 {kanji codes}
@@ -667,14 +657,6 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
     if BYTE2(cur_chr)<>0 then append_char(BYTE2(cur_chr));
     if BYTE3(cur_chr)<>0 then append_char(BYTE3(cur_chr));
                               append_char(BYTE4(cur_chr));
-@z
-
-@x
-    fget; read_sixteen(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
-    fget; read_sixteen(cx); font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
-@y
-    fget; read_twentyfourx(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
-    fget; cx:=fbyte; font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
 @z
 
 @x
