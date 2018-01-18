@@ -52,7 +52,7 @@ static int verbose = 0;
 #define JFMV_ID  9
 #define IS_JFM(i) ((i) == JFM_ID || (i) == JFMV_ID)
 
-#define CHARACTER_INDEX(i)  ((i > 0xFFFFUL ? 0x10000UL : i))
+#define CHARACTER_INDEX(i)  ((i > 0x10FFFFUL ? 0x110000UL : i))
 #else
 #define CHARACTER_INDEX(i)  ((i))
 #endif
