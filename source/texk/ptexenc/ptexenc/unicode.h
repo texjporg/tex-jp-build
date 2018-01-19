@@ -21,8 +21,8 @@ extern long UCStoUPTEX(long ucs);
 extern long UPTEXtoUCS(long uptex);
 
 #define LONG(a,b,c,d) ( ((long)(a)<<24) | ((long)(b)<<16) | ((c)<<8) | (d) )
-#define BYTEx1(x) (((x)>>40) & 0xff)
-#define BYTEx2(x) (((x)>>32) & 0xff)
+#define BYTEx1(x) (((long)(x)>>40) & 0xff)
+#define BYTEx2(x) (((long)(x)>>32) & 0xff)
 #define BYTE1(x) (((x)>>24) & 0xff)
 #define BYTE2(x) (((x)>>16) & 0xff)
 #define BYTE3(x) (((x)>> 8) & 0xff)
