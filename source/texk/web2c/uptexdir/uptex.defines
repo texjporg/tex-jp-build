@@ -1,6 +1,4 @@
 { defined at kanji.c, kanji.h, ptexenc/ptexenc.h, ptexenc/unicode.h }
-@define function BYTEx1 ();
-@define function BYTEx2 ();
 @define function BYTE1 ();
 @define function BYTE2 ();
 @define function BYTE3 ();

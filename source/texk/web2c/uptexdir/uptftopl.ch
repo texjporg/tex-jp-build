@@ -49,8 +49,6 @@ i:0..5; {index of array}
 @x
   out(xchr[Hi(cx)]); out(xchr[Lo(cx)]);
 @y
-  if BYTEx1(cx)<>0 then out(xchr[BYTEx1(cx)]);
-  if BYTEx2(cx)<>0 then out(xchr[BYTEx2(cx)]);
   if BYTE1(cx)<>0 then out(xchr[BYTE1(cx)]);
   if BYTE2(cx)<>0 then out(xchr[BYTE2(cx)]);
   if BYTE3(cx)<>0 then out(xchr[BYTE3(cx)]);
