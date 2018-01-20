@@ -7152,7 +7152,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin if (tail=link(head))and(type(tail)=disp_node) then
+  begin if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
   else begin if char_tag(main_i)=gk_tag then
     begin main_k:=glue_kern_start(main_f)(main_i);
