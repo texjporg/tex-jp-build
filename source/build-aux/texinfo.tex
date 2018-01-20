@@ -3,11 +3,11 @@
 % Load plain if necessary, i.e., if running under initex.
 \expandafter\ifx\csname fmtname\endcsname\relax\input plain\fi
 %
-\def\texinfoversion{2017-12-01.13}
+\def\texinfoversion{2018-01-09.11}
 %
 % Copyright 1985, 1986, 1988, 1990, 1991, 1992, 1993, 1994, 1995,
 % 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
-% 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017
+% 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018
 % Free Software Foundation, Inc.
 %
 % This texinfo.tex file is free software: you can redistribute it and/or
@@ -2235,6 +2235,20 @@ end
 \font\smallersy=cmsy8
 \def\smallerecsize{0800}
 
+% Fonts for math mode superscripts (7pt).
+\def\sevennominalsize{7pt}
+\setfont\sevenrm\rmshape{7}{1000}{OT1}
+\setfont\seventt\ttshape{10}{700}{OT1TT}
+\setfont\sevenbf\bfshape{10}{700}{OT1}
+\setfont\sevenit\itshape{7}{1000}{OT1IT}
+\setfont\sevensl\slshape{10}{700}{OT1}
+\setfont\sevensf\sfshape{10}{700}{OT1}
+\setfont\sevensc\scshape{10}{700}{OT1}
+\setfont\seventtsl\ttslshape{10}{700}{OT1TT}
+\font\seveni=cmmi7
+\font\sevensy=cmsy7
+\def\sevenecsize{0700}
+
 % Fonts for title page (20.4pt):
 \def\titlenominalsize{20pt}
 \setfont\titlerm\rmbshape{12}{\magstep3}{OT1}
@@ -2368,6 +2382,20 @@ end
 \font\smalleri=cmmi8
 \font\smallersy=cmsy8
 \def\smallerecsize{0800}
+
+% Fonts for math mode superscripts (7pt).
+\def\sevennominalsize{7pt}
+\setfont\sevenrm\rmshape{7}{1000}{OT1}
+\setfont\seventt\ttshape{10}{700}{OT1TT}
+\setfont\sevenbf\bfshape{10}{700}{OT1}
+\setfont\sevenit\itshape{7}{1000}{OT1IT}
+\setfont\sevensl\slshape{10}{700}{OT1}
+\setfont\sevensf\sfshape{10}{700}{OT1}
+\setfont\sevensc\scshape{10}{700}{OT1}
+\setfont\seventtsl\ttslshape{10}{700}{OT1TT}
+\font\seveni=cmmi7
+\font\sevensy=cmsy7
+\def\sevenecsize{0700}
 
 % Fonts for title page (20.4pt):
 \def\titlenominalsize{20pt}
@@ -2504,24 +2532,19 @@ end
 
 % In order for the font changes to affect most math symbols and letters,
 % we have to define the \textfont of the standard families.
+% We don't bother to reset \scriptscriptfont; awaiting user need.
 %
 \def\resetmathfonts{%
   \textfont0=\rmfont \textfont1=\ifont \textfont2=\syfont
   \textfont\itfam=\itfont \textfont\slfam=\slfont \textfont\bffam=\bffont
   \textfont\ttfam=\ttfont \textfont\sffam=\sffont
   %
-  \scriptfont0=\rmfont \scriptfont1=\ifont \scriptfont2=\syfont
-  \scriptfont\itfam=\itfont \scriptfont\slfam=\slfont \scriptfont\bffam=\bffont
-  \scriptfont\ttfam=\ttfont \scriptfont\sffam=\sffont
-  %
-  \scriptscriptfont0=\rmfont
-  \scriptscriptfont1=\ifont
-  \scriptscriptfont2=\syfont
-  \scriptscriptfont\itfam=\itfont
-  \scriptscriptfont\slfam=\slfont
-  \scriptscriptfont\bffam=\bffont
-  \scriptscriptfont\ttfam=\ttfont
-  \scriptscriptfont\sffam=\sffont
+  % Fonts for superscript.  Note that the 7pt fonts are used regardless
+  % of the current font size.
+  \scriptfont0=\sevenrm \scriptfont1=\seveni \scriptfont2=\sevensy
+  \scriptfont\itfam=\sevenit \scriptfont\slfam=\sevensl
+  \scriptfont\bffam=\sevenbf \scriptfont\ttfam=\seventt
+  \scriptfont\sffam=\sevensf
 }
 
 %
@@ -2530,6 +2553,9 @@ end
 % of \STYLEfont, instead of just \STYLE.  We do this because \STYLE needs
 % to also set the current \fam for math mode.  Our \STYLE (e.g., \rm)
 % commands hardwire \STYLEfont to set the current font.
+%
+% The fonts used for \ifont are for "math italics"  (\itfont is for italics
+% in regular text).  \syfont is also used in math mode only.
 %
 % Each font-changing command also sets the names \lsize (one size lower)
 % and \lllsize (three sizes lower).  These relative commands are used
@@ -2631,26 +2657,11 @@ end
 % Markup style infrastructure.  \defmarkupstylesetup\INITMACRO will
 % define and register \INITMACRO to be called on markup style changes.
 % \INITMACRO can check \currentmarkupstyle for the innermost
-% style and the set of \ifmarkupSTYLE switches for all styles
-% currently in effect.
-\newif\ifmarkupvar
-\newif\ifmarkupsamp
-\newif\ifmarkupkey
-%\newif\ifmarkupfile % @file == @samp.
-%\newif\ifmarkupoption % @option == @samp.
-\newif\ifmarkupcode
-\newif\ifmarkupkbd
-%\newif\ifmarkupenv % @env == @code.
-%\newif\ifmarkupcommand % @command == @code.
-\newif\ifmarkuptex % @tex (and part of @math, for now).
-\newif\ifmarkupexample
-\newif\ifmarkupverb
-\newif\ifmarkupverbatim
+% style.
 
 \let\currentmarkupstyle\empty
 
 \def\setupmarkupstyle#1{%
-  \csname markup#1true\endcsname
   \def\currentmarkupstyle{#1}%
   \markupstylesetup
 }
@@ -2712,11 +2723,15 @@ end
 % lilypond developers report.  xpdf does work with the regular 0x27.
 %
 \def\codequoteright{%
-  \expandafter\ifx\csname SETtxicodequoteundirected\endcsname\relax
-    \expandafter\ifx\csname SETcodequoteundirected\endcsname\relax
-      '%
+  \ifmonospace
+    \expandafter\ifx\csname SETtxicodequoteundirected\endcsname\relax
+      \expandafter\ifx\csname SETcodequoteundirected\endcsname\relax
+        '%
+      \else \char'15 \fi
     \else \char'15 \fi
-  \else \char'15 \fi
+   \else
+     '%
+   \fi
 }
 %
 % and a similar option for the left quote char vs. a grave accent.
@@ -2724,13 +2739,17 @@ end
 % the code environments to do likewise.
 %
 \def\codequoteleft{%
-  \expandafter\ifx\csname SETtxicodequotebacktick\endcsname\relax
-    \expandafter\ifx\csname SETcodequotebacktick\endcsname\relax
-      % [Knuth] pp. 380,381,391
-      % \relax disables Spanish ligatures ?` and !` of \tt font.
-      \relax`%
+  \ifmonospace
+    \expandafter\ifx\csname SETtxicodequotebacktick\endcsname\relax
+      \expandafter\ifx\csname SETcodequotebacktick\endcsname\relax
+        % [Knuth] pp. 380,381,391
+        % \relax disables Spanish ligatures ?` and !` of \tt font.
+        \relax`%
+      \else \char'22 \fi
     \else \char'22 \fi
-  \else \char'22 \fi
+   \else
+     \relax`%
+   \fi
 }
 
 % Commands to set the quote options.

@@ -1,6 +1,6 @@
 /* tex-glyph.c: search for GF/PK files.
 
-   Copyright 1993, 1994, 1995, 1996, 2008, 2009, 2011 Karl Berry.
+   Copyright 1993, 1994, 1995, 1996, 2008, 2009, 2011, 2017 Karl Berry.
    Copyright 1997, 1998, 1999, 2005 Olaf Weber.
 
    This library is free software; you can redistribute it and/or
