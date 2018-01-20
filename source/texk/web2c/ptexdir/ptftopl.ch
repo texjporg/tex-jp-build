@@ -476,7 +476,7 @@ for type_num:=1 to ec do
       incr(type_count);
       out_kanji(index_to_jis(kanji_index));
       end;
-  if type_count=0 then bad('type ', type_num:1, 'has no characters in it!');
+  if type_count=0 then bad('type ', type_num:1, ' has no characters in it!');
   out_ln; right;
   end;
 
