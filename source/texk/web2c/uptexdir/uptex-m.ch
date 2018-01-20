@@ -237,7 +237,7 @@ for k:=0 to 511 do
 if (isinternalUPTEX) then begin
   { default: |other_kchar| }
   @t\hskip10pt@>kcat_code(@"0):=not_cjk;
-  @+@t\1@>for k:=@"2 to @"3 do kcat_code(k):=not_cjk; { Latin Extended-A .. Latin Extended-B }
+  @t\hskip10pt@>kcat_code(@"2):=not_cjk; { Latin Extended-A }
   @t\hskip10pt@>kcat_code(@"24):=hangul; { Hangul Jamo }
   @+@t\1@>for k:=@"66 to @"68 do kcat_code(k):=kanji; { CJK Radicals Supplement .. Ideographic Description Characters }
   @+@t\1@>for k:=@"6A to @"6B do kcat_code(k):=kana;  { Hiragana, Katakana }
