@@ -4384,7 +4384,7 @@ r:=link(q); link(q):=null; q:=link(temp_head); link(temp_head):=r;
 if last_disp<>0 then begin
   r:=get_node(small_node_size);
   type(r):=disp_node; disp_dimen(r):=last_disp;
-  link(r):=q; q:=r;
+  link(r):=q; q:=r; disp_called:=true;
   end;
 @z
 
@@ -7146,6 +7146,7 @@ begin if not is_char_node(tail)and(type(tail)=disp_node) then
 else
   begin prev_node:=tail; tail_append(get_node(small_node_size));
   type(tail):=disp_node; disp_dimen(tail):=0; prev_disp:=disp;
+  disp_called:=true
   end;
 end;
 
