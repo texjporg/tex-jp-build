@@ -57,7 +57,7 @@
 % (2016-06-06) AK  Hironori Kitagawa fixed a bug in check_box(box_p:pointer).
 %                  pTeX p3.7.1.
 % (2017-09-07) HK  pTeX p3.7.2 More restrictions on direction change commands.
-% (2017-12-31) HK  Added \ptexversion primitive and co. pTeX p3.8.
+% (2018-01-21) HK  Added \ptexversion primitive and co. pTeX p3.8.
 %
 
 @x
