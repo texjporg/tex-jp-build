@@ -1,5 +1,6 @@
 % This is a change file for PLtoTF
 %
+% (2018-01-21) HY pPLtoTF p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST PLtoTF p1.8 (3.5, Web2c 7.2)
 % (11/13/2000) KN PLtoTF p1.4 (3.5, Web2c 7.2)
 % (03/27/1998) KN PLtoTF p1.3 (3.5, Web2c 7.2)
@@ -15,7 +16,7 @@
 @d banner=='This is PLtoTF, Version 3.6' {printed when the program starts}
 @y
 @d my_name=='ppltotf'
-@d banner=='This is pPLtoTF, Version 3.6-p1.8'
+@d banner=='This is pPLtoTF, Version 3.6-p2.0'
   {printed when the program starts}
 @z
 
