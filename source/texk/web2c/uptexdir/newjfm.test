@@ -1,5 +1,5 @@
 #! /bin/sh -vx
-# $Id$
+# $Id: newjfm.test 46400 2018-01-21 05:26:27Z hironobu $
 # Copyright 2018 Karl Berry <tex-live@tug.org>
 # You may freely use, modify and/or distribute this file.
 
