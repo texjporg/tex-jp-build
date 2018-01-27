@@ -1,6 +1,6 @@
 % This is a change file for PLtoTF
 %
-% (2018-01-21) HY pPLtoTF p2.0 - new JFM spec by texjporg
+% (2018-01-27) HY pPLtoTF p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST PLtoTF p1.8 (3.5, Web2c 7.2)
 % (11/13/2000) KN PLtoTF p1.4 (3.5, Web2c 7.2)
 % (03/27/1998) KN PLtoTF p1.3 (3.5, Web2c 7.2)

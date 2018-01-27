@@ -1,4 +1,4 @@
-2018-01-21  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* tfmload.c, dvips.h: Support new JFM spec (3-byte characters
 	in TYPE > 0).

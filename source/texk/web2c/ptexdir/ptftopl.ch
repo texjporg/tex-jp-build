@@ -1,6 +1,6 @@
 % This is a change file for TFtoPL
 %
-% (2018-01-21) HY pTFtoPL p2.0 - new JFM spec by texjporg
+% (2018-01-27) HY pTFtoPL p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST TFtoPL p1.7 (3.1, Web2c 7.2)
 % (03/27/1998) KN TFtoPL p1.4 (3.1, Web2c 7.2)
 %

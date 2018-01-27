@@ -1,4 +1,4 @@
-2018-01-21  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* ppltotf.ch, ptftopl.ch: Introduce a new JFM spec, to allow
 	3-byte characters in TYPE > 0 for upTeX. The new spec is
