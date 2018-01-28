@@ -3925,8 +3925,8 @@ if (math_type(subscr(q))=empty)and(math_type(supscr(q))=empty)and@|
         begin cur_c:=a; a:=glue_kern_start(cur_f)(cur_i);
         {|cur_c|:=qi(|get_jfm_pos|(|math_kcode|(p),
                    |fam_fnt|(fam(nucleus(p))+|cur_size|)));}
-        repeat
          cur_i:=font_info[a].qqqq;
+       loop@+ begin
          if next_char(cur_i)=cur_c then
          if op_byte(cur_i)<kern_flag then
            begin gp:=font_glue[cur_f]; rr:=rem_byte(cur_i);
@@ -3950,8 +3950,10 @@ if (math_type(subscr(q))=empty)and(math_type(supscr(q))=empty)and@|
          else begin p:=new_kern(char_kern(cur_f)(cur_i));
            link(p):=link(q); link(q):=p; return;
            end;
-         incr(a);
-        until skip_byte(cur_i)>=stop_flag;
+         if skip_byte(cur_i)>=stop_flag then return;
+         a:=a+qo(skip_byte(cur_i))+1;
+         cur_i:=font_info[a].qqqq;
+         end;
         end;
       end;
   end;
@@ -7212,8 +7214,8 @@ cur_q:=tail;
 if inhibit_glue_flag<>true then
   begin if char_tag(main_i)=gk_tag then
     begin main_k:=glue_kern_start(main_f)(main_i);
-    repeat main_j:=font_info[main_k].qqqq;
-    if next_char(main_j)=cur_l then
+    main_j:=font_info[main_k].qqqq;
+    loop@+begin if next_char(main_j)=cur_l then
       begin if op_byte(main_j)<kern_flag then
         begin gp:=font_glue[main_f]; cur_r:=rem_byte(main_j);
         if gp<>null then
@@ -7242,8 +7244,10 @@ if inhibit_glue_flag<>true then
         goto skip_loop;
         end;
     end;
-  incr(main_k);
-  until skip_byte(main_j)>=stop_flag;
+    if skip_byte(main_j)>=stop_flag then goto skip_loop;
+    main_k:=main_k+qo(skip_byte(main_j))+1;
+    main_j:=font_info[main_k].qqqq;
+    end;
   end;
 end;
 skip_loop: inhibit_glue_flag:=false;

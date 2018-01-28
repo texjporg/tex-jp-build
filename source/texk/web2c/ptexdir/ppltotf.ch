@@ -439,6 +439,7 @@ if cur_code=comment_code then skip_to_end_of_item
 else  begin case cur_code of
   label_code:@<Read a glue label step@>;
   stop_code:@<Read a stop step@>;
+  skip_code:@<Read a skip step@>;
   krn_code:@<Read a (glue) kerning step@>;
   glue_code:@<Read a glue step@>;
   others:
