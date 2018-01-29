@@ -31,7 +31,7 @@ int jfmread(int kcode)
 		tag = char_info[0*4+2] % 4;
 		if (tag == 1) {
 			gk_ind = char_info[0*4+3]; /* remainder for <type0> */
-			if (glue_kern[gk_ind*4] == 254) /* support for large gluekern table */
+			if (glue_kern[gk_ind*4] > 128) /* huge gluekern table rearranged */
 				gk_ind = upair(&glue_kern[gk_ind*4+2]);
 			for (i = 0 ; i < nl-gk_ind ; i++) {
 				if (glue_kern[(gk_ind+i)*4+1] == ctype) {
@@ -55,7 +55,7 @@ int jfmread(int kcode)
 		tag = char_info[ctype*4+2] % 4;
 		if (tag == 1) {
 			gk_ind = char_info[ctype*4+3]; /* remainder for <type of kcode> */
-			if (glue_kern[gk_ind*4] == 254) /* support for large gluekern table */
+			if (glue_kern[gk_ind*4] > 128) /* huge gluekern table rearranged */
 				gk_ind = upair(&glue_kern[gk_ind*4+2]);
 			for (i = 0 ; i < nl-gk_ind ; i++) {
 				if (glue_kern[(gk_ind+i)*4+1] == 0) {

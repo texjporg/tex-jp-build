@@ -7225,7 +7225,7 @@ if inhibit_glue_flag<>true then
     begin main_k:=glue_kern_start(main_f)(main_i);
     main_j:=font_info[main_k].qqqq;
     if skip_byte(main_j)>stop_flag then {huge glue/kern table rearranged}
-      begin main_k:=lig_kern_restart(main_f)(main_j);
+      begin main_k:=glue_kern_restart(main_f)(main_j);
         main_j:=font_info[main_k].qqqq;
         end;
     loop@+begin if next_char(main_j)=cur_l then
