@@ -3936,7 +3936,7 @@ if (math_type(subscr(q))=empty)and(math_type(supscr(q))=empty)and@|
            cur_i:=font_info[a].qqqq;
            end;
        loop@+ begin
-         if next_char(cur_i)=cur_c then
+         if next_char(cur_i)=cur_c then if skip_byte(cur_i)<=stop_flag then
          if op_byte(cur_i)<kern_flag then
            begin gp:=font_glue[cur_f]; rr:=rem_byte(cur_i);
            if gp<>null then begin
@@ -7228,7 +7228,7 @@ if inhibit_glue_flag<>true then
       begin main_k:=glue_kern_restart(main_f)(main_j);
         main_j:=font_info[main_k].qqqq;
         end;
-    loop@+begin if next_char(main_j)=cur_l then
+    loop@+begin if next_char(main_j)=cur_l then if skip_byte(main_j)<=stop_flag then
       begin if op_byte(main_j)<kern_flag then
         begin gp:=font_glue[main_f]; cur_r:=rem_byte(main_j);
         if gp<>null then
