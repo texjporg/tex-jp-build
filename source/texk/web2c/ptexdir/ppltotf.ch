@@ -706,7 +706,7 @@ end;
 begin cx:=todig(xord[ch]);
   incr(loc); ch:=xord[buffer[loc]];
   while ((ch>="0")and(ch<="9"))or((ch>="A")and(ch<="F")) do
-    begin cx:=cx*16+todig(ch);
+    begin cx:=cx*16+todig(ch); {overflow might happen, but rare...}
     incr(loc); ch:=xord[buffer[loc]];
     end;
   decr(loc); ch:=xord[buffer[loc]];
