@@ -2388,6 +2388,7 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	ptexdir/tests/goth10.tfm ptexdir/tests/sample.dvi \
 	ptexdir/tests/min10.pl ptexdir/tests/min10.tfm \
 	ptexdir/tests/tmin10.pl ptexdir/tests/tmin10.tfm \
+	ptexdir/tests/skipjfmp.pl ptexdir/tests/skipjfmp.tfm \
 	ptexdir/ptrip/ptrip.diffs ptexdir/ptrip/texmf.cnf \
 	$(eptex_web_srcs) $(eptex_ch_srcs) eptexdir/eptex.defines \
 	eptexdir/ChangeLog eptexdir/Changes.txt eptexdir/README.txt \
@@ -2687,10 +2688,10 @@ DISTCLEANFILES = CXXLD.sh tangle.c tangle.h tangle.p tangle-web2c \
 	ptests/xexampl.blg ptests/memtest.bib ptests/memtest?.* \
 	ptests/xstory.dvityp ptests/xpagenum.typ ptests/xcmr10.tfm \
 	ptests/xcmr10.pl ptests/xsample.typ ptests/x*min10.* \
-	ptrip.diffs $(nodist_eptex_SOURCES) eptex.web eptex.ch \
-	eptex-web2c eptex.p eptex.pool eptex-tangle eptrip.diffs \
-	pdfprimitive-eptex.* $(nodist_uptex_SOURCES) uptex.web \
-	uptex.ch uptex-web2c uptex.p uptex.pool uptex-tangle \
+	ptests/xskipjfmp.* ptrip.diffs $(nodist_eptex_SOURCES) \
+	eptex.web eptex.ch eptex-web2c eptex.p eptex.pool eptex-tangle \
+	eptrip.diffs pdfprimitive-eptex.* $(nodist_uptex_SOURCES) \
+	uptex.web uptex.ch uptex-web2c uptex.p uptex.pool uptex-tangle \
 	$(upweb_programs:=.c) $(upweb_programs:=.h) \
 	$(upweb_programs:=.p) $(upweb_programs:=-web2c) \
 	$(upweb_programs:=.web) uptests/xexampl.aux \
@@ -3153,7 +3154,8 @@ pweb_tests = ptexdir/pbibtex.test ptexdir/pdvitype.test \
 	ptexdir/ppltotf.test ptexdir/ptftopl.test \
 	ptexdir/pbibtex-openout-test.pl \
 	ptexdir/pbibtex-longline-test.pl ptexdir/pbibtex-mem.test \
-	ptexdir/nissya.test ptexdir/sample.test ptexdir/yokotate.test
+	ptexdir/nissya.test ptexdir/sample.test ptexdir/yokotate.test \
+	ptexdir/skipjfmp.test
 eptex_CPPFLAGS = $(PTEXENC_INCLUDES) $(AM_CPPFLAGS) -I$(srcdir)/libmd5 \
 	$(am__append_135)
 
@@ -17453,6 +17455,7 @@ ptexdir/pdvitype.log ptexdir/sample.log: pdvitype$(EXEEXT)
 ptexdir/ppltotf.log: ppltotf$(EXEEXT)
 ptexdir/ptftopl.log: ptftopl$(EXEEXT)
 ptexdir/yokotate.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
+ptexdir/skipjfmp.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
 ptrip.diffs: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: ptrip-clean
