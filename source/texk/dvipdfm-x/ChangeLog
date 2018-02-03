@@ -1,3 +1,30 @@
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfm.c, number.[ch]: Support new JFM spec (3-byte characters
+	in TYPE > 0).
+
+2017-12-21  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* jpegimage.c: If j_info->xdpi and j_info->ydpi are not
+	determined in JPEG_scan_file(), they are assumed to be 72.0.
+
+2017-12-09  Jiang Jiang  <gzjjgod@gmail.com>
+
+	* tt_cmap.c (is_PUA_or_presentation, add_to_cmap_if_used):
+	Skip KANGXI RADICALs which are commonly double encoded.
+	http://tug.org/pipermail/xetex/2017-June/027147.html
+
+2017-10-02  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* dvi.c: Initialize direction mode in clear_state(). See
+	https://github.com/texjporg/tex-jp-build/issues/30
+
+2017-09-18  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* tt_gsub.c: Fixed a bug that only last specified OTL GSUB
+	feature was enabled.
+	* configure.ac: Version 20170918.
+
 2017-08-25  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
 
 	* pdfximage.h, spc_pdfm.c: Remove MAX_IMAGES which is not
@@ -7,7 +34,7 @@
 
 	* dpxutil.[ch], epdf.c, pdfdoc.[ch], pdfximage.c, xbb.c:
 	Support for /Rotate page attribute in PDF inclusion.
-	configure.ac: Version 20170806.
+	* configure.ac: Version 20170806.
 
 2017-06-27  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
 

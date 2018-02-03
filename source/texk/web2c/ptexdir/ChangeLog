@@ -1,3 +1,70 @@
+2018-02-02  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* ppltotf.ch: Fix issues GitHub:texjporg/tex-jp-build#47, #48
+	 - Support SKIP property in GLUEKERN table.
+	 - Improve hex charcode parsing.
+	* ptftopl.ch: Fix issue GitHub:texjporg/tex-jp-build#48
+	 - Print ASCII characters always in hex charcode (for upTFtoPL).
+	* ptex-base.ch: Fix issue GitHub:texjporg/tex-jp-build#47
+	 - Support SKIP property in GLUEKERN table.
+	 - Support huge GLUEKERN table with rearrangement.
+	* am/ptex.am: Add new tests.
+	* skipjfm.test, tests/skipjfm.{tex,pl,tfm}: New test files.
+
+2018-01-31  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Fix issue GitHub:texjporg/tex-jp-build#40
+	 - Insert a disp_node before the first character in a
+	   paragraph or an hbox, if disp_node is not inserted yet
+	   in the current list (in case it is unboxed).
+	 - Inhibit JFM glue after a disp_node at the very beginning of
+	   a paragraph or an hbox.
+	* tests/disp_jfm.tex, tests/disp_unbox.tex: Added.
+
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* ppltotf.ch, ptftopl.ch: Introduce a new JFM spec, to allow
+	3-byte characters in TYPE > 0 for upTeX. The new spec is
+	effectively upper compatible with the original one.
+	* ptex-base.ch, pdvitype.ch: Adapt to the new JFM spec.
+
+2018-01-21  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: New primitives: \ptexversion, \ptexminorversion
+	and \ptexrevision.
+	* ptex_version.h: pTeX version p3.8.0.
+
+2017-12-21  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Include zw etc. in "Dimensions can be in units ..."
+	help message.
+
+2017-11-30  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Suppress a space character printed after the name
+	of a multibyte control symbol in print_cs().
+	* tests/control-symbol.tex: Added.
+
+2017-10-04  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Direction check in \discretionary.
+
+2017-09-11  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Assigning the default value frees the KINSOKU table
+	and inhibit table, only if global or \currentgrouplevel=0.
+	* tests/kinsoku_table.tex: Added.
+
+2017-09-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Remove JFM glue after kinsoku penalty at the top
+	of list in adjust_hlist. Do not insert kinsoku penalty when it is
+	set to zero.
+
+2017-09-09  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* ptftopl.ch: Check for fifth byte (= upper byte of lf) of input JFM.
+
 2017-09-07  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* ptex-base.ch: More restrictions on direction change commands.

@@ -1,3 +1,41 @@
+2018-01-21  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* eptex.ech, etex.ch0, etex.ch1, pdfutils.ch: New primitive \epTeXversion.
+	* eptex.ech, eptex_version.h: e-pTeX version 180121.
+
+2017-12-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* fam256.ch: \delcode defaults to -1, not -4097, to be compatible
+	with TeX82. Correct assignment of negative \delcode.
+
+2017-12-15  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: Fix a error message "! File ended while ..."
+	while \pdfstrcmp, \pdfmdfivesum, etc. are used.
+
+2017-12-13  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* fam256.ch: \show\odelimiter should be \odelimiter, etc.
+
+2017-11-30  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: \pdfprimitive gives no error if argument is not a
+	primitive, just do nothing. (Synchronized pdftex r784, tl r45936)
+	* tests/pdfprimitive-test.tex, tests/pdfprimitive-eptex.log:
+	Add more tests for \pdfprimitive.
+
+2017-10-06  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: Merge prim_eqtb into eqtb, to avoid a bug in
+	the use of \pdfprimitive inside vertical mode.
+	* tests/pdfprimitive-test.tex, tests/pdfprimitive-eptex.log:
+	Add more tests for \pdfprimitive.
+
+2017-09-24  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: Avoid overwriting prim_* entries by primitive().
+	* eptex.ech, eptex_version.h: Change version to 170924.
+
 2017-09-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 	and Noriyuki Abe  <abenori@math.sci.hokudai.ac.jp>
 

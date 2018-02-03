@@ -1,5 +1,6 @@
 % This is a change file for TFtoPL
 %
+% (2018-01-27) HY pTFtoPL p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST TFtoPL p1.7 (3.1, Web2c 7.2)
 % (03/27/1998) KN TFtoPL p1.4 (3.1, Web2c 7.2)
 %
@@ -14,7 +15,7 @@
 @d banner=='This is TFtoPL, Version 3.3' {printed when the program starts}
 @y
 @d my_name=='ptftopl'
-@d banner=='This is pTFtoPL, Version 3.3-p1.7'
+@d banner=='This is pTFtoPL, Version 3.3-p2.0'
   {printed when the program starts}
 @z
 
@@ -92,6 +93,7 @@ else
   if eof(tfm_file) then abort('The input file is only four bytes long!');
   read(tfm_file,tfm[4]);
   if eof(tfm_file) then abort('The input file is only five bytes long!');
+  if tfm[4]>127 then abort('The fifth byte of the input file exceeds 127!');
   read(tfm_file,tfm[5]); lf:=tfm[4]*@'400+tfm[5];
   tmp_ptr:=6;
   end;
@@ -436,11 +438,12 @@ else
   end;
 end
 
-@ list the |char_type| table in a similar way to the type table
+@ list the |char_type| table in a similar way to the type table.
+The code is based on the new JFM spec by texjporg.
 
 @d char_type(#)==4*(type_base+#) {here \#\ is an index, not a character}
-@d JIS_code(#)==tfm[char_type(#)+0]*@'400+tfm[char_type(#)+1] {JIS code from |char_type| table}
-@d JIS_type(#)==tfm[char_type(#)+2]*@'400+tfm[char_type(#)+3] {JIS type from |char_type| table}
+@d JIS_code(#)==tfm[char_type(#)+0]*@'400+tfm[char_type(#)+1]+tfm[char_type(#)+2]*@'400*@'400 {JIS code from |char_type| table}
+@d JIS_type(#)==tfm[char_type(#)+3] {JIS type from |char_type| table}
 
 @<list |char_type| table@>=
 this_code:=JIS_code(0);
@@ -474,7 +477,7 @@ for type_num:=1 to ec do
       incr(type_count);
       out_kanji(index_to_jis(kanji_index));
       end;
-  if type_count=0 then bad('type ', type_num:1, 'has no characters in it!');
+  if type_count=0 then bad('type ', type_num:1, ' has no characters in it!');
   out_ln; right;
   end;
 
@@ -490,9 +493,9 @@ for k:=@'40 to 255 do xchr[k]:=k;
 @ @<declare kanji conversion functions@>=
 procedure out_kanji(jis_code:integer); { prints a kanji character }
 var @!cx:integer; {KANJI code}
-i:0..4; {index of array}
+i:0..3; {index of array}
 begin@/
-if charcode_format=charcode_octal then
+if (charcode_format=charcode_octal)or(jis_code<128) then
   begin cx:=jis_code; out('J '); {specify jiscode format}
   dig[0]:=Hi(cx) div 16; dig[1]:=Hi(cx) mod 16;
   dig[2]:=Lo(cx) div 16; dig[3]:=Lo(cx) mod 16;
