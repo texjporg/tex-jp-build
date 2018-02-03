@@ -6756,7 +6756,7 @@ var q,s,t,u,v,x,z:pointer;
   cx:KANJI_code; {temporary register for KANJI character}
   ax:ASCII_code; {temporary register for ASCII character}
   do_ins:boolean; {for inserting |xkanji_skip| into previous (or after) KANJI}
-  t_cont: boolean; 
+  t_cont: boolean;
 begin if link(p)=null then goto exit;
 if auto_spacing>0 then
   begin delete_glue_ref(space_ptr(p)); space_ptr(p):=kanji_skip;
@@ -6988,13 +6988,13 @@ end
   else begin
     print_int(p); print(" ");
     print_int(type(p)); print(" "); print_int(subtype(p));
-    print_ln; end; 
+    print_ln; end;
   end;
 
 @ @<Make |jchr_widow_penalty| node@>=
 begin p:=v; do_ins:=false; t:=null;
 if is_char_node(v) then
-  if font_dir[font(v)]<>dir_default then begin 
+  if font_dir[font(v)]<>dir_default then begin
     p:=link(p); do_ins:=true; end;
 x:=p; p:=link(p);
 while p<>null do begin
@@ -7014,13 +7014,13 @@ while p<>null do begin
   @<|jchr_widow_penalty|: Seek list for the next breakpoint@>;
 end;
 found: if t<>null then
-  begin if (not is_char_node(t))and(type(t)=penalty_node) then 
-    { |t|: penalty from kinsoku } 
+  begin if (not is_char_node(t))and(type(t)=penalty_node) then
+    { |t|: penalty from kinsoku }
     penalty(t):=penalty(t)+jchr_widow_penalty
   else if jchr_widow_penalty<>0 then
     begin s:=new_penalty(jchr_widow_penalty); subtype(s):=widow_pena;
       link(s):=link(t); link(t):=s;
-      if t_cont then 
+      if t_cont then
         begin q:=new_glue(u); subtype(q):=kanji_skip_code+1;
         link(q):=link(s); link(s):=q; end;
       end;
@@ -7035,7 +7035,7 @@ while p<>null do
     else begin
       case type(p) of
         kern_node: if subtype(p)=acc_kern then break else p:=link(p);
-        penalty_node: 
+        penalty_node:
 	  begin if pf then
           begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
 	  p:=link(p); end;
@@ -7043,7 +7043,7 @@ while p<>null do
           if subtype(p)=before then begin p:=link(p);
             while p<>null do
 	      if is_char_node(p) then p:=link(p)
-	      else begin 
+	      else begin
 	        if (type(p)=math_node)and(subtype(p)=after) then begin
                   p:=link(p); break end
 	        else p:=link(p); end;
