@@ -7043,13 +7043,14 @@ while p<>null do
         math_node:
           if subtype(p)=before then begin p:=link(p);
             while p<>null do
-	      if is_char_node(p) then p:=link(p)
-	      else begin
-	        if (type(p)=math_node)and(subtype(p)=after) then begin
-                  p:=link(p); break end
-	        else p:=link(p); end;
-            x:=p; do_ins:=false; end;
-	    { now |p| should be the node following |math_off| }
+              if is_char_node(p) then p:=link(p)
+              else begin
+                if (type(p)=math_node)and(subtype(p)=after) then begin
+                    p:=link(p); break end
+	            else p:=link(p); end;
+                x:=p; do_ins:=false; end
+          { now |p| should be the node following |math_off| }
+		  else p:=link(p);
 	othercases p:=link(p)
       endcases@/
     end;
