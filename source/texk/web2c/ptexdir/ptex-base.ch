@@ -6812,7 +6812,7 @@ while p<>null do
           if is_char_node(t) then
             if font_dir[font(t)]<>dir_default then t:=link(t);
           t:=link(link(t)); link(q):=t; p:=t;
-          @<Insert a space around the character |p|@>; incr(i);
+          @<Insert a space around the accentee |p|@>; incr(i);
           if link(q)<>t then link(link(q)):=a else link(q):=a;
           end;
         end;
@@ -6838,6 +6838,20 @@ end;
 if font_dir[font(p)]<>dir_default then
   begin KANJI(cx):=info(link(p));
   if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>;
+  p:=link(p); insert_skip:=after_wchar;
+  end
+else
+  begin ax:=qo(character(p));
+  if insert_skip=after_wchar then @<Insert KANJI-ASCII spacing@>;
+  if auto_xsp_code(ax)>=2 then
+    insert_skip:=after_schar else insert_skip:=no_skip;
+  end
+
+@ @<Insert a space around the accentee |p|@>=
+if font_dir[font(p)]<>dir_default then
+  begin KANJI(cx):=info(link(p));
+  if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>
+  else if insert_skip=after_wchar then @<Insert KANJI-KANJI spacing@>;
   p:=link(p); insert_skip:=after_wchar;
   end
 else
@@ -7035,7 +7049,7 @@ while p<>null do
     if non_discardable(p) then goto done
     else begin
       case type(p) of
-        kern_node: if subtype(p)=acc_kern then break else p:=link(p);
+        kern_node: if subtype(p)=acc_kern then goto done else p:=link(p);
         penalty_node:
 	  begin if pf then
           begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
@@ -7050,12 +7064,11 @@ while p<>null do
 	            else p:=link(p); end;
                 x:=p; do_ins:=false; end
           { now |p| should be the node following |math_off| }
-		  else p:=link(p);
+          else p:=link(p);
 	othercases p:=link(p)
       endcases@/
     end;
   end;
-
 
 @ @<|jchr_widow_penalty|: Ignore |ins_node| and co.@>=
   if p=null then goto found;
@@ -7083,9 +7096,9 @@ while p<>null do
     if non_discardable(p) then do_nothing;
     if type(p)=kern_node then
       if subtype(p)=acc_kern then
-        begin p:=link(p);
-        if font_dir[font(p)]<>dir_default then p:=link(p);
-        p:=link(p); end
+        begin q:=link(p);
+        if font_dir[font(q)]<>dir_default then q:=link(q);
+        q:=link(q); p:=link(q); break; end
       else
         begin q:=link(p);
 	if q=null then break
