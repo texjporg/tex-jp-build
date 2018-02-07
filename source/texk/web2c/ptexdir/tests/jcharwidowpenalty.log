@@ -1,0 +1,321 @@
+This is pTeX, Version 3.14159265-p3.8.0 (utf8.euc) (TeX Live 2018/dev) (preloaded format=ptex 2018.2.7)  7 FEB 2018 09:52
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**jcharwidowpenalty
+(./jcharwidowpenalty.tex
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 411.27754fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm ^^L (ligature fi)
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenmin あ
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin あ
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.9 \TEST{あああfiああ}
+                             % あり，「ああ」間
+
+> \box2=
+\hbox(10.14893+1.38855)x469.75499, glue set 402.39986fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\kern 3.4222 (for accent)
+.\hbox(6.67859+0.0)x2.77779, shifted -3.47034
+..\tenrm _
+.\kern -6.19998 (for accent)
+.\tenmin う
+.\tenmin あ
+.\tenmin あ
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin あ
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\kern 3.4222 (for accent)
+.\hbox(6.67859+0.0)x2.77779, shifted -3.47034
+..\tenrm _
+.\kern -6.19998 (for accent)
+.\tenmin い
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.10 \TEST{ああ\.うあああ\.い}
+                                  % あり，「あい」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 414.23863fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.12 \TEST{ああああいa}
+                              % なし
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 402.21094fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenmin う
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.13 \TEST{ああああいaう}
+                              % あり，「aう」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 392.58878fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenmin う
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin う
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.14 \TEST{ああああいaうう}
+                              % あり，「うう」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 409.23862fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\tenrm a
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.15 \TEST{ああああいaa}
+                              % なし
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 397.21092fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\tenrm a
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenmin う
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.16 \TEST{ああああいaaう}
+                              % あり，「aう」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 387.58876fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin い
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm a
+.\tenrm a
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenmin う
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin う
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.17 \TEST{ああああいaaうう}
+                              % あり，「うう」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 412.02202fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\penalty 10000(for kinsoku)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin 」
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(refer from jfm) 4.58203 minus 2.291
+.\tenmin い
+.\glue(refer from jfm) 4.58203 minus 2.291
+.\tenmin （
+.\penalty 10000(for kinsoku)
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.19 \TEST{あああ」い（}
+                              % あり，」と「い」間のグルー直前
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 418.10753fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin い
+.\penalty 10000(for kinsoku)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin ．
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.20 \TEST{ああああい．}
+                              % あり，「あい」間
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 410.14642fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin だ
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\tenrm ^^L (ligature fi)
+.\penalty 10000(for kinsoku)
+.\tenmin ．
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.22 \TEST{ああああだfi．}
+                              % なし
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 404.39432fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\glue(\xkanjiskip) 2.40553 plus 1.0 minus 1.0
+.\mathon
+.\teni x
+.\glue(\thickmuskip) 2.77771 plus 2.77771
+.\tenrm =
+.\penalty 500
+.\glue(\thickmuskip) 2.77771 plus 2.77771
+.\tenrm 5
+.\tenrm 5
+.\mathoff
+.\penalty 10000(for kinsoku)
+.\tenmin ）
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.24 \TEST{あああ$x=55$）}
+                              % なし
+
+> \box2=
+\hbox(7.77588+1.38855)x469.75499, glue set 411.02202fil, yoko direction
+.\displace 0.0
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\tenmin あ
+.\penalty 500(for \jcharwidowpenalty)
+.\glue(\kanjiskip) 0.0 plus 0.4 minus 0.4
+.\tenmin い
+.\kern 1.0
+.\tenmin い
+.\penalty 10000
+.\glue(\parfillskip) 0.0 plus 1.0fil
+.\glue(\rightskip) 0.0
+
+! OK.
+\TEST ...ar \global \setbox 2\lastbox }\showbox 2 
+                                                  
+l.26 \TEST{ああああい\kern1ptい}
+                                 % あり，「いい」間
+
+ )
+No pages of output.

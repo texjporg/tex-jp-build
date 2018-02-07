@@ -6338,8 +6338,8 @@ begin k:=0;
   until n=0;
   begin while k>0 do
     begin decr(k);
-	cx:=kansuji_char(dig[k]);
-	print_kanji(fromDVI(cx));
+      cx:=kansuji_char(dig[k]);
+      print_kanji(fromDVI(cx));
     end;
   end;
 end;
@@ -6712,7 +6712,7 @@ while p<>null do
     if subtype(p)=acc_kern then
       begin p:=link(p);
         if is_char_node(p) then
-	  if font_dir[font(p)]<>dir_default then p:=link(p);
+          if font_dir[font(p)]<>dir_default then p:=link(p);
         p:=link(link(p));
         if find_first_char then
           begin find_first_char:=false; first_char:=p;
@@ -6803,7 +6803,7 @@ while p<>null do
           if is_char_node(t) then
             if font_dir[font(t)]<>dir_default then t:=link(t);
           p:=link(link(t));
-	  if font_dir[font(p)]<>dir_default then
+          if font_dir[font(p)]<>dir_default then
             begin p:=link(p); insert_skip:=after_wchar; end
           else  insert_skip:=after_schar;
           end
@@ -6996,7 +6996,8 @@ end
 @<Show the node |p| (only for debug)@>=
   if p=null then begin print("NULL");  print_ln; end
   else begin if is_char_node(p) then begin
-    print_int(p); print(" CHAR ");
+    print_int(p); print(" CHAR "); print_int(font_dir[font(p)]);
+    print(" ");
     if font_dir[font(p)]<>dir_default then print_int(info(link(p)))
     else print_int(character(p));
     print_ln;end
@@ -7051,9 +7052,9 @@ while p<>null do
       case type(p) of
         kern_node: if subtype(p)=acc_kern then goto done else p:=link(p);
         penalty_node:
-	  begin if pf then
+          begin if pf then
           begin pf:=(z=p)and(subtype(p)=kinsoku_pena); if pf then x:=p; end;
-	  p:=link(p); end;
+          p:=link(p); end;
         math_node:
           if subtype(p)=before then begin p:=link(p);
             while p<>null do
@@ -7061,11 +7062,11 @@ while p<>null do
               else begin
                 if (type(p)=math_node)and(subtype(p)=after) then begin
                     p:=link(p); break end
-	            else p:=link(p); end;
+                    else p:=link(p); end;
                 x:=p; do_ins:=false; end
           { now |p| should be the node following |math_off| }
           else p:=link(p);
-	othercases p:=link(p)
+        othercases p:=link(p)
       endcases@/
     end;
   end;
@@ -7087,9 +7088,11 @@ while p<>null do
 
 @ @<|jchr_widow_penalty|: Seek list for the next breakpoint@>=
 while p<>null do
-  begin if is_char_node(p) then
+  begin
+  if is_char_node(p) then
     begin if font_dir[font(p)]<>dir_default then
-      begin if do_ins then break else do_ins:=true; end
+      begin if do_ins then break
+        else begin do_ins:=true; p:=link(p); end end
     else do_ins:=false; end
   else
     begin do_ins:=false;
@@ -7101,8 +7104,8 @@ while p<>null do
         q:=link(q); p:=link(q); break; end
       else
         begin q:=link(p);
-	if q=null then break
-	else if type(q)=glue_node then break; end
+        if q=null then break
+        else if type(q)=glue_node then break; end
     else break;
     end;
   x:=p; p:=link(p);
@@ -7221,8 +7224,8 @@ main_loop_j+1: space_factor:=1000;
     begin if not disp_called then
       begin prev_node:=tail; tail_append(get_node(small_node_size));
       type(tail):=disp_node; disp_dimen(tail):=0; disp_called:=true
-	  end;
-	fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
+      end;
+    fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
     link(tail):=main_p; tail:=main_p; last_jchr:=tail;
     fast_get_avail(main_p); info(main_p):=KANJI(cur_chr);
     link(tail):=main_p; tail:=main_p;
@@ -7288,7 +7291,7 @@ else
   if disp<>0 or not disp_called then
     begin prev_node:=tail; tail_append(get_node(small_node_size));
     type(tail):=disp_node; disp_dimen(tail):=disp; prev_disp:=disp;
-	disp_called:=true
+      disp_called:=true
     end;
 end;
 
