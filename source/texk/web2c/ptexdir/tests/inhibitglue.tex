@@ -27,7 +27,7 @@
 あ）\vrule\inhibitglue\vrule （あ\par % 全角アキ【修正】
 あ）\vrule （あ\par                   % 全角アキ
 
-\head{\disc}
+\head{\discretionary}
 \def\disc{\discretionary{}{}{}}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\disc\inhibitglue （あ\par        % 二分アキ
@@ -35,7 +35,7 @@
 あ）\disc\inhibitglue\disc （あ\par   % 全角アキ【修正】
 あ）\disc （あ\par                    % 全角アキ
 
-\head{\zskip}
+\head{\hskip0pt}
 \def\zskip{\hskip0pt}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\zskip\inhibitglue （あ\par       % 二分アキ
@@ -43,15 +43,15 @@
 あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
 あ）\zskip （あ\par                   % 全角アキ
 
-\head{\spc}
-\def\spc{\special{}}
+\head{\special}
+\def\spec{\special{}}
 あ）\inhibitglue （あ\par             % ベタ
-あ）\spc\inhibitglue （あ\par         % 二分アキ
-あ）\inhibitglue\spc （あ\par         % 二分アキ
-あ）\spc\inhibitglue\spc （あ\par     % 全角アキ【修正】
-あ）\spc （あ\par                     % 全角アキ
+あ）\spec\inhibitglue （あ\par        % 二分アキ
+あ）\inhibitglue\spec （あ\par        % 二分アキ
+あ）\spec\inhibitglue\spec （あ\par   % 全角アキ【修正】
+あ）\spec （あ\par                    % 全角アキ
 
-\head{\tlog}
+\head{\write-1}
 \def\tlog{\write-1{}}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\tlog\inhibitglue （あ\par        % 二分アキ
@@ -76,8 +76,8 @@
 あ）\ignsp\inhibitglue\ignsp （あ\par % 全角アキ【修正】
 あ）\ignsp （あ\par                   % 全角アキ
 
-\head{\spacefactor10000}
-\def\spf{\spacefactor10000 }
+\head{\spacefactor1000}
+\def\spf{\spacefactor1000 }
 あ）\inhibitglue （あ\par             % ベタ
 あ）\spf\inhibitglue （あ\par         % 二分アキ
 あ）\inhibitglue\spf （あ\par         % 二分アキ
