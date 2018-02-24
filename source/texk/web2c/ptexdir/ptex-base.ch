@@ -4845,6 +4845,13 @@ else begin link(tail):=q; tail:=q;
   end
 @z
 
+@x [47.????] pTeX: reset inhibit_glue_flag at rule_node
+vmode+hrule,hmode+vrule,mmode+vrule: begin tail_append(scan_rule_spec);
+@y
+vmode+hrule,hmode+vrule,mmode+vrule: begin tail_append(scan_rule_spec);
+  inhibit_glue_flag := false;
+@z
+
 @x [47.1060] pTeX: append_glue, inhibit_glue_flag
 end; {now |cur_val| points to the glue specification}
 tail_append(new_glue(cur_val));
@@ -4912,7 +4919,7 @@ leader_ship: if chr_code=a_leaders then print_esc("leaders")
 @x [47.1073] l.21523 - pTeX: \tate, \yoko
 any_mode(make_box): begin_box(0);
 @y
-any_mode(make_box): begin_box(0);
+any_mode(make_box): begin begin_box(0); inhibit_glue_flag:=false; end;
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
     if mode=hmode then 
@@ -5437,6 +5444,16 @@ begin if tail<>head then
     begin prev_node:=tail; tail_append(d);
     end;
   end;
+@z
+
+@x [47.????] pTeX: reset inhibit_glue_flag at disc_node
+procedure append_discretionary;
+var c:integer; {hyphen character}
+begin tail_append(new_disc);
+@y
+procedure append_discretionary;
+var c:integer; {hyphen character}
+begin tail_append(new_disc); inhibit_glue_flag:=false;
 @z
 
 @x pTeX: direction check in \discretionary 
@@ -7276,7 +7293,7 @@ if inhibit_glue_flag<>true then
   end;
   end;
 end;
-skip_loop: inhibit_glue_flag:=false;
+skip_loop: do_nothing;
 
 @ @<Basic printing...@>=
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
