@@ -64,4 +64,11 @@
 あ）\spf\inhibitglue\spf （あ\par     % 全角アキ【修正】
 あ）\spf （あ\par                     % 全角アキ
 
+\def\letab{\let\a\b}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\letab\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\letab （あ\par       % 二分アキ
+あ）\letab\inhibitglue\letab （あ\par % 全角アキ【修正】
+あ）\letab （あ\par                   % 全角アキ
+
 \bye

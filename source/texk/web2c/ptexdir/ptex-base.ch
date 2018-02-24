@@ -5960,6 +5960,12 @@ var a:small_number; {accumulated prefix codes so far}
 @!m:integer; {ditto}
 @z
 
+@x [49.1211] prefixed_command, inhibit_glue_flag
+begin a:=0;
+@y
+begin a:=0; inhibit_glue_flag:=false;
+@z
+
 @x [49.1217] l.23487 - pTeX: select cur font
 set_font: define(cur_font_loc,data,cur_chr);
 @y
