@@ -7293,7 +7293,7 @@ if inhibit_glue_flag<>true then
   end;
   end;
 end;
-skip_loop: do_nothing;
+skip_loop: inhibit_glue_flag:=false;
 
 @ @<Basic printing...@>=
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
