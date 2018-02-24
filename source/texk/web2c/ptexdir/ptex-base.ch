@@ -6269,6 +6269,15 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
   ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
 @z
 
+@x [53.????] do_extension, inhibit_glue_flag
+begin case cur_chr of
+open_node:@<Implement \.{\\openout}@>;
+@y
+begin inhibit_glue_flag:=false;
+case cur_chr of
+open_node:@<Implement \.{\\openout}@>;
+@z
+
 @x [53.1376] l.26309 - pTeX:
 @<Glob...@> =
 @!debug_format_file: boolean;

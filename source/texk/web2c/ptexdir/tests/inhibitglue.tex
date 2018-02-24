@@ -28,6 +28,20 @@
 あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
 あ）\zskip （あ\par                   % 全角アキ
 
+\def\spc{\special{}}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\spc\inhibitglue （あ\par         % 二分アキ
+あ）\inhibitglue\spc （あ\par         % 二分アキ
+あ）\spc\inhibitglue\spc （あ\par     % 全角アキ【修正】
+あ）\spc （あ\par                     % 全角アキ
+
+\def\tlog{\write-1{}}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\tlog\inhibitglue （あ\par        % 二分アキ
+あ）\inhibitglue\tlog （あ\par        % 二分アキ
+あ）\tlog\inhibitglue\tlog （あ\par   % 全角アキ【修正】
+あ）\tlog （あ\par                    % 全角アキ
+
 %%% unexpandable tokens
 
 あ）\inhibitglue （あ\par             % ベタ
