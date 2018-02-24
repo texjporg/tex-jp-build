@@ -1048,11 +1048,13 @@ if_pdfprimitive_code: begin
 @z
 
 @x \[if]pdfprimitive: main_loop
-any_mode(ignore_spaces): begin @<Get the next non-blank non-call...@>;
+any_mode(ignore_spaces): begin inhibit_glue_flag:=false;
+  @<Get the next non-blank non-call...@>;
   goto reswitch;
   end;
 @y
 any_mode(ignore_spaces): begin
+  inhibit_glue_flag:=false;
   if cur_chr = 0 then begin
     @<Get the next non-blank non-call...@>;
     goto reswitch;

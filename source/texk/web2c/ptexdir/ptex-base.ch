@@ -4845,6 +4845,16 @@ else begin link(tail):=q; tail:=q;
   end
 @z
 
+@x [46.????] pTeX: reset inhibit_glue_flag
+any_mode(relax),vmode+spacer,mmode+spacer,mmode+no_boundary:do_nothing;
+any_mode(ignore_spaces): begin @<Get the next non-blank non-call...@>;
+@y
+any_mode(relax),vmode+spacer,mmode+spacer,mmode+no_boundary:
+  inhibit_glue_flag:=false;
+any_mode(ignore_spaces): begin inhibit_glue_flag:=false;
+  @<Get the next non-blank non-call...@>;
+@z
+
 @x [47.????] pTeX: reset inhibit_glue_flag at rule_node
 vmode+hrule,hmode+vrule,mmode+vrule: begin tail_append(scan_rule_spec);
 @y
