@@ -4919,7 +4919,7 @@ leader_ship: if chr_code=a_leaders then print_esc("leaders")
 @x [47.1073] l.21523 - pTeX: \tate, \yoko
 any_mode(make_box): begin_box(0);
 @y
-any_mode(make_box): begin begin_box(0); inhibit_glue_flag:=false; end;
+any_mode(make_box): begin_box(0);
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
     if mode=hmode then 
@@ -5009,7 +5009,7 @@ q:pointer;
   end
 @z
 
-@x [47.1079] l.20920  - pTeX: disp_node, adjust direction
+@x [47.1079] l.20920 begin_box - pTeX: disp_node, adjust direction
 @!m:quarterword; {the length of a replacement list}
 @y
 @!r:pointer; {running behind |p|}
@@ -5018,6 +5018,13 @@ q:pointer;
 @!a_dir:eight_bits; {adjust direction}
 @!tx:pointer; {effective tail node}
 @!m:quarterword; {the length of a replacement list}
+@z
+
+@x [47.1079] l.20920 begin_box - pTeX: reset inhibit_glue_flag
+begin case cur_chr of
+@y
+begin inhibit_glue_flag:=false;
+case cur_chr of
 @z
 
 @x [47.1080] l.20937 - pTeX: disp_node, check head=tail
