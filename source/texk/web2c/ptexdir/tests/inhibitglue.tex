@@ -1,12 +1,6 @@
 %#!ptex
 
-%%% unexpandable tokens
-
-あ）\inhibitglue （あ\par             % ベタ
-あ）\relax\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\relax （あ\par       % 二分アキ
-あ）\relax\inhibitglue\relax （あ\par % 二分アキ：なぜ？
-あ）\relax （あ\par                   % 全角アキ
+%%% unexpandable tokens with non-discardable nodes
 
 あ）\inhibitglue （あ\par             % ベタ
 あ）\null\inhibitglue （あ\par        % 二分アキ
@@ -33,5 +27,27 @@
 あ）\inhibitglue\zskip （あ\par       % 二分アキ
 あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
 あ）\zskip （あ\par                   % 全角アキ
+
+%%% unexpandable tokens
+
+あ）\inhibitglue （あ\par             % ベタ
+あ）\relax\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\relax （あ\par       % 二分アキ
+あ）\relax\inhibitglue\relax （あ\par % 全角アキ【修正】
+あ）\relax （あ\par                   % 全角アキ
+
+\def\ignsp{\ignorespaces}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\ignsp\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\ignsp （あ\par       % 二分アキ
+あ）\ignsp\inhibitglue\ignsp （あ\par % 全角アキ【修正】
+あ）\ignsp （あ\par                   % 全角アキ
+
+\def\spf{\spacefactor10000 }
+あ）\inhibitglue （あ\par             % ベタ
+あ）\spf\inhibitglue （あ\par         % 二分アキ
+あ）\inhibitglue\spf （あ\par         % 二分アキ
+あ）\spf\inhibitglue\spf （あ\par     % 全角アキ【修正】
+あ）\spf （あ\par                     % 全角アキ
 
 \bye
