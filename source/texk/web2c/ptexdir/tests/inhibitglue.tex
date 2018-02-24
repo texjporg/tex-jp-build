@@ -1,0 +1,37 @@
+%#!ptex
+
+%%% unexpandable tokens
+
+あ）\inhibitglue （あ\par             % ベタ
+あ）\relax\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\relax （あ\par       % 二分アキ
+あ）\relax\inhibitglue\relax （あ\par % 二分アキ：なぜ？
+あ）\relax （あ\par                   % 全角アキ
+
+あ）\inhibitglue （あ\par             % ベタ
+あ）\null\inhibitglue （あ\par        % 二分アキ
+あ）\inhibitglue\null （あ\par        % 二分アキ
+あ）\null\inhibitglue\null （あ\par   % 全角アキ【修正】
+あ）\null （あ\par                    % 全角アキ
+
+あ）\inhibitglue （あ\par             % ベタ
+あ）\vrule\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\vrule （あ\par       % 二分アキ
+あ）\vrule\inhibitglue\vrule （あ\par % 全角アキ【修正】
+あ）\vrule （あ\par                   % 全角アキ
+
+\def\disc{\discretionary{}{}{}}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\disc\inhibitglue （あ\par        % 二分アキ
+あ）\inhibitglue\disc （あ\par        % 二分アキ
+あ）\disc\inhibitglue\disc （あ\par   % 全角アキ【修正】
+あ）\disc （あ\par                    % 全角アキ
+
+\def\zskip{\hskip0pt}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\zskip\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\zskip （あ\par       % 二分アキ
+あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
+あ）\zskip （あ\par                   % 全角アキ
+
+\bye
