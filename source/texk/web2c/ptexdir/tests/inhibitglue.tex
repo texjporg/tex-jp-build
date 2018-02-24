@@ -1,5 +1,6 @@
 %#!ptex2pdf
 \def\head#1{\par\noindent{\tentt ■\string#1}\par}
+
 %%% unexpandable tokens with non-discardable nodes
 
 \head{\null}
@@ -14,10 +15,10 @@
 \head{\unbox}
 \def\unbox{\unhcopy\@voidbox}
 あ）\inhibitglue （あ\par             % ベタ
-あ）\unbox\inhibitglue （あ\par        % 二分アキ
-あ）\inhibitglue\unbox （あ\par        % 二分アキ
-あ）\unbox\inhibitglue\unbox （あ\par   % 全角アキ【修正】
-あ）\unbox （あ\par                    % 全角アキ
+あ）\unbox\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\unbox （あ\par       % 二分アキ
+あ）\unbox\inhibitglue\unbox （あ\par % 全角アキ【修正】
+あ）\unbox （あ\par                   % 全角アキ
 
 \head{\vrule}
 あ）\inhibitglue （あ\par             % ベタ
