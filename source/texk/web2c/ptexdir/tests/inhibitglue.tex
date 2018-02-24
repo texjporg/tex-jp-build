@@ -1,19 +1,32 @@
-%#!ptex
-
+%#!ptex2pdf
+\def\head#1{\par\noindent{\tentt ■\string#1}\par}
 %%% unexpandable tokens with non-discardable nodes
 
+\head{\null}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\null\inhibitglue （あ\par        % 二分アキ
 あ）\inhibitglue\null （あ\par        % 二分アキ
 あ）\null\inhibitglue\null （あ\par   % 全角アキ【修正】
 あ）\null （あ\par                    % 全角アキ
 
+\catcode`\@=11
+\newbox\@voidbox
+\head{\unbox}
+\def\unbox{\unhcopy\@voidbox}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\unbox\inhibitglue （あ\par        % 二分アキ
+あ）\inhibitglue\unbox （あ\par        % 二分アキ
+あ）\unbox\inhibitglue\unbox （あ\par   % 全角アキ【修正】
+あ）\unbox （あ\par                    % 全角アキ
+
+\head{\vrule}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\vrule\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\vrule （あ\par       % 二分アキ
 あ）\vrule\inhibitglue\vrule （あ\par % 全角アキ【修正】
 あ）\vrule （あ\par                   % 全角アキ
 
+\head{\disc}
 \def\disc{\discretionary{}{}{}}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\disc\inhibitglue （あ\par        % 二分アキ
@@ -21,6 +34,7 @@
 あ）\disc\inhibitglue\disc （あ\par   % 全角アキ【修正】
 あ）\disc （あ\par                    % 全角アキ
 
+\head{\zskip}
 \def\zskip{\hskip0pt}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\zskip\inhibitglue （あ\par       % 二分アキ
@@ -28,6 +42,7 @@
 あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
 あ）\zskip （あ\par                   % 全角アキ
 
+\head{\spc}
 \def\spc{\special{}}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\spc\inhibitglue （あ\par         % 二分アキ
@@ -35,6 +50,7 @@
 あ）\spc\inhibitglue\spc （あ\par     % 全角アキ【修正】
 あ）\spc （あ\par                     % 全角アキ
 
+\head{\tlog}
 \def\tlog{\write-1{}}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\tlog\inhibitglue （あ\par        % 二分アキ
@@ -44,19 +60,22 @@
 
 %%% unexpandable tokens
 
+\head{\relax}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\relax\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\relax （あ\par       % 二分アキ
 あ）\relax\inhibitglue\relax （あ\par % 全角アキ【修正】
 あ）\relax （あ\par                   % 全角アキ
 
-\def\ignsp{\ignorespaces}
+\head{\ignorespaces}
+\let\ignsp=\ignorespaces
 あ）\inhibitglue （あ\par             % ベタ
 あ）\ignsp\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\ignsp （あ\par       % 二分アキ
 あ）\ignsp\inhibitglue\ignsp （あ\par % 全角アキ【修正】
 あ）\ignsp （あ\par                   % 全角アキ
 
+\head{\spacefactor10000}
 \def\spf{\spacefactor10000 }
 あ）\inhibitglue （あ\par             % ベタ
 あ）\spf\inhibitglue （あ\par         % 二分アキ
@@ -64,11 +83,13 @@
 あ）\spf\inhibitglue\spf （あ\par     % 全角アキ【修正】
 あ）\spf （あ\par                     % 全角アキ
 
+\head{\let}
 \def\letab{\let\a\b}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\letab\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\letab （あ\par       % 二分アキ
 あ）\letab\inhibitglue\letab （あ\par % 全角アキ【修正】
 あ）\letab （あ\par                   % 全角アキ
+
 
 \bye

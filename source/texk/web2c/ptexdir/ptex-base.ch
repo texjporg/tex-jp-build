@@ -5349,6 +5349,13 @@ var p:pointer; {the box}
 @!disp:scaled; {displacement}
 @z
 
+@x [47.1110] l.????? - reset inhibit_glue_flag at unpackage
+if p=null then return;
+@y
+inhibit_glue_flag:=false;
+if p=null then return;
+@z
+
 @x [47.1110] l.21314 - pTeX: free box node, delete kanji_skip
 if (abs(mode)=mmode)or((abs(mode)=vmode)and(type(p)<>vlist_node))or@|
    ((abs(mode)=hmode)and(type(p)<>hlist_node)) then
