@@ -123,7 +123,7 @@
 \setbox200=\hbox{）\relax
         \xdef\gluetype{\the\lastnodetype}\relax
         \xdef\jfmgluesubtype{\the\lastnodesubtype}\relax}
-\def\removejfmglue{%
+\protected\def\removejfmglue{%
   \ifnum\lastnodetype=\gluetype\relax
     \ifnum\lastnodesubtype=\jfmgluesubtype\relax
       \unskip
