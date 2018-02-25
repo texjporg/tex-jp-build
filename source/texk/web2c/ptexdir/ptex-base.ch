@@ -561,6 +561,7 @@ distance of the baselineshift between Latin characters and Kanji chatacters.
 @d explicit=1 {|subtype| of kern nodes from \.{\\kern}}
 @d acc_kern=2 {|subtype| of kern nodes from accents}
 @d ita_kern=3 {|subtype| of kern nodes from \.{\\/}}
+@d jfm_kern=4 {|subtype| of kern nodes refer from JFM}
 @z
 
 @x [10.157] l.3363 - pTeX: renumber nodes
@@ -676,6 +677,15 @@ print(", natural size "); print_scaled(height(p));
 begin print_esc("insert"); print_int(qo(subtype(p)));
 print_dir(abs(ins_dir(p)));
 print(", natural size "); print_scaled(height(p));
+@z
+
+@x [12.???] l.???? - pTeX: Display kern usage
+  if subtype(p)=acc_kern then print(" (for accent)");
+@.for accent@>
+@y
+  if subtype(p)=acc_kern then print(" (for accent)");
+@.for accent@>
+  if subtype(p)=jfm_kern then print(" (refer from jfm)");
 @z
 
 @x [12.194] l.3961 - pTeX: Display penalty usage
@@ -3960,7 +3970,7 @@ if (math_type(subscr(q))=empty)and(math_type(supscr(q))=empty)and@|
            p:=new_glue(gq); subtype(p):=jfm_skip+1;
            link(p):=link(q); link(q):=p; return;
            end
-         else begin p:=new_kern(char_kern(cur_f)(cur_i));
+         else begin p:=new_kern(char_kern(cur_f)(cur_i)); subtype(p):=jfm_kern;
            link(p):=link(q); link(q):=p; return;
            end;
          if skip_byte(cur_i)>=stop_flag then return;
@@ -7321,7 +7331,7 @@ if inhibit_glue_flag<>true then
         goto skip_loop;
         end
       else  begin
-        tail_append(new_kern(char_kern(main_f)(main_j)));
+        tail_append(new_kern(char_kern(main_f)(main_j))); subtype(tail):=jfm_kern;
         goto skip_loop;
         end;
     end;
