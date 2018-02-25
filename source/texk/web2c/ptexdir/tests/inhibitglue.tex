@@ -40,14 +40,6 @@
 あ）\disc\inhibitglue\disc （あ\par   % 全角アキ【修正前：二分アキ】
 あ）\disc （あ\par                    % 全角アキ
 
-\head{\hskip0pt}
-\def\zskip{\hskip0pt}
-あ）\inhibitglue （あ\par             % ベタ
-あ）\zskip\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\zskip （あ\par       % 二分アキ
-あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
-あ）\zskip （あ\par                   % 全角アキ
-
 \head{\special}
 \def\spec{\special{}}
 あ）\inhibitglue （あ\par             % ベタ
@@ -63,6 +55,32 @@
 あ）\inhibitglue\tlog （あ\par        % 二分アキ
 あ）\tlog\inhibitglue\tlog （あ\par   % 全角アキ【修正前：二分アキ】
 あ）\tlog （あ\par                    % 全角アキ
+
+%%% unexpandable tokens with discardable nodes (glue, kern, penalty)
+
+\head{\hskip0pt}
+\def\zskip{\hskip0pt}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\zskip\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\zskip （あ\par       % 二分アキ
+あ）\zskip\inhibitglue\zskip （あ\par % 全角アキ
+あ）\zskip （あ\par                   % 全角アキ
+
+\head{\kern0pt}
+\def\zkern{\kern0pt}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\zkern\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\zkern （あ\par       % 二分アキ
+あ）\zkern\inhibitglue\zkern （あ\par % 全角アキ
+あ）\zkern （あ\par                   % 全角アキ
+
+\head{\penalty10000}
+\def\zpena{\penalty10000 }
+あ）\inhibitglue （あ\par             % ベタ
+あ）\zpena\inhibitglue （あ\par       % 二分アキ
+あ）\inhibitglue\zpena （あ\par       % 二分アキ
+あ）\zpena\inhibitglue\zpena （あ\par % 二分アキ（？）
+あ）\zpena （あ\par                   % 全角アキ
 
 %%% unexpandable tokens
 
@@ -96,6 +114,29 @@
 あ）\inhibitglue\letab （あ\par       % 二分アキ
 あ）\letab\inhibitglue\letab （あ\par % 全角アキ【修正前：二分アキ】
 あ）\letab （あ\par                   % 全角アキ
+
+
+%%% \unskip vs \inhibitglue (e-pTeX \lastnodesubtype is required)
+\ifx\lastnodesubtype\undefined \expandafter\end \fi
+
+\head{\inhibitglue\ test}
+\setbox200=\hbox{）\relax
+        \xdef\gluetype{\the\lastnodetype}\relax
+        \xdef\jfmgluesubtype{\the\lastnodesubtype}\relax}
+\def\removejfmglue{%
+  \ifnum\lastnodetype=\gluetype\relax
+    \ifnum\lastnodesubtype=\jfmgluesubtype\relax
+      \unskip
+    \fi
+  \fi}
+
+あ）\inhibitglue あ\par % 消える
+あ）\relax\inhibitglue あ\par % 消えない
+あ）\relax\removejfmglue あ\par % 消える【新設】
+%% for tabular environment
+あ）\hskip20pt\unskip\unskip あ\par % 消える
+あ）\hskip20pt\unskip\inhibitglue あ\par % 消えない
+あ）\hskip20pt\unskip\removejfmglue あ\par % 消える【新設】
 
 
 \bye
