@@ -10,15 +10,20 @@
 あ）\null\inhibitglue\null （あ\par   % 全角アキ【修正前：二分アキ】
 あ）\null （あ\par                    % 全角アキ
 
-\catcode`\@=11
-\newbox\@voidbox
 \head{\unbox}
-\def\unbox{\unhcopy\@voidbox}
+\def\unbox{\unhcopy200 }
+\setbox200=\hbox{}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\unbox\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\unbox （あ\par       % 二分アキ
 あ）\unbox\inhibitglue\unbox （あ\par % 全角アキ【修正前：二分アキ】
 あ）\unbox （あ\par                   % 全角アキ
+\setbox200=\hbox{漢}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\unbox\inhibitglue （あ\par       % 前二分アキ
+あ）\inhibitglue\unbox （あ\par       % 後二分アキ
+あ）\unbox\inhibitglue\unbox （あ\par % 前後二分アキ【修正前：前二分アキ】
+あ）\unbox （あ\par                   % 前後二分アキ
 
 \head{\vrule}
 あ）\inhibitglue （あ\par             % ベタ
