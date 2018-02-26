@@ -57,6 +57,14 @@
 あ）\tlog\inhibitglue\tlog （あ\par   % 全角アキ【修正前：二分アキ】
 あ）\tlog （あ\par                    % 全角アキ
 
+\head{\insert}
+\def\ins{\insert201{}}
+あ）\inhibitglue （あ\par             % ベタ
+あ）\inhibitglue\ins （あ\par         % 二分アキ
+あ）\ins\inhibitglue （あ\par         % 二分アキ
+あ）\ins\inhibitglue\ins （あ\par     % 二分アキ？
+あ）\ins （あ\par                     % 全角アキ
+
 \head{\mark}
 \def\mrk{\mark{}}
 あ）\inhibitglue （あ\par             % ベタ
