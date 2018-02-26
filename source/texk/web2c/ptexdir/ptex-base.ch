@@ -5305,6 +5305,7 @@ end;
 @y
 procedure append_penalty;
 begin scan_int;
+  inhibit_glue_flag:=false;
   if not is_char_node(tail)and(type(tail)=disp_node) then
     prev_append(new_penalty(cur_val))
   else tail_append(new_penalty(cur_val));
