@@ -148,6 +148,31 @@
 あ）\letab\inhibitglue\letab （あ\par % 全角アキ【修正前：二分アキ】
 あ）\letab （あ\par                   % 全角アキ
 
+%%% grouping
+
+\head{\group}
+あ）（あ\par                 % 一括
+あ）{}（あ\par               % 別々
+あ）\inhibitglue  {}（あ\par % 左
+あ）{}\inhibitglue  （あ\par % 右
+あ）{}\inhibitglue{}（あ\par % 左（？）
+あ）{\inhibitglue  }（あ\par % 左（？）
+あ）\inhibitglue    （あ\par % なし
+あ）・あ\par                 % 一括
+あ）{}・あ\par               % 別々
+あ）{}\inhibitglue  ・あ\par % 左
+あ）\inhibitglue  {}・あ\par % 右
+あ）{}\inhibitglue{}・あ\par % 左（？）
+あ）{\inhibitglue  }・あ\par % 左（？）
+あ）\inhibitglue    ・あ\par % なし
+あ・（あ\par                 % 一括
+あ・{}（あ\par               % 別々
+あ・{}\inhibitglue  （あ\par % 左
+あ・\inhibitglue  {}（あ\par % 右
+あ・{}\inhibitglue{}（あ\par % 左（？）
+あ・{\inhibitglue  }（あ\par % 左（？）
+あ・\inhibitglue    （あ\par % なし
+
 
 %%% \unskip vs \inhibitglue (e-pTeX \lastnodesubtype is required)
 \ifx\lastnodesubtype\undefined \expandafter\end \fi
