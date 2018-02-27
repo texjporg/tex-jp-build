@@ -5225,10 +5225,11 @@ mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
        end;
 @z
 
-@x [47.1099] l.21184 - pTeX: insert and adjust
+@x [47.1099] l.21184 begin_insert_or_adjust - pTeX: insert and adjust
 new_save_level(insert_group); scan_left_brace; normal_paragraph;
 push_nest; mode:=-vmode; prev_depth:=ignore_depth;
 @y
+inhibit_glue_flag:=false;
 new_save_level(insert_group); scan_left_brace; normal_paragraph;
 push_nest; mode:=-vmode; direction:=adjust_dir; prev_depth:=ignore_depth;
 @z
@@ -5288,9 +5289,10 @@ insert_group: begin end_graf; q:=split_top_skip; add_glue_ref(q);
   end;
 @z
 
-@x [47.1101] l.21214 - pTeX: mark_node, prev_append
+@x [47.1101] l.21214 make_mark - pTeX: mark_node, prev_append
 mark_ptr(p):=def_ref; link(tail):=p; tail:=p;
 @y
+inhibit_glue_flag:=false;
 mark_ptr(p):=def_ref;
 if not is_char_node(tail)and(type(tail)=disp_node) then
   prev_append(p)
@@ -5819,8 +5821,7 @@ scan_math(nucleus(tail),kcode_noad(tail));
 @x [48.1167] pTeX: vcenter, inhibit_glue_flag
 mmode+vcenter: begin scan_spec(vcenter_group,false); normal_paragraph;
 @y
-mmode+vcenter: begin 
-  scan_spec(vcenter_group,false); normal_paragraph;
+mmode+vcenter: begin scan_spec(vcenter_group,false); normal_paragraph;
   inhibit_glue_flag:=false;
 @z
 
