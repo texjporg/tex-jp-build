@@ -4845,16 +4845,6 @@ else begin link(tail):=q; tail:=q;
   end
 @z
 
-@x [46.????] pTeX: reset inhibit_glue_flag
-any_mode(relax),vmode+spacer,mmode+spacer,mmode+no_boundary:do_nothing;
-any_mode(ignore_spaces): begin @<Get the next non-blank non-call...@>;
-@y
-any_mode(relax),vmode+spacer,mmode+spacer,mmode+no_boundary:
-  inhibit_glue_flag:=false;
-any_mode(ignore_spaces): begin inhibit_glue_flag:=false;
-  @<Get the next non-blank non-call...@>;
-@z
-
 @x [47.????] pTeX: reset inhibit_glue_flag at rule_node
 vmode+hrule,hmode+vrule,mmode+vrule: begin tail_append(scan_rule_spec);
 @y
@@ -5967,12 +5957,6 @@ procedure prefixed_command;
 label done,exit;
 var a:small_number; {accumulated prefix codes so far}
 @!m:integer; {ditto}
-@z
-
-@x [49.1211] prefixed_command, inhibit_glue_flag
-begin a:=0;
-@y
-begin a:=0; inhibit_glue_flag:=false;
 @z
 
 @x [49.1217] l.23487 - pTeX: select cur font
@@ -7334,7 +7318,7 @@ if inhibit_glue_flag<>true then
   end;
   end;
 end;
-skip_loop: inhibit_glue_flag:=false;
+skip_loop: do_nothing;
 
 @ @<Basic printing...@>=
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
