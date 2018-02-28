@@ -128,24 +128,24 @@
 \let\ignsp=\ignorespaces
 あ）\inhibitglue （あ\par             % ベタ
 あ）\ignsp\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\ignsp （あ\par       % 二分アキ
-あ）\ignsp\inhibitglue\ignsp （あ\par % 全角アキ【修正前：二分アキ】
+あ）\inhibitglue\ignsp （あ\par       % ベタ【修正前：二分アキ】
+あ）\ignsp\inhibitglue\ignsp （あ\par % 二分アキ
 あ）\ignsp （あ\par                   % 全角アキ
 
 \head{\spacefactor1000}
 \def\spf{\spacefactor1000 }
 あ）\inhibitglue （あ\par             % ベタ
 あ）\spf\inhibitglue （あ\par         % 二分アキ
-あ）\inhibitglue\spf （あ\par         % 二分アキ
-あ）\spf\inhibitglue\spf （あ\par     % 全角アキ【修正前：二分アキ】
+あ）\inhibitglue\spf （あ\par         % ベタ【修正前：二分アキ】
+あ）\spf\inhibitglue\spf （あ\par     % 二分アキ
 あ）\spf （あ\par                     % 全角アキ
 
 \head{\let}
 \def\letab{\let\a\b}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\letab\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\letab （あ\par       % 二分アキ
-あ）\letab\inhibitglue\letab （あ\par % 全角アキ【修正前：二分アキ】
+あ）\inhibitglue\letab （あ\par       % ベタ【修正前：二分アキ】
+あ）\letab\inhibitglue\letab （あ\par % 二分アキ
 あ）\letab （あ\par                   % 全角アキ
 
 %%% grouping
@@ -178,7 +178,7 @@
 \ifx\lastnodesubtype\undefined \expandafter\end \fi
 
 \head{\inhibitglue\ test}
-\setbox200=\hbox{）\relax
+\setbox200=\hbox{）\hskip10pt\unskip
   \xdef\gluetype{\the\lastnodetype}%
   \xdef\jfmgluesubtype{\the\lastnodesubtype}}
 \protected\def\removejfmglue{%
