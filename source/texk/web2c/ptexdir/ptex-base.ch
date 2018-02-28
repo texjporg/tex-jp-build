@@ -5342,14 +5342,7 @@ var p:pointer; {the box}
 @!disp:scaled; {displacement}
 @z
 
-@x [47.1110] l.????? - reset inhibit_glue_flag at unpackage
-if p=null then return;
-@y
-inhibit_glue_flag:=false;
-if p=null then return;
-@z
-
-@x [47.1110] l.21314 - pTeX: free box node, delete kanji_skip
+@x [47.1110] l.21314 unpackage - pTeX: free box node, delete kanji_skip
 if (abs(mode)=mmode)or((abs(mode)=vmode)and(type(p)<>vlist_node))or@|
    ((abs(mode)=hmode)and(type(p)<>hlist_node)) then
   begin print_err("Incompatible list can't be unboxed");
@@ -5402,24 +5395,33 @@ else
 while link(tail)<>null do tail:=link(tail);
 @y
 while link(tail)<>null do
+  {reset |inhibit_glue_flag| when a node other than disp_node is found;
+   disp_node is always inserted according to tex-jp-build issue 40}
   begin p:=tail; tail:=link(tail);
-  if not is_char_node(tail) then
+  if is_char_node(tail) then
+    inhibit_glue_flag:=false
+  else
     case type(tail) of
-    glue_node :
+    glue_node : begin
+      inhibit_glue_flag:=false;
       if (subtype(tail)=kanji_skip_code+1)
              or(subtype(tail)=xkanji_skip_code+1) then
         begin link(p):=link(tail);
         delete_glue_ref(glue_ptr(tail));
         free_node(tail,small_node_size); tail:=p;
         end;
-    penalty_node :
+      end;
+    penalty_node : begin
+      inhibit_glue_flag:=false;
       if subtype(tail)=widow_pena then
         begin link(p):=link(tail); free_node(tail,small_node_size);
         tail:=p;
         end;
+      end;
     disp_node :
       begin prev_disp:=disp; disp:=disp_dimen(tail); prev_node:=p;
       end;
+    othercases inhibit_glue_flag:=false;
     endcases;
   end;
 @z
