@@ -1,4 +1,5 @@
-%#!ptex2pdf
+%#!ptex2pdf -e inhibitglue.tex
+\parindent0pt
 \def\head#1{\par\noindent{\tentt ■\string#1}\par}
 \noautospacing \noautoxspacing
 
@@ -178,6 +179,11 @@
 あ\inhibitglue\setbox0=\vbox{『}（\par % ベタ
 あ\setbox0=\hbox{\inhibitglue}（\par   % 二分アキ
 ）\setbox0=\hbox{\inhibitglue}（\par   % 全角アキ
+
+あ\setbox0=\vbox{\hsize10zw【}（い\box0\par % （前：二分，【前：二分
+あ\setbox0=\vbox{\hsize10zw【\inhibitglue}（い\box0\par % （前：二分，【前：二分
+あ\inhibitglue\setbox0=\vbox{\hsize10zw【}（い\box0\par % （前：ベタ，【前：二分
+あ\setbox0=\vbox{\hsize10zw\leavevmode\inhibitglue【}（い\box0\par % （前：二分，【前：ベタ
 
 
 %%% \unskip vs \inhibitglue (e-pTeX \lastnodesubtype is required)
