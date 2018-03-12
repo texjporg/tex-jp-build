@@ -999,7 +999,7 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
   @!pdisp_field: scaled;
   @!head_field,@!tail_field,@!pnode_field,@!last_jchr_field: pointer;
   @!disp_called_field: boolean;
-  @!inhibit_glue_flag_field: boolean;
+  @!inhibit_glue_flag_field: integer;
 @z
 
 @x [16.213] l.4445 - pTeX: last_jchr, direction, adjust_dir, prev_{node,disp}
@@ -7221,7 +7221,7 @@ again_2:
       end;
     inhibit_glue: begin inhibit_glue_flag:=true; goto again_2; end;
     othercases begin ins_kp:=max_halfword;
-      cur_l:=qi(0); cur_r:=non_char; lig_stack:=null;
+      cur_l:=qi(-1); cur_r:=non_char; lig_stack:=null;
       end;
   endcases;
 @#
@@ -7271,7 +7271,9 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
+  begin { print("IF");print_int(cur_l); }
+  if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
+  if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
   else begin if char_tag(main_i)=gk_tag then
     begin main_k:=glue_kern_start(main_f)(main_i);
@@ -7315,7 +7317,11 @@ if inhibit_glue_flag<>true then
     end;
   end;
   end;
-end;
+end
+else
+  begin { print("IT");print_int(cur_l); }
+  if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
+  end;
 skip_loop: do_nothing;
 
 @ @<Basic printing...@>=

@@ -122,14 +122,19 @@
 あ）\inhibitglue （あ\par             % ベタ
 あ）\relax\inhibitglue （あ\par       % 二分アキ
 あ）\inhibitglue\relax （あ\par       % 二分アキ
-あ）\relax\inhibitglue\relax （あ\par % 全角アキ【修正前：二分アキ】
+あ）\relax\inhibitglue\relax （あ\par % 二分アキ
 あ）\relax （あ\par                   % 全角アキ
+ああ\inhibitglue\relax （あ\par       % 二分
+ああ\relax\inhibitglue （あ\par       % ベタ
+あ）\relax\inhibitglue ああ\par       % 二分
+あ）\inhibitglue\relax ああ\par       % ベタ
+
 
 \head{\ignorespaces}
 \let\ignsp=\ignorespaces
 あ）\inhibitglue （あ\par             % ベタ
 あ）\ignsp\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\ignsp （あ\par       % ベタ【修正前：二分アキ】
+あ）\inhibitglue\ignsp （あ\par       % ベタ
 あ）\ignsp\inhibitglue\ignsp （あ\par % 二分アキ
 あ）\ignsp （あ\par                   % 全角アキ
 
@@ -137,7 +142,7 @@
 \def\spf{\spacefactor1000 }
 あ）\inhibitglue （あ\par             % ベタ
 あ）\spf\inhibitglue （あ\par         % 二分アキ
-あ）\inhibitglue\spf （あ\par         % ベタ【修正前：二分アキ】
+あ）\inhibitglue\spf （あ\par         % ベタ
 あ）\spf\inhibitglue\spf （あ\par     % 二分アキ
 あ）\spf （あ\par                     % 全角アキ
 
@@ -145,7 +150,7 @@
 \def\letab{\let\a\b}
 あ）\inhibitglue （あ\par             % ベタ
 あ）\letab\inhibitglue （あ\par       % 二分アキ
-あ）\inhibitglue\letab （あ\par       % ベタ【修正前：二分アキ】
+あ）\inhibitglue\letab （あ\par       % ベタ
 あ）\letab\inhibitglue\letab （あ\par % 二分アキ
 あ）\letab （あ\par                   % 全角アキ
 
@@ -154,24 +159,24 @@
 \head{\group}
 あ）（あ\par                 % 一括
 あ）{}（あ\par               % 別々
-あ）\inhibitglue  {}（あ\par % 左
-あ）{}\inhibitglue  （あ\par % 右
+あ）\inhibitglue  {}（あ\par % なし
+あ）{}\inhibitglue  （あ\par % 左
 あ）{}\inhibitglue{}（あ\par % 左（？）
 あ）{\inhibitglue  }（あ\par % 左（？）
 あ）\inhibitglue    （あ\par % なし
 あ）・あ\par                 % 一括
 あ）{}・あ\par               % 別々
 あ）{}\inhibitglue  ・あ\par % 左
-あ）\inhibitglue  {}・あ\par % 右
-あ）{}\inhibitglue{}・あ\par % 左（？）
-あ）{\inhibitglue  }・あ\par % 左（？）
+あ）\inhibitglue  {}・あ\par % なし
+あ）{}\inhibitglue{}・あ\par % 左
+あ）{\inhibitglue  }・あ\par % 左
 あ）\inhibitglue    ・あ\par % なし
 あ・（あ\par                 % 一括
 あ・{}（あ\par               % 別々
 あ・{}\inhibitglue  （あ\par % 左
-あ・\inhibitglue  {}（あ\par % 右
-あ・{}\inhibitglue{}（あ\par % 左（？）
-あ・{\inhibitglue  }（あ\par % 左（？）
+あ・\inhibitglue  {}（あ\par % なし
+あ・{}\inhibitglue{}（あ\par % 左
+あ・{\inhibitglue  }（あ\par % 左
 あ・\inhibitglue    （あ\par % なし
 
 
