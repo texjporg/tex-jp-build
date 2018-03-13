@@ -5425,8 +5425,8 @@ else
 while link(tail)<>null do tail:=link(tail);
 @y
 while link(tail)<>null do
-  {reset |inhibit_glue_flag| when a node other than disp_node is found;
-   disp_node is always inserted according to tex-jp-build issue 40}
+  {reset |inhibit_glue_flag| when a node other than |disp_node| is found;
+   |disp_node| is always inserted according to tex-jp-build issue 40}
   begin p:=tail; tail:=link(tail);
   if is_char_node(tail) then
     inhibit_glue_flag:=false
