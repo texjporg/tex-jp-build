@@ -30,10 +30,7 @@ void get_usertable(char *name)
 	}
 	for (l = 0; fgets(buf, BUF_SIZE, fp) != NULL; l++) {
 		if ((endptr=strchr(buf, '%')) != NULL) strcpy(endptr,"\n");  /* ignore after '%'  */
-		if (!strncmp(buf, "\n", 1)) { /* empty line */
-			charset_mode = 0;
-			continue;
-		}
+		if (!strncmp(buf, "\n", 1)) continue;                        /* ignore empty line */
 		tok = strtok(buf, "\t");
 		if (!strcmp(tok, "REPLACE")) {
 			charset_mode = 0;
