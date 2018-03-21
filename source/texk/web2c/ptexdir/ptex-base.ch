@@ -73,8 +73,8 @@
 @y
 @d pTeX_version=3
 @d pTeX_minor_version=8
-@d pTeX_revision==".0"
-@d pTeX_version_string=='-p3.8.0' {current \pTeX\ version}
+@d pTeX_revision==".1"
+@d pTeX_version_string=='-p3.8.1' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -6449,16 +6449,19 @@ inserting a space between 2byte-char and 1byte-char.
 @d cur_pos=1
 
 @ @<Cases of |main_control| that don't...@>=
-  any_mode(inhibit_glue): inhibit_glue_flag:=true;
+  any_mode(inhibit_glue): inhibit_glue_flag:=(cur_chr=0);
 
 @ @<Put each...@>=
 primitive("inhibitglue",inhibit_glue,0);
 @!@:inhibit_glue_}{\.{\\inhibitglue} primitive@>
+primitive("disinhibitglue",inhibit_glue,1);
+@!@:dis_inhibit_glue_}{\.{\\disinhibitglue} primitive@>
 primitive("inhibitxspcode",assign_inhibit_xsp_code,inhibit_xsp_code_base);
 @!@:inhibit_xsp_code_}{\.{\\inhibitxspcode} primitive@>
 
 @ @<Cases of |print_cmd_chr|...@>=
-inhibit_glue: print_esc("inhibitglue");
+inhibit_glue: if (chr_code>0) then print_esc("disinhibitglue")
+  else print_esc("inhibitglue");
 assign_inhibit_xsp_code: print_esc("inhibitxspcode");
 
 @ @<Declare procedures needed in |scan_something_internal|@>=
@@ -7219,7 +7222,7 @@ again_2:
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       end;
-    inhibit_glue: begin inhibit_glue_flag:=true; goto again_2; end;
+    inhibit_glue: begin inhibit_glue_flag:=(cur_chr=0); goto again_2; end;
     othercases begin ins_kp:=max_halfword;
       cur_l:=qi(-1); cur_r:=non_char; lig_stack:=null;
       end;
