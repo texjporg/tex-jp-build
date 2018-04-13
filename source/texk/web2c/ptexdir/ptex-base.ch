@@ -6433,8 +6433,7 @@ if n=new_pos then
   end
 else
   begin repeat
-  if inhibit_xsp_code(p)=0 then goto done1;
-  if inhibit_xsp_code(p)=c then goto done;
+  if inhibit_xsp_code(p)<>0 then if inhibit_xsp_code(p)=c then goto done;
   incr(p); if p>255 then p:=0;
   until s=p;
 done1: p:=no_entry;
@@ -6447,7 +6446,7 @@ assign_inhibit_xsp_code:
 begin p:=cur_chr; scan_int; n:=cur_val; scan_optional_equals; scan_int;
 if is_char_kanji(n) then
   begin j:=get_inhibit_pos(tokanji(n),new_pos);
-  if (j<>no_entry)and(cur_val>inhibit_after)and(global or cur_level=level_one) then
+  if (j<>no_entry)and(cur_val>inhibit_after)and(global or(cur_level=level_one)) then
     begin n:=0; cur_val:=0 end
     { remove the entry from inhibit table }
   else if j=no_entry then
@@ -6509,8 +6508,7 @@ if n=new_pos then
   end
 else
   begin repeat
-  if kinsoku_type(p)=0 then goto done1;
-  if kinsoku_code(p)=c then goto done;
+  if kinsoku_type(p)<>0 then if kinsoku_code(p)=c then goto done;
   incr(p); if p>255 then p:=0;
   until s=p;
 done1: p:=no_entry;
@@ -6523,7 +6521,7 @@ assign_kinsoku:
 begin p:=cur_chr; scan_int; n:=cur_val; scan_optional_equals; scan_int;
 if is_char_ascii(n) or is_char_kanji(n) then
   begin j:=get_kinsoku_pos(tokanji(n),new_pos);
-  if (j<>no_entry)and(cur_val=0)and(global or cur_level=level_one) then
+  if (j<>no_entry)and(cur_val=0)and(global or(cur_level=level_one)) then
     define(kinsoku_base+j,0,0) { remove the entry from KINSOKU table }
   else begin
     if j=no_entry then begin
