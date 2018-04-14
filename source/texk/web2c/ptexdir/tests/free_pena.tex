@@ -1,0 +1,49 @@
+%#!eptex -ini -etex
+\let\dump\relax
+\batchmode
+\input plain
+
+\errorstopmode
+\catcode`@=11
+\newcount\@tempcnta
+\newcount\@tempcntb
+\newcount\@tempcntc
+
+\def\MYCHAR#1{%
+  \@tempcntc=\numexpr7*#1+"101\relax
+  \@tempcnta=\@tempcntc\divide\@tempcnta 94
+  \@tempcntb=\numexpr\@tempcntc-94*\@tempcnta+1\relax
+  \CNTA=\kuten\numexpr"100+"100*\@tempcnta+\@tempcntb\relax
+}
+
+\newcount\CNT\newcount\CNTA
+\CNT=0
+\loop
+  \MYCHAR\CNT
+  \prebreakpenalty\CNTA=\numexpr\CNT+1\relax
+  \advance\CNT1
+  \ifnum\CNT<256
+\repeat
+
+\newcount\CNTB
+
+\loop
+  \MYCHAR\CNTB
+  \global\prebreakpenalty\CNTA=0
+  \immediate\write0{}\message{<\the\CNTB>}
+{%
+\CNT=0
+\loop
+  \MYCHAR\CNT
+  \count@=\numexpr -\CNT-1+\prebreakpenalty\CNTA\relax
+  \ifnum\count@=0\else\ifnum\CNT=\CNTB\else\message{\the\CNT}\fi\fi
+  \advance\CNT1
+  \ifnum\CNT<256
+\repeat
+}
+  \MYCHAR\CNTB
+  \global\prebreakpenalty\CNTA=\numexpr\CNTB+1\relax
+  \advance\CNTB1
+  \ifnum\CNTB<256
+\repeat
+\bye
