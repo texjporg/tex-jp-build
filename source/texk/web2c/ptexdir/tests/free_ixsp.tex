@@ -39,7 +39,8 @@
 \loop
   \MYCHAR\CNT
   \count@=\numexpr 1-\inhibitxspcode\CNTA\relax
-  \ifnum\count@=0\else\ifnum\CNTB=\CNT\else\errmessage{<\the\CNTB, \the\CNT>}\fi\fi
+  \ifnum\count@=0\else\ifnum\CNTB=\CNT\else
+    \errmessage{<\the\CNTB, \the\CNT, \the\inhibitxspcode\CNTA>}\fi\fi
   \advance\CNT1\relax
   \ifnum\CNT<\LIM
 \repeat
