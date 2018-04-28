@@ -58,6 +58,7 @@
 %                  pTeX p3.7.1.
 % (2017-09-07) HK  pTeX p3.7.2 More restrictions on direction change commands.
 % (2018-01-21) HK  Added \ptexversion primitive and co. pTeX p3.8.
+% (2018-04-14) HK  pTeX p3.8.1 Bug fix for discontinuous KINSOKU table.
 %
 
 @x
@@ -73,8 +74,8 @@
 @y
 @d pTeX_version=3
 @d pTeX_minor_version=8
-@d pTeX_revision==".0"
-@d pTeX_version_string=='-p3.8.0' {current \pTeX\ version}
+@d pTeX_revision==".1"
+@d pTeX_version_string=='-p3.8.1' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
