@@ -1610,7 +1610,8 @@ else show_token_list(link(start),loc,100000) {avoid reference count}
 begin_pseudoprint;
 if token_type<macro then
   begin  if (token_type=backed_up)and(loc<>null) then
-    begin  if (link(start)=null)and(check_kanji(info(start))) then {|wchar_token|}
+    begin  if (link(start)=null)and(info(start)<cs_token_flag)
+	    and(check_kanji(info(start))) then {|wchar_token|}
       begin cur_input:=input_stack[base_ptr-1];
       s:=get_avail; info(s):=Lo(info(loc));
       cur_input:=input_stack[base_ptr];
