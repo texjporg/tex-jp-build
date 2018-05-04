@@ -66,6 +66,7 @@ eptex_ch_srcs = \
 	$(eptex_ch_synctex) \
 	eptexdir/fam256.ch \
 	eptexdir/pdfutils.ch \
+	eptexdir/expanded.ch \
 	tex-binpool.ch
 
 EXTRA_DIST += $(eptex_web_srcs) $(eptex_ch_srcs) eptexdir/eptex.defines
