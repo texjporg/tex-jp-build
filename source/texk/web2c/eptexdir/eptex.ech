@@ -242,10 +242,7 @@ eptex_banner_code: do_nothing;
 eTeX_revision_code: print(eTeX_revision);
 @y
 eTeX_revision_code: print(eTeX_revision);
-eptex_banner_code: begin
-  print(banner_str); print(" ("); 
-  texprintstring(get_enc_string); print(')'); print(banner_kpse_str);
-  end;
+eptex_banner_code:  print(banner_str);
 @z
 
 @x e-pTeX: if primitives - leave room for three e-TeX codes
@@ -655,7 +652,6 @@ procedure print_direction(@!d:integer); {print the direction represented by d}
 @y
 @ @<Glob...@>=
 @!banner_str: str_number;
-@!banner_kpse_str: str_number;
 
 @* \[56] System-dependent changes.
 @z

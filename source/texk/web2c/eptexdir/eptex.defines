@@ -48,4 +48,3 @@
 @define procedure getmd5sum();
 
 @define procedure makebannerstr;
-@define procedure texprintstring();

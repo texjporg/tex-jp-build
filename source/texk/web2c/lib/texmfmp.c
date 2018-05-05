@@ -3354,34 +3354,26 @@ void makebannerstr(void)
     if (banner_init)
         return;
 
-    slen = SMALL_BUF_SIZE + strlen(ptexbanner);
+    slen = SMALL_BUF_SIZE + strlen(ptexbanner)
+#if defined(epTeX)||defined(eupTeX)
+           + strlen(get_enc_string()) 
+#endif
+           + strlen(versionstring) + strlen(kpathsea_version_string);
     s = xtalloc(slen, char);
     /* The Web2c version string starts with a space.  */
-    i = snprintf(s, slen, "%s", ptexbanner);
-    check_nprintf(i, slen);
-    bannerstr = maketexstring(s);
-    xfree(s);
-    slen = SMALL_BUF_SIZE +
-        strlen(versionstring) + 
-        strlen(kpathsea_version_string);
-    s = xtalloc(slen, char);
-    /* The Web2c version string starts with a space.  */
-    i = snprintf(s, slen, "%s %s", 
+    i = snprintf(s, slen,
+#if defined(epTeX)||defined(eupTeX)
+                 "%s (%s)%s %s", ptexbanner, get_enc_string(),
+#else
+                 "%s%s %s", ptexbanner,
+#endif
                  versionstring, kpathsea_version_string);
     check_nprintf(i, slen);
-    bannerkpsestr = maketexstring(s);
+    bannerstr = maketexstring(s);
     xfree(s);
     banner_init = true;
 }
 #endif /* pdfTeX or e-pTeX or e-upTeX or XeTeX */
-#if defined (epTeX) || defined (eupTeX)
-void texprintstring(const_string s)
-{
-  int i;
-  for (i=0; i<strlen(s); i++) zprint(s[i]);
-}
-
-#endif /* e-pTeX or e-upTeX */
 #endif /* TeX */
 
 /* Metafont/MetaPost fraction routines. Replaced either by assembler or C.
