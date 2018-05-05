@@ -57,3 +57,6 @@
 @define procedure getfilesize();
 @define procedure getfiledump();
 @define procedure getmd5sum();
+
+@define procedure makebannerstr;
+@define procedure texprintstring();

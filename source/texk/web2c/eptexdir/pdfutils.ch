@@ -802,7 +802,8 @@ else if cur_tok=cs_token_flag+frozen_primitive then
 @d pdf_file_dump_code       = etex_convert_base+6 {command code for \.{\\pdffiledump}}
 @d uniform_deviate_code     = etex_convert_base+7 {command code for \.{\\pdfuniformdeviate}}
 @d normal_deviate_code      = etex_convert_base+8 {command code for \.{\\pdfnormaldeviate}}
-@d etex_convert_codes=etex_convert_base+9 {end of \eTeX's command codes}
+@d eptex_banner_code        = etex_convert_base+9 {command code for \.{\\eptexbanner}}
+@d etex_convert_codes=etex_convert_base+10 {end of \eTeX's command codes}
 @z
 
 @x

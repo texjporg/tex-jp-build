@@ -18,6 +18,7 @@
 #include <kpathsea/readable.h>
 #include <kpathsea/variable.h>
 #include <kpathsea/absolute.h>
+#include <kpathsea/version.h>
 #ifdef WIN32
 #include <kpathsea/concatn.h>
 #endif
@@ -657,9 +658,7 @@ texmf_yesno(const_string var)
   return value && (*value == 't' || *value == 'y' || *value == '1');
 }
 
-#ifdef pdfTeX
 const char *ptexbanner = BANNER;
-#endif
 
 #ifdef WIN32
 /* forward declaration */
@@ -2929,6 +2928,7 @@ makesrcspecial (strnumber srcfilename, int lineno)
   return (oldpoolptr);
 }
 
+
 /* pdfTeX routines also used for e-pTeX, e-upTeX, and XeTeX */
 #if defined (pdfTeX) || defined (epTeX) || defined (eupTeX) || defined(XeTeX)
 
@@ -3342,7 +3342,46 @@ void getmd5sum(strnumber s, boolean file)
 #endif
 }
 
+#  define xtalloc             XTALLOC
+#  define SMALL_BUF_SIZE      256
+void makebannerstr(void)
+{
+    static boolean banner_init = false;
+    char *s;
+    size_t slen;
+    int i;
+
+    if (banner_init)
+        return;
+
+    slen = SMALL_BUF_SIZE + strlen(ptexbanner);
+    s = xtalloc(slen, char);
+    /* The Web2c version string starts with a space.  */
+    i = snprintf(s, slen, "%s", ptexbanner);
+    check_nprintf(i, slen);
+    bannerstr = maketexstring(s);
+    xfree(s);
+    slen = SMALL_BUF_SIZE +
+        strlen(versionstring) + 
+        strlen(kpathsea_version_string);
+    s = xtalloc(slen, char);
+    /* The Web2c version string starts with a space.  */
+    i = snprintf(s, slen, "%s %s", 
+                 versionstring, kpathsea_version_string);
+    check_nprintf(i, slen);
+    bannerkpsestr = maketexstring(s);
+    xfree(s);
+    banner_init = true;
+}
 #endif /* pdfTeX or e-pTeX or e-upTeX or XeTeX */
+#if defined (epTeX) || defined (eupTeX)
+void texprintstring(const_string s)
+{
+  int i;
+  for (i=0; i<strlen(s); i++) zprint(s[i]);
+}
+
+#endif /* e-pTeX or e-upTeX */
 #endif /* TeX */
 
 /* Metafont/MetaPost fraction routines. Replaced either by assembler or C.

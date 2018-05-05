@@ -136,6 +136,10 @@ extern void getfiledump(integer s, int offset, int length);
 #endif
 extern void convertStringToHexString(const char *in, char *out, int lin);
 extern void getmd5sum(integer s, int file);
+extern void makebannerstr(void);
+#if defined (epTeX) || defined (eupTeX)
+extern void texprintstring(const_string s);
+#endif
 #endif
 
 /* pdftex etc. except for tex use these for pipe support */
