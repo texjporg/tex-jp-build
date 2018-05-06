@@ -14,7 +14,6 @@ int sjisterminal;
 boolean check_kanji(integer c)
 {
     if (c >= CS_TOKEN_FLAG) return false;
-    /* (c > CS_TOKEN_FLAG) in uptexdir/kanji.c... why? */
     else return is_char_kanji(c);
 }
 
