@@ -3189,7 +3189,6 @@ eptex_ch_srcs = \
 	$(eptex_ch_synctex) \
 	eptexdir/fam256.ch \
 	eptexdir/pdfutils.ch \
-	eptexdir/expanded.ch \
 	tex-binpool.ch
 
 
@@ -3299,7 +3298,6 @@ euptex_ch_srcs = \
 	euptexdir/pdfstrcmp-eup-pre.ch \
 	eptexdir/pdfutils.ch \
 	euptexdir/pdfstrcmp-eup-post.ch \
-	eptexdir/expanded.ch \
 	tex-binpool.ch
 
 
