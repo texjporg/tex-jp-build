@@ -224,27 +224,6 @@ end
     last_node_subtype_code: cur_val:=last_node_subtype;
 @z
 
-@x
-  eTeX_revision_code: print_esc("eTeXrevision");
-@y
-  eTeX_revision_code: print_esc("eTeXrevision");
-  eptex_banner_code:  print_esc("eptexbanner");
-@z
-
-@x
-eTeX_revision_code: do_nothing;
-@y
-eTeX_revision_code: do_nothing;
-eptex_banner_code: do_nothing;
-@z
-
-@x
-eTeX_revision_code: print(eTeX_revision);
-@y
-eTeX_revision_code: print(eTeX_revision);
-eptex_banner_code:  print(banner_str);
-@z
-
 @x e-pTeX: if primitives - leave room for three e-TeX codes
 @d if_tdir_code=if_case_code+1 { `\.{\\iftdir}' }
 @y
@@ -387,20 +366,6 @@ if fm>0 then {drop \.{\\beginM} \.{\\endM} pair}
 @!fd,@!gd:integer; {same for |disp_node|}
 @z
 
-@x [50]
-undump_things(font_check[null_font], font_ptr+1-null_font);
-@y
-make_banner_str;
-undump_things(font_check[null_font], font_ptr+1-null_font);
-@z
-
-@x [51]
-fix_date_and_time;@/
-@y
-fix_date_and_time;@/
-@!init make_banner_str; tini@/
-@z
-
 @x
 @d set_language_code=5 {command modifier for \.{\\setlanguage}}
 @y
@@ -494,16 +459,6 @@ primitive("lastnodechar",last_item,last_node_char_code);
 @!@:last_node_char_}{\.{\\lastnodechar} primitive@>
 primitive("lastnodesubtype",last_item,last_node_subtype_code);
 @!@:last_node_subtype_}{\.{\\lastnodesubtype} primitive@>
-@z
-
-@x
-primitive("eTeXrevision",convert,eTeX_revision_code);@/
-@!@:eTeX_revision_}{\.{\\eTeXrevision} primitive@>
-@y
-primitive("eTeXrevision",convert,eTeX_revision_code);@/
-@!@:eTeX_revision_}{\.{\\eTeXrevision} primitive@>
-primitive("eptexbanner",convert,eptex_banner_code);
-@!@:eptexbanner_}{\.{\\eptexbanner} primitive@>
 @z
 
 @x
@@ -645,13 +600,4 @@ print(" direction"); end;
 end;
 @#
 procedure print_direction(@!d:integer); {print the direction represented by d}
-@z
-
-@x
-@* \[56] System-dependent changes.
-@y
-@ @<Glob...@>=
-@!banner_str: str_number;
-
-@* \[56] System-dependent changes.
 @z

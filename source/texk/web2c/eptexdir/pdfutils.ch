@@ -793,23 +793,39 @@ else if cur_tok=cs_token_flag+frozen_primitive then
 
 @x
 @d etex_convert_codes=etex_convert_base+1 {end of \eTeX's command codes}
+@d job_name_code=etex_convert_codes {command code for \.{\\jobname}}
 @y
-@d pdf_strcmp_code          = etex_convert_base+1 {command code for \.{\\pdfstrcmp}}
-@d pdf_creation_date_code   = etex_convert_base+2 {command code for \.{\\pdfcreationdate}}
-@d pdf_file_mod_date_code   = etex_convert_base+3 {command code for \.{\\pdffilemoddate}}
-@d pdf_file_size_code       = etex_convert_base+4 {command code for \.{\\pdffilesize}}
-@d pdf_mdfive_sum_code      = etex_convert_base+5 {command code for \.{\\pdfmdfivesum}}
-@d pdf_file_dump_code       = etex_convert_base+6 {command code for \.{\\pdffiledump}}
-@d uniform_deviate_code     = etex_convert_base+7 {command code for \.{\\pdfuniformdeviate}}
-@d normal_deviate_code      = etex_convert_base+8 {command code for \.{\\pdfnormaldeviate}}
-@d eptex_banner_code        = etex_convert_base+9 {command code for \.{\\eptexbanner}}
-@d etex_convert_codes=etex_convert_base+10 {end of \eTeX's command codes}
+@d etex_convert_codes=etex_convert_base+1 {end of \eTeX's command codes}
+@d expanded_code            = etex_convert_codes {command code for \.{\\expanded}}
+@d pdf_first_expand_code    = expanded_code + 1 {base for \pdfTeX-like command codes}
+@d pdf_strcmp_code          = pdf_first_expand_code+0 {command code for \.{\\pdfstrcmp}}
+@d pdf_creation_date_code   = pdf_first_expand_code+1 {command code for \.{\\pdfcreationdate}}
+@d pdf_file_mod_date_code   = pdf_first_expand_code+2 {command code for \.{\\pdffilemoddate}}
+@d pdf_file_size_code       = pdf_first_expand_code+3 {command code for \.{\\pdffilesize}}
+@d pdf_mdfive_sum_code      = pdf_first_expand_code+4 {command code for \.{\\pdfmdfivesum}}
+@d pdf_file_dump_code       = pdf_first_expand_code+5 {command code for \.{\\pdffiledump}}
+@d uniform_deviate_code     = pdf_first_expand_code+6 {command code for \.{\\pdfuniformdeviate}}
+@d normal_deviate_code      = pdf_first_expand_code+7 {command code for \.{\\pdfnormaldeviate}}
+@d eptex_banner_code        = pdf_first_expand_code+8 {command code for \.{\\eptexbanner}}
+@d pdf_convert_codes        = pdf_first_expand_code+9 {end of \pdfTeX-like command codes}
+@d job_name_code=pdf_convert_codes {command code for \.{\\jobname}}
+@z
+
+@x
+primitive("jobname",convert,job_name_code);@/
+@y
+@#
+primitive("expanded",convert,expanded_code);@/ 
+@!@:expanded_}{\.{\\expanded} primitive@> 
+@#
+primitive("jobname",convert,job_name_code);@/
 @z
 
 @x
   eTeX_revision_code: print_esc("eTeXrevision");
 @y
   eTeX_revision_code: print_esc("eTeXrevision");
+  expanded_code:      print_esc("expanded");
   pdf_strcmp_code:        print_esc("pdfstrcmp");
   pdf_creation_date_code: print_esc("pdfcreationdate");
   pdf_file_mod_date_code: print_esc("pdffilemoddate");
@@ -818,6 +834,7 @@ else if cur_tok=cs_token_flag+frozen_primitive then
   pdf_file_dump_code:     print_esc("pdffiledump");
   uniform_deviate_code:   print_esc("pdfuniformdeviate");
   normal_deviate_code:    print_esc("pdfnormaldeviate");
+  eptex_banner_code:      print_esc("eptexbanner");
 @z
 
 @x
@@ -858,6 +875,20 @@ u:=0; { will become non-nil if a string is already being built}
 eTeX_revision_code: do_nothing;
 @y
 eTeX_revision_code: do_nothing;
+expanded_code:
+  begin
+    save_scanner_status := scanner_status;
+    save_warning_index := warning_index;
+    save_def_ref := def_ref;
+    save_cur_string;
+    scan_pdf_ext_toks;
+    warning_index := save_warning_index;
+    scanner_status := save_scanner_status;
+    ins_list(link(def_ref));
+    def_ref := save_def_ref;
+    restore_cur_string;
+    return;
+  end;
 pdf_strcmp_code:
   begin
     save_scanner_status := scanner_status;
@@ -993,6 +1024,7 @@ pdf_file_dump_code:
   end;
 uniform_deviate_code:     scan_int;
 normal_deviate_code:      do_nothing;
+eptex_banner_code: do_nothing;
 @z
 
 @x
@@ -1002,6 +1034,7 @@ eTeX_revision_code: print(eTeX_revision);
 pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
+eptex_banner_code:        print(banner_str);
 @z
 
 @x \[if]pdfprimitive
@@ -1091,13 +1124,21 @@ for p:=0 to prim_size do dump_hh(prim[p]);
 for p:=0 to prim_size do undump_hh(prim[p]);
 @z
 
-@x
+@x [50]
+undump_things(font_check[null_font], font_ptr+1-null_font);
+@y
+make_banner_str;
+undump_things(font_check[null_font], font_ptr+1-null_font);
+@z
+
+@x [51]
 fix_date_and_time;@/
 @y
 fix_date_and_time;@/
 isprint_utf8:=false;
 random_seed:=(microseconds*1000)+(epochseconds mod 1000000);@/
 init_randoms(random_seed);@/
+@!init make_banner_str; tini@/
 @z
 
 @x
@@ -1234,6 +1275,8 @@ primitive("pdfelapsedtime",last_item,elapsed_time_code);
 @!@:elapsed_time_}{\.{\\pdfelapsedtime} primitive@>
 primitive("pdfresettimer",extension,reset_timer_code);@/
 @!@:reset_timer_}{\.{\\pdfresettimer} primitive@>
+primitive("eptexbanner",convert,eptex_banner_code);
+@!@:eptexbanner_}{\.{\\eptexbanner} primitive@>
 @z
 
 @x
@@ -1531,6 +1574,9 @@ end
 begin
   seconds_and_micros(epochseconds,microseconds);
 end
+
+@ @<Glob...@>=
+@!banner_str: str_number;
 
 @* \[54] System-dependent changes.
 @z
