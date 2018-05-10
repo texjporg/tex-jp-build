@@ -1,0 +1,28 @@
+catcode`\^=7\relax
+\q
+% => ! Undefined control sequence. l.2 \q
+\^^c5
+% => ! Undefined control sequence. l.4 \Å
+\^^c5
+% => ! Undefined control sequence. l.6 \Å
+\show\q
+% => > \q=undefined.
+\^^c5
+% => ! Undefined control sequence. l.10 \Å
+\^^c5
+% => ! Undefined control sequence. l.12 \Å
+\^^c5 %
+% => ! Undefined control sequence.l.14 \Å %
+\^^c52
+% => ! Undefined control sequence. l.16 \Å2
+\^^c5
+% => ! Undefined control sequence. l.18 \Å
+\catcode`\^^c8=11
+\catcode`\^^c9=11
+\def\^^c8{a}
+\def\^^c9^^c9{a}
+\^^c8\^^c5
+% => ! Undefined control sequence. l.24 \Å
+\^^c9^^c9\^^c5 % ^^c9^^c9 = 鰭
+% => ! Undefined control sequence. l.26 \鰭\Å
+\end

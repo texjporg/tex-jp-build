@@ -345,8 +345,7 @@ kanji,kana,other_kchar,hangul: begin print("kanji character ");
 @z
 
 @x
-  if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1)
-    and((first_count-1)mod error_line<ssup_error_line) then
+  if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1) then
     begin incr(first_count);
     if (trick_buf2[(first_count-1)mod error_line]=0) then decr(first_count);
     end;

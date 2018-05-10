@@ -244,8 +244,7 @@ no_print: do_nothing;
 pseudo: if tally<trick_count then
   begin trick_buf[tally mod error_line]:=s;
   trick_buf2[tally mod error_line]:=kcode_pos;
-  if tally mod error_line<ssup_error_line then
-    trick_buf2[(tally mod error_line)+1]:=0;
+  trick_buf2[(tally+1) mod error_line]:=0;
   end;
 @z
 
@@ -1579,8 +1578,7 @@ var old_setting:0..max_selector; {saved |selector| setting}
 @y
 @d set_trick_count==
   begin first_count:=tally;
-  if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1)
-    and((first_count-1)mod error_line<ssup_error_line) then
+  if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1) then
     begin incr(first_count);
     if (trick_buf2[(first_count-1)mod error_line]=0) then decr(first_count);
     end;
