@@ -243,8 +243,12 @@ term_only: begin wterm(xchr[s]); incr(term_offset);
 no_print: do_nothing;
 pseudo: if tally<trick_count then
   begin trick_buf[tally mod error_line]:=s;
-  trick_buf2[tally mod error_line]:=kcode_pos;
-  trick_buf2[(tally+1) mod error_line]:=0;
+  if (kcode_pos<>2)or(tally=0) then
+    trick_buf2[tally mod error_line]:=kcode_pos
+  else if is_char_kanji(@"100*trick_buf2[(tally-1) mod error_line]+s) then
+    trick_buf2[tally mod error_line]:=kcode_pos
+  else begin trick_buf2[tally mod error_line]:=0; 
+    trick_buf2[(tally-1) mod error_line]:=0; end;
   end;
 @z
 
@@ -1557,6 +1561,16 @@ var old_setting:0..max_selector; {saved |selector| setting}
 @!s: pointer; {temporary pointer}
 @z
 
+@x [22.312] - pTeX: trick_buf2
+  selector:=old_setting; {stop pseudoprinting}
+@y
+  if tally>0 then begin
+    if trick_buf2[(tally-1) mod error_line]=1 then
+      trick_buf2[(tally-1) mod error_line]:=0;
+	end;
+  selector:=old_setting; {stop pseudoprinting}
+@z
+
 @x [22.316] l.7110 - pTeX: init kcode_pos
 @d begin_pseudoprint==
   begin l:=tally; tally:=0; selector:=pseudo;
@@ -1579,9 +1593,7 @@ var old_setting:0..max_selector; {saved |selector| setting}
 @d set_trick_count==
   begin first_count:=tally;
   if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1) then
-    begin incr(first_count);
-    if (trick_buf2[(first_count-1)mod error_line]=0) then decr(first_count);
-    end;
+    incr(first_count);
   trick_count:=first_count+1+error_line-half_error_line;
   if trick_count<error_line then trick_count:=error_line;
   end
