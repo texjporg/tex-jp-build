@@ -31,9 +31,9 @@ int main(int argc, char **argv)
 
 #ifdef WIN32
 	_setmaxstdio(2048);
-        sjisterminal = 0;
+	sjisterminal = 0;
 #endif
-        set_enc_string(NULL, "uptex");
+	set_enc_string(NULL, "uptex");
 	kpse_set_program_name(argv[0], "mendex");
 
 	p = getenv ("PTEX_KANJI_ENC");
