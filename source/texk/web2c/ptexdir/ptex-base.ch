@@ -247,7 +247,7 @@ pseudo: if tally<trick_count then
     trick_buf2[tally mod error_line]:=kcode_pos
   else if is_char_kanji(@"100*trick_buf2[(tally-1) mod error_line]+s) then
     trick_buf2[tally mod error_line]:=kcode_pos
-  else begin trick_buf2[tally mod error_line]:=0; 
+  else begin trick_buf2[tally mod error_line]:=0;
     trick_buf2[(tally-1) mod error_line]:=0; end;
   end;
 @z
@@ -2170,7 +2170,7 @@ if not is_char_node(tx) then
 @<Fetch an item in the current node...@>=
 @z
 
-@x pTeX: \ptexversion 
+@x pTeX: \ptexversion
   begin if cur_chr=input_line_no_code then cur_val:=line
   else cur_val:=last_badness; {|cur_chr=badness_code|}
 @y
@@ -3674,9 +3674,9 @@ function shift_sub_exp_box(@!q:pointer):pointer;
         if box_dir(info(q))=dir_tate then d:=t_baseline_shift
         else d:=y_baseline_shift end
       else d:=y_baseline_shift;
-      if cur_style<script_style then 
+      if cur_style<script_style then
         d:=xn_over_d(d,text_baseline_shift_factor, 1000)
-      else if cur_style<script_script_style then 
+      else if cur_style<script_script_style then
         d:=xn_over_d(d,script_baseline_shift_factor, 1000)
       else
         d:=xn_over_d(d,scriptscript_baseline_shift_factor, 1000);
@@ -4931,9 +4931,9 @@ any_mode(make_box): begin_box(0);
 any_mode(make_box): begin_box(0);
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
-    if mode=hmode then 
+    if mode=hmode then
       begin print_err("Improper `"); print_cmd_chr(cur_cmd,cur_chr);
-      print("'"); 
+      print("'");
       help2("You cannot change the direction in unrestricted")
       ("horizontal mode."); error;
       end
@@ -5063,7 +5063,7 @@ q:=link(p);
 until q=tx; {found |r|$\to$|p|$\to$|q=tx|}
 q:=link(tx); link(p):=q; link(tx):=null;
 if q=null then tail:=p
-else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|} 
+else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|}
   begin prev_node:=r; prev_disp:=pdisp; link(p):=null; tail:=p;
   disp_dimen(p):=disp_dimen(q); free_node(q,small_node_size);
   end
@@ -5455,14 +5455,14 @@ begin if tail<>head then
   end;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 @!n:integer; {length of discretionary list}
 @y
 @!n:integer; {length of discretionary list}
 @!d:integer; {direction}
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 p:=link(head); pop_nest;
 case saved(-1) of
 0:pre_break(tail):=p;
@@ -5471,20 +5471,20 @@ case saved(-1) of
 p:=link(head); d:=abs(direction); pop_nest;
 case saved(-1) of
 0:if abs(direction)=d then pre_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your first part."); error; pre_break(tail):=null; flush_node_list(p);
   end;
 1:if abs(direction)=d then post_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your second part."); error; post_break(tail):=null; flush_node_list(p);
   end;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
 @y
@@ -5495,7 +5495,7 @@ else if (n>0)and(abs(direction)<>d) then
   end
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
-@z 
+@z
 
 @x [47.1120] l.22119 - pTeX: discretionary with disp_node
 decr(save_ptr); return;
@@ -5793,7 +5793,7 @@ scan_math(nucleus(tail),kcode_noad(tail));
 @x [48.1167] pTeX: vcenter, inhibit_glue_flag
 mmode+vcenter: begin scan_spec(vcenter_group,false); normal_paragraph;
 @y
-mmode+vcenter: begin 
+mmode+vcenter: begin
   scan_spec(vcenter_group,false); normal_paragraph;
   inhibit_glue_flag:=false;
 @z
@@ -6723,9 +6723,9 @@ while p<>null do
   ins_node,disp_node,mark_node,adjust_node,whatsit_node,penalty_node:
     do_nothing;
   math_node:
-    if (subtype(p)=before)or(subtype(p)=after) then 
+    if (subtype(p)=before)or(subtype(p)=after) then
       begin if find_first_char then
-        begin find_first_char:=false; first_char:=p; 
+        begin find_first_char:=false; first_char:=p;
         end;
         last_char:=p; flag:=true;
       end
@@ -6929,7 +6929,7 @@ begin if (subtype(p)=before)and(insert_skip=after_wchar) then
   insert_skip:=no_skip;
   end
 else if subtype(p)=after then
-  begin ax:=qo("0"); 
+  begin ax:=qo("0");
   if auto_xsp_code(ax)>=2 then
     insert_skip:=after_schar else insert_skip:=no_skip;
   end
@@ -7209,7 +7209,7 @@ again_2:
 @#
 main_loop_j+3:
   if ins_kp=true then @<Insert |pre_break_penalty| of |cur_chr|@>;
-  if main_f<>null_font then 
+  if main_f<>null_font then
     begin @<Look ahead for glue or kerning@>;
     end
   else inhibit_glue_flag:=false;
