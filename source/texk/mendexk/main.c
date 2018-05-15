@@ -19,7 +19,7 @@ char *styfile,*idxfile[256],*indfile,*dicfile,*logfile;
 #endif
 KpathseaSupportInfo kp_ist,kp_dict;
 
-#define VERSION "version 2.6f [14-Aug-2009]"
+#define VERSION "version 3.0 [15-May-2018]"
 
 int main(int argc, char **argv)
 {
