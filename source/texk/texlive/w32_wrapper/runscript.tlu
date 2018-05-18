@@ -1,7 +1,7 @@
 
 
-local svnrevision = string.match("$Revision: 47389 $", "%d+") or "0"
-local svndate     = string.match("$Date: 2018-04-09 01:11:53 +0200 (Mon, 09 Apr 2018) $", "[-%d]+") or "2009-12-04"
+local svnrevision = string.match("$Revision: 47648 $", "%d+") or "0"
+local svndate     = string.match("$Date: 2018-05-09 16:09:31 +0900 (水, 09 5 2018) $", "[-%d]+") or "2009-12-04"
 local bannerstr   = "runscript wrapper utility (rev. " ..
                     svnrevision .. ", " .. svndate .. ")\n" .. 
                     "usage:   runscript script-name [arguments]\n" ..
@@ -455,6 +455,10 @@ end
 
 local function MAIN_CHUNK()
 
+-- set the system-default value for LC_CTYPE
+-- http://tug.org/pipermail/tex-live/2018-May/041628.html
+os.setlocale("", "ctype")
+
 -- preprocess arguments
 
 local guimode = false
@@ -761,7 +765,7 @@ end
 
 if not ARGV then
   os.setenv('TEXMF', TEXMFDIST)
-  local extlist = '.tlu;.texlua;.lua;.pl;.rb;.py;.tcl;.jar;.vbs;.js;.bat;.cmd;\0'
+  local extlist = '.tlu;.texlua;.pl;.lua;.rb;.py;.tcl;.jar;.vbs;.js;.bat;.cmd;\0'
   local progfullname = search_path(progname, BINDIR, '.tlu;.bat;.cmd') or
                        assert(find_texmfscript(progname, extlist))
   os.setenv('TEXMF', nil)
