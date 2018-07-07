@@ -1,4 +1,4 @@
-karl = Karl Berry <karl@tug.org>
+karl = Karl Berry <karl@freefriends.org>
 wl = Werner Lemberg <wl@gnu.org>
 preining = Norbert Preining <norbert@preining.info>
 staw = Staszek Wawrykiewicz <staw@gust.org.pl>
