@@ -36,7 +36,7 @@
 @d read_pair(A) { (A)=tfbyte;
   tfget; (A)=(A)*0400+tfbyte;
 }
-@d read_twentyfourx(A) { (A)=tfbyte;
+@d read_triplekanji(A) { (A)=tfbyte;
   tfget; (A)=(A)*0400+tfbyte;
   tfget; (A)=(A)+tfbyte*0200000;
 }
@@ -95,7 +95,7 @@ tf_ignore(4*(tfm_lh-2))
 ii=mp->ctype_base[n]+nt;
 i=mp->ctype_base[n];
 while ( i<ii ) {
-  tfget; read_twentyfourx(ct);  /* allow character codes up to 0xffffff */
+  tfget; read_triplekanji(ct);  /* allow character codes up to 0xffffff */
   mp->font_info[i].hh.LH=ct;
   tfget; mp->font_info[i].hh.RH=tfbyte;
   incr(i);
