@@ -1512,6 +1512,7 @@ end
 else if (sop(k)>='0')and(sop(k)<='9') then goto done
 else begin t:=s*t; incr(k); end;
 ifps sop(k-1)<>'p' then goto done; ifps sop(k)<>'t' then goto done;
+t:=xn_over_d(t,1000,mag)
 
 @ Finally, we declare some routine needed for \.{\\pdffilemoddate}.
 
