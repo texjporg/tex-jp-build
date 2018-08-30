@@ -1418,42 +1418,44 @@ end
 
 @ @<Save current position in DVI mode@>=
 begin
+  prepare_mag;
   case dvi_dir of
   dir_yoko: begin pdf_last_x_pos := cur_h;  pdf_last_y_pos := cur_v;  end;
   dir_tate: begin pdf_last_x_pos := -cur_v; pdf_last_y_pos := cur_h;  end;
   dir_dtou: begin pdf_last_x_pos := cur_v;  pdf_last_y_pos := -cur_h; end;
   endcases;
-  pdf_last_x_pos := pdf_last_x_pos + 4736286;
+  pdf_last_x_pos := pdf_last_x_pos + xn_over_d(4736286, 1000, mag);
   case dvi_dir of
   dir_tate,dir_dtou:
-    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
+    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - xn_over_d(4736286, 1000, mag);
   dir_yoko:
-    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
+    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - xn_over_d(4736286, 1000, mag);
   endcases;
   {4736286 = 1in, the funny DVI origin offset}
 end
 
 @ @<Calculate DVI page dimensions and margins@>=
+  prepare_mag;
   if pdf_page_height <> 0 then
     cur_page_height := pdf_page_height
   else if (type(p)=dir_node) then begin
     if (box_dir(list_ptr(p))=dir_tate)or(box_dir(list_ptr(p))=dir_dtou) then
-        cur_page_height := width(p) + 2*v_offset + 2*4736286
+        cur_page_height := width(p) + 2*v_offset + xn_over_d(2*4736286, 1000, mag)
     else
-      cur_page_height := height(p) + depth(p) + 2*v_offset + 2*4736286;
+      cur_page_height := height(p) + depth(p) + 2*v_offset + xn_over_d(2*4736286, 1000, mag)
     end
   else
-    cur_page_height := height(p) + depth(p) + 2*v_offset + 2*4736286;
+    cur_page_height := height(p) + depth(p) + 2*v_offset + xn_over_d(2*4736286, 1000, mag);
   if pdf_page_width <> 0 then
     cur_page_width := pdf_page_width
   else if (type(p)=dir_node) then begin
     if (box_dir(list_ptr(p))=dir_tate)or(box_dir(list_ptr(p))=dir_dtou) then
-      cur_page_width := height(p) + depth(p) + 2*h_offset + 2*4736286
+      cur_page_width := height(p) + depth(p) + 2*h_offset + xn_over_d(2*4736286, 1000, mag)
     else
-      cur_page_width := width(p) + 2*h_offset + 2*4736286;
+      cur_page_width := width(p) + 2*h_offset + xn_over_d(2*4736286, 1000, mag)
     end
   else
-    cur_page_width := width(p) + 2*h_offset + 2*4736286;
+    cur_page_width := width(p) + 2*h_offset + xn_over_d(2*4736286, 1000, mag);
 
 
 @ Of course \epTeX\ can produce a \.{DVI} file only, not a PDF file.
