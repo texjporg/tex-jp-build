@@ -259,6 +259,15 @@ end
 @d set_box_lr_end(#) == qi(16*(#))
 @z
 
+@x [35]
+@<Initialize table entries...@>=
+text_baseline_shift_factor:=1000;
+@y
+@<Initialize table entries...@>=
+text_baseline_shift_factor:=1000;
+read_papersize_special:=0;
+@z
+
 @x
 @!last_node_type:integer; {used to implement \.{\\lastnodetype}}
 @y
