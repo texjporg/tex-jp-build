@@ -8,7 +8,6 @@
 %%
 %% \pdfsavepos and co.
 %%   (\pdfsavepos, \pdfpage{width,height}, \pdflast{x,y}pos)
-%%   papersize special automatically sets \pdfpage{width,height} (quick hack).
 %%
 %% \pdffiledump: for bmpsize package by Heiko Oberdiek
 %%
@@ -1205,7 +1204,8 @@ var old_setting:0..max_selector; {holds print |selector|}
 @x
 pool_ptr:=str_start[str_ptr]; {erase the string}
 @y
-@<Determine whether this \.{\\special} is a papersize special@>;
+if read_papersize_special>0 then
+  @<Determine whether this \.{\\special} is a papersize special@>;
 done: pool_ptr:=str_start[str_ptr]; {erase the string}
 @z
 
@@ -1477,7 +1477,7 @@ No spaces are allowed in the above form, and allowed units are only
 @d sop(#)==so(str_pool[#])
 
 @<Determine whether this \.{\\special} is a papersize special@>=
-k:=str_start[str_ptr];
+begin k:=str_start[str_ptr];
 ifps(10) 
    (sop(k+0)<>'p')or(sop(k+1)<>'a')or(sop(k+2)<>'p')or
    (sop(k+3)<>'e')or(sop(k+4)<>'r')or(sop(k+5)<>'s')or
@@ -1495,6 +1495,7 @@ ifps(1) sop(k)=',' then begin
   if (dvi_dir=dir_tate)or(dvi_dir=dir_dtou) then begin
     t:=cur_page_height; cur_page_height:=cur_page_width;
     cur_page_width:=t; end;
+end;
 end;
 
 @
