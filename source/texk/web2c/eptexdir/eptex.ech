@@ -11,6 +11,7 @@
 %% \readpapersizespecial
 %%  1: papersize special automatically sets \pdfpage{width,height} (quick hack).
 %%  0: off
+%%  The default value is 1.
 %%
 
 @x e-pTeX: logo
@@ -265,7 +266,7 @@ text_baseline_shift_factor:=1000;
 @y
 @<Initialize table entries...@>=
 text_baseline_shift_factor:=1000;
-read_papersize_special:=0;
+read_papersize_special:=1;
 @z
 
 @x
