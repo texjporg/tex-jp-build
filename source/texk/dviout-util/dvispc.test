@@ -1,0 +1,15 @@
+#! /bin/sh -vx
+# $Id$
+# Copyright (C) 2018 Japanese TeX Development Community <issue@texjp.org>
+# You may freely use, modify and/or distribute this file.
+
+test_src=$srcdir/tests
+
+rc=0
+
+./dvispc -s $test_src/test.dvi > test.spc && diff $test_src/test.spc test.spc || rc=1
+
+./dvispc -c $test_src/test.dvi > testout.dvi && diff $test_src/testout.dvi testout.dvi || rc=2
+
+exit $rc
+

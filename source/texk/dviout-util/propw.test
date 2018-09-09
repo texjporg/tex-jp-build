@@ -1,0 +1,13 @@
+#! /bin/sh -vx
+# $Id$
+# Copyright (C) 2018 Japanese TeX Development Community <issue@texjp.org>
+# You may freely use, modify and/or distribute this file.
+
+test_src=$srcdir/tests
+
+rc=0
+
+echo | ./propw "-fm=JIS TEST" -p > jistest.pl && diff $test_src/jistest.pl jistest.pl || rc=1
+
+exit $rc
+
