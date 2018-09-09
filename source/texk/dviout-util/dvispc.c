@@ -7,7 +7,7 @@
  *			pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor
  *			tpic  specials:  pn
  *
- *							Written by SHIMA
+ *						Originally written by SHIMA
  *							  January 2003
  */
 
@@ -91,6 +91,8 @@
 #include <io.h>
 #include <fcntl.h>
 #endif
+
+#include <config.h>
 
 #define	uchar	unsigned char
 #define	uint	unsigned int
@@ -412,7 +414,9 @@ void usage(void)
 	fprintf(stderr,
 	"\t  Modify a DVI file to be page-independent in specials\n"
 	"\t  Translation between  DVI file  <->  Text file\n"
-	"\t           Ver.0.3  written by SHIMA, Jan. 2003\n\n"
+	"\t         Originally written by SHIMA, Jan. 2003\n"
+	"\t         Ver.%s (%s)\n\n", VERSION, TL_VERSION);
+	fprintf(stderr,
 	"Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]\n"
 	"       dvispc -d input_dvi_file\n"
 	"       dvispc -s [-p..] input_dvi_file [output_text_file]\n"

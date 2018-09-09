@@ -1,6 +1,6 @@
 /*
  *		CHecK DVI FONTs (CHKFONT)
- *                         Dec 1990, written by SHIMA
+ *                         Dec 1990, originally written by SHIMA
  *						   Apr 1992, second version
  *						   May 1992, third  version
  *						   Sep 1992, fifth  version
@@ -67,6 +67,8 @@
 #ifdef	GCC
 #include <ctype.h>
 #endif
+
+#include <config.h>
 
 #include "dd.h"
 
@@ -1238,7 +1240,9 @@ void usage()
 {
 	fprintf(stderr,
 		"\t<<< CHecK dvi/tfm/font file and tell informations of FONTs >>>\n"
-			"\t\t\t\tVer 1.7a, written by SHIMA, 1990/1992\n\n"
+			"\t\t\t\tOriginally written by SHIMA, 1990/1992\n"
+			"\t\t\t\tVer.%s (%s)\n\n", VERSION, TL_VERSION);
+	fprintf(stderr,
 	  "Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name\n"
 	  "       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name\n"
 	"       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name\n\n"

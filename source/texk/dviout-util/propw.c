@@ -1,6 +1,6 @@
 /*
  *     	Generate TeX PL file for Japanese Proportional Fonts
- *					written by  SHIMA, Nov. 2000
+ *				Originally written by  SHIMA, Nov. 2000
  *
  *		DATA should be in  SHIFT JIS  or  EUC
  */
@@ -18,6 +18,8 @@
 #define	USETTF
 #endif
 #endif
+
+#include <config.h>
 
 #define	MAX_BSIZE	0x20000
 #define	LBSIZE		0x1000
@@ -132,7 +134,9 @@ void msg(void)
 {
 	printf(
 	"\t\tpropw: support to make a PL/JFM file for pTeX\n"
-	"\t\t    Ver.0.05, written by SHIMA, Nov. 2000\n\n"
+	"\t\t    Originally written by SHIMA, Nov. 2000\n"
+	"\t\t    Ver.%s (%s)\n\n", VERSION, TL_VERSION);
+	printf(
 	"Usage : propw [-trquv"
 #ifdef	USETTF
 	"#"
