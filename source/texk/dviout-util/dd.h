@@ -6,6 +6,8 @@
  *  dd.h : common header file
  *
  */
+#ifndef INC_DD_H
+#define INC_DD_H
 
 #ifndef	__STDIO_H
 #include <stdio.h>
@@ -77,14 +79,6 @@ char	*stpcpy(char *, const char *);
 
 /* standard definitons */
 
-#ifndef	_INC_WINDOWS
-#undef	TRUE
-#undef	FALSE
-typedef enum {
-	FALSE = 0, TRUE = 1
-} BOOL;
-#endif
-
 #define uchar   unsigned char
 #define uint    unsigned int
 #define ulong   unsigned long
@@ -92,12 +86,19 @@ typedef void (*void_func_ptr) ();
 typedef int (*int_func_ptr) ();
 typedef int (* COMP)(const void *, const void *);
 
-#ifndef	TRUE
-#define TRUE    1
+#ifdef FALSE
+#undef FALSE
 #endif
-#ifndef	FALSE
-#define FALSE   0
+#ifdef TRUE
+#undef TRUE
 #endif
+#ifdef BOOL
+#undef BOOL
+#endif
+typedef enum{
+	FALSE = 0,
+	TRUE  = 1
+} BOOL;
 
 #define NOTHING 0
 #define FAILURE (-1)
@@ -144,34 +145,34 @@ extern uchar *get_near_work(uint);
 #define BUFFER    uchar far
 #define HUGE_BUF  uchar huge
  /*   Both BUFFER pointer and HUGE_BUF pointer are 32bit-pointer.
-     *   HUGE_BUF will be used for larger buffers ( correctly speaking,
-     * ones which keep more data than 64Kbytes ).
-     *   And it is noteworthy that the pointers of these types are impossible
-     * to express continually ( ex. BUFFER *a, *b ), because they are not
-     * "typedef" but "#define."  This foolish error is because of 8086CPU,
-     * which has only 16bit-pointer, so we must add "far" or "huge" for use of
-     * 32bit-pointer. However, "far" and "huge" are permitted to "typedef."
-     * How wonderful SEGMENT !!
-     */
+	 *   HUGE_BUF will be used for larger buffers ( correctly speaking,
+	 * ones which keep more data than 64Kbytes ).
+	 *   And it is noteworthy that the pointers of these types are impossible
+	 * to express continually ( ex. BUFFER *a, *b ), because they are not
+	 * "typedef" but "#define."  This foolish error is because of 8086CPU,
+	 * which has only 16bit-pointer, so we must add "far" or "huge" for use of
+	 * 32bit-pointer. However, "far" and "huge" are permitted to "typedef."
+	 * How wonderful SEGMENT !!
+	 */
 #ifdef	NOFLOAT
 #define SIZE_PARA   long
 #else
 #define SIZE_PARA   double
 #endif
  /*   This device driver calculate units with double.
-     */
+	 */
 #define F_SIZE_PARA   long
  /*   This device driver calculate units with double.
-     */
+	 */
 #define PIXEL       int
 #define SCALED_PT   long
  /*   the units of pixel and scaled-point
-     */
+	 */
 
 #define HEADER_DEPTH    0xe0000L
 #define FOOTER_DEPTH    0xe0000L
  /*   the header depth and the footer depth ( scaled point )
-     */
+	 */
 
 typedef enum {
 	UNKNOWN, ONDEMAND, ONDEMAND2, UNRESOLVE, 
@@ -212,7 +213,7 @@ typedef enum {
 } PRINT_DIR;
 
  /*   Direction at printing, HORIZONTAL normally.
-     */
+	 */
 
 typedef enum {
 	PreviousPart, NextPart,
@@ -222,45 +223,45 @@ typedef enum {
 } NEXT_ACTION;
 
  /*   These values are returned by device-output module, which says
-     * what to do next.
-     */
+	 * what to do next.
+	 */
 
 #define PREAMBLE struct PREAMBLE_REC far
  /*   Information about Preamble of a font-file
-     */
+	 */
 struct PREAMBLE_REC {
 	PIXEL width, height, pitch_offset, depth_offset;
 	/*   the size of the character, and the offset for typesetting.
-         */
+		 */
 	BUFFER *raster;
 	/*   the pointer of Raster-data buffer
-         */
+		 */
 	long tfm_width;
 	int byte_width;
 	/*   equal width/8, raised decimal
-         */
+		 */
 	PIXEL shift_up_ptex, shift_right_ptex;
 	/*  the offset when lateral-Kanji used (when in pTeX tate mode)
-         */
+		 */
 	int rotate_ptex;
 	/* the flag of rotation (when in pTeX tate mode)
-         */
+		 */
 };
 
 #define CHAR_INFO struct CHAR_INFO_REC far
  /*   This buffer is a linked-list one, which keeps pointers of unpacked
-     * fonts.
-     */
+	 * fonts.
+	 */
 struct CHAR_INFO_REC {
 	uint code;
 	/*   character code
-         */
+		 */
 	CHAR_INFO *next_char;
 	CHAR_INFO *former_char;
 	/*   needless to say? */
 	struct PREAMBLE_REC pre;
 	/*   preamble of an unpacked font
-         */
+		 */
 };
 
 #define	f_HUGE	0x8000
@@ -268,15 +269,15 @@ struct CHAR_INFO_REC {
 
 #define BUF_INFO  struct BUF_INFO_REC
  /*   Information about buffers
-     */
+	 */
 struct BUF_INFO_REC {
 	BUFFER *start;
 	BUFFER *current;
 	BUFFER *end;
 	/*   Each means starting, current, and ending pointer of the buffer.
-         * Especially, 'end' means 'start+size', so the pointer above ( or
-         * which equals )'end' will be out of the buffer.
-         */
+		 * Especially, 'end' means 'start+size', so the pointer above ( or
+		 * which equals )'end' will be out of the buffer.
+		 */
 	long size;
 	int flush;
 };
@@ -298,9 +299,9 @@ PAGE_INDEX;
 
 #define DVIFILE_INFO struct DVIFILE_INFO_REC
  /*   Information about Preamble of DVI-file. ( to say the truth, this is
-     * the same thing as Preamble itself. So, you'd better see
-     * "TeX : The Program." )
-     */
+	 * the same thing as Preamble itself. So, you'd better see
+	 * "TeX : The Program." )
+	 */
 struct DVIFILE_INFO_REC {
 	FILE *file_ptr;
 	char *file_name;
@@ -313,63 +314,63 @@ struct DVIFILE_INFO_REC {
 
 #define DIMENSION struct DIMENSION_REC
  /*  Information about device-output
-     */
+	 */
 
 struct DIMENSION_REC {
 	int dpi;
 	/* is horizontal dot-per-inch ratio of the device
-         */
+		 */
 	int DPI;
 	/* is vertical dot-per-inch ratio of the device .
-         */
+		 */
 	PIXEL max_width, max_height;
 	/*   These tell us the maximum size the device can output.
-         * They are represented by pixel-unit.
-         */
+		 * They are represented by pixel-unit.
+		 */
 	PIXEL output_width, output_height;
 	/* is the final size to be output to the device
-	 	 */
+		 */
 	PIXEL buf_width, buf_height;
 	/*   These tell us the maximum size Bitmap-buffer can hold.
 		 * oriented by text direction
-         */
+		 */
 	PIXEL text_width, text_height;
 	/*   These are the maxmum size directed in DVI-file.
-         */
+		 */
 	int mag;
 	/*  is the magnification for output. This is the same value as 'mag' in
-         * DVI-file ( so equal the one in DVI_INFO ), when no '-mag' & '-half'
-         * options directed.
-         */
+		 * DVI-file ( so equal the one in DVI_INFO ), when no '-mag' & '-half'
+		 * options directed.
+		 */
 	int split;
 	/*   Our Device-driver divides the text to several parts, if that can't
-         * be output at once. 'split' is the number of parts. Then, if 'split'
-         * holds '1', Device-driver will put the text at a time.
-         */
+		 * be output at once. 'split' is the number of parts. Then, if 'split'
+		 * holds '1', Device-driver will put the text at a time.
+		 */
 	PRINT_DIR print_direction;
 	/*   This shows the direction for output, responsing '-V' option.
-         * So there is no meaning for PREVIEWER.
-         */
+		 * So there is no meaning for PREVIEWER.
+		 */
 	SIZE_PARA size_para;
 	/* is size-parameter for conversion pixel<-->scaled pt.
-         * ( equal "num * den / mag" )
-         */
+		 * ( equal "num * den / mag" )
+		 */
 	PIXEL x_offset, y_offset;
 	/*   the offset of the head of text. These are directed by '-X' and
-         * '-Y' options.
-         */
+		 * '-Y' options.
+		 */
 	PAGE_INDEX *page_index;
 	/* the index of file-offset of pages in dvifile
-         */
+		 */
 	int total_page;
 	/* same as 'total_page' in DVI_INFO.
-         */
+		 */
 	int start_page, end_page;
 	/* the starting and the ending page to print.
-         */
-    int max_nombre_page;
-    /* the maximal nombre page
-    	 */
+		 */
+	int max_nombre_page;
+	/* the maximal nombre page
+		 */
 	int prt_type;
 	/* the type of the printer, ESC/P, PC-PR, PC-MN, LIPS3 or Previewer etc
 		 */
@@ -379,34 +380,34 @@ struct DIMENSION_REC {
 
 #define OUTPUT_INFO struct OUTPUT_INFO_REC
  /*   Information about output. Interpreting-module and Device-output-module
-     * receive the pointer of this.
-     */
+	 * receive the pointer of this.
+	 */
 struct OUTPUT_INFO_REC {
 	FILE *dvifile_ptr;
 	/* DVI-file pointer
-         */
+		 */
 	long page_start_offset;
 	/* the file-offset at the position the page starts from.
-         */
+		 */
 	PRINT_DIR print_direction;
 	/* equal the one in DIMENSION.
-         */
+		 */
 	PIXEL h_0, v_0;
 	/* the original point for output.
-         */
+		 */
 	PIXEL width, height;
 	/* the size for output.; it is assigned for all the size of the text
-         * to be held in the buffer.
-         */
+		 * to be held in the buffer.
+		 */
 	int byte_width, byte_height;
 	/*  equal width/8 and height/8.
-         */
+		 */
 	int split, page;
 	/* the current part and page.
-         */
+		 */
 	HUGE_BUF *bitmap_ptr;
 	/* Bitmap pointer
-         */
+		 */
 };
 
 typedef struct {	/* KANJI fonts */
@@ -436,7 +437,7 @@ JFM_DATA;
 
 #define FONT_INFO struct FONT_INFO_REC far
  /*   Information about fonts. This is linked-list.
-     */
+	 */
 union EXT {
 	BUFFER *dir;	/* PXL1001, PXL1002, PXL1003
 					   address of the directory for PXLFONT 	*/
@@ -457,27 +458,27 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 											   +  6 = 88 bytes (NTTRPL)*/
 	int font_code;
 	/*   sent from dvi-file, when the font is defined.
-         */
+		 */
 	FONT_TYPE font_type;
 	/*   type of font.
-         */
+		 */
 	FONT_TYPE etf_type;
 	/*   type of ETF_FONT.
-         */
+		 */
 	int f_goth;
 	/* flag for gothic etc.
 		 */
 	char *name;
 	/*   the file-name of the font.
-         */
+		 */
 	BUFFER *pk;
 	/*   the pointer of unpacked data of the font.
-         * it is NULL, when data is unloaded or flushed.
-         */
+		 * it is NULL, when data is unloaded or flushed.
+		 */
 	CHAR_INFO *char_info[CHAR_ROOT];
 	/*   the pointers of the first CHAR_INFO of the font.
-         * Also, it is NULL, when data is unloaded or flushed.
-         */
+		 * Also, it is NULL, when data is unloaded or flushed.
+		 */
 	FONT_INFO *k_top;
 	FONT_INFO *k_next;
 
@@ -485,19 +486,19 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 
 	F_SIZE_PARA des_para;
 	/*  design size.
-         */
-    int	 dpi;
-    /*  requested dpi
-         */
-    int	 sdpi;
-    /*  substituted dpi
-         */
+		 */
+	int	 dpi;
+	/*  requested dpi
+		 */
+	int	 sdpi;
+	/*  substituted dpi
+		 */
 	char n[MAX_NAME_LEN];
 	/* font name
 		*/
 	FONT_INFO *next_font;
 	/*   equal NULL, when no next font.
-         */
+		 */
 	FONT_INFO *before_font;
 	/*	 equal NULL, when no former font
 		 */
@@ -506,12 +507,12 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 		 */
 	int k_width;
 	/*   normal allowable maximal width of Kanji character by bits
-	     *   counting k_scale
+		 *   counting k_scale
 		 *   in PTeX TATE-KUMI fonts, it shows height of fonts.
 		 */
 	int k_height;
 	/*   normal allowable maximal height of Kanji character by bits
-	     *   counting k_scale
+		 *   counting k_scale
 		 *   in PTeX TATE-KUMI fonts, it shows width of fonts.
 		 */
 	int last;
@@ -520,15 +521,15 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 		 */
 	long c;
 	/* checksum (id)
- 		 */
+		 */
 	union EXT ext;
 
 	int texpk_pos;
 
 #ifdef	LBP
 	int	lbp_font_inf;	/*0-3bit:フォント番号-80H, 
-					  	  4,5:bold flag (0:normal, 1:1dot, 2:2dot)
-					  	  6:ouline flag 8-15:フォント縦横比(0-200)*/
+						  4,5:bold flag (0:normal, 1:1dot, 2:2dot)
+						  6:ouline flag 8-15:フォント縦横比(0-200)*/
 #endif
 #ifdef	FDOWN
 	uchar *d_flag;
@@ -622,26 +623,26 @@ extern BUF_INFO buffers[];
 extern	FONT_INFO *first_font_info;
 
  /*  the first position of the font-list.
-     */
+	 */
 
 #define	pk_buf_pointer	(&buffers[1])
 
  /*  the buffer for pk-font-data loaded from disk directly.
-     */
+	 */
 
 #define	raster_buf_pointer	(&buffers[0])
 
  /*  the buffer for the raster-data of unpacked fonts.
-     */
+	 */
 
 #define	bitmap_buf_pointer	(&buffers[2])
 
  /*  Virtual VRAM buffer. Interpret-module will draw the figure onto this.
-     * This is casted to HUGE_BUF when used.
-     */
+	 * This is casted to HUGE_BUF when used.
+	 */
 
  /*  Buffer for working in far heap: default size  = 0 
-     */
+	 */
 
  /* Buffer for working in EMS
   */
@@ -651,12 +652,12 @@ extern	FONT_INFO *first_font_info;
 #else
 #define	COMMON_SIZE	2560
 #endif
-extern uchar common_work[COMMON_SIZE];
+extern char common_work[COMMON_SIZE];
 #define	tmp_buf	common_work
 
  /*  Buffer for working in near heap
-     COMMON_SIZE should not be smaller than 2048
-     */
+	 COMMON_SIZE should not be smaller than 2048
+	 */
 
 extern BUFFER *get_work(uint);
 extern FILE *fopenf(char*, char*);
@@ -756,4 +757,5 @@ extern FILE *fopenf(char*, char*);
 
 #define	issjis1(x)	((x)>=0x81&&(x)<=0xfc&&((x)<=0x9f||(x)>=0xe0))
 
+#endif // INC_DD_H
 /* end of file : dd.h */

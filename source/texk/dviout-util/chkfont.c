@@ -6,9 +6,9 @@
  *						   Sep 1992, fifth  version
  *						   May 1996, sixth  version
  *
- * Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>]    dvi_file_name\n"
- *        chkfont [-s] [-c] [-{f|F}<font_data_file>] -t tfm_file_name\n"
- *        chkfont [-s] [-c] [-{f|F}<font_data_file>] -p font_file_name\n\n"
+ * Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name
+ *        chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name
+ *        chkfont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name
  *
  * "c" means check mode
  * "s" means silent check mode
@@ -32,8 +32,8 @@
  *         251: old and new eufm
  *         252: bad dvi file
  *         253: error in dvi file
- *         254: not dvi file
- *         255: cannot find dvi file
+ *         254: not dvi/tfm file or unknown font ID
+ *         255: cannot find dvi/tfm/font file
  *
  *
  *  1 point = 65536(=2^(16)) scaled point
@@ -80,6 +80,8 @@
 #define	TFM_FILE	1
 #define	PXL_FILE	2
 #define	PK_FILE		3
+#define	VF_FILE		4
+#define	VF_FILE_MAP	5
 
 char buf[BUF_SIZE];
 char filename[MAXPATH];
@@ -160,8 +162,16 @@ char *newfont[] =
 };
 
 struct FONT_ATR {
-	/* font_defのパラメーター ; See "TeX:The program". */
+	/* parameters of font_def; See "TeX:The program". */
 	long k, c, s, d;
+	int a, l;
+	char *n;
+};
+
+struct VFFONT_ATR {
+	/* parameters of font_def; See "TeX:The program". */
+	long k, c, d;
+	double s;
 	int a, l;
 	char *n;
 };
@@ -181,6 +191,7 @@ char *name_link(char *, char *);
 void read_post(DVIFILE_INFO *);
 void get_font_list(DVIFILE_INFO *);
 void font_define(int, FILE *);
+void vf_define(int, FILE *);
 int read_uint(FILE *);
 long read_mit(FILE *);
 long read_long(FILE *);
@@ -200,6 +211,7 @@ long to_long(uchar *);
 
 DVIFILE_INFO dvi_info;
 struct FONT_ATR font;
+struct VFFONT_ATR vffont;
 
 int f_v = -1;	/* verbose mode */
 int f_d;	/* ignore default data */
@@ -261,7 +273,7 @@ char *strlwr(char *p)
 
 void main(int argc, char **argv)
 {
-	int i;
+	int i, code;
 	char *pt;
 
 	if (argc < 2)
@@ -310,12 +322,15 @@ void main(int argc, char **argv)
 			pt += i+1;
 			if( strcmpl(pt, "dvi") == 0 ) f_t = -1;
 			else{
-				if( strcmpl(pt, "tfm") == 0 ) f_t = 1;
+				if( strcmpl(pt, "tfm") == 0 ||  strcmpl(pt, "ofm") == 0 ) f_t = 1;
 				else{
-					for(i = 0; font_ext[i]; i++){
-						if( strcmpl(pt, font_ext[i]) == 0 ){
-							f_t = 2;
-							break;
+					if( strcmpl(pt, "vf") == 0 ) f_t = 2; /* ovf is also included */
+					else{
+						for(i = 0; font_ext[i]; i++){
+							if( strcmpl(pt, font_ext[i]) == 0 ){
+								f_t = 2;
+								break;
+							}
 						}
 					}
 				}
@@ -336,8 +351,18 @@ void main(int argc, char **argv)
 		if (f_t == TFM_FILE)
 			tfm_define(dvi_info.file_ptr);
 		else {
-			if (chk_font_file(dvi_info.file_ptr))
+			if (chk_font_file(dvi_info.file_ptr)) {
 				pxl_define(dvi_info.file_ptr);
+				if (f_t == VF_FILE) {
+					f_t = VF_FILE_MAP;
+					code = read_byte(dvi_info.file_ptr);
+					while (code >= FNT_DEF_1 && code < FNT_DEF_1 + 4) {
+						vf_define(code, dvi_info.file_ptr);
+						check_font();
+						code = read_byte(dvi_info.file_ptr);
+					}
+				}
+			}
 		}
 	}
 	else {
@@ -491,18 +516,29 @@ void check_font(void)
 	int f_point;
 
 	if (f_v) {
-		if (f_t == DVI_FILE)
-			printf("\n\nFont %ld\n", font.k);
-		printf("\tchecksum\t\t= %08lX\n", font.c);
-		if (f_t != DVI_FILE) {
-			printf("\tdesign size\t\t= %ld 2^{-20} points = %ld points",
-				   font.d, font.d >> 20);
-		}
-		else {
-			printf("\tdesign size\t\t=%9ld scaled points =%3ld points",
-				   font.d, font.d >> 16);
+		if (f_t != VF_FILE_MAP) {
+			if (f_t == DVI_FILE)
+				printf("\n\nFont %ld\n", font.k);
+			printf("\tchecksum\t\t= %08lX\n", font.c);
+			if (f_t != DVI_FILE)
+				printf("\tdesign size\t\t= %ld 2^{-20} points = %ld points",
+					   font.d, font.d >> 20);
+			else
+				printf("\tdesign size\t\t=%9ld scaled points =%3ld points",
+					   font.d, font.d >> 16);
 		}
 		switch (f_t) {
+
+		  case (VF_FILE_MAP):
+			  printf("\n\n\tMapped Font %ld\n", vffont.k);
+			//  printf("\t\tchecksum\t= %08lX\n", vffont.c); /* always zero, we can't get it without tfm */
+			  printf("\t\tfont dsize\t= %ld 2^{-20} points = %ld points", vffont.d, vffont.d/(1<<20));
+			  printf("\n\t\tfont at\t\t= %9.6lf", vffont.s/(1<<20));
+			  printf("\n\t\tfont name\t= %s", vffont.n);
+			  break;
+
+		  case (VF_FILE):
+			  break;
 
 		  case (PK_FILE):
 			  printf("\n\thorizontal\t\t= %ld 2^{-16} dots/point = %ld dpi",
@@ -581,7 +617,7 @@ void check_font(void)
 				else {
 					if (eufm[j].neww == font.c) {
 						f_type |= NEW_EUFM;
-						type("AMSTeX 2.0/2.1");
+						type("AMSTeX 2.0 or newer"); /* V2.2 is available */
 						return;
 					}
 				}
@@ -623,7 +659,7 @@ void check_font(void)
 
 char *
     name_link(char *base, char *ext)
-	/* ベース名と，拡張子をくっつける．
+	/* combine basename and extension.
      */
 {
 	char *name;
@@ -638,7 +674,7 @@ char *
 }
 
 void read_post(DVIFILE_INFO *dvi)
-	/* POSTAMBLEからのデータ読み出し．
+	/* read data from POSTAMBLE.
      */
 {
 	long endofs;
@@ -709,8 +745,10 @@ void get_font_list(DVIFILE_INFO *dvi)
 
 void tfm_define(FILE * fp)
 {
-	int i, ch, bc, ec;
-	long sum, size;
+	int i, ch, nt, ofmlevel;
+	long lf, lh, bc, ec, nw, nh, nd, ni, nl, nk, ne, np, fontdir, sum, size,
+	    headerlength, topchar, topwidth, topheight, topdepth, topitalic, ncw, nlw, neew,
+	    nco, npc, nki, nwi, nkf, nwf, nkm, nwm, nkr, nwr, nkg, nwg, nkp, nwp;
 	char *s, *t, *u;
 
 	font.n[strlen(font.n) - 4] = 0;
@@ -722,26 +760,161 @@ void tfm_define(FILE * fp)
 	font.a = t - s;
 	font.l = 0;
 
+	/* initialize for standard TFM */
 	ch = 't';
 	u = "";
+	nt = 0;
+	ofmlevel = 0;
+	headerlength = 6;
+	topchar = 255;
+	fontdir = 0;
+	nco = npc = nki = nwi = nkf = nwf = nkm = nwm = nkr = nwr = nkg = nwg = nkp = nwp = 0;
 
-	if ((i=read_uint(fp)) == 11 || i == 9) {	/* lf */
-		read_long(fp);
-		ch = 'j';
-		if( i == 9 ) u = "(tate)";
+	if ((i=read_uint(fp)) == 0) {			/* (temporary) lf */
+		/* assume OFM */
+		ch = 'o';
+		ofmlevel = read_uint(fp);
+		if (ofmlevel == 0)
+			headerlength = 14;
+		else
+			headerlength = 29;
+		topchar = 1114111L;
+		lf = read_long(fp);			/* lf */
+		lh = read_long(fp);			/* lh */
 	}
-	read_uint(fp);				/* lh */
-	bc = read_uint(fp);			/* bc */
-	ec = read_uint(fp);			/* ec */
-	if (bc < 0 || bc > 256 || bc > ec || ec > 256) {
-		printf("\n\"%s\" is not a tfm file\n", filename);
+	else {
+		if (i == 11 || i == 9) {
+			/* assume JFM */
+			ch = 'j';
+			if( i == 9 ) u = "(tate)";
+			headerlength = 7;
+			nt = read_uint(fp);		/* nt */
+			lf = read_uint(fp);		/* lf */
+		}
+		else {
+			/* assume TFM */
+			lf = i;				/* lf */
+		}
+		lh = read_uint(fp);			/* lh */
+	}
+
+	/*
+	   [OFM format]
+	     Each entry is a 32-bit integer, non-negative and less than 2^31, and
+	       bc - 1 <= ec <= 1114111L  (cf. 65535 in texmf-dist/doc/omega/base/doc-1.8.tex)
+	       lf = 14 + lh + 2 * (ec - bc + 1) + nw + nh + nd + ni + 2 * nl + nk + 2 * ne + np  (for level 0)
+	       lf = 29 + lh +               ncw + nw + nh + nd + ni + 2 * nl + nk + 2 * ne + np
+	            + nki + nwi + nkf + nwf + nkm + nwm + nkr + nwr + nkg + nwg + nkp + nwp      (for level 1)
+	       nki + nkf + nkm + nkr + nkg + nkp < 32  (for level 1)
+	   [JFM format]
+	     Each entry is a 16-bit integer, non-negative and less than 2^15, and
+	       0 <= ec <= 255
+	       bc = 0
+	       lf = 7 + nt + lh + (ec - bc + 1) + nw + nh + nd + ni + nl + nk + ng + np
+	   [TFM format]
+	     Each entry is a 16-bit integer, non-negative and less than 2^15, and
+	       bc - 1 <= ec <= 255
+	       ne <= 256
+	       lf = 6 + lh + (ec - bc + 1) + nw + nh + nd + ni + nl + nk + ne + np
+	*/
+	if (ch == 'o') {
+		bc = read_long(fp);			/* bc */
+		ec = read_long(fp);			/* ec */
+		nw = read_long(fp);
+		nh = read_long(fp);
+		nd = read_long(fp);
+		ni = read_long(fp);
+		nl = read_long(fp);
+		nk = read_long(fp);
+		ne = read_long(fp);
+		np = read_long(fp);
+		fontdir = read_long(fp);
+		nlw = 2 * nl;
+		neew = 2 * ne;
+		topchar = 1114111L;
+		topwidth = 1114111L;
+		topheight = 255;
+		topdepth = 255;
+		topitalic = 255;
+		if (ofmlevel == 0) {
+			ncw = 2 * ( ec - bc + 1 );
+		}
+		else {
+			nco = read_long(fp);
+			ncw = read_long(fp);
+			npc = read_long(fp);
+			nki = read_long(fp);
+			nwi = read_long(fp);
+			nkf = read_long(fp);
+			nwf = read_long(fp);
+			nkm = read_long(fp);
+			nwm = read_long(fp);
+			nkr = read_long(fp);
+			nwr = read_long(fp);
+			nkg = read_long(fp);
+			nwg = read_long(fp);
+			nkp = read_long(fp);
+			nwp = read_long(fp);
+		}
+	}
+	else {
+		bc = read_uint(fp);			/* bc */
+		ec = read_uint(fp);			/* ec */
+		nw = read_uint(fp);
+		nh = read_uint(fp);
+		nd = read_uint(fp);
+		ni = read_uint(fp);
+		nl = read_uint(fp);
+		nk = read_uint(fp);
+		ne = read_uint(fp);	/* for JFM, this corresponds to ng instead */
+		np = read_uint(fp);
+		ncw = ec - bc + 1;
+		nlw = nl;
+		neew = ne;
+		topwidth = 255;
+		topheight = 15;
+		topdepth = 15;
+		topitalic = 63;
+	}
+	if (lf != (headerlength + nt + lh + ncw + nw + nh + nd + ni + nlw + nk + neew
+	    + np + nki + nwi + nkf + nwf + nkm + nwm + nkr + nwr + nkg + nwg + nkp + nwp)) {
+		printf("\n\"%s\" is not a %cfm file\n", filename, ch);
 		exit(254);
 	}
-	if (f_v != 0)
-		printf("\t\"%s\" is a %cfm%s file :%3d  -> %3d\n",
-			font.n, ch, u, bc, ec);
-	for (i = 0; i < 4; i++)
-		read_long(fp);
+	if (ch == 'j') {
+		if (bc != 0 || ec < 0 || ec > topchar) {
+			printf("\nThe %cfm file \"%s\" has illegal character code range: %ld -> %ld\n", ch, filename, bc, ec);
+			exit(254);
+		}
+	}
+	else {
+		if (bc < 0 || bc > ec + 1 || ec > topchar) {
+			printf("\nThe %cfm file \"%s\" has illegal character code range: %ld -> %ld\n", ch, filename, bc, ec);
+			exit(254);
+		}
+	}
+#if 0
+	/* more strict check */
+	long ligsize = 800000L; /* set to 800000 for OFM, 32510 for TFM/JFM */
+	if (lh < 2)
+		printf("Warning: The header length is only %ld!\n", lh);
+	if (nl > ligsize)
+		printf("Warning: The lig/kern program is too long!\n");
+	if (nw == 0 || nh == 0 || nd == 0 || ni == 0)
+		printf("Warning: Incomplete subfiles for character dimensions!");
+	if (ch != 'j' && ne > topchar + 1)
+		printf("Warning: There are %ld extensible recipes!", ne);
+#endif
+
+	if (f_v != 0) {
+		if (ch == 'o')
+			printf("\t\"%s\" is a %cfm level %d file :%3ld  -> %3ld\n",
+				font.n, ch, ofmlevel, bc, ec);
+		else
+			printf("\t\"%s\" is a %cfm%s file :%3ld  -> %3ld\n",
+				font.n, ch, u, bc, ec);
+	}
+
 	font.c = read_long(fp);		/* header[0] */
 	font.d = read_long(fp);		/* header[1] */
 	fclose(fp);
@@ -751,10 +924,12 @@ void tfm_define(FILE * fp)
 #define PK_PRE		247
 #define PK_ID		89
 #define	GF_ID		131
+#define	VF_ID		202
 #define	PKD_ID		('p'+'k'+'d')
 #define PK_POST		245
 #define GF_POST		223
 
+#define	VFW_ID		((PK_PRE<<8)+VF_ID)
 #define	GFW_ID		((PK_PRE<<8)+GF_ID)
 #define	PKW_ID		((PK_PRE<<8)+PK_ID)
 #define	PKDW_ID		((PK_PRE<<8)+PKD_ID)
@@ -827,6 +1002,18 @@ void pxl_define(FILE * fp)
 			  goto id_err;
 		  break;
 
+	  case (VFW_ID):
+		  type = "VF";
+		  f_t = VF_FILE;
+		  code = read_byte(fp);
+		  for (i = 0; i < code; i++)
+			  read_byte(fp);
+		  for (i = 0; i < 4; i++)
+			  font.c += read_byte(fp)<<(8*(3-i));
+		  for (i = 0; i < 4; i++)
+			  font.d += read_byte(fp)<<(8*(3-i));
+		  break;
+
 	  case (GFW_ID):
 		  type = "GF";
 		  for (endofs = -3L; fseek(fp, endofs, SEEK_END),
@@ -886,6 +1073,24 @@ void font_define(int code, FILE * dvifile)
 		exit(252);
 	}
 	font.n = read_str(dvifile, font.a + font.l);
+}
+
+void vf_define(int code, FILE * vffile)
+{
+	int i, len, lenm;
+
+	vffont.k = read_n(vffile, code - FNT_DEF_1 + 1);
+	vffont.c = read_long(vffile);
+	vffont.s = read_long(vffile);
+	vffont.d = read_long(vffile);
+	vffont.a = read_byte(vffile);
+	vffont.l = read_byte(vffile);
+
+	if (vffont.a == EOF || vffont.l == EOF) {
+		fprintf(stderr, "Bad VF file\n");
+		exit(252);
+	}
+	vffont.n = read_str(vffile, vffont.a + vffont.l);
 }
 
 int read_uint(FILE * fp)
@@ -1022,15 +1227,19 @@ void get_list(char *fname)
 void usage()
 {
 	fprintf(stderr,
-		"<<< CHecK dvi/tfm/gf/pk/pkd/pxl/gth/far file and tell informations"
-			" of FONTs >>>\n"
+		"\t<<< CHecK dvi/tfm/font file and tell informations of FONTs >>>\n"
 			"\t\t\t\tVer 1.7a, written by SHIMA, 1990/1992\n\n"
 	  "Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name\n"
 	  "       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name\n"
 	"       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name\n\n"
 			"Option\t -c: check mode\n"
 			"\t -s: silent check mode\n"
-			"\t -f: use font_data_file (-F: and ignore default data)\n\n"
+			"\t -f: use font_data_file (-F: and ignore default data)\n"
+			"\t -d: force DVI mode\n"
+			"\t -t: force TFM/OFM mode\n"
+			"\t -p: force FONT mode\n"
+			"\t     (supported formats: vf/ovf/gf/pk/pkd/pxl/gth/far)\n"
+			"\t By default, mode is guessed from the file extension.\n\n"
 			"Input  M  to see more.  Push Return to quit");
 	switch (getc(stdin)) {
 	  case ('M'):
