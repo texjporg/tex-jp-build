@@ -163,7 +163,7 @@ void msg(void)
 	"           #Font: <TrueType_font_name>   (an optional line)\n"
 	"           #<para>: Same as -<para> in the command line\n"
 #ifdef	USETTF
-	"Example: propw -o=msptmin.pl \"-fm=MS P MINCHOU\" \"#@ÇlÇr Çoñæí©\"\n"
+	"Example: propw -o=msptmin.pl \"-fm=MS P MINCHOU\" \"#@Ôº≠Ôº≥ Ôº∞ÊòéÊúù\"\n"
 #endif
 	);
 	Exit(1);
@@ -271,19 +271,19 @@ void glue4(void)
 
 char *CHAR_TYPE = 
 	"(CHARSINTYPE O 1\n"
-	"   Åe Åg Åi Åk Åm Åo Åq Ås Åu Åw Åy \n"
+	"   ‚Äò ‚Äú Ôºà „Äî Ôºª ÔΩõ „Äà „Ää „Äå „Äé „Äê \n"
 	"   )\n"
 	"(CHARSINTYPE O 2\n"
-	"   ÅA ÅC Åf Åh Åj Ål Ån Åp År Åt Åv Åx Åz \n"
+	"   „ÄÅ Ôºå ‚Äô ‚Äù Ôºâ „Äï ÔºΩ ÔΩù „Äâ „Äã „Äç „Äè „Äë \n"
 	"   )\n"
 	"(CHARSINTYPE O 3\n"
-	"   ÅE ÅF ÅG \n"
+	"   „Éª Ôºö Ôºõ \n"
 	"   )\n"
 	"(CHARSINTYPE O 4\n"
-	"   ÅB ÅD \n"
+	"   „ÄÇ Ôºé \n"
 	"   )\n"
 	"(CHARSINTYPE O 5\n"
-	"   Å\ Åc Åd \n"
+	"   ‚Äï ‚Ä¶ ‚Ä• \n"
 	"   )\n";
 
 char *MCHAR_TYPE1 = 
@@ -300,16 +300,16 @@ char *MCHAR_TYPE3 =
 	"\n"
 	"   )\n"
 	"(CHARSINTYPE O 3\n"
- 	"   ÅE %s\n"
+ 	"   „Éª %s\n"
  	"   )\n"
 	"(CHARSINTYPE O 4\n"
-	"   ÅB %s%s%s\n"
+	"   „ÄÇ %s%s%s\n"
 	"   )\n"
 	"(CHARSINTYPE O 5\n"
- 	"   Å\ Åc Åd \n"
+ 	"   ‚Äï ‚Ä¶ ‚Ä• \n"
 	"   )\n";
 
-char *MADDCHAR = "ÅF ÅG";
+char *MADDCHAR = "Ôºö Ôºõ";
 
 char *TYPE = 
 	"(TYPE O %d\n"
@@ -1038,9 +1038,9 @@ void sortline(void)
 	char *pt;
 
 	if(!f_denom){
-		for(i = 0; i < mx_line; i++){		/* define ëSäpïù */
+		for(i = 0; i < mx_line; i++){		/* define ÂÖ®ËßíÂπÖ */
 			num = GetCode((unsigned char *)(line[i]));
-			if(num >= 0x889f){				/* àü */
+			if(num >= 0x889f){				/* ‰∫ú */
 				DENOM = atoi(line[i]);
 				f_denom = 1;
 				if(f_verb)
@@ -1137,7 +1137,7 @@ void sortline(void)
 		if(i)
 			wku = i;
 		if(f_verb)
-			fprintf(fe, "Kuten:  ÅA=%d  ÅB=%d  ÅC=%d  ÅD=%d\n",
+			fprintf(fe, "Kuten:  „ÄÅ=%d  „ÄÇ=%d  Ôºå=%d  Ôºé=%d\n",
 				kuten[0], kuten[1], kuten[2], kuten[3]);
 		for(i = 0; i < 9; i++){
 			if(h[i] >= 0)
@@ -1190,7 +1190,7 @@ void main(int argc, char **argv)
 			msg();
 	}
 
-// strcpy(face, "ÇlÇr Çoñæí©");
+// strcpy(face, "Ôº≠Ôº≥ Ôº∞ÊòéÊúù");
 // goto ttf1;
 
 #ifdef	USETTF
@@ -1309,31 +1309,31 @@ m1:			glue1();
 				}
 				fprintf(fo, MCHAR_TYPE3,
 					(f_tate)?"":MADDCHAR,
-					(f_kuten & 1)?	"":"ÅA ",
-					(f_kuten & 5)?	"":"ÅC ",
-					(f_kuten & 13)?	"":"ÅD"	);
+					(f_kuten & 1)?	"":"„ÄÅ ",
+					(f_kuten & 5)?	"":"Ôºå ",
+					(f_kuten & 13)?	"":"Ôºé"	);
 				label = 6;
 				if(f_kuten & 1){
 					fprintf(fo, "(CHARSINTYPE O %d\n", oct(label));
 					if(f_kuten & 4)
-   						fprintf(fo, "   ÅA \n   )\n");
+   						fprintf(fo, "   „ÄÅ \n   )\n");
 					else if(f_kuten & 8)
-   						fprintf(fo, "   ÅA ÅC \n   )\n");
+   						fprintf(fo, "   „ÄÅ Ôºå \n   )\n");
 					else
-   						fprintf(fo, "   ÅA ÅC ÅD\n   )\n");
+   						fprintf(fo, "   „ÄÅ Ôºå Ôºé\n   )\n");
 					label++;
 				}
 				if(f_kuten & 4){
 					fprintf(fo, "(CHARSINTYPE O %d\n", oct(label));
 					if(f_kuten & 8)
-   						fprintf(fo, "   ÅC \n   )\n");
+   						fprintf(fo, "   Ôºå \n   )\n");
 					else
-   						fprintf(fo, "   ÅC ÅD\n   )\n");
+   						fprintf(fo, "   Ôºå Ôºé\n   )\n");
 					label++;
 				}
 				if(f_kuten & 8){
 					fprintf(fo, "(CHARSINTYPE O %d\n", oct(label));
-   					fprintf(fo, "   ÅD\n   )\n");
+   					fprintf(fo, "   Ôºé\n   )\n");
 				}
 			}
 		}else if(mode == 2){

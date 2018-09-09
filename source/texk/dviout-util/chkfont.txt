@@ -1,4 +1,4 @@
-1. chkfont.exe ���p�����[�^�������Ɏ��s�����Ƃ��̉�ʂ́A�ȉ��̒ʂ�ł��B
+1. chkfont.exe をパラメータをつけずに実行したときの画面は、以下の通りです。
 
 	<<< CHecK dvi/tfm/font file and tell informations of FONTs >>>
 				Ver 1.7a, written by SHIMA, 1990/1992
@@ -41,37 +41,37 @@ eufm10	BF989013	8F256EB2
 
 
 
-2. chkfont.exe �́Advi file ���邢�́Atfm file ����сAvf file, gf file,
-   pk file, pxl file �̃t�H���g�̃f�[�^���`�F�b�N����v���O�����ŁA���̋@�\��
-   ����܂��B
+2. chkfont.exe は、dvi file あるいは、tfm file および、vf file, gf file,
+   pk file, pxl file のフォントのデータをチェックするプログラムで、次の機能が
+   あります。
 
-�@�P�D dvi file �Ŏg���Ă���t�H���g�𒲂ׂ�B���Ƀ`�F�b�N�T���𒲂ׂāA����
-�@�@�@ �t�H���g���ł��o�[�W�������قȂ�ꍇ�̃`�F�b�N���s���B
+　１． dvi file で使われているフォントを調べる。特にチェックサムを調べて、同じ
+　　　 フォント名でもバージョンが異なる場合のチェックを行う。
 
-�@�Q�D tfm/vf/gf/pk/pxl file �𒲂ׂāA�`�F�b�N�T���Ȃǂ̏��𒲂ׂ�B
+　２． tfm/vf/gf/pk/pxl file を調べて、チェックサムなどの情報を調べる。
 
-�@�R�D �`�F�b�N����`�F�b�N�T���̃f�[�^�́A�f�[�^�E�t�@�C������ǂݍ��߂�B
-
-
-
-2.1. AMSTeX ���AVer 2.* �ɂȂ����Ƃ��AAMSFONT �́A����ȑO�̃t�H���g����啝��
-  �ύX���Ȃ���܂����B�t�H���g�����قƂ�ǐV�����Ȃ�܂������AFraktur �t�H���g
-�@�� eufm �t�@�~���[�̂݁A�������O���p�����܂����B�f�U�C���͑S���ς���Ă���
-�@�̂ŁAdvi file �� AMSFONT ���p�����Ă���Ƃ��A���ꂪ Ver 2.0 �ȑO�̂��̂�
-�@�ǂ����m��K�v�ɔ����쐬���ꂽ�v���O������ chkfont.exe �̌��ɂȂ��Ă��܂��B
-
-     �v�����^�E�h���C�o�ň������Ƃ��A�K���ȃo�[�W�����̃t�H���g��I�Ԃ��Ƃ�
-�@�o�b�`�E�v���O�����ŗe�ՂɎ����ł���悤���ꂽ�̂ŁA�G���[���x���ŏ����
-�@���܂��Bdviout/dviprt Ver 2.33 �ɂ́Acheckasm.exe �Ƃ����t�@�C�����ŕt������
-�@�������̂� Version up �������̂ł��B
-
-     �f�t�H�[���g�ł́AAMSFONT �� Ver 2.0 �Ƃ���ȑO�Ƃ̋�ʂ��Ȃ���܂��B
+　３． チェックするチェックサムのデータは、データ・ファイルから読み込める。
 
 
 
-2.2. dvi file �̃t�H���g�Ȃǂ̃f�[�^��ǂݏo�����Ƃ��ł��܂��B
-�@�ȉ��̎��s����Q�Ƃ��Ă��������B
-  dvi_file_name �́A�g���q�����Ȃ���΁A�����I�� .dvi ������܂��B
+2.1. AMSTeX が、Ver 2.* になったとき、AMSFONT は、それ以前のフォントから大幅に
+  変更がなされました。フォント名もほとんど新しくなりましたが、Fraktur フォント
+　の eufm ファミリーのみ、同じ名前が用いられました。デザインは全く変わっている
+　ので、dvi file で AMSFONT が用いられているとき、それが Ver 2.0 以前のものか
+　どうか知る必要に迫られ作成されたプログラムが chkfont.exe の元になっています。
+
+     プリンタ・ドライバで印刷するとき、適当なバージョンのフォントを選ぶことが
+　バッチ・プログラムで容易に実現できるよう作られたので、エラーレベルで情報を返
+　します。dviout/dviprt Ver 2.33 には、checkasm.exe というファイル名で付属して
+　いたものを Version up したものです。
+
+     デフォールトでは、AMSFONT の Ver 2.0 とそれ以前との区別がなされます。
+
+
+
+2.2. dvi file のフォントなどのデータを読み出すことができます。
+　以下の実行例を参照してください。
+  dvi_file_name は、拡張子をつけなければ、自動的に .dvi が補われます。
 
 B>chkfont -c a:\tex\dvi\texjman
 
@@ -113,7 +113,7 @@ Font 67
         magnification           = +magstep2
         font name               = cmbx10
 
-                   <<< �r���ȗ� >>>
+                   <<< 途中省略 >>>
 
 Font 10
         checksum                = D993A052
@@ -147,7 +147,7 @@ Font 67
         space size              =   327680 scaled points =  5 points
         font name               = msym5 (Old AMS Font) 
 
-                   <<< �r���ȗ� >>>
+                   <<< 途中省略 >>>
 
 Font 0
         checksum                = 00000000
@@ -160,9 +160,9 @@ Old eufm Old font
 
 
 
-2.3. tfm/ofm �t�@�C���̃f�[�^��ǂ݂������Ƃ��ł��܂��B
-�@�ȉ��̎��s����Q�Ƃ��Ă��������B
-  tfm_file_name �́A�g���q�����Ȃ���΁A�����I�� .tfm ������܂��B
+2.3. tfm/ofm ファイルのデータを読みだすことができます。
+　以下の実行例を参照してください。
+  tfm_file_name は、拡張子をつけなければ、自動的に .tfm が補われます。
 
 B>chkfont -c -t A:\tex\tfm\cmr8
         "cmr8" is a tfm file :  0  -> 127
@@ -200,8 +200,8 @@ No AMS Font
 
 
 
-2.4. vf/ovf/gf/pk/pkd/pxl/gth/far �t�@�C���̃f�[�^��ǂ݂������Ƃ��ł��܂��B
-�@�ȉ��̎��s����Q�Ƃ��Ă��������B
+2.4. vf/ovf/gf/pk/pkd/pxl/gth/far ファイルのデータを読みだすことができます。
+　以下の実行例を参照してください。
 
 B>chkfont -c a:\tex\fonts\170dpi\eufm8.pk
         "eufm8.pk" is in PK format
@@ -250,25 +250,25 @@ B>chkfont2 b:\tex\fonts\pk118.gth
         vertical                = 107005 2^{-16} dots/point = 118 dpi
 
 
-                   <<< �ȉ��ȗ� >>>
+                   <<< 以下省略 >>>
 
 
 
-2.5. font_data_file �ɂ���āA�`�F�b�N�T���Ȃǂ̏���^���A���ꂩ�画�f����
-�@�G���[���x���ŕԂ��悤�ɂł��܂��B
+2.5. font_data_file によって、チェックサムなどの情報を与え、それから判断して
+　エラーレベルで返すようにできます。
 
-     font_data_file �́A�ŏ��Ƀt�H���Ɩ��A���ɁA���o�[�W�����̃`�F�b�N�T���A
-�@���̌�ɐV�o�[�W�����̃`�F�b�N�T���������܂��i���̌�ɂ́A�󔒂������΁A�R��
-�@���g�������Ă����܂��܂���j�B�P���ڂ��A# �܂��́A; �ƂȂ��Ă���s�͖�������
-�@�܂��B�܂��A0 �͂��̃t�H���g�����݂����o�[�W�����i�܂��́A�V�o�[�W�����j����
-�@������Ƃ��Ɏg���܂��B���̂Ƃ��A�t�̃o�[�W�����ɂ� 0 �ȊO�̓K���ȁi�`�F�b�N
-�@�T���Ɉ�v���Ȃ��j�l�������܂��B�`�F�b�N�T���� 16�i���ŏ����܂����A����́A
-�@2.3 �ŏ����Ă���悤�ɂ��āAtfm file ����ǂނ��Ƃ��ł��܂��B
+     font_data_file は、最初にフォンと名、次に、旧バージョンのチェックサム、
+　その後に新バージョンのチェックサムを書きます（その後には、空白をおけば、コメ
+　ントを書いてもかまいません）。１桁目が、# または、; となっている行は無視され
+　ます。また、0 はそのフォントが存在が旧バージョン（または、新バージョン）を意
+　味するときに使います。そのとき、逆のバージョンには 0 以外の適当な（チェック
+　サムに一致しない）値を書きます。チェックサムは 16進数で書きますが、それは、
+　2.3 で書いてあるようにして、tfm file から読むことができます。
 
-�@�@-f �Ŏw�肵���Ƃ��́A�f�t�H�[���g�̃f�[�^�ɍ��킹�ėp�����܂��B
-    -F �Ŏw�肵���Ƃ��́Afont_dat_file �݂̂𔻒f�̂��߂̃f�[�^�ɂ��܂��B
+　　-f で指定したときは、デフォールトのデータに合わせて用いられます。
+    -F で指定したときは、font_dat_file のみを判断のためのデータにします。
 
-�@  font_dat_file �̗�
+　  font_dat_file の例
 
     ; font_name    check_sum_old  check_sum_new
     eufm8           37CCA321         2564B2F5   ; 2.0
@@ -279,12 +279,12 @@ B>chkfont2 b:\tex\fonts\pk118.gth
     msxm10                 0                1
     msam10                 1                0
 
-    ���̂悤���ƁAeufm8 �̃t�H���g�ɑ΂��A�`�F�b�N�T���� 16�i�ŁA37CCA321 ��
-�@�Ƃ��́AOld Font �Ɣ��f����A2564B2F5 �܂��́A5C978225 �̂Ƃ� New Font ��
-�@���f����A�O�҂� 16�i�� 10�A ��҂� 2 �ɑΉ����܂��Bdvi file ���`�F�b�N����
-�@�ꍇ�́A�g��ꂽ�t�H���g�ɑΉ����邱�̐��i�f�[�^���Ȃ����̂� 0 �Ƃ���j��
-�@���ׂĂ� OR ���Ƃ��ăG���[���x���ŕԂ��܂��Bmsxm10 �̃t�H���g�́AOld Font ��
-�@�݂Ȃ���Amsam10 �̕��� New Font �Ƃ݂Ȃ���܂��i�`�F�b�N�T���͒��ׂȂ��j�B
+    このようだと、eufm8 のフォントに対し、チェックサムが 16進で、37CCA321 の
+　ときは、Old Font と判断され、2564B2F5 または、5C978225 のとき New Font と
+　判断され、前者は 16進で 10、 後者は 2 に対応します。dvi file をチェックした
+　場合は、使われたフォントに対応するこの数（データがないものは 0 とする）の
+　すべての OR をとってエラーレベルで返します。msxm10 のフォントは、Old Font と
+　みなされ、msam10 の方は New Font とみなされます（チェックサムは調べない）。
 
 
-    font_data_file �́A; �� # �̍s�������āA�ő� 1024�s�܂ł�������܂��B
+    font_data_file は、; や # の行を除いて、最大 1024行までが許されます。

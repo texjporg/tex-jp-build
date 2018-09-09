@@ -529,9 +529,9 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 	int texpk_pos;
 
 #ifdef	LBP
-	int	lbp_font_inf;	/*0-3bit:ƒtƒHƒ“ƒg”Ô†-80H, 
+	int	lbp_font_inf;	/*0-3bit:ãƒ•ã‚©ãƒ³ãƒˆç•ªå·-80H, 
 						  4,5:bold flag (0:normal, 1:1dot, 2:2dot)
-						  6:ouline flag 8-15:ƒtƒHƒ“ƒgc‰¡”ä(0-200)*/
+						  6:ouline flag 8-15:ãƒ•ã‚©ãƒ³ãƒˆç¸¦æ¨ªæ¯”(0-200)*/
 #endif
 #ifdef	FDOWN
 	uchar *d_flag;
@@ -550,43 +550,43 @@ struct FONT_INFO_REC {		/* 4*CHAR_ROOT + 46 = 78 bytes
 
 #ifdef LBP
 #ifdef FDOWN
-typedef struct {	/*ƒ_ƒEƒ“ƒ[ƒhî•ñ*/
-	int assign_num;		/*Š„“–”Ô†*/
-	int maxwidth;		/*ƒtƒHƒ“ƒgÅ‘å•*/
-	int maxheight;		/*ƒtƒHƒ“ƒgÅ‘å‚*/
-	int mincharcode;	/*Å¬ƒR[ƒh*/
-	int maxcharcode;	/*Å‘åƒR[ƒh*/
-	int numoffonts;		/*ƒ_ƒEƒ“ƒ[ƒh‚µ‚½ƒtƒHƒ“ƒg‚Ì”*/
-	long total_send;	/*ƒ_ƒEƒ“ƒ[ƒh‚µ‚½ƒg[ƒ^ƒ‹ƒoƒCƒg”*/
-	long total_off;		/*ÀƒTƒCƒY‚ğg‚¤ê‡‚ÌƒoƒCƒg”‚Ì·*/
-	long total_mem;		/*ƒZƒ‹ƒTƒCƒY‚ÅŒv‚Á‚½ƒg[ƒ^ƒ‹ƒoƒCƒg”*/
+typedef struct {	/*ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰æƒ…å ±*/
+	int assign_num;		/*å‰²å½“ç•ªå·*/
+	int maxwidth;		/*ãƒ•ã‚©ãƒ³ãƒˆæœ€å¤§å¹…*/
+	int maxheight;		/*ãƒ•ã‚©ãƒ³ãƒˆæœ€å¤§é«˜*/
+	int mincharcode;	/*æœ€å°ã‚³ãƒ¼ãƒ‰*/
+	int maxcharcode;	/*æœ€å¤§ã‚³ãƒ¼ãƒ‰*/
+	int numoffonts;		/*ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸãƒ•ã‚©ãƒ³ãƒˆã®æ•°*/
+	long total_send;	/*ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸãƒˆãƒ¼ã‚¿ãƒ«ãƒã‚¤ãƒˆæ•°*/
+	long total_off;		/*å®Ÿã‚µã‚¤ã‚ºã‚’ä½¿ã†å ´åˆã®ãƒã‚¤ãƒˆæ•°ã®å·®*/
+	long total_mem;		/*ã‚»ãƒ«ã‚µã‚¤ã‚ºã§è¨ˆã£ãŸãƒˆãƒ¼ã‚¿ãƒ«ãƒã‚¤ãƒˆæ•°*/
 }
 DL_INFO;
 
-struct DJFONT_COUNT {	/*˜a•¶ƒtƒHƒ“ƒg‚Ì•¶š‚ÌoŒ»•p“xî•ñ
+struct DJFONT_COUNT {	/*å’Œæ–‡ãƒ•ã‚©ãƒ³ãƒˆã®æ–‡å­—ã®å‡ºç¾é »åº¦æƒ…å ±
 						  : 8 byte -> should be even size*/
-	unsigned short int code;		/*•¶šƒR[ƒh*/
-	unsigned char font_code;		/*ƒtƒHƒ“ƒg”Ô†*/
-	unsigned char count;			/*oŒ»‰ñ”-1*/
-	unsigned short int after;		/*Ÿ‚Ìƒm[ƒh*/
-	unsigned short int  before;		/*‘O‚Ìƒm[ƒh*/
+	unsigned short int code;		/*æ–‡å­—ã‚³ãƒ¼ãƒ‰*/
+	unsigned char font_code;		/*ãƒ•ã‚©ãƒ³ãƒˆç•ªå·*/
+	unsigned char count;			/*å‡ºç¾å›æ•°-1*/
+	unsigned short int after;		/*æ¬¡ã®ãƒãƒ¼ãƒ‰*/
+	unsigned short int  before;		/*å‰ã®ãƒãƒ¼ãƒ‰*/
 };
 
-struct DJFONT_TABLE {	/*˜a•¶ƒtƒHƒ“ƒg‚Ìƒ_ƒEƒ“ƒ[ƒh‚µ‚½•¶šî•ñ: 5 byte*/
-	unsigned short int code;		/*Œ³‚Ì•¶šƒR[ƒh*/
-	unsigned char font_code;		/*Œ³‚ÌƒtƒHƒ“ƒg”Ô†*/
-	unsigned char new_code;			/*ƒ_ƒEƒ“ƒ[ƒh‚Å–„‚ß‚ñ‚¾•¶šƒR[ƒh*/
-	unsigned char new_font_code;	/*ƒ_ƒEƒ“ƒ[ƒh‚Å–„‚ß‚ñ‚¾ƒtƒHƒ“ƒg”Ô†*/
+struct DJFONT_TABLE {	/*å’Œæ–‡ãƒ•ã‚©ãƒ³ãƒˆã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸæ–‡å­—æƒ…å ±: 5 byte*/
+	unsigned short int code;		/*å…ƒã®æ–‡å­—ã‚³ãƒ¼ãƒ‰*/
+	unsigned char font_code;		/*å…ƒã®ãƒ•ã‚©ãƒ³ãƒˆç•ªå·*/
+	unsigned char new_code;			/*ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã§åŸ‹ã‚è¾¼ã‚“ã æ–‡å­—ã‚³ãƒ¼ãƒ‰*/
+	unsigned char new_font_code;	/*ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã§åŸ‹ã‚è¾¼ã‚“ã ãƒ•ã‚©ãƒ³ãƒˆç•ªå·*/
 };
 
 #define	DJFONT	struct DJFONT_COUNT
 #define	DJTABLE	struct DJFONT_TABLE
 
-struct REAL_SIZE {	/*•¶š‚Ì¶‰E‚Ì‹ó”’‚ğí‚Á‚½Àƒ{ƒbƒNƒXƒTƒCƒYA¶ã‚ªŒ´“_*/
-	int left;			/*Å¶’[‚Ìx-À•W*/
-	int	top;			/*Åã’[‚Ìy-À•W*/
-	int	right;			/*Å‰E’[‚Ìx-À•W + 1*/
-	int	bottom;			/*Å‰º’[‚Ìy-À•W + 1*/
+struct REAL_SIZE {	/*æ–‡å­—ã®å·¦å³ã®ç©ºç™½ã‚’å‰Šã£ãŸå®Ÿãƒœãƒƒã‚¯ã‚¹ã‚µã‚¤ã‚ºã€å·¦ä¸ŠãŒåŸç‚¹*/
+	int left;			/*æœ€å·¦ç«¯ã®x-åº§æ¨™*/
+	int	top;			/*æœ€ä¸Šç«¯ã®y-åº§æ¨™*/
+	int	right;			/*æœ€å³ç«¯ã®x-åº§æ¨™ + 1*/
+	int	bottom;			/*æœ€ä¸‹ç«¯ã®y-åº§æ¨™ + 1*/
 };
 
 # endif/*FDOWN*/
@@ -716,7 +716,7 @@ extern FILE *fopenf(char*, char*);
  * for them.
  * by K.Yoshizawa Dec. 26, 1992
  */
-#define ROUND(X) (int)((X)+0.5) /* •‚“®¬”“_”¨®”‚ÌlÌŒÜ“ü */
+#define ROUND(X) (int)((X)+0.5) /* æµ®å‹•å°æ•°ç‚¹æ•°â†’æ•´æ•°æ™‚ã®å››æ¨äº”å…¥ */
 
 #define MM_PER_IN 25.4	/* 1in = 25.4mm */
 #define PT_PER_IN 72.27	/* 1in = 72.27pt */

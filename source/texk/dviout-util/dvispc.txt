@@ -29,30 +29,30 @@ Supported specials:
 
 
          *****************************************************
-[1]      **  DVI �t�@�C���ƃe�L�X�g�t�@�C���Ƃ̊Ԃ̑��ݕϊ� **
+[1]      **  DVI ファイルとテキストファイルとの間の相互変換 **
          *****************************************************
 
--a: DVI�t�@�C�����ǂȃe�L�X�g�`���ɕϊ����܂��B
+-a: DVIファイルを可読なテキスト形式に変換します。
 
--x: -a �I�v�V�����̋t�ϊ��ŉǂȃe�L�X�g�`������DVI�t�@�C���֕ϊ����܂��B
-    stack �̐[����underflow, page��, �A�h���X�Ȃǂ͎����C�������B
-    -x0 �� -x -t9 �Ɠ���
-    �ŏ��̕������������̃A���t�@�x�b�g�ȊO�� [ ] \ �̂�����ł��Ȃ��s�͖���
-    �����B
-    �L���ȍs�͈ȉ��̌`�ŁA�e�u���b�N�͋󔒂ŋ�؂���
+-x: -a オプションの逆変換で可読なテキスト形式からDVIファイルへ変換します。
+    stack の深さとunderflow, page数, アドレスなどは自動修正される。
+    -x0 は -x -t9 と等価
+    最初の文字が小文字のアルファベット以外で [ ] \ のいずれでもない行は無視
+    される。
+    有効な行は以下の形で、各ブロックは空白で区切られる
 
 <key>  <number><comment>  ...  <number><comment>  '<string>'  <any comment>
 
-    <key>: code ��\���L�[���[�h
-    <number>: 10�i���܂��́A0x �Ŏn�܂�16�i���A�܂��� 0 �Ŏn�܂�8�i��
-    <comment>: ��ł��邩�A�擪�������i��16�i���j��󔒂��܂܂Ȃ�������B
-               <number> �ɑ����ċ󔒂���ꂸ�ɕ\�L�B�R�[�h�����ł͖��������B
-    <any comment>: ��ł����Ă��A�Ԃɋ󔒂������Ă��悢�B�R�[�h�����ł͖����B
+    <key>: code を表すキーワード
+    <number>: 10進数または、0x で始まる16進数、または 0 で始まる8進数
+    <comment>: 空であるか、先頭が数字（含16進数）や空白を含まない文字列。
+               <number> に続けて空白を入れずに表記。コード生成では無視される。
+    <any comment>: 空であっても、間に空白があってもよい。コード生成では無視。
 
-    <number><comment> �̃u���b�N�̐��A����� '<string>' ���K�v���ǂ����́A
-�@�@<key> �ɂ���Ĉȉ��̂悤�ɒ�܂��Ă���B
+    <number><comment> のブロックの数、および '<string>' が必要かどうかは、
+　　<key> によって以下のように定まっている。
 
-<key> �̃��X�g�iX: 1 - 4   XX: 0 - 127   YY: 0 - 63�j
+<key> のリスト（X: 1 - 4   XX: 0 - 127   YY: 0 - 63）
     <key>                        <number><comment>  '<string>'
     pre                          :      5              1
     bop                          :     11              0
@@ -69,160 +69,160 @@ Supported specials:
     dir                          :      1              0
     post_post                    :      6 - 9          0
 
-    DTL �ɂ����ĕs���ȃR�[�h��\���ȉ����L���iText -> DVI�j
+    DTL において不正なコードを表す以下も有効（Text -> DVI）
     opcode                       :      1              0
 
-    DTL �ɂ�����ȉ��̕\�L���\�ł��B
+    DTL における以下の表記も可能です。
 
       push    ->  [    pop    ->  ]
       fntnum  -> fn    set    ->  s   put -> p   right  ->  r   down -> d
       setrule -> sr    putrule -> pr  fnt -> f   fntdef -> fd
 
-dvispc ���g���āADVI�t�@�C�� -> �e�L�X�g�`�� -> �ҏW -> DVI�t�@�C�� ���\�ł�
-�ȉ��ɂ���āAfoo1.dvi �� 4,5,6,8 �y�[�W�݂̂𒊏o���āAfoo2.dvi ���쐬�����B
+dvispc を使って、DVIファイル -> テキスト形式 -> 編集 -> DVIファイル が可能です
+以下によって、foo1.dvi の 4,5,6,8 ページのみを抽出して、foo2.dvi が作成される。
 
 dvispc -atpT4-6/8L foo1.dvi | dvispc -x foo2.dvi
 
-���̂悤�ɂ��Ă������ł��B
+次のようにしても同じです。
 
 dvispc -atpT4-6/8L foo1.dvi | dvispc -x > foo2.dvi
 
--p �I�v�V�����FDVI -> Text �ɂ�����o�͎w��i�w�肵�����ɏo�͂����j
+-p オプション：DVI -> Text における出力指定（指定した順に出力される）
     T: preambre
     L: postambre
-    <n>: <n>�y�[�W
-    <n1>-<n2>: <n1>�y�[�W����<n2>�y�[�W�܂�
-               <n1> �̎w�肪�Ȃ��ƁA<n1>�� 1 �Ɖ��߂����
-               <n2> �̎w�肪�Ȃ��ƁA<n2>�͍Ō�̃y�[�W�Ɖ��߂����
-    �����́A�K�v�Ȃ�K���ȋ�؂�ŋ�؂��ĕ��ׂĎw��ł���
+    <n>: <n>ページ
+    <n1>-<n2>: <n1>ページから<n2>ページまで
+               <n1> の指定がないと、<n1>は 1 と解釈される
+               <n2> の指定がないと、<n2>は最後のページと解釈される
+    これらは、必要なら適当な区切りで区切って並べて指定できる
 
-    -pT-L       �f�t�H���g�i�S�Ă����߁j
-    -pTL        preambre �� postambre �̂�
-    -p3-15/20L  3�y�[�W����15�y�[�W�܂ł�20�y�[�W��postambre
+    -pT-L       デフォルト（全てを解釈）
+    -pTL        preambre と postambre のみ
+    -p3-15/20L  3ページから15ページまでと20ページとpostambre
 
--x : 0: toggle  ������̒����́A���ۂɎw�肵��������ɏ]��
-     1: toggle  �s�v�ȃt�H���g��`�����
-     2: toggle  �擪��  "variety ..."  �̍s�𖳎�
-               �i�������Ȃ��ꍇ�́A���݂���� -t �I�v�V�������ݒ肳���j
+-x : 0: toggle  文字列の長さは、実際に指定した文字列に従う
+     1: toggle  不要なフォント定義を削る
+     2: toggle  先頭の  "variety ..."  の行を無視
+               （無視しない場合は、存在すると -t オプションが設定される）
 
--r  -rorg_1=new_1/org_2=new_2/... �́A�L�[���[�h org_i �� new_i �Œu��������
-   �ii = 1,2...�j
-    ������ org_i �́A�Ō�̐��������������̂ŁA�Ⴆ�Έȉ��̂悤�Ɏw�肷��
+-r  -rorg_1=new_1/org_2=new_2/... は、キーワード org_i を new_i で置き換える
+   （i = 1,2...）
+    ここで org_i は、最後の数字を除いたもので、例えば以下のように指定する
 
     -rxxx=special/setchar=set_char_
 
-    -x �I�v�V�����ł́Anew_i �̍ŏ��̕����́A�������̃A���t�@�x�b�g�ƂȂ�K�v��
-    ����B
+    -x オプションでは、new_i の最初の文字は、小文字のアルファベットとなる必要が
+    ある。
 
--t  �I�v�V�����FGeoffrey Tobin�� �ɂ�� DVIware DTL (dt2dv/dv2dt) �̌`���ł̏���
-    ���ݓǂݍ��݂ƂȂ�B�ȉ��� 0 ���� 9 �܂ł̃T�u�I�v�V�����i�g�O���X�C�b�`�j��
-    �w��ł���B
+-t  オプション：Geoffrey Tobin氏 による DVIware DTL (dt2dv/dv2dt) の形式での書き
+    込み読み込みとなる。以下の 0 から 9 までのサブオプション（トグルスイッチ）が
+    指定できる。
 
-    -t ���T�u�I�v�V���������Ŏw�肷��ƁA��L�̃X�C�b�`���S�� On �ɂȂ�ق��A-j
-    ��Off �ɂȂ�A-x0 -x1 -x2  �ɑΉ�����X�C�b�`�� On �ŁA On DVI -> Text �ł́A
-    �擪�Ɉȉ��̍s���o�͂����B
+    -t をサブオプション無しで指定すると、上記のスイッチが全て On になるほか、-j
+    がOff になり、-x0 -x1 -x2  に対応するスイッチが On で、 On DVI -> Text では、
+    先頭に以下の行が出力される。
 
 variety sequences-6
 
-    �t�ɂ��̍s���擪�ɂ���΁AText -> DVI �ł́A�����I�� -t ���w�肳���B
+    逆にこの行が先頭にあれば、Text -> DVI では、自動的に -t が指定される。
 
   0: str
-     ������́A' ' �ň͂��ĕ\�L����邪�A' -> \' �����  \ -> \\ �ƕ\���B
-     0 ���� 31 ����сA127�ȏ�̃R�[�h�̕����́A�ȉ��Ɠ��l��16�i�\���ŕ\���B
+     文字列は、' ' で囲って表記されるが、' -> \' および  \ -> \\ と表す。
+     0 から 31 および、127以上のコードの文字は、以下と同様に16進表示で表す。
   1: ch
-     0 ���� 127 �܂ł̃R�[�h�̕����́A(  ) �ň͂��ĕ\�L����B
-     �������A(  -> \(,  ) -> \),  \ -> \\ �ƕ\���B�܂��A0 ���� 31 ����� 127 ��
-     �R�[�h�̕����́A�Ɨ������� \03 �̂悤�� \ ��擪�� 2 ����16�i���ŕ\���B
+     0 から 127 までのコードの文字は、(  ) で囲って表記する。
+     ただし、(  -> \(,  ) -> \),  \ -> \\ と表す。また、0 から 31 および 127 の
+     コードの文字は、独立させて \03 のように \ を先頭に 2 桁の16進数で表す。
   2: ch2
-     128 �ȏ�̃R�[�h�̕����́A�R�[�h��10�i���ŕ\���B
+     128 以上のコードの文字は、コードを10進数で表す。
   3: cmd
-     �R�}���h��DTL�`���̒Z���L�[���[�h�ŕ\���B
+     コマンドをDTL形式の短いキーワードで表す。
   4: c-sum
-     �t�H���g��`�ɂ�����`�F�b�N�T����8�i���ŕ\���B
-�@5: dir/name
-     �t�H���g���̕�������f�B���N�g���Ɩ��O��2�̕�����ɕ������ĕ\�L�B
+     フォント定義におけるチェックサムを8進数で表す。
+　5: dir/name
+     フォント名の文字列をディレクトリと名前の2つの文字列に分解して表記。
   6: err
-     ����`�̃R�[�h�� opcode x �Ƃ��ĕ\�L�B
+     未定義のコードを opcode x として表記。
   7: page
-     �y�[�W�ԍ���\�L���Ȃ��B
+     ページ番号を表記しない。
   8: oct
-     �t�H���g��`�̃`�F�b�N�T����8�i���ŕ\�����Ƃ��A�擪�� 0 �����Ȃ��B
+     フォント定義のチェックサムを8進数で表したとき、先頭に 0 をつけない。
   9: str0
-     Text -> DVI �̂Ƃ��A������̒������A���ۂɎw�肵��������Ō��߂�B
+     Text -> DVI のとき、文字列の長さを、実際に指定した文字列で決める。
 
 
--l  DVI�t�@�C���ɂ�����A�h���X��10�i���Ő擪�ɂ���B
-    �A�h���X������ƁA�ŏ���
+-l  DVIファイルにおけるアドレスを10進数で先頭につける。
+    アドレスをつけると、最初に
 
 0: pre  2 ...
 
-    �Ƃ����s���o������BText -> DVI �ł́A���̍s������Ύ����I�� -l ���ݒ肳���B
+    という行が出現する。Text -> DVI では、この行があれば自動的に -l が設定される。
 
 
--j �I�v�V�����i�g�O���X�C�b�`�j�F������ JIS�R�[�h�Ȃ�΁A�Ή����镶����\�L�B
+-j オプション（トグルスイッチ）：文字が JISコードならば、対応する文字を表記。
 
 
           *************************************************
-[2]       **  �y�[�W�Ɨ������j��Ă���DVI �t�@�C���̏C�� **
+[2]       **  ページ独立性が破れているDVI ファイルの修正 **
           *************************************************
 
-DVI�t�@�C���́A�{���y�[�W�Ɨ������ۂ����悤�݌v����Ă��܂����A�ꕔ�� specials
-�̏����Ɋւ��ẮA���ꂪ�j����DVI�t�@�C�����쐬����邱�Ƃ�����܂��B
+DVIファイルは、本来ページ独立性が保たれるよう設計されていますが、一部の specials
+の処理に関しては、これが破られるDVIファイルが作成されることがあります。
 
-���Ƃ��΁Advips �I�v�V�����ł� color specials �͂��̓T�^�I�ȗ�ŁA100�y�[�W��DVI
-�t�@�C���ŁA2�y�[�W�ɕ�����Ԃɂ���ݒ肪�����Ă����āA99�y�[�W�ڂɂ�����I����
-�ݒ肪�����Ă������Ƃ���ƁA50�y�[�W�ڂɂ͂��̐F�̏��͉���������Ă��܂���B
+たとえば、dvips オプションでの color specials はこの典型的な例で、100ページのDVI
+ファイルで、2ページに文字を赤にする設定が書いてあって、99ページ目にそれを終える
+設定が書いてあったとすると、50ページ目にはこの色の情報は何も書かれていません。
 
 \usepackages[dvips]{graphicx, color}
 ...
-{\color{red}%			 2�y�[�W��
+{\color{red}%			 2ページ目
 ...
 ...
-...%					99�y�[�W��
+...%					99ページ目
 }
 ...
 
-dvips �ȂǁA�ŏ��̃y�[�W���珇�ɉ��߂�����̂́A��肠��܂��񂪁Adviout �� 50�y
-�[�W�ڂ݂̂�\������A�Ȃǂ̏ꍇ�ɕs��������܂��Bdvidvi �ȂǂŁA�y�[�W��؂�
-�o���ĐV����DVI���쐬����Ƃ����A���l�ȕs��������܂��B
+dvips など、最初のページから順に解釈するものは、問題ありませんが、dviout で 50ペ
+ージ目のみを表示する、などの場合に不具合が生じます。dvidvi などで、ページを切り
+出して新たにDVIを作成するときも、同様な不具合が生じます。
 
-dvispc �́A���̂悤��DVI�t�@�C�����A�y�[�W�Ɨ���DVI�t�@�C���ɏC�����܂��B
+dvispc は、このようなDVIファイルを、ページ独立なDVIファイルに修正します。
 
-�Ή����Ă��� specials �́Advips/dvipdfmx/dviout �ȂǗp�̂��̂�
+対応している specials は、dvips/dvipdfmx/dviout など用のもので
 
    color specials:  push, pop, background
    pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor
    tpic  specials:  pn
 
-                            --- �d�l ---
--c:  ��L�̏C�����s���B
--d:  �C���̕K�v�����`�F�b�N�B
--s:  specials ��S�Ĕ����o���ĕ\�����܂��i-p... �Ńy�[�W�w��j�B
+                            --- 仕様 ---
+-c:  上記の修正を行う。
+-d:  修正の必要性をチェック。
+-s:  specials を全て抜き出して表示します（-p... でページ指定可）。
 
-�ȏ�̃p�����[�^�A���邢�� -a -x ���w�肵�Ȃ��ꍇ�́A�f�t�H���g����ƂȂ�A��L
-�̏C�����s���܂��B
+以上のパラメータ、あるいは -a -x を指定しない場合は、デフォルト動作となり、上記
+の修正を行います。
 
-color specials: push/pop �ɑ΂��A���̃y�[�W�ɃX�^�b�N���J��z�����Ƃ��Ȃ��悤
-  �ɁA�e�y�[�W�̍Ō�ɕK�v�Ȑ��� color pop ��u���B���̂Ƃ����̃y�[�W�̐擪�ŁA
-  �X�^�b�N���񕜂��邽�߂ɕK�v�� color push ��u���B
+color specials: push/pop に対し、次のページにスタックを繰り越すことがないよう
+  に、各ページの最後に必要な数の color pop を置く。このとき次のページの先頭で、
+  スタックを回復するために必要な color push を置く。
 
-  �X�^�b�N�̃A���_�[�t���[�ƃI�[�o�[�t���[�i500���x���z����j�̃`�F�b�N�����Ă�
-  ��B�I�[�o�[�t���[�͒ʏ�� TeX �̃\�[�X�̏������̃G���[�ƍl������B�A���_�[
-  �t���[���������ꍇ�́A���̃y�[�W�̐擪�� color push  Black ��K�v�Ȍ��u����
-  �Ƃɂ���ďC������B
+  スタックのアンダーフローとオーバーフロー（500程度を越える）のチェックをしてい
+  る。オーバーフローは通常は TeX のソースの書き方のエラーと考えられる。アンダー
+  フローがあった場合は、そのページの先頭に color push  Black を必要な個数置くこ
+  とによって修正する。
 
-background    : �w�i�F����`����Ă���A���̌�̃y�[�W�ōĒ�`���Ȃ��y�[�W�ɂ́A
-  �y�[�W�̐擪�ɔw�i�F�̒�`���i���X�P�j�����B
+background    : 背景色が定義されており、その後のページで再定義がないページには、
+  ページの先頭に背景色の定義を（高々１つ）おく。
 
-pdf:bcolor, pdf:color : color push/pop �Ɠ����B
+pdf:bcolor, pdf:color : color push/pop と同等。
 
-pdf:bgcolor   : background �Ɠ����B
+pdf:bgcolor   : background と同等。
 
-tpic specials : pn ����`���ꂽ��A���̌�̃y�[�W�� pn �̒�`��u���i�X�^�b�N��
-  �͂Ȃ��̂ŁA���X�P�j
+tpic specials : pn が定義されたら、その後のページに pn の定義を置く（スタックで
+  はないので、高々１つ）
 
-�y�[�W�̐擪�ɒu����鏇���́A
+ページの先頭に置かれる順序は、
 
 color push -> pdf:bcolor -> background -> pdf:bgcolor -> pn (tpic special)
 
-�ƂȂ��Ă���B
+となっている。
