@@ -264,9 +264,9 @@ while tpe < str_start[pop_lit3+1] do begin
         or (str_start[pop_lit3+1] < tpe+multibytelen(str_pool[tpe])) then
         break;
     tpe := tpe + multibytelen(str_pool[tpe]);
-    if sp_end<=tpe then break;
     if tpe<=sp_ptr then
         tps := tpe;
+    if sp_end<=tpe then break;
 end;
 sp_ptr := tps;
 sp_end := tpe;
