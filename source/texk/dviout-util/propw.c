@@ -2,7 +2,6 @@
  *     	Generate TeX PL file for Japanese Proportional Fonts
  *				Originally written by  SHIMA, Nov. 2000
  *
- *		DATA should be in  SHIFT JIS  or  EUC
  */
 
 #include <stdio.h>
@@ -1541,7 +1540,7 @@ last:		k = oct(label);
 end:
 	if(f_jfm > 0 && f_pl){
 		fclose(fo);
-		sprintf(buf, "ppltotf %s", outfile);
+		sprintf(buf, "ppltotf -kanji=utf8 %s", outfile);
 		outfile[f_jfm] = 0;
 		fprintf(fe, "--- Translating %s.pl to %s.tfm by ppltotf ---\n",
 			outfile, outfile);
