@@ -1,4 +1,4 @@
-dvi file name			= ../../../source/texk/dviout-util/tests/test.dvi
+dvi file name			= ./test.dvi
 comment				= TeX output 2018.02.11:1459
 factor converting to 10^{-5}m	= 25400000/473628672
 magnification			= 1000
