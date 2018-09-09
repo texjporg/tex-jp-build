@@ -1,0 +1,7 @@
+tests/*.aux
+tests/*.log
+tests/*.out
+tests/*.toc
+tests/*.synctex
+tests/*.synctex.gz
+tests/*.synctex.gz(busy)

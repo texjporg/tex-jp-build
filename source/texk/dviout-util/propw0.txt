@@ -1,0 +1,252 @@
+                         ---   propw の使い方   ---
+
+	   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	   %%%   １. 和文プロポーショナルフォントのjfmファイルの作成   %%%
+	   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+font\winttf.zip をインストールすると
+
+  texmf\fonts\tfm\windows\wabun
+
+に、プロポーショナルな Windows TrueType Fontの ＭＳ Ｐ明朝、ＭＳ Ｐゴシックとそ
+れらの縦書き用の jfm ファイル（フォントメトリック・ファイル）がインストールされ
+ます。
+
+Windowsにインストールされている各種和文TrueTypeフォントに対応した jfm ファイルを
+作成するには
+
+  cd texmf\fonts\tfm\windows\wabun
+  propw <directory_of_pttfonts.map>\pttfonts.map
+
+とします（このとき、propw.exe や ppltotf.exe にパスが通しておく必要があります）。
+pttfonts.map には、JFM ファイル名（TeX で参照されるフォント名）とWinodwsで参照
+されるファイル名との対応表が書かれていますが、新たに自由に追加することができま
+す。
+
+  jfm 名           TrueType フォント名（先頭の @ は縦書き用を表す）
+
+mspmin          :  ＭＳ Ｐ明朝    （横書プロポーショナル）
+mspgoth         :  ＭＳ Ｐゴシック（横書プロポーショナル）
+msptmin         : @ＭＳ Ｐ明朝    （縦書プロポーショナル）
+msptgoth        : @ＭＳ Ｐゴシック（縦書プロポーショナル）
+
+
+　    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      %%%  より細かな調整が可能な、以下の手順での作成もできます。  %%%
+      %%%    texmf\doc\extjfonts\propw.txt も参照してください。    %%%
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+0. 直接TrueTypeフォント名を指定して、たとえば以下のように PL ファイルを作成
+   する（なお、より細かな調整をするには、「２．propw について」にあるような
+   *.pl1, *.pl2 のファイルを経由して、*.pl ファイルを作るとよい）。
+
+        propw -o=foo.pl "#@ＭＳ Ｐ明朝"
+
+   次に 5. のようにして、ppltotf で jfm ファイルに変換すればよい。
+
+   あるいは、dviout を使って、以下のようにしても PL ファイルが作成できる。
+
+1. texmf\doc\extjfonts\testw.dvi の1ページ目を dviout で開き、
+   Option -> Setup Parameters... -> [WinJFont] の [jfm] で min を選択し、
+   [Change Font] で、jfm ファイルを作成したいプロポーショナル横書きの
+   TrueType和文フォント選んで [Define] さらに [Ok] を押す。
+
+   縦書き用の場合は、上記の1ページ目, min をそれぞれ2ページ目, tmin に
+   読み替えて同様な操作をする。
+
+2. Help -> Character Size of TrueType を選択すると、Information Window
+   が開くので、[Copy] を押してクリップボードに内容をコピーする。
+
+3. 適当なエディター（メモ帳などでよい）を開いてクリップボードの内容を張り
+   付け（編集 -> 張り付け）、それを適当な名前でファイルにセーブする（それ
+   を foo.txt とする）。
+
+4.     propw -p foo.txt > foo.pl
+
+   とすると、jfm ファイルのソースが作成される。
+
+5. 必要なら、foo.pl の中身を適当に編集した後
+
+       ppltotf foo.pl
+
+   を実行すると、対応する jfm ファイル foo.tfm が作成される。
+
+注意：上記の foo.txt や foo.pl を編集することで、微調整が可能。
+      例えば、foo.txt を行単位でソートして、不要な行などを削る。
+
+
+			      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			      %%%   ２. propw について   %%%
+			      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Usage : propw [-trquv#] [-p[t][m|n]] [-<k>=<value>] [-s<step>] [-d<den>]
+          [-l<num>] [-o=<ofile>] [@<pfile>] [#<TrueType_font_name>|<file>]
+
+-t    : tate
+-r    : over 7426(JIS)
+-q    : square
+-u    : update
+-v    : verbose
+-#    : Font
+
+-p    : make pl (-pm: MS type, -pn: normal type, -pt: Glue-Tsume)
+
+<k>   : zw(width), zh(height+depth), zd(depth), ds(design size), cs(checksum)
+        st(stretch), ep(ex space), et(ex stretch), eh(ex shrink), fm(family)
+        ad(glue plus), kn(Kakko)
+
+<num> : the first label   (default:6)
+<step>: step of tfm-width (default:1)
+<den> : width of zenkaku  (default:256)
+
+<ofile>: <ofile> is a file to be output (Make JFM if its extension is ".tfm")
+<pfile>: <pfile> is a file where paramaters are written
+<file> : <tfm-width> [<tsume-width>] <a character>   is in each line.
+         Analyse lines if they are not sorted by <tfm-width>.
+         The line whose top is not a figure is ignored except for
+           #Font: <TrueType_font_name>   (an optional line)
+           #<para>: Same as -<para> in the command line
+
+Example: propw -o=msptmin.pl "-fm=MS P MINCHOU" "#@ＭＳ Ｐ明朝"
+
+                      -------------------------
+
+1. デフォルトでは、小林氏（東京書籍印刷）によって作成された jis.tfm のソース
+   jis.pl と同等なものが出力されるようになっている：
+
+      echo | propw "-fm=JIS KANJI" -p > jis.pl
+
+　空のファイル null.txt を作っておいて、出力ファイルも指定して
+
+     propw "-fm=JIS KANJI" -p -o=jis.pl null.txt
+
+  としても同じである。
+
+  ppltotf にパスが通っていれば、直接 JFM ファイルを作成することができる（出力
+  ファイルの拡張子が .tfm となることから判断される）。
+
+     propw "-fm=JIS KANJI" -p -o=jis.tfm null.txt
+
+  縦書き用の縦横とも 10pt のサイズで 1pt のプラスの glue を入れたものを作成す
+  るには
+
+      echo | propw -t -p -zw=1 -dh=1 -zd=.151515 -ad=.1 > mytjis.pl
+
+  とすればよい。このときは、そのほかのパラメータも調整される
+
+     echo | propw -t -p -zw=1 -q > mytjis.pl
+
+  とするとよい。
+
+
+2. Windowsのシステムに登録されたプロポーショナルフォント（通常フォント名に Ｐ
+  や P が入る）の jfm ファイルを作成するには、そのフォント名を "#..." の形で
+  指定すればよい。例えば
+
+      propw "-fm=JIS P KANJI" "#ＭＳ Ｐ明朝" > mspmin.pl
+
+  これは、以下のようにしても同じ。
+
+      propw "-fm=JIS P KANJI" -# -o=mspmin.pl "ＭＳ Ｐ明朝" 
+
+  propw は、JIS コードが最小の「亜」という漢字より小さなコードをもつ文字（仮
+  名数字、アルファベット、記号など）の幅を調べて分類し、「国」という字を全角
+  幅とみなしてプロポーショナルフォントが要請する幅で組版ができる jfm ファイル
+  のソースを作成する。
+
+  プロポーショナルフォントでは、仮名文字が文字毎に異なる狭い幅で定義されてい
+  るものが多い。約物（句読点や括弧など）については全角幅のものと、幅が狭くなっ
+  ているものがある。propw では、開き括弧の「　と句点の　。 の文字幅がともに全
+  角より狭いと後者とみなし、約物類もその幅に応じて組版を行う jfm ソースを生成
+  する。そうでない場合は、約物類については、jis.tfm と同様に扱う。これがデフォ
+  ルトの動作である（開き括弧の基準と見なす「 を別のものにするには、-kr= のパラ
+  メータで、‘ “ （ 〔 ［ ｛ 〈 《 「 『 【  の何番目のものを基準にするか指定
+  して変更可能である。デフォルトは、-kr=9）。
+
+  縦書き、横書きの違いは自動判断される。
+  なお
+
+      propw -o=mspmin.pl -v "-fm=JIS P KANJI" "#ＭＳ Ｐ明朝" > mspmin.log
+
+  とすると、文字幅などの情報が msmin.log に出力される。この出力された情報は
+  そのまま（適当に編集してもよい）、propw の入力データにできる。
+
+      propw mspmin.log > mspmin.pl
+
+  PL ファイルから JFM ファイルを作成するには、ppltotf が使われる。すなわち
+
+      ppltotf mspmin.pl
+
+  とすると、mspmin.tfm が作成される。
+
+  ppltotf にパスが通っていれば、propw の出力ファイルの拡張子が .tfm となって
+  いると、直接 JFM ファイルが生成される。たとえば
+
+      propw -o=mspmin.tfm "-fm=JIS P KANJI" "#ＭＳ Ｐ明朝"
+
+  などとすればよい。
+
+                     ------------------------------
+
+-t: 縦書き（TrueTypeの漢字フォント名が指定されていれば、自動判断されるので、
+    指定は不要）
+
+-r: JIS code が16進で 7426 以上のものも扱う（現時点での ppltotf p1.4 でこれがあ
+    ると、エラーとなる）
+
+-q: ZW（tfm width:全角幅）の設定に併せて、ZH(depth+height)を等しくした正方形の
+    ボックスを文字のBoxに直し、そのほかのサイズも標準的に変更する。
+
+-u: -o= で指定したファイルが既に存在していても、それに上書きする。
+
+-v: propw 動作時の動作中のメッセージを表示する。
+
+-#: 最後のパラメータの先頭に # をつけなくても、Windows の和文trueTypeフォント名
+    とみなす。
+
+-ds=<value> : DESIGNSIZE
+-zw=<value> : QUAD
+-zh=<value> : XHEIGHT
+-zd=<value> : CHARDP
+-st=<value> : STRETCH
+-ex=<value> : EXTRASPACE
+-et=<value> : EXTRASTRETCH
+-eh=<value> : EXTRASHRINK
+
+-ad=<value> : GLUE PLUS
+
+-kn=<value> : 開き括弧の幅を次の何番目のものを基準にするかの指定（1 - 11）
+              デフォルトは 9 で「
+              ‘ “ （ 〔 ［ ｛ 〈 《 「 『 【  
+
+-fm=<family>: フォントファミリー名
+
+-d=<value>  : 全角幅のPIXEL（ドット）数
+
+-x<message>: <message> を表示して終了する。
+
+-o=<ofile> : 出力ファイルの指定。WindowsのTruType和文フォントから propw が
+  JFM ファイルを作成するとき、
+
+    0. jfm ファイル名とTrueTypeフォント名の対応を書いた map ファイル
+    1. 各文字の幅情報を記述したテーブル
+    2. 約物などを整理し、定義すべき文字と幅をソートして並べたテーブル
+    3. PLファイル
+    4. JFMファイル
+
+  の順に変換される。一般には 3. PLファイルが出力されるが、<ofile> の拡張子が 
+  .pl1, .pl2, .tfm の場合は、それぞれ 1. 2. 4. の形式のファイルが出力される。
+  （ただし、0. から出発した場合は、4. の形式のファイルが出力される）。出力され
+　たファイルの拡張子が .pl1 .pl2 のものは propw によって、 pl のファイルは 
+  ppltotf によって JFM ファイルに変換できる。1. 2. 3. のファイルは、直接編集し
+  て調整を行うことができる。
+
+<file> : パラメータや、文字の幅と文字のテーブルのデータファイル
+         コマンドラインでの、-<parameter> は、#<parameter> と指定する。
+
+         ただし、拡張子が .map の場合は、dviout が利用する JFMファイル名と
+         TrueTypeフォント名との対応を記したフォントマップファイルとみなされ、
+         それを解釈して、必要な JFM ファイルが作成される。
+
+         # を先頭につけると、パラメータファイルでなくてWindowsのTrueType
+         フォント名と解釈される。

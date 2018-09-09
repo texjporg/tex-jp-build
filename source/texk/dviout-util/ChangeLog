@@ -1,0 +1,44 @@
+2018-02-11  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c, chkfont.c: No longer require -DMSVC and -DUNIX
+	compiler options.
+
+2017-11-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Support pdf:bann, pdf:eann (nesting is not
+	supported yet).
+
+2017-06-25  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* propw.c: Fix bugs for dviout mapfile handling.
+	* dvispc.txt, dvispce.txt, chkfont.txt, propw0.txt: Adjusted.
+
+2017-06-10  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* chkfont.c: Add support for VF and OFM (level 0 and 1) format.
+
+2017-06-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Support page indendence in reverse order.
+
+2017-06-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Additional pages by -z option are always white.
+
+2017-05-31  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Add -z option, which appends empty pages if
+	necessary to make multiple of 4 pages.
+
+2017-05-30  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Support pdf:bcolor, pdf:ecolor, pdf:bgcolor.
+
+2017-05-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* Started ChangeLog for dviout-util.
+	* Checked out r186 of http://tug.org/svn/dviout/trunk/ and
+	fixed some typos.
+
+Copyright (C) 2017--  Hironobu Yamashita
+You may freely use, modify and/or distribute this file.

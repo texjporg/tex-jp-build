@@ -5,16 +5,18 @@
  *		DATA should be in  SHIFT JIS  or  EUC
  */
 
-#define	SJIS		1			/* Use SHIFT JIS (otherwise EUC)	*/
-#define	WIN32		1
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <io.h>
 
-#ifdef	WIN32
+#ifdef UNIX
+#include <unistd.h>
+#include <string.h>
+#else
+#ifdef WIN32
 #include <windows.h>
+#define	SJIS	1	/* Use SHIFT JIS (otherwise EUC) */
 #define	USETTF
+#endif
 #endif
 
 #define	MAX_BSIZE	0x20000

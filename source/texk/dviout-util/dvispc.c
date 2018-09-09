@@ -4,19 +4,21 @@
  *		A program to modify DVI file to be page-independent
  *		Support the following specials
  *			color specials:  push, pop, background
- *			tpic specials :  sh, pn
+ *			pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor
+ *			tpic  specials:  pn
  *
  *							Written by SHIMA
  *							  January 2003
  */
 
-/*
-				Validitate in case of UNIX
+#ifdef __GNUC__
+/* Validitate in case of UNIX */
 #define	UNIX	1
-*/
-
-/*				Validitate if SHIFT JIS is used for a filename  */
+#else
+/* Validitate if SHIFT JIS is used for a filename */
+/* Win32 MSVC is assumed */
 #define	SHIFT_JIS	1
+#endif
 
 /*					%%% Contents of an extended DVI file  %%%
  *  PRE(247)
@@ -99,7 +101,7 @@
 #define	READ_TEXT		"r"
 #define	READ_BINARY		"r"
 #define	WRITE_BINARY	"w"
-#define	WRITE_TEXT		"w"
+#define WRITE_TEXT		"r"
 #define	StrCmp	strcmp
 #else
 #define	PATH_SEP		'\\'
@@ -151,7 +153,9 @@ struct DIMENSION_REC {
 
 
 #define	MAX_INCL	2048		/* maximal number of embedded files */
+#ifndef MAX_PATH
 #define	MAX_PATH	0x200		/* maximal length of path name */
+#endif
 
 #define	ID			2
 #define	IDP			3
@@ -192,6 +196,8 @@ struct DIMENSION_REC {
 #define	MAX_LEN			128
 #define	MAX_COLOR		512
 #define	COLOR_BUF_SIZE	MAX_COLOR*32
+#define	MAX_ANNOT		8
+#define	ANNOT_BUF_SIZE	MAX_ANNOT*512
 #define	COMMON_SIZE		0x4000
 #define	MAX_FONT		256
 
@@ -228,22 +234,41 @@ int  f_sjis = 0;		/* -j */
 int  f_sjis = 1;
 #endif
 int  f_pos = 0;			/* position */
+int  f_book = 0;		/* multiple of four pages */
 
-int  f_background = 0;
-int  f_pn = 0;
 int  f_backup = 0;		/* output=input */
 int  f_ptex = 0;
+int  f_prescan = 0;
 int  max_stack;
 char *out_pages ="T-L";
+int  total_book_page;
 
+/* stack specials */
 int  color_depth;
 int  color_depth_max;
 int  color_under;
-int  f_color;
 char *color_pt[MAX_COLOR];
-char color_buf[COLOR_BUF_SIZE];
+int  pdf_color_depth;
+int  pdf_color_depth_max;
+int  pdf_color_under;
+char *pdf_color_pt[MAX_COLOR];
+int  pdf_annot_depth;
+int  pdf_annot_depth_max;
+int  pdf_annot_under;
+char *pdf_annot_pt[MAX_ANNOT];
+
+/* non-stack specials */
+int  f_background = 0;
 char background[MAX_LEN];
+int  f_pdf_bgcolor = 0;
+char pdf_bgcolor[MAX_LEN];
+int  f_pn = 0;
 char tpic_pn[MAX_LEN];
+
+int  f_needs_corr; /* flag to determine if correction is needed */
+char color_buf[COLOR_BUF_SIZE]; /* common buffer for color/pdf_color */
+char annot_buf[ANNOT_BUF_SIZE];
+
 char tmp_buf[COMMON_SIZE];
 FILE *fp_in;
 FILE *fp_out;
@@ -284,7 +309,12 @@ const int AdID = (('A'<<24)+('d'<<16)+('O'<<8)+EOP);
 uint work(FILE *);
 uint s_work(FILE *);
 int strsubcmp(char *s, char *t);
+int strsubcmp_n(char *s, char *t);
 void sp_color(char *sp);
+void sp_pdf_bcolor(char *sp);
+void sp_pdf_ecolor(char *sp);
+void sp_pdf_bann(char *sp);
+void sp_pdf_eann(char *sp);
 void read_post(DVIFILE_INFO *dvi);
 uint interpret(FILE *);
 void make_page_index(DVIFILE_INFO *dvi, DIMENSION *dim);
@@ -361,28 +391,51 @@ Long read_long(FILE *fp)
 }
 
 
+void write_word(int x, FILE *fp)
+{
+	write_byte((x >> 8) & 0xff, fp);
+	write_byte(x & 0xff, fp);
+}
+
+
+Long read_word(FILE *fp)
+{
+	int i;
+
+	i = read_byte(fp) << 8;
+	return i + read_byte(fp);
+}
+
+
 void usage(void)
 {
 	fprintf(stderr,
 	"\t  Modify a DVI file to be page-independent in specials\n"
 	"\t  Translation between  DVI file  <->  Text file\n"
 	"\t           Ver.0.3  written by SHIMA, Jan. 2003\n\n"
-	"Usage: dvispc [-c] [-bv] input_dvi_file [output_dvi_file]\n"
+	"Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]\n"
 	"       dvispc -d input_dvi_file\n"
 	"       dvispc -s [-p..] input_dvi_file [output_text_file]\n"
 	"       dvispc -a [-jltv][-p..][-r..] input_dvi_file [output_text_file]\n"
-	"       dvispc -x[..] [-dltv][-r..] [input_text_file] output_dvi_file\n"
-	"   -c: make page-indepent DVI in specials for color push/pop, background, pn\n"
+	"       dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file\n"
+	"   -c: make page-indepent DVI in specials (default)\n"
 	"   -d: check page-independence\n"
 	"   -b: backup original even if output_dvi_file is not given\n"
 	"   -s: show specials\n"
 	"   -a: translate DVI to Text\n"
 	"   -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)\n"
 	"   -v: verbose       -j: Japanese characters       -l: location\n"
+	"   -z: append empty pages if necessary to have multiple of 4 pages for book\n"
 	"   -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)\n"
 	"   -p: T:preamble  L:postamble  pages with - (eg: -pT-L  -pT2/4-8L  -p-4 etc.)\n"
-	"   -t: comaptible to DLT (the followings are suboptions if necessary eg. -t02)\n"
+	"   -t: compatible to DTL (the followings are suboptions if necessary eg. -t02)\n"
 	"       0:str 1:ch 2:ch2 3:cmd 4:c-sum 5:dir/name 6:err 7:page 8:oct 9:str0\n"
+	"   output_text_file : stdout if it is not specified.\n"
+	"   input_text_file  : stdin  if it is not specified.\n\n"
+	"Supported specials:\n"
+	"   color specials:  push, pop, background\n"
+	"   pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor\n"
+	"   tpic  specials:  pn\n"
 	);
 	exit(1);
 }
@@ -488,6 +541,10 @@ error:					fprintf(stderr, "Error in parameter %s\n", argv[i]);
 
 			case 'l':
 				f_pos = 1;
+				break;
+
+			case 'z':
+				f_book = 1;
 				break;
 
 			default:
@@ -678,7 +735,8 @@ void translate(DVIFILE_INFO *dvi, DIMENSION *dim)
 		}
 	}else
 		fp = NULL;
-	f_color = flag = 0;
+
+	f_needs_corr = flag = 0;
 
  	if(f_mode == EXE2TEXT || f_mode == EXE2SPECIAL){
 		while(out_pages && *out_pages){
@@ -729,10 +787,24 @@ lastpage:			if(isdigit(*++out_pages)){
 		fclose(fp_out);
 		dvi->file_ptr = fp_out = NULL;
 		return;
+	}		/* if(f_mode == EXE2TEXT || f_mode == EXE2SPECIAL) */
+
+	/* Prior scanning. This ensures page independence in reverse order too,
+	   by checking whether non-stack specials appears somewhere in DVI.
+	   Specials with paired syntax (push/pop, bcolor/ecolor) are already safe
+	   without pre-scanning, so these are skipped due to f_prescan = 1.
+	   Other specials (background, pdf_bgcolor, pn) are handled in this scanning. */
+	if(f_mode == EXE2INDEP || f_mode == EXE2CHECK){
+		f_prescan = 1;	/* change behavior of interpret(dvi) */
+		for(page = 1; page <= dim->total_page; page++){
+			fseek(dvi->file_ptr, dim->page_index[page], SEEK_SET);
+			interpret(dvi->file_ptr);
+		}
+		f_prescan = 0;	/* restore interpret(dvi) */
 	}
 
 	former = current = -1;
-	if(fp){
+	if(fp){		/* f_mode == EXE2INDEP and can be opened */
 		fseek(dvi->file_ptr, 0, SEEK_SET);
 		for(size =  dim->page_index[1]; size > 0; size--)
 			write_byte(read_byte(dvi->file_ptr), fp);	/* Write preamble */
@@ -745,38 +817,63 @@ lastpage:			if(isdigit(*++out_pages)){
 	for(page = 1; page <= dim->total_page; page++){
 		fseek(dvi->file_ptr, dim->page_index[page], SEEK_SET);
 		f_background = 0;
+		f_pdf_bgcolor = 0;
 		pos = interpret(dvi->file_ptr);				/* pos = position of EOP + 1 */
 		if(f_debug){
 			fprintf(fp_out, "[%d]", page);
 			if(page <= dim->total_page){
 				flag = color_depth;
+				flag += pdf_color_depth;
+				flag += pdf_annot_depth;
 				if(background[0] && !f_background){
 					fprintf(fp_out, "\n%s", background);
 					flag++;
 				}
+				if(pdf_bgcolor[0] && !f_pdf_bgcolor){
+					fprintf(fp_out, "\n%s", pdf_bgcolor);
+					flag++;
+				}
 				for(count = 0; count < color_depth; count++)
 					fprintf(fp_out, "\n%d:%s", count+1, color_pt[count]);
+				for(count = 0; count < pdf_color_depth; count++)
+					fprintf(fp_out, "\n%d:%s", count+1, pdf_color_pt[count]);
+				for(count = 0; count < pdf_annot_depth; count++)
+					fprintf(fp_out, "\n%d:%s", count+1, pdf_annot_pt[count]);
 				if(tpic_pn[0] && f_pn < 0){
 					fprintf(fp_out, "\n%s", tpic_pn);
 					flag++;
 				}
 				if(flag){
 					fprintf(fp_out, "\n");
-					f_color++;
+					f_needs_corr++;
 				}
 			}
 		}
 		if(f_mode != EXE2INDEP)
-			continue;
+			continue;	/* skip loop if(f_mode == EXE2CHECK || f_mode == EXE2DVI) */
 
 		while(color_under > 0){							/* recover underflow of color stack */
 			write_sp(fp, "color push  Black");
-			f_color++;
+			f_needs_corr++;
 			color_under--;
+		}
+		while(pdf_color_under > 0){						/* recover underflow of pdf:bcolor ... pdf:ecolor stack */
+			write_sp(fp, "pdf:bcolor [0]");
+			f_needs_corr++;
+			pdf_color_under--;
 		}
 		if(background[0] && !f_background){				/* no background in this page */
 			write_sp(fp, background);
-			f_color++;
+			f_needs_corr++;
+		}
+		if(pdf_bgcolor[0] && !f_pdf_bgcolor){				/* no pdf:bgcolor in this page */
+			write_sp(fp, pdf_bgcolor);
+			f_needs_corr++;
+		}
+		while(pdf_annot_under > 0){						/* recover underflow of pdf:bann ... pdf:eann stack */
+			/* [TODO] what should we do here? */
+			f_needs_corr++;
+			pdf_annot_under--;
 		}
 		fseek(dvi->file_ptr, dim->page_index[page]+45, SEEK_SET);
 		for(size = pos - dim->page_index[page] - 46; size > 0; size--)
@@ -784,7 +881,15 @@ lastpage:			if(isdigit(*++out_pages)){
 
 		for(count = 0; count < color_depth; count++){
 			write_sp(fp, "color pop");
-			f_color++;
+			f_needs_corr++;
+		}
+		for(count = 0; count < pdf_color_depth; count++){
+			write_sp(fp, "pdf:ecolor");
+			f_needs_corr++;
+		}
+		for(count = 0; count < pdf_annot_depth; count++){
+			write_sp(fp, "pdf:eann");
+			f_needs_corr++;
 		}
 		write_byte((uchar)EOP, fp);						/* write EOP */
 		former = current;
@@ -797,31 +902,79 @@ lastpage:			if(isdigit(*++out_pages)){
 			write_long(former, fp);						/* position of BOP of the former page */
 			for(count = 0; count < color_depth; count++)
 				write_sp(fp, color_pt[count]);
+			for(count = 0; count < pdf_color_depth; count++)
+				write_sp(fp, pdf_color_pt[count]);
+			for(count = 0; count < pdf_annot_depth; count++)
+				write_sp(fp, pdf_annot_pt[count]);
 			if(tpic_pn[0]){
 				write_sp(fp, tpic_pn);
-				f_color++;
+				f_needs_corr++;
 			}
-			f_color += color_depth;
+			f_needs_corr += color_depth;
+			f_needs_corr += pdf_color_depth;
+			f_needs_corr += pdf_annot_depth;
 			if(tpic_pn[0])
-				f_color++;
+				f_needs_corr++;
 		}
 	}
 	if(f_debug && color_depth_max)
 		fprintf(fp_out, "\nMaximal depth of color stack:%d", color_depth_max);
+	if(f_debug && pdf_color_depth_max)
+		fprintf(fp_out, "\nMaximal depth of pdf:bcolor ... pdf:ecolor stack:%d", pdf_color_depth_max);
+	if(f_debug && pdf_annot_depth_max)
+		fprintf(fp_out, "\nMaximal depth of pdf:bann ... pdf:eann stack:%d", pdf_annot_depth_max);
 	if(f_mode != EXE2INDEP){
 		fclose(dvi->file_ptr);
-		fprintf(fp_out, f_color?"\nSome corrections are necessary!\n":
+		fprintf(fp_out, f_needs_corr?
+			"\nSome corrections are necessary!\n":
 			"\nNo modification is necessary\n");
 		fclose(fp_out);
 		dvi->file_ptr = fp_out = NULL;
 		return;
 	}
+
+	/* if -z option is given, add empty pages to make multiple of 4 pages */
+	if(f_book && dim->total_page%4 == 0)
+		f_book = 0; /* modification unnecessary */
+	if(f_book){
+		total_book_page = dim->total_page + (4 - dim->total_page%4)%4;
+		for(page = dim->total_page; page < total_book_page; page++){
+			write_byte((uchar)BOP,fp);
+			write_long(-1, fp);
+			for (count = 1; count < 10; count++)	/* set all sub counts to 0 */
+				write_long(0, fp);
+			write_long(former, fp);
+			/* always white page */
+			if(background[0])	/* background is used somewhere */
+				write_sp(fp, "background gray 1");
+			if(pdf_bgcolor[0])	/* pdf:bgcolor is used somewhere */
+				write_sp(fp, "pdf:bgcolor [1]");
+			write_byte((uchar)EOP,fp);
+			former = current;
+			current = ftell(fp);		/* get position of BOP/POST */
+		}
+	}
+
 	write_byte((uchar)POST,fp);					/* write POST */
 	write_long(former, fp);						/* position of the last BOP */
 
 	fseek(dvi->file_ptr, dvi->post + 5, SEEK_SET);
-	for(size = dvi->pt_post - dvi->post - 5; size-- > 0; )
-		write_byte(read_byte(dvi->file_ptr), fp);	/* write postamble upto post_post */
+	if(f_book){
+		write_long(read_long(dvi->file_ptr), fp);		/* numerator */
+		write_long(read_long(dvi->file_ptr), fp);		/* denominator */
+		write_long(read_long(dvi->file_ptr), fp);		/* magnification */
+		write_long(read_long(dvi->file_ptr), fp);		/* tallest page height */
+		write_long(read_long(dvi->file_ptr), fp);		/* widest page width */
+		write_word(read_word(dvi->file_ptr), fp);		/* DVI stack size */
+		read_word(dvi->file_ptr);				/* skip original number of pages */
+		write_word(total_book_page, fp);			/* new number of pages */
+		for(size = dvi->pt_post - dvi->post - 29; size-- > 0; )
+			write_byte(read_byte(dvi->file_ptr), fp);	/* write postamble upto post_post */
+	}
+	else{
+		for(size = dvi->pt_post - dvi->post - 5; size-- > 0; )
+			write_byte(read_byte(dvi->file_ptr), fp);	/* write postamble upto post_post */
+	}
 	write_long(current, fp);					/* position of POST */
 	read_long(dvi->file_ptr);					/* skip old position of POST */
 	write_byte(read_byte(dvi->file_ptr), fp);	/* write id = 2/3 */
@@ -834,7 +987,7 @@ lastpage:			if(isdigit(*++out_pages)){
 	fclose(fp);
 	fclose(dvi->file_ptr);
 	fp = dvi->file_ptr = NULL;
-	if(!f_color){
+	if(!f_needs_corr && !f_book){
 		unlink(outfile);
 		fprintf(stderr, "\nNo correction is done.\n");
 		return;
@@ -1001,6 +1154,17 @@ int strsubcmp(char *s, char *t)
 	return(!*t && (uchar)(*s) <= ' ')?0:1;
 }
 
+/* without space separator (e.g. pdf:bann<<...>>, instead of pdf:bann <<...>>) */
+int strsubcmp_n(char *s, char *t)
+{
+	while(*s == *t){
+		if(!*t)
+			return 0;
+		s++;
+		t++;
+	}
+	return(!*t)?0:1;
+}
 
 uint s_work(FILE *dvi)
 {
@@ -1066,12 +1230,24 @@ skip:				  while (tmp--)
 							 !strsubcmp(special, "ar") ||			/* ar: draw circle */
 							 !strsubcmp(special, "ia")) )			/* ia: fill */
 								f_pn = -1;
-						else if(!strsubcmp(special, "color"))		/* color push/pop */
+						else if(!strsubcmp(special, "color") && !f_prescan)	/* color push/pop */
 							sp_color(special);
-						else if(!strsubcmp(special, "background")){	/* background */
+						else if(!strsubcmp(special, "pdf:bcolor") && !f_prescan)	/* pdf:bcolor */
+							sp_pdf_bcolor(special);
+						else if(!strsubcmp(special, "pdf:ecolor") && !f_prescan)	/* pdf:ecolor */
+							sp_pdf_ecolor(special);
+						else if(!strsubcmp(special, "background")){		/* background */
 							strncpy(background, special, MAX_LEN);
 							f_background = 1;
 						}
+						else if(!strsubcmp(special, "pdf:bgcolor")){		/* pdf:bgcolor */
+							strncpy(pdf_bgcolor, special, MAX_LEN);
+							f_pdf_bgcolor = 1;
+						}
+						else if(!strsubcmp_n(special, "pdf:bann") && !f_prescan)	/* pdf:bann */
+							sp_pdf_bann(special);
+						else if(!strsubcmp(special, "pdf:eann") && !f_prescan)	/* pdf:eann */
+							sp_pdf_eann(special);
 				  	  	break;
 				  	  }
 				  	  goto skip;
@@ -1091,7 +1267,7 @@ void sp_color(char *sp)
 		if(--color_depth < 0){
 			fprintf(stderr, "color stack underflow\n");
 			color_under++;
-			f_color++;
+			f_needs_corr++;
 			color_depth = 0;
 		}
 		return;
@@ -1114,6 +1290,80 @@ void sp_color(char *sp)
 		if(color_depth > color_depth_max)
 			color_depth_max = color_depth;
 	}
+}
+
+/*	pdf:bcolor special */
+void sp_pdf_bcolor(char *sp)
+{
+	char *s;
+
+	/* copied from "color push" routine of sp_color */
+	if(pdf_color_depth >= MAX_COLOR)
+		error("Too many pdf:bcolor > 512");
+	if(pdf_color_depth){
+		s = pdf_color_pt[pdf_color_depth-1];
+		s += strlen(s) + 1;
+	}
+	else
+		s = color_buf;
+	if(s - color_buf + strlen(sp) >= COLOR_BUF_SIZE - 2)
+		error("Too much color definitions");
+	else{
+		strcpy(s, sp);
+		pdf_color_pt[pdf_color_depth++] = s;
+	}
+	if(pdf_color_depth > pdf_color_depth_max)
+		pdf_color_depth_max = pdf_color_depth;
+}
+
+/*	pdf:ecolor special */
+void sp_pdf_ecolor(char *sp)
+{
+	char *s;
+
+	/* copied from "color pop" routine of sp_color */
+	if(--pdf_color_depth < 0){
+		fprintf(stderr, "pdf:bcolor ... pdf:ecolor stack underflow\n");
+		pdf_color_under++;
+		f_needs_corr++;
+		pdf_color_depth = 0;
+	}
+	return;
+}
+
+/*	pdf:bann special */
+void sp_pdf_bann(char *sp)
+{
+	char *s;
+	if(pdf_annot_depth >= MAX_ANNOT)
+		error("Too many pdf:bann > 8");
+	if(pdf_annot_depth){
+		s = pdf_annot_pt[pdf_annot_depth-1];
+		s += strlen(s) + 1;
+	}
+	else
+		s = annot_buf;
+	if(s - annot_buf + strlen(sp) >= ANNOT_BUF_SIZE - 2)
+		error("Too much annot definitions");
+	else{
+		strcpy(s, sp);
+		pdf_annot_pt[pdf_annot_depth++] = s;
+	}
+	if(pdf_annot_depth > pdf_annot_depth_max)
+		pdf_annot_depth_max = pdf_annot_depth;
+}
+
+/*	pdf:eann special */
+void sp_pdf_eann(char *sp)
+{
+	char *s;
+	if(--pdf_annot_depth < 0){
+		fprintf(stderr, "pdf:bann ... pdf:eann stack underflow\n");
+		pdf_annot_under++;
+		f_needs_corr++;
+		pdf_annot_depth = 0;
+	}
+	return;
 }
 
 int num_add;

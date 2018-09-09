@@ -1,5 +1,5 @@
 /*
- *		check Fonts (version of AMS FONTS)
+ *		CHecK DVI FONTs (CHKFONT)
  *                         Dec 1990, written by SHIMA
  *						   Apr 1992, second version
  *						   May 1992, third  version
@@ -40,6 +40,16 @@
  *  1 inch  = 72.27 point = 2.54 cm
  *
  */
+
+#ifdef __GNUC__
+/* Validitate in case of UNIX */
+#define	UNIX	1
+#define	GCC	1
+#else
+/* Win32 MSVC is assumed */
+#define	WIN32	1
+#define	MSVC	1
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -271,7 +281,7 @@ char *strlwr(char *p)
 }
 #endif
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	int i, code;
 	char *pt;
