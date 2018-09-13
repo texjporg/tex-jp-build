@@ -1,11 +1,12 @@
 [2]	  Modify a DVI file to be page-independent in specials
 [1]	  Translation between  DVI file  <->  Text file
-	           Ver.0.3  written by SHIMA, Jan. 2003
+	         Originally written by SHIMA, Jan. 2003
+	         Ver.YYYYMMDD (TeX Live YYYY)
 
 Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]
        dvispc -d input_dvi_file
        dvispc -s [-p..] input_dvi_file [output_text_file]
-       dvispc -a [-jltv][-p..][-r..] input_dvi_file [output_text_file]
+       dvispc -a [-ltv][-J..][-p..][-r..] input_dvi_file [output_text_file]
        dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file
    -c: make page-indepent DVI in specials (default)
    -d: check page-independence
@@ -13,12 +14,14 @@ Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]
    -s: show specials
    -a: translate DVI to Text
    -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)
-   -v: verbose       -j: Japanese characters       -l: location
+   -v: verbose       -l: location
    -z: append empty pages if necessary to have multiple of 4 pages for book
    -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)
    -p: T:preamble  L:postamble  pages with - (eg: -pT-L  -pT2/4-8L  -p-4 etc.)
    -t: compatible to DTL (the followings are suboptions if necessary eg. -t02)
        0:str 1:ch 2:ch2 3:cmd 4:c-sum 5:dir/name 6:err 7:page 8:oct 9:str0
+   -J: set Japanese characters output with a suboption:
+       e:EUC-JP s:Shift_JIS u:UTF-8 for pTeX  or  U:UTF-8 for upTeX.
    output_text_file : stdout if it is not specified.
    input_text_file  : stdin  if it is not specified.
 
@@ -159,12 +162,25 @@ variety sequences-6
     という行が出現する。Text -> DVI では、この行があれば自動的に -l が設定される。
 
 
+-J オプション：出力する日本語文字のエンコーディングを、サブオプションによって指定する。
+
+  e: EUC-JP
+  s: Shift_JIS
+  u: UTF-8 for pTeX
+  U: UTF-8 for upTeX
+
+    このオプションは、TeX Live などの ptexenc ライブラリを利用して dvispc をビルド
+    した場合に利用可能である。そうでない場合は -J オプションの代わりに、下記の
+    -j オプションが実装されている。
+
+
 -j オプション（トグルスイッチ）：文字が JISコードならば、対応する文字を表記。
+    TeX Live では利用不可。
 
 
-          *************************************************
-[2]       **  ページ独立性が破れているDVI ファイルの修正 **
-          *************************************************
+          **************************************************
+[2]       **  ページ独立性が破れている DVI ファイルの修正 **
+          **************************************************
 
 DVIファイルは、本来ページ独立性が保たれるよう設計されていますが、一部の specials
 の処理に関しては、これが破られるDVIファイルが作成されることがあります。

@@ -1,7 +1,8 @@
 1. chkfont.exe をパラメータをつけずに実行したときの画面は、以下の通りです。
 
 	<<< CHecK dvi/tfm/font file and tell informations of FONTs >>>
-				Ver 1.7a, written by SHIMA, 1990/1992
+				Originally written by SHIMA, 1990/1992
+				Ver.YYYYMMDD (TeX Live YYYY)
 
 Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name
        chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name

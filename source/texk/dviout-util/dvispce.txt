@@ -1,11 +1,12 @@
 [2]	  Modify a DVI file to be page-independent in specials
 [1]	  Translation between  DVI file  <->  Text file
-	           Ver.0.3  written by SHIMA, Jan. 2003
+	         Originally written by SHIMA, Jan. 2003
+	         Ver.YYYYMMDD (TeX Live YYYY)
 
 Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]
        dvispc -d input_dvi_file
        dvispc -s [-p..] input_dvi_file [output_text_file]
-       dvispc -a [-jltv][-p..][-r..] input_dvi_file [output_text_file]
+       dvispc -a [-ltv][-J..][-p..][-r..] input_dvi_file [output_text_file]
        dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file
    -c: make page-indepent DVI in specials (default)
    -d: check page-independence
@@ -13,12 +14,14 @@ Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]
    -s: show specials
    -a: translate DVI to Text
    -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)
-   -v: verbose       -j: Japanese characters       -l: location
+   -v: verbose       -l: location
    -z: append empty pages if necessary to have multiple of 4 pages for book
    -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)
    -p: T:preamble  L:postamble  pages with - (eg: -pT-L  -pT2/4-8L  -p-4 etc.)
    -t: compatible to DTL (the followings are suboptions if necessary eg. -t02)
        0:str 1:ch 2:ch2 3:cmd 4:c-sum 5:dir/name 6:err 7:page 8:oct 9:str0
+   -J: set Japanese characters output with a suboption:
+       e:EUC-JP s:Shift_JIS u:UTF-8 for pTeX  or  U:UTF-8 for upTeX.
    output_text_file : stdout if it is not specified.
    input_text_file  : stdin  if it is not specified.
 
@@ -34,7 +37,7 @@ Supported specials:
 
 -a: transform DVI file into a text file (the option -v can be valid)
 
--x: transform a text to DVI file. 
+-x: transform a text to DVI file.
     stack depth, page numbers and address are automatically corrected.
     -x0 is equivalent to -x -t9
     The text should be the same format obtained by -a option.
@@ -84,7 +87,7 @@ List of <key> (X: 1 - 4   XX: 0 - 127   YY: 0 - 63)
 dvispc can read the format of the DVIware DTL (dt2dv/dv2dt) by Geoffrey Tobin.
 
 Transformations:  [DVI file -> a text -> edit it -> DVI file]  is possible
-The following command makes foo2.dvi by extracting the pages 4,5,6,8 from 
+The following command makes foo2.dvi by extracting the pages 4,5,6,8 from
 foo.dvi.
 
 dvispc -atpT4-6/8L foo1.dvi | dvispc -x foo2.dvi
@@ -123,24 +126,24 @@ dvispc -atpT4-6/8L foo1.dvi | dvispc -x > foo2.dvi
 -t : Transformation is done according to the DTL(dt2dv/dv2dt) by Geoffrey Tobin.
     The following suboptions (0-9: toggle switch) can be indicated such as -t02.
 
-    The option  -t  with no suboption means that the following all suboptions 
-    and the options corresponding to the switches -x0 -x1 -x2 are all On and  -j 
-    is Off and also the following line is inserted at the top in case of 
+    The option  -t  with no suboption means that the following all suboptions
+    and the options corresponding to the switches -x0 -x1 -x2 are all On and  -j
+    is Off and also the following line is inserted at the top in case of
     DVI -> Text.
 
 variety sequences-6
 
-    If in case of Text -> dvi this line exists at the top, -t is automatically 
+    If in case of Text -> dvi this line exists at the top, -t is automatically
     set.
 
   0: str
-     A string is indicated by '...'  with the transformations ' -> \' and 
+     A string is indicated by '...'  with the transformations ' -> \' and
      \ -> \\.  A character whose code is smaller that 32 or larger than 126 is
      expressed by hexadecimal as in the following.
   1: ch
      Characters with the code between 0 and 127 are indicated by (...).
-     Here the transformations (  -> \(,  ) -> \) and  \ -> \\ are used and the 
-     character with the code between 0 and 31 or 127 is independently shown by 
+     Here the transformations (  -> \(,  ) -> \) and  \ -> \\ are used and the
+     character with the code between 0 and 31 or 127 is independently shown by
      hexadecimal character starting with \ such as \12.
   2: ch2
      The code of a character larger than 128 is expressed in digits.
@@ -155,23 +158,33 @@ variety sequences-6
   7: page
      The page number is not shown.
   8: oct
-     The octal number for the check sum of the font definition is expressed 
+     The octal number for the check sum of the font definition is expressed
      without the top 0.
   9: str0
-     The length of a string is determined by the given string in case of 
+     The length of a string is determined by the given string in case of
      Text -> DVI.
 
 -l: The address of the code is shown at the top of line.
-    In this case 
+    In this case
 
 0: pre  2 ...
 
-    exists at the head.  
+    exists at the head.
     In case of Text -> DVI, the option -l is set if this line exists.
 
+-J: Set Japanese characters output with a suboption
 
--j: toggle, If the code of the character is within JIS code, then the 
-    corresponding character is shown.
+  e: EUC-JP
+  s: Shift_JIS
+  u: UTF-8 for pTeX
+  U: UTF-8 for upTeX
+
+    When the program dvispc is built without ptexenc library (i.e.
+    built outside TeX Live), the -J option is unavailable.
+    Instead, the -j option can be used.
+
+-j: toggle, If the code of the character is within JIS code, then the
+    corresponding character is shown. (unavailable for TeX Live)
 
 
         ************************************************************
@@ -181,8 +194,8 @@ DVI file should be page-independent in principle.  But some specials break this
 principle.
 
 For example, color specials of graphics package of LaTeX2e for dvips break this.
-Suppose there is a command to make letters red at page 2 of a document with the 
-total pages 100 and it continues up to page 99.  Then there is no command to 
+Suppose there is a command to make letters red at page 2 of a document with the
+total pages 100 and it continues up to page 99.  Then there is no command to
 make letters red at page 50.
 
 \usepackages[dvips]{graphicx, color}
@@ -196,7 +209,7 @@ make letters red at page 50.
 
 dvips reads a DVI file from the first page and therefore it correctly interprets
 color specials.  But some other DVIwares such as dviout (previewer) cannot do so
-because it may be requested only to display the page 50.  The same problem 
+because it may be requested only to display the page 50.  The same problem
 occurs for some DVI tools such as dvidvi.
 
 dvispc modifies such a DVI file to be page-independent.  Supporting specials are
@@ -210,7 +223,7 @@ dvispc modifies such a DVI file to be page-independent.  Supporting specials are
 -s: show all specials in DVI file
 -d: check the necessity of the modification
 
-If none of the parameters -s -d -a -x is indicated, dvispc modifies DVI file as 
+If none of the parameters -s -d -a -x is indicated, dvispc modifies DVI file as
 described.
 
 color specials: dvispc inserts necessary specials "color pop" at the end of each
@@ -218,18 +231,18 @@ color specials: dvispc inserts necessary specials "color pop" at the end of each
   specials "color push" at the top of the following page.
   dvispc checks the underflow and overflow (the limit is about 500 in dvispc)
   of this stack. Usually the overflow of stack occurs by the wrong source of
-  TeX.  In the case of the unerflow, dvispc writes specials "color push  Black" 
+  TeX.  In the case of the unerflow, dvispc writes specials "color push  Black"
   at the top of the corresponding page to recover the error.
 
-background    : If the "background" color is defined in a page and the 
-  definition is not written in another page where the definition should be 
+background    : If the "background" color is defined in a page and the
+  definition is not written in another page where the definition should be
   valid, then the definition is inserted at the top of the page.
 
 pdf:bcolor, pdf:ecolor : Similar to color push/pop.
 
 pdf:bgcolor   : Similar to background.
 
-tpic specials : If tpic special "pn" is defined, then the same special will be 
+tpic specials : If tpic special "pn" is defined, then the same special will be
   inserted at the top of the following pages.
 
 The order to be inserted at the top of each page is as follows
