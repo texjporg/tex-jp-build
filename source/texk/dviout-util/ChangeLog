@@ -1,3 +1,8 @@
+2018-09-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* propw.c: Partially revert the change on 2017-06-25.
+	(I was misunderstanding the usage of mapfile, sorry.)
+
 2018-09-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* Makefile.{am,in}, ac/withenable.ac, aclocal.m4,
