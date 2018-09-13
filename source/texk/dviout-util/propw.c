@@ -616,7 +616,7 @@ rep:
 			if(f_para >= 2)
 				unlink("$.par");
 			fputs(para, stderr);
-			goto exit( 2 );
+			exit( 2 );
 
 		case 'F':
 			if(!strncmp(para, "ONT: ", 5)){
