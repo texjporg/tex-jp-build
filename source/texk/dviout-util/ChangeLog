@@ -1,14 +1,21 @@
 2018-09-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
+	* chkdvifont.c: Renamed from chkfont.c.
+	* chkdvifont-ja.txt: Renamed from chkfont.txt, updated.
+	* chkdvifont.test: Renamed from chkfont.test, adapted.
+	* dvispc-ja.txt: Renamed from dvispc.txt, updated.
+	* dvispc-en.txt: Renamed from dvispce.txt, updated.
 	* propw.c: Partially revert the change on 2017-06-25.
 	(I was misunderstanding the usage of mapfile, sorry.)
+	* propw-ja.txt: Renamed from propw0.txt.
+	* Makefile.am: Adapted.
 
 2018-09-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* Makefile.{am,in}, ac/withenable.ac, aclocal.m4,
 	config.h.in, configure{,.ac}:
 	Add files related to autotools.
-	{chkfont,dvispc,propw}.test, tests/{jistest.pl,test.cfn}:
+	* {chkfont,dvispc,propw}.test, tests/{jistest.pl,test.cfn}:
 	Add new tests.
 	* chkfont.c, dvispc.c, propw.c:
 	Change version number to Ver. date, (TL_VERSION).
