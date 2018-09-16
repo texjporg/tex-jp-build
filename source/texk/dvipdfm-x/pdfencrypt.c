@@ -27,17 +27,13 @@
 #include <string.h>
 #include <time.h>
 
-#ifdef WIN32
-#include <conio.h>
-#define getch _getch
-#else  /* !WIN32 */
-#include <unistd.h>
-#endif /* WIN32 */
-
 #include "system.h"
 #include "mem.h"
 #include "numbers.h"
 #include "error.h"
+#include "dpxconf.h"
+#include "dpxutil.h"
+
 #include "pdfobj.h"
 #include "unicode.h"
 #include "dpxcrypt.h"
@@ -48,6 +44,9 @@
  *
  * TODO: Convert password to PDFDocEncoding. SASLPrep stringpref for AESV3.
  */
+
+static void pdf_enc_set_passwd (unsigned int bits, unsigned int perm,
+                                const char *oplain, const char *uplain);
 
 /* PDF-2.0 is not published yet. */
 #define USE_ADOBE_EXTENSION 1
@@ -88,69 +87,45 @@ static const unsigned char padding_bytes[32] = {
   0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a
 };
 
-static unsigned char verbose = 0;
-
-void pdf_enc_set_verbose (void)
-{
-  if (verbose < 255) verbose++;
-}
-
-static void
-pdf_enc_init (int use_aes, int encrypt_metadata)
-{
-  time_t current_time;
-  struct pdf_sec *p = &sec_data;
-
-  current_time = get_unique_time_if_given();
-  if (current_time == INVALID_EPOCH_VALUE)
-    current_time = time(NULL);
-  srand(current_time); /* For AES IV */
-  p->setting.use_aes = use_aes;
-  p->setting.encrypt_metadata = encrypt_metadata;
-  p->setting.need_adobe_extension = 0;
-}
-
-#define PRODUCER \
-"%s-%s, Copyright 2002-2015 by Jin-Hwan Cho, Matthias Franz, and Shunsaku Hirata"
-
 void
-pdf_enc_compute_id_string (char *dviname, char *pdfname)
+pdf_enc_compute_id_string (const char *producer,
+                           const char *dviname, const char *pdfname)
 {
   struct pdf_sec *p = &sec_data;
-  char *date_string, *producer;
-  time_t current_time;
-  struct tm *bd_time;
+  char            datestr[32];
   MD5_CONTEXT     md5;
 
-  /* FIXME: This should be placed in main() or somewhere. */
-  pdf_enc_init(1, 1);
-
   MD5_init(&md5);
-
-  date_string = NEW(15, char);
-  current_time = get_unique_time_if_given();
-  if (current_time == INVALID_EPOCH_VALUE) {
-    time(&current_time);
-    bd_time = localtime(&current_time);
-  } else {
-    bd_time = gmtime(&current_time);
-  }
-  sprintf(date_string, "%04d%02d%02d%02d%02d%02d",
-          bd_time->tm_year + 1900, bd_time->tm_mon + 1, bd_time->tm_mday,
-          bd_time->tm_hour, bd_time->tm_min, bd_time->tm_sec);
-  MD5_write(&md5, (unsigned char *)date_string, strlen(date_string));
-  RELEASE(date_string);
-
-  producer = NEW(strlen(PRODUCER)+strlen(my_name)+strlen(VERSION), char);
-  sprintf(producer, PRODUCER, my_name, VERSION);
-  MD5_write(&md5, (unsigned char *)producer, strlen(producer));
-  RELEASE(producer);
-
+  /* Don't use timezone for compatibility */
+  dpx_util_format_asn_date(datestr, 0);
+  MD5_write(&md5, (unsigned char *)datestr, strlen(datestr));
+  if (producer)
+    MD5_write(&md5, (unsigned char *)producer, strlen(producer));
   if (dviname)
     MD5_write(&md5, (unsigned char *)dviname, strlen(dviname));
   if (pdfname)
     MD5_write(&md5, (unsigned char *)pdfname, strlen(pdfname));
   MD5_final(p->ID, &md5);
+}
+
+int
+pdf_init_encryption (struct pdf_enc_setting settings)
+{
+  time_t          current_time;
+  struct pdf_sec *p = &sec_data;
+
+  current_time = dpx_util_get_unique_time_if_given();
+  if (current_time == INVALID_EPOCH_VALUE)
+    current_time = time(NULL);
+  srand(current_time); /* For AES IV */
+  p->setting.use_aes = settings.use_aes;
+  p->setting.encrypt_metadata = settings.encrypt_metadata;
+  p->setting.need_adobe_extension = 0;
+
+  pdf_enc_set_passwd(settings.key_size, settings.permission,
+                     settings.oplain, settings.uplain);
+
+  return 0;
 }
 
 static void
@@ -439,29 +414,6 @@ compute_user_password_V5 (struct pdf_sec *p, const char *uplain)
   RELEASE(UE);
 }
 
-#ifdef WIN32
-/* Broken on mintty? */
-static char *
-getpass (const char *prompt)
-{
-  static char pwd_buf[128];
-  size_t i;
-
-  fputs(prompt, stderr);
-  fflush(stderr);
-  for (i = 0; i < sizeof(pwd_buf)-1; i++) {
-    pwd_buf[i] = getch();
-    if (pwd_buf[i] == '\r' || pwd_buf[i] == '\n')
-      break;
-    fputs("*", stderr);
-    fflush(stderr);
-  }
-  pwd_buf[i] = '\0';
-  fputs("\n", stderr);
-  return pwd_buf;
-}
-#endif
-
 static void
 check_version (struct pdf_sec *p, int version)
 {
@@ -553,14 +505,14 @@ preproc_password (const char *passwd, char *outbuf, int V)
   return error;
 }
 
-void
+static void
 pdf_enc_set_passwd (unsigned int bits, unsigned int perm,
                     const char *oplain, const char *uplain)
 {
   struct pdf_sec *p = &sec_data;
-  char            input[128], opasswd[128], upasswd[128];
-  char *retry_passwd;
+  char            opasswd[128], upasswd[128];
   int             version;
+  char            empty_passwd[1] = "\0";
 
   version = pdf_get_version();
 
@@ -612,31 +564,13 @@ pdf_enc_set_passwd (unsigned int bits, unsigned int perm,
     if (preproc_password(oplain, opasswd, p->V) < 0)
       WARN("Invaid UTF-8 string for password.");
   } else {
-    while (1) {
-      strncpy(input, getpass("Owner password: "), MAX_PWD_LEN);
-      retry_passwd = getpass("Re-enter owner password: ");
-      if (!strncmp(input, retry_passwd, MAX_PWD_LEN))
-	break;
-      fputs("Password is not identical.\nTry again.\n", stderr);
-      fflush(stderr);
-    }
-    if (preproc_password(input, opasswd, p->V) < 0)
-      WARN("Invaid UTF-8 string for password.");
+    preproc_password(empty_passwd, opasswd, p->V);
   }
   if (uplain) {
     if (preproc_password(uplain, upasswd, p->V) < 0)
       WARN("Invalid UTF-8 string for passowrd.");
   } else {
-    while (1) {
-      strncpy(input, getpass("User password: "), MAX_PWD_LEN);
-      retry_passwd = getpass("Re-enter user password: ");
-      if (!strncmp(input, retry_passwd, MAX_PWD_LEN))
-	break;
-      fputs("Password is not identical.\nTry again.\n", stderr);
-      fflush(stderr);
-    }
-    if (preproc_password(input, upasswd, p->V) < 0)
-      WARN("Invaid UTF-8 string for password.");
+    preproc_password(empty_passwd, upasswd, p->V);
   }
 
   if (p->R >= 3)
