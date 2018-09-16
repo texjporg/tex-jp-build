@@ -1,14 +1,14 @@
 /*
- *		CHecK DVI FONTs (CHKFONT)
+ *		CHecK DVI FONTs (CHKDVIFONT)
  *                         Dec 1990, originally written by SHIMA
  *						   Apr 1992, second version
  *						   May 1992, third  version
  *						   Sep 1992, fifth  version
  *						   May 1996, sixth  version
  *
- * Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name
- *        chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name
- *        chkfont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name
+ * Usage: chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name
+ *        chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name
+ *        chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name
  *
  * "c" means check mode
  * "s" means silent check mode
@@ -1239,13 +1239,13 @@ void get_list(char *fname)
 void usage()
 {
 	fprintf(stderr,
-		"\t<<< CHecK dvi/tfm/font file and tell informations of FONTs >>>\n"
+		"\t<<< CHecK DVI/tfm/font file and tell informations of FONTs >>>\n"
 			"\t\t\t\tOriginally written by SHIMA, 1990/1992\n"
 			"\t\t\t\tVer.%s (%s)\n\n", VERSION, TL_VERSION);
 	fprintf(stderr,
-	  "Usage: chkfont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name\n"
-	  "       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name\n"
-	"       chkfont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name\n\n"
+	  "Usage: chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-d] dvi_file_name\n"
+	  "       chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-t] tfm_file_name\n"
+	  "       chkdvifont [-s] [-c] [-{f|F}<font_data_file>] [-p] font_file_name\n\n"
 			"Option\t -c: check mode\n"
 			"\t -s: silent check mode\n"
 			"\t -f: use font_data_file (-F: and ignore default data)\n"
