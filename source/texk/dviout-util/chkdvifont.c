@@ -144,13 +144,13 @@ char *oldfont[] =
 {"msxm", "msym", "amcsc", "mcyr", "mcyb", ""};
 
 /*
- * add CM fonts, strat point, end point
+ * add CM fonts, start point, end point
  */
 
 struct NEWPOINT {
-	char *font_name;	/* font name		*/
-	int top;	/* smallest point	*/
-	int end;	/* lagest point		*/
+	char *font_name;	/* font name */
+	int top;	/* smallest point */
+	int end;	/* largest point */
 };
 
 struct NEWPOINT newpoint[] =
