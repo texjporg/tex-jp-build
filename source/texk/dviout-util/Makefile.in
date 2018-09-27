@@ -88,7 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = dvispc$(EXEEXT) propw$(EXEEXT) chkdvifont$(EXEEXT)
+bin_PROGRAMS = dvispc$(EXEEXT) chkdvifont$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/../../m4/kpse-common.m4 \
@@ -126,10 +126,6 @@ am_dvispc_OBJECTS = dvispc.$(OBJEXT)
 dvispc_OBJECTS = $(am_dvispc_OBJECTS)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 dvispc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
-am_propw_OBJECTS = propw.$(OBJEXT)
-propw_OBJECTS = $(am_propw_OBJECTS)
-propw_LDADD = $(LDADD)
-propw_DEPENDENCIES = $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -145,8 +141,7 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/../../build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/chkdvifont.Po ./$(DEPDIR)/dvispc.Po \
-	./$(DEPDIR)/propw.Po
+am__depfiles_remade = ./$(DEPDIR)/chkdvifont.Po ./$(DEPDIR)/dvispc.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -166,9 +161,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(chkdvifont_SOURCES) $(dvispc_SOURCES) $(propw_SOURCES)
-DIST_SOURCES = $(chkdvifont_SOURCES) $(dvispc_SOURCES) \
-	$(propw_SOURCES)
+SOURCES = $(chkdvifont_SOURCES) $(dvispc_SOURCES)
+DIST_SOURCES = $(chkdvifont_SOURCES) $(dvispc_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -557,14 +551,13 @@ top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(PTEXENC_INCLUDES) $(KPATHSEA_INCLUDES) -DUNIX -DKPATHSEA -DPTEXENC
 AM_CFLAGS = $(WARNING_CFLAGS)
 dvispc_SOURCES = dvispc.c
-propw_SOURCES = propw.c
 chkdvifont_SOURCES = chkdvifont.c dd.h msvcdir.h
 LDADD = $(KPATHSEA_LIBS)
 dvispc_LDADD = $(PTEXENC_LIBS) $(LDADD)
-TESTS = dvispc.test propw.test chkdvifont.test
+TESTS = dvispc.test chkdvifont.test
 EXTRA_DIST = $(TESTS) tests/test.tex tests/test.dvi tests/test.spc \
-	tests/testout.dvi tests/jistest.pl tests/test.cfn
-DISTCLEANFILES = test.spc testout.dvi jistest.pl test.cfn
+	tests/testout.dvi tests/test.cfn
+DISTCLEANFILES = test.spc testout.dvi test.cfn
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -676,10 +669,6 @@ dvispc$(EXEEXT): $(dvispc_OBJECTS) $(dvispc_DEPENDENCIES) $(EXTRA_dvispc_DEPENDE
 	@rm -f dvispc$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(dvispc_OBJECTS) $(dvispc_LDADD) $(LIBS)
 
-propw$(EXEEXT): $(propw_OBJECTS) $(propw_DEPENDENCIES) $(EXTRA_propw_DEPENDENCIES) 
-	@rm -f propw$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(propw_OBJECTS) $(propw_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -688,7 +677,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chkdvifont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dvispc.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propw.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1160,7 +1148,6 @@ distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f ./$(DEPDIR)/chkdvifont.Po
 	-rm -f ./$(DEPDIR)/dvispc.Po
-	-rm -f ./$(DEPDIR)/propw.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags
@@ -1210,7 +1197,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f ./$(DEPDIR)/chkdvifont.Po
 	-rm -f ./$(DEPDIR)/dvispc.Po
-	-rm -f ./$(DEPDIR)/propw.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1260,7 +1246,6 @@ $(dviout_util_OBJECTS): $(KPATHSEA_DEPEND) $(PTEXENC_DEPEND)
 @KPATHSEA_RULE@
 @PTEXENC_RULE@
 dvispc.log: dvispc$(EXEEXT)
-propw.log: propw$(EXEEXT)
 chkdvifont.log: chkdvifont$(EXEEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

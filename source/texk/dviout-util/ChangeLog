@@ -1,3 +1,8 @@
+2018-09-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* Makefile.{am,in}, propw.c, propw-ja.txt, propw.test,
+	tests/jistest.pl: Removed propw from this bundle.
+
 2018-09-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* chkdvifont.c: Renamed from chkfont.c.
@@ -14,17 +19,17 @@
 
 	* Makefile.{am,in}, ac/withenable.ac, aclocal.m4,
 	config.h.in, configure{,.ac}:
-	Add files related to autotools.
+	Added files related to autotools.
 	* {chkfont,dvispc,propw}.test, tests/{jistest.pl,test.cfn}:
-	Add new tests.
+	Added new tests.
 	* chkfont.c, dvispc.c, propw.c:
-	Change version number to Ver. date, (TL_VERSION).
-	* dvispc.c: Implement -J option for japanese characters output
+	Changed version number to Ver. date, (TL_VERSION).
+	* dvispc.c: Implemented -J option for japanese characters output
 	instead of -j option.
-	* dvispc.c: Fix file open issue in unix.
+	* dvispc.c: Fixed file open issue in unix.
 	* propw.c: Set ppltotf input UTF-8.
 	* propw.c, dd.h, {chkfont,dvispc,propw0}.txt:
-	Convert file encoding to UTF-8.
+	Converted file encoding to UTF-8.
 
 2018-02-11  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 

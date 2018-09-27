@@ -8,10 +8,9 @@ AM_CFLAGS = $(WARNING_CFLAGS)
 
 $(dviout_util_OBJECTS): $(KPATHSEA_DEPEND) $(PTEXENC_DEPEND)
 
-bin_PROGRAMS = dvispc propw chkdvifont
+bin_PROGRAMS = dvispc chkdvifont
 
 dvispc_SOURCES  = dvispc.c
-propw_SOURCES   = propw.c
 chkdvifont_SOURCES = chkdvifont.c dd.h msvcdir.h
 
 LDADD = $(KPATHSEA_LIBS)
@@ -25,9 +24,8 @@ dvispc_LDADD = $(PTEXENC_LIBS) $(LDADD)
 
 ## Tests
 ##
-TESTS = dvispc.test propw.test chkdvifont.test
+TESTS = dvispc.test chkdvifont.test
 dvispc.log: dvispc$(EXEEXT)
-propw.log: propw$(EXEEXT)
 chkdvifont.log: chkdvifont$(EXEEXT)
 EXTRA_DIST = $(TESTS)
 
@@ -36,10 +34,6 @@ EXTRA_DIST += \
 	tests/test.tex tests/test.dvi tests/test.spc \
 	tests/testout.dvi
 DISTCLEANFILES = test.spc testout.dvi
-
-## propw.test
-EXTRA_DIST += tests/jistest.pl
-DISTCLEANFILES += jistest.pl
 
 ## chkdvifont.test
 EXTRA_DIST += tests/test.cfn
