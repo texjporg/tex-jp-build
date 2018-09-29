@@ -12,10 +12,10 @@
  */
 
 #ifdef __GNUC__
-/* Validitate in case of UNIX */
+/* Validate in case of UNIX */
 #define	UNIX	1
 #else
-/* Validitate if SHIFT JIS is used for a filename */
+/* Validate if SHIFT JIS is used for a filename */
 /* Win32 MSVC is assumed */
 #define	SHIFT_JIS	1
 #endif
@@ -454,6 +454,7 @@ void usage(void)
 	"   -J: set Japanese characters output with a suboption:\n"
 	"       e:EUC-JP s:Shift_JIS u:UTF-8 for pTeX  or  U:UTF-8 for upTeX.\n"
 #endif
+	"   output_dvi_file  : overwrite if it is not specified.\n"
 	"   output_text_file : stdout if it is not specified.\n"
 	"   input_text_file  : stdin  if it is not specified.\n\n"
 	"Supported specials:\n"

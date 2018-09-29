@@ -220,11 +220,21 @@ dvispc modifies such a DVI file to be page-independent.  Supporting specials are
 
                           --- specifications ---
 -c: the above modification will be done
--s: show all specials in DVI file
 -d: check the necessity of the modification
+-s: show all specials in DVI file
 
 If none of the parameters -s -d -a -x is indicated, dvispc modifies DVI file as
 described.
+
+-b : dvispc by default overwrites the original DVI file after modification.
+     If -b is specified, the original file is backuped with suffix .bak.
+
+-z : If the input DVI has less than multiple of 4 pages, append empty pages
+     to have multiple of 4.
+     The program dvibook has similar function, but dvispc ensures page
+     independency by explicitly setting the background of empty pages white.
+
+Supported specials are the followings.
 
 color specials: dvispc inserts necessary specials "color pop" at the end of each
   page so that the stack becomes empty there.  Then it also inserts necessary

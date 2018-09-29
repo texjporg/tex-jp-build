@@ -42,7 +42,7 @@
  */
 
 #ifdef __GNUC__
-/* Validitate in case of UNIX */
+/* Validate in case of UNIX */
 #define	UNIX	1
 #define	GCC	1
 #else
