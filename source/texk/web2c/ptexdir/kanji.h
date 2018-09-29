@@ -24,15 +24,11 @@
 #endif
 #define notkanjicharseq not_kanji_char_seq
 
-#if !defined(WIN32)
-extern int sjisterminal;
-#endif
-
 /* functions */
 #define Hi(x) (((x) >> 8) & 0xff)
 #define Lo(x) ((x) & 0xff)
 
-extern int check_kanji (integer c);
+extern boolean check_kanji (integer c);
 #define checkkanji check_kanji
 extern boolean is_char_ascii (integer c);
 #define ischarascii is_char_ascii

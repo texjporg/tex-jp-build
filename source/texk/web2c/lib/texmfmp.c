@@ -710,11 +710,14 @@ maininit (int ac, string *av)
   enc = kpse_var_value("command_line_encoding");
   get_command_line_args_utf8(enc, &argc, &argv);
 #endif
+#if IS_pTeX && !IS_upTeX && !defined(WIN32)
+  ptenc_get_command_line_args(&argc, &argv);
+#endif
 
   /* If the user says --help or --version, we need to notice early.  And
      since we want the --ini option, have to do it before getting into
      the web (which would read the base file, etc.).  */
-#if (IS_upTeX || defined(XeTeX) || defined(pdfTeX)) && defined(WIN32)
+#if ((IS_upTeX || defined(XeTeX) || defined(pdfTeX)) && defined(WIN32)) || (IS_pTeX && !IS_upTeX && !defined(WIN32))
   parse_options (argc, argv);
 #else
   parse_options (ac, av);
@@ -1386,7 +1389,7 @@ int fsyscp_stat(const char *path, struct stat *buffer)
 {
   wchar_t *wpath;
   int     ret;
-  wpath = get_wstring_from_mbstring(kpse_def->File_system_codepage,
+  wpath = get_wstring_from_mbstring(file_system_codepage,
           path, wpath = NULL);
   ret = _wstat(wpath, buffer);
   free(wpath);
@@ -1660,7 +1663,6 @@ static struct option long_options[]
 #endif /* TeX or MF */
 #if IS_pTeX
 #ifdef WIN32
-      { "sjis-terminal",             0, &sjisterminal, 1 },
       { "guess-input-enc",           0, &infile_enc_auto, 1 },
       { "no-guess-input-enc",        0, &infile_enc_auto, 0 },
 #endif

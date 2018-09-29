@@ -1,3 +1,14 @@
+2018-09-09  Karl Berry  <karl@tug.org>
+
+	* eptriptest.test,
+	* pdfprimitive.test: LC_ALL=LANGUAGE=C.
+
+2018-09-01  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* eptex.ech, pdfutils.ch: New primitive \readpapersizespecial.
+	* eptex.ech, eptex_version.h: e-pTeX version 180901.
+	* tests/pdforigin.tex, tests/pdfpagewidth.tex: Added.
+
 2018-05-18  Joseph Wright  <joseph.wright@morningstar2.co.uk>
             Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
