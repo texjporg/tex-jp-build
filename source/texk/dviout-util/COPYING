@@ -1,13 +1,8 @@
-dviout-util is a *partial* repackaging of elements of the DVIOUT.
-dviout is a DVI previewer for Windows.
-It is released under the Expat license, as below.
-
-A GitHub repository is maintained on
-https://github.com/texjporg/tex-jp-build/tree/master/source/texk/dviout-util
-for development.
-Please email any bug reports or problems to issue@texjp.org mailing list.
+(The Expat license)
 
 Copyright (c) 1998-2011 Toshio OSHIMA, Yoshiki OTOBE, Kazunori ASAYAMA.
+Copyright (c) 2017-2018 Hironobu YAMASHITA
+Copyright (c) 2018-     Japanese TeX Development Community
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
