@@ -53,7 +53,7 @@ Supported specials:
     <any comment>: 空であっても、間に空白があってもよい。コード生成では無視。
 
     <number><comment> のブロックの数、および '<string>' が必要かどうかは、
-　　<key> によって以下のように定まっている。
+    <key> によって以下のように定まっている。
 
 <key> のリスト（X: 1 - 4   XX: 0 - 127   YY: 0 - 63）
     <key>                        <number><comment>  '<string>'
@@ -142,7 +142,7 @@ variety sequences-6
      コマンドをDTL形式の短いキーワードで表す。
   4: c-sum
      フォント定義におけるチェックサムを8進数で表す。
-　5: dir/name
+  5: dir/name
      フォント名の文字列をディレクトリと名前の2つの文字列に分解して表記。
   6: err
      未定義のコードを opcode x として表記。
