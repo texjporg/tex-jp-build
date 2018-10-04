@@ -232,8 +232,10 @@ int  f_mode = EXE2INDEP;	/*  0: -c page_indep
 								3: -a to_Text
 								4: -x to_DVI 	*/
 
-int	 f_debug = 0;		/* -v */
-int	 f_overwrite = 0;	/* -b */
+int  f_debug = 0;		/* -v */
+int  f_overwrite = 0;
+int  f_backup = 0;		/* -b */
+
 #ifdef	PTEXENC
 int  f_jstr = 0;		/* -J */
 #else
@@ -246,7 +248,6 @@ int  f_sjis = 1;
 int  f_pos = 0;			/* position */
 int  f_book = 0;		/* multiple of four pages */
 
-int  f_backup = 0;		/* output=input */
 int  f_ptex = 0;
 int  f_prescan = 0;
 int  max_stack;
@@ -1045,7 +1046,7 @@ lastpage:			if(isdigit(*++out_pages)){
 	if(f_overwrite){
 		if(f_backup){
 			sprintf(tmp_buf, "%s.bak", infile);
-			if(unlink(tmp_buf) == -1 || rename(infile, tmp_buf) == -1){
+			if(rename(infile, tmp_buf) == -1){
 				fprintf(stderr, "Cannot backup %s to %s\n", infile, tmp_buf);
 				Exit(1);
 			}
