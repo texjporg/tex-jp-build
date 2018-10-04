@@ -752,6 +752,8 @@ same:		strcpy(outfile, infile);
 				fprintf(stderr, "Cannot open %s\n", outfile);
 				exit(1);
 			}
+		} else {
+			fp_out = stderr;
 		}
 	}
 	read_post(&dvi_info);
@@ -780,7 +782,6 @@ void translate(DVIFILE_INFO *dvi, DIMENSION *dim)
 	FILE *fp;
 
 	if(f_mode == EXE2INDEP){
-		f_debug = 0;
 		fp = (*outfile)?fopen(outfile, WRITE_BINARY):fp_out;
 		if(fp == NULL){
 			fprintf(stderr, "Cannot open %s\n", outfile);

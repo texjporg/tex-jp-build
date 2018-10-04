@@ -1,7 +1,8 @@
 2018-10-04  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
-	* dvispc.c: Fix a bug that -b option does not work. Remove
-	unused code.
+	* dvispc.c: Fix a bug that -b option does not work. Make
+	sure that -v option is not ignored for default -c mode.
+	Remove unused code.
 
 2018-09-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
