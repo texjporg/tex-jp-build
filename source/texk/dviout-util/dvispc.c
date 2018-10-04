@@ -305,7 +305,7 @@ char font_use[MAX_FONT];
 
 const int AdID = (('A'<<24)+('d'<<16)+('O'<<8)+EOP);
 
-#ifndef PTEXENC
+#ifndef	PTEXENC
 // #define issjis1(c) ((c)>=0x81&&(c)<=0xfc&&((c)<=0x9f||(c)>=0xe0))
 // #define issjis2(c) ((c)>=0x40 && (c)<=0xfc && (c)!=0x7f)
 #define isjis(c) (((c)>=0x21 && (c)<=0x7e))
@@ -436,21 +436,23 @@ void usage(void)
 #else
 	"       dvispc -a [-jltv][-p..][-r..] input_dvi_file [output_text_file]\n"
 #endif
-	"       dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file\n"
+	"       dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file\n\n"
+	"Mode options:\n"
 	"   -c: make page-indepent DVI in specials (default)\n"
 	"   -d: check page-independence\n"
-	"   -b: backup original even if output_dvi_file is not given\n"
 	"   -s: show specials\n"
 	"   -a: translate DVI to Text\n"
-	"   -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)\n"
+	"   -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)\n\n"
+	"Other options:\n"
 #ifdef	PTEXENC
 	"   -v: verbose       -l: location\n"
 #else
 	"   -v: verbose       -j: Japanese characters       -l: location\n"
 #endif
+	"   -b: backup original even if output_dvi_file is not given\n"
 	"   -z: append empty pages if necessary to have multiple of 4 pages for book\n"
-	"   -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)\n"
 	"   -p: T:preamble  L:postamble  pages with - (eg: -pT-L  -pT2/4-8L  -p-4 etc.)\n"
+	"   -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)\n"
 	"   -t: compatible to DTL (the followings are suboptions if necessary eg. -t02)\n"
 	"       0:str 1:ch 2:ch2 3:cmd 4:c-sum 5:dir/name 6:err 7:page 8:oct 9:str0\n"
 #ifdef	PTEXENC
@@ -968,12 +970,14 @@ lastpage:			if(isdigit(*++out_pages)){
 				f_needs_corr++;
 		}
 	}
-	if(f_debug && color_depth_max)
-		fprintf(fp_out, "\nMaximal depth of color stack:%d", color_depth_max);
-	if(f_debug && pdf_color_depth_max)
-		fprintf(fp_out, "\nMaximal depth of pdf:bcolor ... pdf:ecolor stack:%d", pdf_color_depth_max);
-	if(f_debug && pdf_annot_depth_max)
-		fprintf(fp_out, "\nMaximal depth of pdf:bann ... pdf:eann stack:%d", pdf_annot_depth_max);
+	if(f_debug) {
+		if(color_depth_max)
+			fprintf(fp_out, "\nMaximal depth of color stack:%d", color_depth_max);
+		if(pdf_color_depth_max)
+			fprintf(fp_out, "\nMaximal depth of pdf:bcolor ... pdf:ecolor stack:%d", pdf_color_depth_max);
+		if(pdf_annot_depth_max)
+			fprintf(fp_out, "\nMaximal depth of pdf:bann ... pdf:eann stack:%d", pdf_annot_depth_max);
+	}
 	if(f_mode != EXE2INDEP){
 		fclose(dvi->file_ptr);
 		fprintf(fp_out, f_needs_corr?
@@ -1675,7 +1679,7 @@ void flush_str(void)
 	len = 0;
 }
 
-#ifndef PTEXENC
+#ifndef	PTEXENC
 #ifndef	UNIX
 void jis2sjis(int *h, int *l)
 {
