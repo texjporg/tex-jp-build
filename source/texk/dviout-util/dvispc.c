@@ -304,9 +304,11 @@ char font_use[MAX_FONT];
 
 const int AdID = (('A'<<24)+('d'<<16)+('O'<<8)+EOP);
 
-#define	issjis1(c) ((c)>=0x81&&(c)<=0xfc&&((c)<=0x9f||(c)>=0xe0))
-#define issjis2(c) ((c)>=0x40 && (c)<=0xfc && (c)!=0x7f)
+#ifndef PTEXENC
+// #define issjis1(c) ((c)>=0x81&&(c)<=0xfc&&((c)<=0x9f||(c)>=0xe0))
+// #define issjis2(c) ((c)>=0x40 && (c)<=0xfc && (c)!=0x7f)
 #define isjis(c) (((c)>=0x21 && (c)<=0x7e))
+#endif
 #define is_hex(c)   ((c>='0'&&c<='9')||(c>='a'&&c<='f')||(c>='A'&&c<='F'))
 #define is_oct(c)   (c>='0'&&c<='7')
 // #define is_dig(c)   (c>='0'&&c<='9')
@@ -1672,6 +1674,7 @@ void flush_str(void)
 	len = 0;
 }
 
+#ifndef PTEXENC
 #ifndef	UNIX
 void jis2sjis(int *h, int *l)
 {
@@ -1682,6 +1685,7 @@ void jis2sjis(int *h, int *l)
 	if (*h < 0x5f)		*h = (*h + 0xe1) >> 1;
 		else			*h = (*h + 0x161) >> 1;
 }
+#endif
 #endif
 
 void out_string(FILE *in, FILE *out, int len)
@@ -1750,13 +1754,15 @@ void transpost(FILE *dvi)
 /* content of a page */
 uint work(FILE *dvi)
 {
-	int code, mode, h_code, l_code, tmp = 0;
+	int code, mode, tmp = 0;
 	long pos = 0;
 	uint csum;
 #ifdef	PTEXENC
 	int imb;
 	long wch;
 	char mbstr[4];
+#else
+	int h_code, l_code;
 #endif
 
 	while( (code = (uchar)read_byte(dvi)) != EOP && code != POST_POST){
@@ -2099,7 +2105,7 @@ uchar *get_next(unsigned char *pt)
 uint a2i(unsigned char *s)
 {
 	uint num;
-/* strtol(s, &pt, 0)  will be oveflow for unsigned */
+/* strtol(s, &pt, 0)  will overflow for unsigned */
 
 	if(!*s)
 		return 0;
