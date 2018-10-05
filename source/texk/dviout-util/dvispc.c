@@ -605,14 +605,15 @@ error:                  fprintf(stderr, "Error in parameter %s\n", argv[i]);
       }
 skip: ;
     }
+    /* now, i = (number of optional argument) + 1 */
     fnum = 0;
-    if(!isatty(fileno(stdin))){
+    if(!isatty(fileno(stdin))){  /* if stdin is redirected from a file */
         fp_in = stdin;
         fnum++;
     }
-    if(!isatty(fileno(stdout))){
-        fnum++;
+    if(!isatty(fileno(stdout))){ /* if stdout is redirected to a file */
         fp_out = stdout;
+        fnum++;
     }
     if(fnum != 2){
         len = strlen(argv[argc-1]);
@@ -784,7 +785,8 @@ void translate(DVIFILE_INFO *dvi, DIMENSION *dim)
         if(fp == NULL){
             fprintf(stderr, "Cannot open %s\n", outfile);
             exit(4);
-        }
+        }else if(fp==stdout)
+            f_debug = 0; /* ignore -v option, as debug output goes there, sigh */
     }else
         fp = NULL;
 
