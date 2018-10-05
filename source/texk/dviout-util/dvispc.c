@@ -7,8 +7,8 @@
  *			pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor
  *			tpic  specials:  pn
  *
- *						Originally written by SHIMA
- *							  January 2003
+ *					Originally written by SHIMA
+ *							January 2003
  */
 
 #ifdef __GNUC__
@@ -125,36 +125,36 @@
 #define	SCALED_PT	int
 
 #define DIMENSION struct DIMENSION_REC
- /*  Information about device-output
-     */
+/* Information about device-output
+ */
 
 struct DIMENSION_REC {
 	PIXEL text_width, text_height;
-	/*   These are the maxmum size directed in DVI-file.
-         */
+	/* These are the maxmum size directed in DVI-file.
+	 */
 	int mag;
-	/*  is the magnification for output. This is the same value as 'mag' in
-         * DVI-file ( so equal the one in DVI_INFO ), when no '-mag' & '-half'
-         * options directed.
-         */
+	/* is the magnification for output. This is the same value as 'mag' in
+	 * DVI-file ( so equal the one in DVI_INFO ), when no '-mag' & '-half'
+	 * options directed.
+	 */
 	SIZE_PARA size_para;
 	/* is size-parameter for conversion pixel<-->scaled pt.
-         * ( equal "num * den / mag" )
-         */
+	 * ( equal "num * den / mag" )
+	 */
 	PAGE_INDEX *page_index;
 	/* the index of file-offset of pages in dvifile
-         */
+	 */
 	int total_page;
 	/* same as 'total_page' in DVI_INFO.
-         */
+	 */
 #if	0
 	int start_page, end_page;
 	/* the starting and the ending page to print.
-         */
+	 */
 #endif
-    int max_nombre_page;
-    /* the maximal nombre page
-    	 */
+	int max_nombre_page;
+	/* the maximal nombre page
+	 */
 } dvi_dim;
 
 
@@ -194,7 +194,7 @@ struct DIMENSION_REC {
 #define PRE             247
 #define POST            248
 #define POST_POST       249
-#define	OPCODE			250
+#define OPCODE          250
 #define EOFNC           255		/* end of func */
 
 #define DVIFILE_INFO struct DVIFILE_INFO_REC
@@ -314,9 +314,9 @@ const int AdID = (('A'<<24)+('d'<<16)+('O'<<8)+EOP);
 #define is_oct(c)   (c>='0'&&c<='7')
 // #define is_dig(c)   (c>='0'&&c<='9')
 #define hex_to_dig(c)   ((c>='0'&&c<='9')?(c-'0'):(toupper(c)-('A'-10)))
-#define	MSG(x)	(f_debug?(x):"")
-#define	read_byte(x)	getc(x)
-#define	write_byte(x,y)	putc(x,y)
+#define MSG(x)	(f_debug?(x):"")
+#define read_byte(x)	getc(x)
+#define write_byte(x,y)	putc(x,y)
 #define read_short(x)	signed_read_n(x,2)
 
 uint work(FILE *);
@@ -1314,7 +1314,7 @@ skip:				  while (tmp--)
 	return ftell(dvi);
 }
 
-/*	color specials */
+/* color specials */
 void sp_color(char *sp)
 {
 	char *s;
@@ -1348,7 +1348,7 @@ void sp_color(char *sp)
 	}
 }
 
-/*	pdf:bcolor special */
+/* pdf:bcolor special */
 void sp_pdf_bcolor(char *sp)
 {
 	char *s;
@@ -1372,7 +1372,7 @@ void sp_pdf_bcolor(char *sp)
 		pdf_color_depth_max = pdf_color_depth;
 }
 
-/*	pdf:ecolor special */
+/* pdf:ecolor special */
 void sp_pdf_ecolor(char *sp)
 {
 	char *s;
@@ -1387,7 +1387,7 @@ void sp_pdf_ecolor(char *sp)
 	return;
 }
 
-/*	pdf:bann special */
+/* pdf:bann special */
 void sp_pdf_bann(char *sp)
 {
 	char *s;
@@ -1409,7 +1409,7 @@ void sp_pdf_bann(char *sp)
 		pdf_annot_depth_max = pdf_annot_depth;
 }
 
-/*	pdf:eann special */
+/* pdf:eann special */
 void sp_pdf_eann(char *sp)
 {
 	char *s;
