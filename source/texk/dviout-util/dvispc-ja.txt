@@ -8,20 +8,25 @@ Usage: dvispc [-c] [-bvz] input_dvi_file [output_dvi_file]
        dvispc -s [-p..] input_dvi_file [output_text_file]
        dvispc -a [-ltv][-J..][-p..][-r..] input_dvi_file [output_text_file]
        dvispc -x[..] [-ltv][-r..] [input_text_file] output_dvi_file
+
+Mode options:
    -c: make page-indepent DVI in specials (default)
    -d: check page-independence
-   -b: backup original even if output_dvi_file is not given
    -s: show specials
    -a: translate DVI to Text
    -x: translate Text to DVI (-x0:str0 1:chkfnt 2:variety)
+
+Other options:
    -v: verbose       -l: location
+   -b: backup original even if output_dvi_file is not given
    -z: append empty pages if necessary to have multiple of 4 pages for book
-   -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)
    -p: T:preamble  L:postamble  pages with - (eg: -pT-L  -pT2/4-8L  -p-4 etc.)
+   -r: replace  (-rorg_1=new_1/org_2=new_2...  eg. -rxxx=special/fnt=font)
    -t: compatible to DTL (the followings are suboptions if necessary eg. -t02)
        0:str 1:ch 2:ch2 3:cmd 4:c-sum 5:dir/name 6:err 7:page 8:oct 9:str0
    -J: set Japanese characters output with a suboption:
        e:EUC-JP s:Shift_JIS u:UTF-8 for pTeX  or  U:UTF-8 for upTeX.
+   output_dvi_file  : overwrite if it is not specified.
    output_text_file : stdout if it is not specified.
    input_text_file  : stdin  if it is not specified.
 
