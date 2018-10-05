@@ -1271,7 +1271,7 @@ void usage()
 			"\t  2: new font: eu??, msam, msbm, wncy??, font_data_file\n"
 			"\t  4: new eufm5-10\n"
 			"\t  8: unknown eufm\n"
-		  "\t 16: old font: msxm, msym, amcsc, mcyr, mcyb, font_data_file\n"
+			"\t 16: old font: msxm, msym, amcsc, mcyr, mcyb, font_data_file\n"
 			"\t 32: old eufm5-10\n"
 			"If errorlevel is larger than 240,\n"
 			"\t248: error in font_data_file\n"

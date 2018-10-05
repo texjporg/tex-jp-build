@@ -418,7 +418,7 @@ Long read_word(FILE *fp)
 }
 
 
-void usage(void)
+void usage(int ex)
 {
     fprintf(stderr,
     "\t  Modify a DVI file to be page-independent in specials\n"
@@ -465,7 +465,7 @@ void usage(void)
     "   pdf   specials:  pdf:bcolor, pdf:ecolor, pdf:bgcolor\n"
     "   tpic  specials:  pn\n"
     );
-    exit(1);
+    exit(ex);
 }
 
 
@@ -475,7 +475,7 @@ int main(int argc, char **argv)
     char *o_name, *n_name, *s;
 
     if(argc <= 1)
-        usage();
+        usage(0);
 
     for(i = 1; i < argc && argv[i][0] == '-'; i++){
       for(len = 1; argv[i][len]; len++){
@@ -623,23 +623,23 @@ skip: ;
     switch(argc - i){
         case 0:
             if(fp_in == NULL)
-                usage();
+                usage(1);
             if(fp_out == NULL){
                 if(f_mode == EXE2INDEP|| f_mode == EXE2DVI)
-                    usage();
+                    usage(1);
                 fp_out = stdout;
             }
             break;
 
         case 1:
             if(fnum == 2)
-                usage();
+                usage(1);
             if(!fnum){
                 strcpy(infile, argv[argc-1]);
                 if(f_mode == EXE2INDEP)
                     strcpy(outfile, argv[argc-1]);
                 else if(f_mode == EXE2DVI)
-                    usage();
+                    usage(1);
                 else
                     fp_out = stdout;
             }else
@@ -653,7 +653,7 @@ skip: ;
                 break;
             }
         default:
-            usage();
+            usage(1);
     }
 #ifndef UNIX
     if(fp_out && (f_mode == EXE2DVI || f_mode ==  EXE2INDEP))
