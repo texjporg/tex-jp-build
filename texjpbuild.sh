@@ -13,6 +13,7 @@ cd source && mkdir -p Work && cd Work
   --disable-all-pkgs \
   --enable-debug \
   --enable-dvi2tty \
+  --enable-dviout-util \
   --enable-dvipdfm-x \
   --enable-dvipsk \
   --enable-makejvf \
