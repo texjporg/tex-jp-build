@@ -230,9 +230,9 @@ int  f_mode = EXE2INDEP;  /*  0: -c page_indep
                               3: -a to_Text
                               4: -x to_DVI   */
 
-int f_debug = 0;      /* -v */
+int f_debug = 0;        /* -v */
 int f_overwrite = 0;
-int f_backup = 0;      /* -b */
+int f_backup = 0;       /* -b */
 
 #ifdef PTEXENC
 int  f_jstr = 0;  /* -J */
@@ -745,14 +745,14 @@ same:       strcpy(outfile, infile);
     if(fp_out == NULL){
         if(!*outfile)
             fp_out = (f_mode == EXE2TEXT || f_mode == EXE2SPECIAL)?stdout:stderr;
-        else if(f_mode != EXE2INDEP){
+        else if(f_mode == EXE2INDEP)
+            fp_out = stderr;
+        else{
             fp_out = fopen(outfile, WRITE_TEXT);
             if(fp_out == NULL){
                 fprintf(stderr, "Cannot open %s\n", outfile);
                 exit(1);
             }
-        } else {
-            fp_out = stderr;
         }
     }
     read_post(&dvi_info);
@@ -862,6 +862,7 @@ lastpage:           if(isdigit(*++out_pages)){
         fseek(dvi->file_ptr, 0, SEEK_SET);
         for(size =  dim->page_index[1]; size > 0; size--)
             write_byte(read_byte(dvi->file_ptr), fp);   /* Write preamble */
+        /* [Process 1] start the first page */
         current  = ftell(fp);                           /* position of 1-st BOP */
         for(size = 41; size > 0; size--)                /* Write BOP and c[] */
             write_byte(read_byte(dvi->file_ptr), fp);
@@ -875,37 +876,40 @@ lastpage:           if(isdigit(*++out_pages)){
         pos = interpret(dvi->file_ptr);  /* pos = position of EOP + 1 */
         if(f_debug){
             fprintf(fp_out, "[%d]", page);
-            if(page <= dim->total_page){
-                flag = color_depth;
-                flag += pdf_color_depth;
-                flag += pdf_annot_depth;
-                if(background[0] && !f_background){
-                    fprintf(fp_out, "\n%s", background);
-                    flag++;
-                }
-                if(pdf_bgcolor[0] && !f_pdf_bgcolor){
-                    fprintf(fp_out, "\n%s", pdf_bgcolor);
-                    flag++;
-                }
-                for(count = 0; count < color_depth; count++)
-                    fprintf(fp_out, "\n%d:%s", count+1, color_pt[count]);
-                for(count = 0; count < pdf_color_depth; count++)
-                    fprintf(fp_out, "\n%d:%s", count+1, pdf_color_pt[count]);
-                for(count = 0; count < pdf_annot_depth; count++)
-                    fprintf(fp_out, "\n%d:%s", count+1, pdf_annot_pt[count]);
-                if(tpic_pn[0] && f_pn < 0){
-                    fprintf(fp_out, "\n%s", tpic_pn);
-                    flag++;
-                }
-                if(flag){
-                    fprintf(fp_out, "\n");
-                    f_needs_corr++;
-                }
+            /* if(page <= dim->total_page){ */ /* always true inside loop */
+            flag = color_depth;
+            flag += pdf_color_depth;
+            flag += pdf_annot_depth;
+            if(background[0] && !f_background){
+                fprintf(fp_out, "\n%s", background);
+                flag++;
             }
+            if(pdf_bgcolor[0] && !f_pdf_bgcolor){
+                fprintf(fp_out, "\n%s", pdf_bgcolor);
+                flag++;
+            }
+            for(count = 0; count < color_depth; count++)
+                fprintf(fp_out, "\n%d:%s", count+1, color_pt[count]);
+            for(count = 0; count < pdf_color_depth; count++)
+                fprintf(fp_out, "\n%d:%s", count+1, pdf_color_pt[count]);
+            for(count = 0; count < pdf_annot_depth; count++)
+                fprintf(fp_out, "\n%d:%s", count+1, pdf_annot_pt[count]);
+            if(tpic_pn[0] && f_pn < 0){
+                fprintf(fp_out, "\n%s", tpic_pn);
+                flag++;
+            }
+            if(flag){
+                fprintf(fp_out, "\n");
+                f_needs_corr++;
+            }
+            /* } */
         }
-        if(f_mode != EXE2INDEP)
-            continue;  /* skip loop if(f_mode == EXE2CHECK || f_mode == EXE2DVI) */
+        if(f_mode == EXE2CHECK)
+            continue;  /* skip loop if (f_mode == EXE2CHECK);
+                        * remainings are for (f_mode & EXE2INDEP) */
 
+        /* [Process 2] at the beginning of each page,
+           recover from stack underflow, and put non-stack specials if necessary */
         while(color_under > 0){             /* recover underflow of color stack */
             write_sp(fp, "color push  Black");
             f_needs_corr++;
@@ -929,10 +933,14 @@ lastpage:           if(isdigit(*++out_pages)){
             f_needs_corr++;
             pdf_annot_under--;
         }
+
+        /* [Process 3] write contents of the current page */
         fseek(dvi->file_ptr, dim->page_index[page]+45, SEEK_SET);
         for(size = pos - dim->page_index[page] - 46; size > 0; size--)
-            write_byte(read_byte(dvi->file_ptr), fp); /* write contents of the current page */
+            write_byte(read_byte(dvi->file_ptr), fp);
 
+        /* [Process 4] at the end of page,
+           close not-yet-closed stacks */
         for(count = 0; count < color_depth; count++){
             write_sp(fp, "color pop");
             f_needs_corr++;
@@ -949,6 +957,8 @@ lastpage:           if(isdigit(*++out_pages)){
         former = current;
         current = ftell(fp);        /* get position of BOP/POST */
 
+        /* [Process 5] start the next page,
+           with passing not-yet-closed stacks */
         if(page < dim->total_page){
             fseek(dvi->file_ptr, dim->page_index[page+1], SEEK_SET);
             for(size = 41; size > 0; size--)  /* write BOP and c[] */
@@ -960,7 +970,7 @@ lastpage:           if(isdigit(*++out_pages)){
                 write_sp(fp, pdf_color_pt[count]);
             for(count = 0; count < pdf_annot_depth; count++)
                 write_sp(fp, pdf_annot_pt[count]);
-            if(tpic_pn[0]){
+            if(tpic_pn[0]) {
                 write_sp(fp, tpic_pn);
                 f_needs_corr++;
             }
