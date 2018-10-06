@@ -21,6 +21,7 @@ The bundle includes sources of:
 ptex, eptex, uptex, euptex,
 dvips, dvipdfmx, dvi2tty, makejvf, mendex, upmendex,
 pbibtex, upbibtex, pmpost, upmpost,
+dviout-util (dvispc, chkdvifont),
 seetex (dvibook, dviconcat, dviselect, dvitodvi),
 dvidvi, related tools
 and related libraries (kpathsea, ptexenc).
