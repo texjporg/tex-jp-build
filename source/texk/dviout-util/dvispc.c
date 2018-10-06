@@ -690,7 +690,7 @@ skip: ;
                 exit(1);
             }
         }
-        if(fp_out == NULL){
+        if(fp_out == NULL || outfile){
             len = strlen(outfile);
             if(len < 4 || StrCmp(outfile + len - 4, ".dvi"))
                 strcat(outfile, ".dvi");
