@@ -33,9 +33,9 @@ EXTRA_DIST = $(TESTS)
 EXTRA_DIST += \
 	tests/test.tex tests/test.dvi tests/test.spc \
 	tests/testout.dvi
-DISTCLEANFILES = test.spc testout.dvi
+DISTCLEANFILES = xtest.spc xtestout.dvi xtesta.txt xtestax.dvi
 
 ## chkdvifont.test
 EXTRA_DIST += tests/test.cfn
-DISTCLEANFILES += test.cfn
+DISTCLEANFILES += test.dvi xtest.cfn
 

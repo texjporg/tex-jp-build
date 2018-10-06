@@ -3,13 +3,19 @@
 # Copyright (C) 2018 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
-test_src=$srcdir/tests
+testdir=$srcdir/tests
 
 rc=0
 
-./dvispc -s $test_src/test.dvi > test.spc && diff $test_src/test.spc test.spc || rc=1
+./dvispc -s $testdir/test.dvi > xtest.spc && \
+  diff $testdir/test.spc xtest.spc && echo || rc=1
 
-./dvispc -c $test_src/test.dvi > testout.dvi && diff $test_src/testout.dvi testout.dvi || rc=2
+./dvispc -c $testdir/test.dvi > xtestout.dvi && \
+  cmp $testdir/testout.dvi xtestout.dvi && echo || rc=2
+
+./dvispc -a $testdir/test.dvi > xtesta.txt && \
+  ./dvispc -x xtesta.txt > xtestax.dvi && \
+  cmp $testdir/test.dvi xtestax.dvi && echo || rc=4
 
 exit $rc
 

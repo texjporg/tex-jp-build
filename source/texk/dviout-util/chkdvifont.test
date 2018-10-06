@@ -3,12 +3,13 @@
 # Copyright (C) 2018 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
-test_src=$srcdir/tests
+testdir=$srcdir/tests
 
 rc=0
 
-cp $test_src/test.dvi . && ./chkdvifont -c ./test.dvi > test.cfn \
-  && diff $test_src/test.cfn test.cfn || rc=1
+cp $testdir/test.dvi . && \
+  ./chkdvifont -c ./test.dvi > xtest.cfn && \
+  diff $testdir/test.cfn xtest.cfn && echo || rc=1
 
 exit $rc
 
