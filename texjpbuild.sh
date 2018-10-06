@@ -9,7 +9,7 @@ cd source && mkdir -p Work && cd Work
 # in web2c, we only make:
 # (e|u)ptex, (u)pmpost, cweave, tie, and (c)tangle.
 # [TODO] How to build omegaware and omegafonts?
-../Build \
+../Build --no-clean \
   --disable-all-pkgs \
   --enable-debug \
   --enable-dvi2tty \
