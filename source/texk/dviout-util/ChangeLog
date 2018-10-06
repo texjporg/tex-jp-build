@@ -1,6 +1,7 @@
 2018-10-06  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
-	* Add dvispc.man.
+	* chkdvifont.man, dvispc.man: New man pages.
+	* Makefile.am: Adjusted.
 
 2018-10-05  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 

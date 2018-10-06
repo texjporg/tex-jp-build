@@ -16,7 +16,7 @@ chkdvifont_SOURCES = chkdvifont.c dd.h msvcdir.h
 LDADD = $(KPATHSEA_LIBS)
 dvispc_LDADD = $(PTEXENC_LIBS) $(LDADD)
 
-#dist_man1_MANS =
+dist_man1_MANS = dvispc.man chkdvifont.man
 
 ## Rebuild libkpathsea
 @KPATHSEA_RULE@
