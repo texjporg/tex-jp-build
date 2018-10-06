@@ -220,15 +220,20 @@ struct DIMENSION_REC {
 #define DTL_FORM    0x8000   /* the first line: variety      */
 int f_dtl = 0;
 
-enum {
-    EXE2INDEP, EXE2CHECK, EXE2SPECIAL, EXE2TEXT, EXE2DVI
-};
+#define EXE2INDEP   0x1
+#define EXE2FLAT    0x2
+#define EXE2ACTUAL  0x3F /* above are inclusive, below are exclusive */
+#define EXE2CHECK   0x40
+#define EXE2SPECIAL 0x80
+#define EXE2TEXT    0x100
+#define EXE2DVI     0x200
 
-int  f_mode = EXE2INDEP;  /*  0: -c page_indep
-                              1: -d report only
-                              2: -s specials
-                              3: -a to_Text
-                              4: -x to_DVI   */
+int  f_mode = 0;    /*  1: -c page_indep
+                        2: -f flatten_nest
+                       64: -d report only
+                      128: -s show specials
+                      256: -a to_Text
+                      512: -x to_DVI   */
 
 int f_debug = 0;        /* -v */
 int f_overwrite = 0;
@@ -481,9 +486,15 @@ int main(int argc, char **argv)
       for(len = 1; argv[i][len]; len++){
         switch(argv[i][len]){
             case 'c':
-                f_mode = EXE2INDEP;
+                f_mode &= EXE2ACTUAL;
+                f_mode |= EXE2INDEP;
                 break;
-
+#if 0
+            case 'f':
+                f_mode &= EXE2ACTUAL;
+                f_mode |= EXE2FLAT;
+                break;
+#endif
             case 's':
                 f_mode = EXE2SPECIAL;
                 break;
@@ -606,6 +617,9 @@ error:                  fprintf(stderr, "Error in parameter %s\n", argv[i]);
 skip: ;
     }
     /* now, i = (number of optional argument) + 1 */
+
+    if(!f_mode) f_mode = EXE2INDEP; /* default mode */
+
     fnum = 0;
     if(!isatty(fileno(stdin))){  /* if stdin is redirected from a file */
         fp_in = stdin;
@@ -626,7 +640,7 @@ skip: ;
             if(fp_in == NULL)
                 usage(1);
             if(fp_out == NULL){
-                if(f_mode == EXE2INDEP|| f_mode == EXE2DVI)
+                if((f_mode & EXE2INDEP) || f_mode == EXE2DVI)
                     usage(1);
                 fp_out = stdout;
             }
@@ -637,7 +651,7 @@ skip: ;
                 usage(1);
             if(!fnum){
                 strcpy(infile, argv[argc-1]);
-                if(f_mode == EXE2INDEP)
+                if((f_mode & EXE2INDEP))
                     strcpy(outfile, argv[argc-1]);
                 else if(f_mode == EXE2DVI)
                     usage(1);
@@ -657,7 +671,7 @@ skip: ;
             usage(1);
     }
 #ifndef UNIX
-    if(fp_out && (f_mode == EXE2DVI || f_mode ==  EXE2INDEP))
+    if(fp_out && (f_mode == EXE2DVI || (f_mode & EXE2INDEP)))
         setmode( fileno( stdout ), O_BINARY);
 #endif
     if(fp_in && f_mode != EXE2DVI){
@@ -700,7 +714,7 @@ skip: ;
     }
 
     if(i == argc - 1){
-        if(f_mode == EXE2INDEP && !fnum){
+        if((f_mode & EXE2INDEP) && !fnum){
 #ifdef UNIX
             static char tmpfile[] = "/tmp/dvispcXXXXXX";
             int fd;
@@ -745,7 +759,7 @@ same:       strcpy(outfile, infile);
     if(fp_out == NULL){
         if(!*outfile)
             fp_out = (f_mode == EXE2TEXT || f_mode == EXE2SPECIAL)?stdout:stderr;
-        else if(f_mode == EXE2INDEP)
+        else if((f_mode & EXE2INDEP))
             fp_out = stderr;
         else{
             fp_out = fopen(outfile, WRITE_TEXT);
@@ -780,7 +794,7 @@ void translate(DVIFILE_INFO *dvi, DIMENSION *dim)
     int page, page2, pos, count, size, former, current, flag;
     FILE *fp;
 
-    if(f_mode == EXE2INDEP){
+    if((f_mode & EXE2INDEP)){
         fp = (*outfile)?fopen(outfile, WRITE_BINARY):fp_out;
         if(fp == NULL){
             fprintf(stderr, "Cannot open %s\n", outfile);
@@ -848,7 +862,7 @@ lastpage:           if(isdigit(*++out_pages)){
        Specials with paired syntax (push/pop, bcolor/ecolor) are already safe
        without pre-scanning, so these are skipped due to f_prescan = 1.
        Other specials (background, pdf_bgcolor, pn) are handled in this scanning. */
-    if(f_mode == EXE2INDEP || f_mode == EXE2CHECK){
+    if((f_mode & EXE2INDEP) || f_mode == EXE2CHECK){
         f_prescan = 1;  /* change behavior of interpret(dvi) */
         for(page = 1; page <= dim->total_page; page++){
             fseek(dvi->file_ptr, dim->page_index[page], SEEK_SET);
@@ -858,7 +872,7 @@ lastpage:           if(isdigit(*++out_pages)){
     }
 
     former = current = -1;
-    if(fp){  /* f_mode == EXE2INDEP and can be opened */
+    if(fp){  /* ((f_mode & EXE2INDEP)) and can be opened */
         fseek(dvi->file_ptr, 0, SEEK_SET);
         for(size =  dim->page_index[1]; size > 0; size--)
             write_byte(read_byte(dvi->file_ptr), fp);   /* Write preamble */
@@ -989,7 +1003,7 @@ lastpage:           if(isdigit(*++out_pages)){
         if(pdf_annot_depth_max)
             fprintf(fp_out, "\nMaximal depth of pdf:bann ... pdf:eann stack:%d", pdf_annot_depth_max);
     }
-    if(f_mode != EXE2INDEP){
+    if(!(f_mode & EXE2INDEP)){
         fclose(dvi->file_ptr);
         fprintf(fp_out, f_needs_corr?
             "\nSome corrections are necessary!\n":
