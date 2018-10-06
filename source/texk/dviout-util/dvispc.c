@@ -662,7 +662,7 @@ skip: ;
             break;
 
         case 2:
-            if(!fnum){
+            if(fp_in == NULL){
                 strcpy(infile, argv[argc-2]);
                 strcpy(outfile, argv[argc-1]);
                 break;
