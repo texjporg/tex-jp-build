@@ -5,7 +5,7 @@ for building binaries of Japanese TeX processing tools.
 This bundle also provides the latest "upstream" sources for the followings:
 
 * ptexenc
-* ptex
+* ptex, pbibtex
 * eptex
 * makejvf
 * mendex
