@@ -1,3 +1,39 @@
+2018-10-12  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Append .dvi suffix for DVI output.
+	* dvispc.test: Test omitted .dvi suffix.
+	* Makefile.am: Adjusted.
+
+2018-10-11  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Support page-independence even with long
+	specials. Use MAX_... constants for error messages.
+	* dvispc.test: Test long specials.
+	* tests/longspec.{tex,dvi}, tests/longspecout.dvi: New tests.
+	* Makefile.am: Adjusted.
+
+2018-10-10  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Clean up code, more comments. Mostly revert
+	the change on 2018-10-06, "Change option handling for
+	future extensions" and change EXE2INDEP -> EXE2MODIFY.
+	Make sure outfile string is non-empty.
+	* chkdvifont.c: Do not stop for usage, always show all.
+	* dvispc.test: Test pipe input/output.
+	* chkdvifont.man, dvispc.man: More info.
+	* configure.ac: Version 20181010.
+
+2018-10-07  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* chkdvifont.c: Checksum should be read as unsigned.
+	Exit code 0 when called without argument and input M.
+	* chkdvifont.test, dvispc.test: Test compatibility with
+	old version.
+	* tests/oldindep.{tex,dvi}, tests/oldindepout.dvi,
+	tests/jis.{tfm,cfn}, tests/eufm10.{tfm,cfn}
+	tests/cmr10.{pk,cfn}, tests/upjisr-h.{vf,cfn}: New tests.
+	* Makefile.am: Adjusted.
+
 2018-10-06  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* dvispc.c: Change option handling for future extensions.
