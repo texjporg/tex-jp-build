@@ -1,7 +1,9 @@
-2018-10-20  Karl Berry  <karl@tug.org>
+2018-11-02  Andreas Scherer  <https://ascherer.github.io>
 
-	* cweb.1: do not mention nonexistent -DSTAT option.
-	From Andreas Scherer, tex-k 20 Oct 2018 16:26:14.
+	* ctang-w2c.ch,
+	* cweav-w2c.ch,
+	* ../ctangleboot.cin: clean build with non-implicit 'int change_depth'.
+	tex-k mail, 2 Nov 2018 18:03:39.
 
 2018-01-18  Karl Berry  <karl@tug.org>
 
