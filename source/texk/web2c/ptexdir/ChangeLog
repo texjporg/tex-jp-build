@@ -8,6 +8,9 @@
 	* am/ptex.am (libkanji_a_SOURCES): Add kanji_dump.c.
 	(all changes based on tl r23753 of upTeX, dated 2011-08-29.)
 
+	* kanji_dump.c: Throw a warning when -kanji-internal is used
+	in non-INITEX mode.
+
 2018-09-09  Karl Berry  <karl@tug.org>
 
 	* ptriptest.test: LC_ALL=LANGUAGE=C.
