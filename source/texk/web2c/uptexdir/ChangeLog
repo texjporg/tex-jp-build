@@ -2,6 +2,7 @@
 
 	* kanji_dump.c: Throw a warning when -kanji-internal is used
 	in non-INITEX mode.
+	https://github.com/texjporg/tex-jp-build/issues/55
 
 2018-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
