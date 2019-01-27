@@ -1209,15 +1209,15 @@ things for neutral behavior without internationalization.
 @d _(STRING) gettext(STRING)
 
 @<Include files@>=
-#include <locale.h>
-@#
 #ifndef HAVE_GETTEXT
 #define HAVE_GETTEXT 0
 #endif
 @#
 #if HAVE_GETTEXT
+#include <locale.h>
 #include <libintl.h>
 #else
+#define setlocale(A,B) ""
 #define bindtextdomain(A,B) ""
 #define textdomain(A) ""
 #define gettext(A) A
@@ -1243,7 +1243,7 @@ resulting \.{*.po} files to the maintainers at \.{tex-k@@tug.org}.
 does \\{not} set |HAVE_GETTEXT| at build-time, so \.{i18n} is ``off'' by
 default.  If you want to create \.{CWEB} executables with NLS support, you
 have to recompile the \TeX~Live sources with a positive value for
-|HAVE_GETTEXT| both in \.{"comm-w2c.h"} and \.{"comm-w2c.h"}.  Also you
+|HAVE_GETTEXT| both in \.{"comm-w2c.ch"} and \.{"comm-w2c.h"}.  Also you
 have to ``compile'' the NLS catalogs provided for \.{CWEB} in the source
 tree with \.{msgfmt} and store the resulting \.{.mo} files at an appropriate
 place in the file system.
@@ -1264,16 +1264,16 @@ There are several ways to set |TEXMFLOCALEDIR|:
     e.g., \.{TEXMFLOCALEDIR=\$TEXMFMAIN/locale}\hfil\break
     or \.{TEXMFLOCALEDIR.cweb=\$TEXMFMAIN/locale}.\par}
 
-@d TEXMF_LOCALE "$TEXMFLOCALEDIR"
-
 @<Set locale...@>=
 setlocale(LC_MESSAGES, setlocale(LC_CTYPE, ""));
-texmf_locale = kpse_var_expand (TEXMF_LOCALE);
+texmf_locale = kpse_var_expand ("${TEXMFLOCALEDIR}");
+
 bindtextdomain("cweb",
   bindtextdomain("cweb-tl",
     bindtextdomain("web2c-help", @|
-      strcmp(texmf_locale, TEXMF_LOCALE) ?
+      strcmp(texmf_locale, "") ?
         texmf_locale : "/usr/share/locale")));
+
 free(texmf_locale);
 textdomain("cweb"); /* the majority of |"strings"| come from ``plain \.{CWEB}'' */
 @.cweb.mo@>
