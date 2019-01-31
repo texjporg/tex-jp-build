@@ -1406,8 +1406,8 @@ end;
 @ Next, we implement \.{\\pdfsavepos} and related primitives.
 
 @<Glob...@>=
-@!cur_page_width: scaled; {width of page being shipped}
-@!cur_page_height: scaled; {height of page being shipped}
+@!cur_page_width: scaled; {"physical" width of page being shipped}
+@!cur_page_height: scaled; {"physical" height of page being shipped}
 @!pdf_last_x_pos: integer;
 @!pdf_last_y_pos: integer;
 
@@ -1424,9 +1424,9 @@ begin
   dir_dtou: begin pdf_last_x_pos := cur_v;  pdf_last_y_pos := -cur_h; end;
   endcases;
   pdf_last_x_pos := pdf_last_x_pos + 4736286;
+  pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
   case dvi_dir of
   dir_tate,dir_dtou:
-    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
   dir_yoko:
     pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
   endcases;
@@ -1437,7 +1437,7 @@ end
   if pdf_page_height <> 0 then
     cur_page_height := pdf_page_height
   else if (type(p)=dir_node) then begin
-    if (box_dir(list_ptr(p))=dir_tate)or(box_dir(list_ptr(p))=dir_dtou) then
+    if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
         cur_page_height := width(p) + 2*v_offset + 2*4736286
     else
       cur_page_height := height(p) + depth(p) + 2*v_offset + 2*4736286;
@@ -1447,7 +1447,7 @@ end
   if pdf_page_width <> 0 then
     cur_page_width := pdf_page_width
   else if (type(p)=dir_node) then begin
-    if (box_dir(list_ptr(p))=dir_tate)or(box_dir(list_ptr(p))=dir_dtou) then
+    if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
       cur_page_width := height(p) + depth(p) + 2*h_offset + 2*4736286
     else
       cur_page_width := width(p) + 2*h_offset + 2*4736286;
@@ -1502,9 +1502,6 @@ ifps(1) @, sop(k)=',' then begin
   geq_word_define(dimen_base+pdf_page_width_code,cw);
   geq_word_define(dimen_base+pdf_page_height_code,s);@|
   cur_page_height := s; cur_page_width := cw;
-  if (dvi_dir=dir_tate)or(dvi_dir=dir_dtou) then begin
-    t:=cur_page_height; cur_page_height:=cur_page_width;
-    cur_page_width:=t; end;
 end;
 end;
 
