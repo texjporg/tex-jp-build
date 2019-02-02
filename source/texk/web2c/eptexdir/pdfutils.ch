@@ -1425,56 +1425,45 @@ begin
   endcases;
   pdf_last_x_pos := pdf_last_x_pos + 4736286;
   pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
-  case dvi_dir of
-  dir_tate,dir_dtou:
-  dir_yoko:
-    pdf_last_y_pos := cur_page_height - pdf_last_y_pos - 4736286;
-  endcases;
   {4736286 = 1in, the funny DVI origin offset}
 end
 
 @ @<Calculate DVI page dimensions and margins@>=
   if pdf_page_height <> 0 then
     cur_page_height := pdf_page_height
-  else if (type(p)=dir_node) then begin
-    if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
-        cur_page_height := width(p) + 2*v_offset + 2*4736286
-    else
-      cur_page_height := height(p) + depth(p) + 2*v_offset + 2*4736286;
-    end
+  else if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
+    cur_page_height := width(p) + 2*v_offset + 2*4736286
   else
     cur_page_height := height(p) + depth(p) + 2*v_offset + 2*4736286;
+    {4736286 = 1in, the funny DVI origin offset}
   if pdf_page_width <> 0 then
     cur_page_width := pdf_page_width
-  else if (type(p)=dir_node) then begin
-    if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
-      cur_page_width := height(p) + depth(p) + 2*h_offset + 2*4736286
-    else
-      cur_page_width := width(p) + 2*h_offset + 2*4736286;
-    end
+  else if (box_dir(p)=dir_tate)or(box_dir(p)=dir_dtou) then
+    cur_page_width := height(p) + depth(p) + 2*h_offset + 2*4736286
   else
-    cur_page_width := width(p) + 2*h_offset + 2*4736286;
+    cur_page_width := width(p) + 2*h_offset + 2*4736286
+    {4736286 = 1in, the funny DVI origin offset}
 
 
 @ Of course \epTeX\ can produce a \.{DVI} file only, not a PDF file.
 A \.{DVI} file does not have the information of the page height,
 which is needed to implement \.{\\pdflastypos} correctly.
 To keep the information of the page height, I (H.~Kitagawa)
-adopted \.{\\pdfpageheight} primitive from pdf\TeX. 
+adopted \.{\\pdfpageheight} primitive from pdf\TeX.
 
-In \pTeX (and \hbox{\epTeX}), the papersize special 
+In \pTeX (and \hbox{\epTeX}), the papersize special
 \.{\\special\{papersize=\<width>,\<height>\}} is commonly used
-for specifying page width/height. 
+for specifying page width/height.
 If \.{\\readpapersizespecial} is greater than~0, the papersize special also
 changes the value of \.{\\pdfpagewidth} and \.{\\pdfpageheight}.
 This process is done in the following routine.
 
 {\def\<#1>{\langle\hbox{#1\/}\rangle}
-In present implementation, the papersize special $\<special>$, 
+In present implementation, the papersize special $\<special>$,
 which can be interpreted by this routine, is defined as follows.
 $$\eqalign{%
   \<special> &\longrightarrow \.{papersize=}\<length>\.{,}\<length>\cr
-  \<length>  &\longrightarrow \<decimal> 
+  \<length>  &\longrightarrow \<decimal>
     \<optional~\.{true}>\<physical unit>\cr
   \<decimal> &\longrightarrow \.{.} \mid \<digit>\<decimal> \mid
     \<decimal>\<digit>\cr
@@ -1495,7 +1484,7 @@ ifps(10) @,
    (sop(k+9)<>'=')  then goto done;
 k:=k+10;
 @<Read dimensions in the argument in the papersize special@>;
-ifps(1) @, sop(k)=',' then begin 
+ifps(1) @, sop(k)=',' then begin
   incr(k); cw:=s;
   @<Read dimensions in the argument in the papersize special@>;
   if pool_ptr>k then goto done;
