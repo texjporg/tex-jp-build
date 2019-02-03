@@ -34,7 +34,7 @@ chktex 1.7.6 - checked 15sep16
 cjkutils 4.8.4 - checked 18apr15
   http://cjk.ffii.org/cjk-4.8.4.tar.gz
 
-detex 2.8.4 - checked 16oct18
+detex 2.8.5 - checked 03feb19
   https://github.com/pkubowicz/opendetex
     old info: http://www.cs.purdue.edu/homes/trinkle/detex/
 
@@ -74,7 +74,7 @@ gsftopk - from Paul Vojta's xdvi?
 
 kpathsea - maintained here, by us
 
-lcdf-typetools 2.107 - checked 22feb18
+lcdf-typetools 2.108 - checked 28jan19
   http://www.lcdf.org/type/
 
 makeindexk - maintained here, by us
@@ -120,8 +120,10 @@ web2c - maintained here, by us - core web2c, plain tex, etc.
                also: https://osdn.jp/projects/eptex
         etex - maintained here
       euptex - http://www.t-lab.opal.ne.jp/tex/uptex_en.html
-  mflua[jit] - https://foundry.supelec.fr/projects/mflua/
+  mflua[jit] - https://serveur-svn.lri.fr/svn/modhel/mflua
+               also: http://www.luatex.org/download.html
     mplibdir - http://tug.org/metapost
+               also: http://www.luatex.org/download.html
       luatex - http://luatex.org
       pdftex - http://pdftex.org
    [u]pmpost - nothing current, see README for old info
