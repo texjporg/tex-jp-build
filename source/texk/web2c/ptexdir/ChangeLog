@@ -1,3 +1,7 @@
+2019-02-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* kanji.h: Use fputs2() to benefit from kanji encoding conversion.
+
 2017-10-04  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* ptex-base.ch: Direction check in \discretionary.
