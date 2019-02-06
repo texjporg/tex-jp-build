@@ -1,3 +1,59 @@
+2019-01-23  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* makejvf.1: Add fallback TeX and LaTeX logos.
+
+2018-08-18  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmread.c: Do not check GLUEKERN table in non-enhanced mode.
+	* version.h: Bump version.
+
+2018-03-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* usrtable.c: Do not initialize CHARSET flag at
+	continuous lines of a CHARSET entry.
+	* version.h: Bump version.
+
+2018-03-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* write.c: Add U+2329, U+232A, U+301A, U+301B, U+FE59..FE5E.
+	* version.h: Bump version.
+
+2018-02-23  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* main.c, makejvf.1: Improve help message and manual.
+	* usrtable.c: Initialize CHARSET flag at other commands or an
+	empty line. Make an error message more clear.
+	* version.h: Bump version.
+
+2018-02-17  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* write.c: Add U+301E.
+	* version.h: Bump version.
+
+2018-02-02  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmread.c: Support SKIP property in GLUEKERN table.
+	* write.c: Remove warning message on enhanced mode (hoping
+	  well-tested).
+	* version.h: Bump version.
+	* tests/{gkhugeok,skipjfmp}.{tfm,vf}: New test files.
+	* Makefile.am, makejvf.test: Add new tests.
+
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmread.c: Support new JFM spec (3-byte characters in TYPE > 0).
+	* version.h: Bump version.
+	* tests/testnewu.{tfm,vf}, tests/uni10.cnf: New test files.
+	* Makefile.am, makejvf.test: Add new tests.
+	* makejvf.1 (.TH): use 1 instead of L, per Debian.
+
+2018-01-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uniblock.c: Update references Unicode blocks Blocks-10.0.0.txt
+	and CMap files.
+	* COPYRIGHT: Update copyright years.
+	* version.h: Bump version.
+
 2017-08-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* makejvf.1: Updated manual based on version 20170828.

@@ -29,6 +29,7 @@ void get_usertable(char *name)
 		exit(1);
 	}
 	for (l = 0; fgets(buf, BUF_SIZE, fp) != NULL; l++) {
+		if (strncmp(buf, "+", 1) && strncmp(buf, "%", 1)) charset_mode = 0;
 		if ((endptr=strchr(buf, '%')) != NULL) strcpy(endptr,"\n");  /* ignore after '%'  */
 		if (!strncmp(buf, "\n", 1)) continue;                        /* ignore empty line */
 		tok = strtok(buf, "\t");
@@ -62,13 +63,13 @@ void get_usertable(char *name)
 					if (sscanf(tok,     "%7s",str0) != 1) goto taberr;
 					if (sscanf(endptr+2,"%7s",str1) != 1) goto taberr;
 					ch0 = strtol(str0, &endptr, 16);
-					if (*endptr != '\0' || ch0<=char_max) goto taberr;
+					if (*endptr != '\0' || ch0<=char_max) goto codeerr;
 					ch1 = strtol(str1, &endptr, 16);
-					if (*endptr != '\0' || ch1<=ch0) goto taberr;
+					if (*endptr != '\0' || ch1<=ch0) goto codeerr;
 				} else {
 					if (sscanf(tok,"%7s",str0) != 1) goto taberr;
 					ch0 = strtol(str0, &endptr, 16);
-					if (*endptr != '\0' || ch0<=char_max) goto taberr;
+					if (*endptr != '\0' || ch0<=char_max) goto codeerr;
 					ch1 = ch0;
 				}
 				if (char_max==ch0-1) {
@@ -93,6 +94,9 @@ taberr:
 	exit(1);
 buferr:
 	fprintf(stderr, "User-defined table in %s is too large!\n", name);
+	exit(1);
+codeerr:
+	fprintf(stderr, "Character codes must be given in ascending order (line %d)!\n", l+1);
 	exit(1);
 }
 

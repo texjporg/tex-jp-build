@@ -9,10 +9,10 @@ bypassing or using the original one.
 
 See also comments in ../texk/README.
 
-cairo 1.14.10 - checked 20jun17
+cairo 1.16.0 - checked 20oct18
   http://cairographics.org/releases/
 
-freetype2 2.8.0 - checked 20jun17
+freetype2 2.9.1 - checked 04may18
   http://savannah.nongnu.org/download/freetype/
 
 gd 2.2.5 - checked 30aug17
@@ -21,42 +21,43 @@ gd 2.2.5 - checked 30aug17
 gmp 6.1.2 - checked 16dec16
   http://ftp.gnu.org/gnu/gmp/
 
-graphite2 1.3.10 - checked 20jun17
+graphite2 1.3.13 - checked 21dec18
   http://sourceforge.net/projects/silgraphite/files/graphite2/
+  (requires C++11)
 
-harfbuzz 1.5.1 - checked 06Sep17
+harfbuzz 2.3.1 - checked 31jan19
   http://www.freedesktop.org/software/harfbuzz/release/
 
-icu 58.2 - checked 13mar17
+icu 63.1 - checked 8jan19
   http://download.icu-project.org/files/icu4c/
 
 libpaper 1.1.24+nmu2 - checked 24oct13
   ftp://ftp.de.debian.org/debian/pool/main/libp/libpaper/
 
-libpng 1.6.32 - checked 24aug17
-  http://www.libpng.org/ - used by many
-  http://www.libpng.org/pub/png/pngcode.html
+libpng 1.6.36 - checked 02dec18
+  https://sourceforge.net/projects/libpng/files/ - used by many
 
-lua 5.2.3 - checked 11mar15
+lua 5.2.4 - checked 11mar15
   http://www.lua.org/ftp/
 
-luajit 2.1.0-beta2 - checked 09mar16
-  http://luajit.org/download/LuaJIT-2.1.0-beta1.tar.gz
+lua 5.3.5 - checked 21jul18
+  http://www.lua.org/ftp/
 
-mpfr 3.1.6 - checked 08sep17
+luajit 2.1.0-beta3 - checked 20jun17
+  http://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
+
+mpfr 4.0.2 - checked 1jan19
   http://ftp.gnu.org/gnu/mpfr/
 
-pixman 0.34.0 - checked 04feb16
+pixman 0.36.0 - checked 22nov18
   http://cairographics.org/releases/
 
-poppler 0.52.0 - checked 17feb17
-  http://poppler.freedesktop.org/ - used by luatex and xetex
+poppler 0.68.0 - checked 20aug18
+  http://poppler.freedesktop.org/ - used by xetex
+  (requires C++11)
 
-potrace 1.15 - checked 07aug17
-  http://potrace.sourceforge.net
-
-teckit 2.5.7 - checked 27jun17
-  https://github.com/silnrsi/teckit/archive/2.5.7.tar.gz
+teckit 2.5.8 - checked 24jul18
+  https://github.com/silnrsi/teckit/archive/2.5.8.tar.gz
 
 xpdf 4.00 - checked 13aug17
   http://www.xpdfreader.com/download.html
@@ -65,5 +66,5 @@ xpdf 4.00 - checked 13aug17
 zlib 1.2.11 - checked 15jan17
   http://www.zlib.net/ - used by many
 
-zziplib 0.13.66 - checked 20jun17
-  http://zziplib.sourceforge.net/ - used by luatex
+zziplib 0.13.69 - checked 18mar18
+  https://github.com/gdraheim/zziplib/archive/v0.13.69.tar.gz

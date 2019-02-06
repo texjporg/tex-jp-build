@@ -1,6 +1,6 @@
 /* mpfr_set_default_prec, mpfr_get_default_prec -- set/get default precision
 
-Copyright 1999-2001, 2004-2017 Free Software Foundation, Inc.
+Copyright 1999-2001, 2004-2019 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
 
 This file is part of the GNU MPFR Library.
@@ -17,7 +17,7 @@ License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
-http://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
+https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
 #include "mpfr-impl.h"
@@ -29,7 +29,7 @@ MPFR_THREAD_VAR (mpfr_prec_t, __gmpfr_default_fp_bit_precision,
 void
 mpfr_set_default_prec (mpfr_prec_t prec)
 {
-  MPFR_ASSERTN (prec >= MPFR_PREC_MIN && prec <= MPFR_PREC_MAX);
+  MPFR_ASSERTN (MPFR_PREC_COND (prec));
   __gmpfr_default_fp_bit_precision = prec;
 }
 

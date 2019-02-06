@@ -1,3 +1,32 @@
+2018-10-24  Karl Berry  <karl@tug.org>
+
+	* writet1.c (t1_check_unusual_charstring): don't call
+	strlen(t1_buf_array) if it is null.
+	From Luigi, 22 Oct 2018 22:43:03.
+
+2018-09-18  Nick Roessler  <nicholas.e.roessler@gmail.com>
+
+	* writet1.c (t1_check_unusual_charstring): protect against buffer
+	overflow.
+
+2018-04-14  Karl Berry  <karl@tug.org>
+
+	* Version 5.998 for TeX Live 2018 release.
+
+2018-02-20  Akira Kakuto  <kakuto@fuk.kindai.ac.jp>
+
+	* color.c (colorpage),
+	* dospecial.c (bangspecial),
+	* dvips.h (header_list):	
+	don't use ersatz array as last struct member; change usage.
+	Reported (implicitly, as part of)
+	https://trac.macports.org/ticket/53974
+
+2018-01-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* tfmload.c, dvips.h: Support new JFM spec (3-byte characters
+	in TYPE > 0).
+
 2017-05-19  Karl Berry  <karl@tug.org>
 
 	* Version 5.997 for TeX Live 2017 release.
