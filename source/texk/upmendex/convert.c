@@ -196,9 +196,9 @@ int convert(UChar *buff1, UChar *buff2)
 		}
 		else {
 			wclen = is_surrogate_pair(&buff1[i]) ? 2 : 1;
-			              buff3[0]    =buff1[i];
-			if (wclen==2) buff3[1]    =buff1[i+1];
-			              buff3[wclen]=L'\0';
+			               buff3[0]    =buff1[i];
+			if (wclen==2){ buff3[1]    =buff1[i+1]; }
+			               buff3[wclen]=L'\0';
 
 			if ( lorder==1 &&( buff1[i]==' ' || buff1[i]=='\t' || buff3[0]==0x00A0
 				|| buff3[0]==0x202F || buff3[0]==0x2060 || buff3[0]==0xFEFF )) {

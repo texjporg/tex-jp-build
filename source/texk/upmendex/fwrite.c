@@ -704,9 +704,9 @@ static void index_normalize(UChar *istr, UChar *ini, int *chset)
 			u_strcpy(ini, hz_index[0].idx);
 			return;
 		}
-		            strX[0]  =istr[0];
-		if (len==2) strX[1]  =istr[1];
-		            strX[len]=L'\0';
+		             strX[0]  =istr[0];
+		if (len==2){ strX[1]  =istr[1]; }
+		             strX[len]=L'\0';
 		lo=0;  hi=hz_index_len;
 		while (lo<hi) {
 			mi = (lo+hi)/2;
