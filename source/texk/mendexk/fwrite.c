@@ -62,11 +62,11 @@ static void fprint_euc_char(FILE *fp, const char a, const char b)
 		int chr = (unsigned char)a<<8 | (unsigned char)b;
 		chr = (chr==0xffff) ? U_REPLACEMENT_CHARACTER : JIStoUCS2(chr & 0x7f7f);
 		chr = UCStoUTF8(chr);
-		/* if (BYTE1(chr) != 0) str[k++] = BYTE1(chr); */  /* do not happen */
-		if (BYTE2(chr) != 0) str[k++] = BYTE2(chr);
-		if (BYTE3(chr) != 0) str[k++] = BYTE3(chr);
-		                     str[k++] = BYTE4(chr);
-		                     str[k++] = '\0';
+		/* if (BYTE1(chr) != 0){ str[k++] = BYTE1(chr); } */  /* do not happen */
+		if (BYTE2(chr) != 0){ str[k++] = BYTE2(chr); }
+		if (BYTE3(chr) != 0){ str[k++] = BYTE3(chr); }
+		                      str[k++] = BYTE4(chr);
+		                      str[k++] = '\0';
 		fprintf(fp,"%s",str);
 	}
 	else
@@ -97,7 +97,7 @@ void warn_printf(FILE *fp, const char *format, ...)
     vsnprintf(print_buff, sizeof print_buff, format, argptr);
     va_end(argptr);
 
-    warn++;    
+    warn++;
     fputs(print_buff, stderr);
     if (fp!=stderr) fputs(print_buff, fp);
 }
