@@ -293,7 +293,7 @@ LOOP:
 						else tmp1=ind[i].idx[m];
 
 						if (ind[l].org[m]!=NULL) tmp2=ind[l].org[m];
-						else tmp2=ind[i].idx[m];
+						else tmp2=ind[l].idx[m];
 
 						widechar_to_multibyte(wbuff,BUFSIZE,tmp1);
 						verb_printf(efp,"\nWarning: Sort key \"%s\"",wbuff);
