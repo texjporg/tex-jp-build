@@ -221,10 +221,8 @@ int main(int argc, char **argv)
 			}
 		}
 		else {
-			cc=strlen(argv[i]);
-			if (cc<4) cc+=4;
-			else if (strcmp(&argv[i][cc-4],".idx")) cc+=4;
-			idxfile[j]=xmalloc(cc+1);
+			cc=strlen(argv[i])+6;
+			idxfile[j]=xmalloc(cc);
 			strcpy(idxfile[j++],argv[i]);
 		}
 	}
@@ -294,10 +292,10 @@ int main(int argc, char **argv)
 	case 0:
 	case 1:
 		if (gflg==1) {
-			strcpy(atama,akasatana);
+			strncpy(atama,akasatana,2048);
 		}
 		else {
-			strcpy(atama,aiueo);
+			strncpy(atama,aiueo,2048);
 		}
 		break;
 
