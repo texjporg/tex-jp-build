@@ -11,6 +11,8 @@
 
 #include "kp.h"
 
+#define BUFFERLEN 4096
+
 struct dictionary{
 UChar* dic[2];
 };
@@ -52,7 +54,7 @@ int dicread(const char *filename)
 {
 	int i,ecount=0;
 	const char *envfile;
-	char buff[4096];
+	char buff[BUFFERLEN];
 	FILE *fp;
 
 	if (filename!=NULL) {
@@ -185,7 +187,7 @@ static int dcomp(const void *bf1, const void *bf2)
 int convert(UChar *buff1, UChar *buff2)
 {
 	int i=0,j=0,k;
-	char errbuff[4096],errbuff2[4096];
+	char errbuff[BUFFERLEN],errbuff2[BUFFERLEN];
 	int wclen;
 	UChar buff3[3];
 
@@ -267,8 +269,8 @@ int convert(UChar *buff1, UChar *buff2)
 							j+=wclen;
 						}
 						else {
-							widechar_to_multibyte(errbuff2,4096,&buff1[i]);
-							sprintf(errbuff,"\nError: %s is no entry in dictionary file ",errbuff2);
+							widechar_to_multibyte(errbuff2,BUFFERLEN,&buff1[i]);
+							snprintf(errbuff,BUFFERLEN,"\nError: %s is no entry in dictionary file ",errbuff2);
 							fputs(errbuff,efp);
 							if (efp!=stderr) fputs(errbuff,stderr);
 							return -1;
