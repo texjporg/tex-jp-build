@@ -70,7 +70,7 @@ int dicread(const char *filename)
 		verb_printf(efp,"Scanning dictionary file %s.",filename);
 
 		for (i=0;;i++) {
-			if (fgets(buff,4095,fp)==NULL) break;
+			if (fgets(buff,BUFFERLEN-1,fp)==NULL) break;
 			if ((buff[0]=='\r')||(buff[0]=='\n')||(buff[0]=='\0')) i--;
 		}
 		fclose(fp);

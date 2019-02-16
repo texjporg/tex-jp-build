@@ -638,7 +638,7 @@ static void crcheck(char *lbuff, FILE *fp)
 			strncpy(buff,lbuff,i+1);
 			buff[i+1]='\0';
 			fputs(buff,fp);
-			strcpy(buff,&lbuff[i+1]);
+			strncpy(buff,&lbuff[i+1],BUFFERLEN-1);
 			strcpy(lbuff,buff);
 			break;
 		}

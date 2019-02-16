@@ -179,10 +179,8 @@ int main(int argc, char **argv)
 			}
 		}
 		else {
-			cc=strlen(argv[i]);
-			if (cc<4) cc+=4;
-			else if (strcmp(&argv[i][cc-4],".idx")) cc+=4;
-			idxfile[j]=xmalloc(cc+1);
+			cc=strlen(argv[i])+6;
+			idxfile[j]=xmalloc(cc);
 			strcpy(idxfile[j++],argv[i]);
 		}
 	}
