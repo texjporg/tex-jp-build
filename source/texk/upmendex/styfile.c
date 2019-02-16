@@ -293,7 +293,7 @@ static int sstrncmp(const char *s1, const char *s2, size_t len)
 	return strncmp(s1, s2, len);
 }
 
-void set_icu_attributes()
+void set_icu_attributes(void)
 {
 	int i,attr;
 	char *pos, *tmp;
