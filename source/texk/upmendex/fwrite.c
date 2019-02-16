@@ -698,7 +698,7 @@ static void index_normalize(UChar *istr, UChar *ini, int *chset)
 		ini[0]=ch;
 		return;
 	}
-	else if (len=is_hanzi(istr)) {
+	else if ((len=is_hanzi(istr))>0) {
 		if (hanzi_mode==0) hanzi_mode=init_hanzi_header();
 		if (hanzi_mode==HANZI_UNKNOWN) {
 			u_strcpy(ini, hz_index[0].idx);
