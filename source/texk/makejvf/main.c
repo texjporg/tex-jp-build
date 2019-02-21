@@ -139,10 +139,30 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	if (jistfm && !ucs) {
-		fprintf(stderr,"[Warning] Option -J invalid in non-UCS mode, ignored.\n");
-		jistfm = NULL;
+	if (!ucs) {
+		if (jistfm) {
+			fprintf(stderr,"[Warning] Option -J invalid in non-UCS mode, ignored.\n");
+			jistfm = NULL;
+		}
+		if (ucsqtfm) {
+			fprintf(stderr,"[Warning] Option -U invalid in non-UCS mode, ignored.\n");
+			ucsqtfm = NULL;
+		}
+		if (useset3) {
+			fprintf(stderr,"[Warning] Option -3 invalid in non-UCS mode, ignored.\n");
+			useset3 = 0;
+		}
+		if (hankana) {
+			fprintf(stderr,"[Warning] Option -H invalid in non-UCS mode, ignored.\n");
+			hankana = 0;
+		}
 	}
+
+	if (jistfm && ucsqtfm) {
+		fprintf(stderr,"Options -J and -U at the same time? I'm confused.\n");
+		exit(100);
+	}
+
 	if (jistfm) {
 		if (FILESTRCASEEQ(&jistfm[strlen(jistfm)-4], ".tfm")) {
 			jistfm[strlen(jistfm)-4] = '\0';
@@ -153,10 +173,6 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	if (ucsqtfm && !ucs) {
-		fprintf(stderr,"[Warning] Option -J invalid in non-UCS mode, ignored.\n");
-		ucsqtfm = NULL;
-	}
 	if (ucsqtfm) {
 		if (FILESTRCASEEQ(&ucsqtfm[strlen(ucsqtfm)-4], ".tfm")) {
 			ucsqtfm[strlen(ucsqtfm)-4] = '\0';
@@ -165,16 +181,6 @@ int main(int argc, char ** argv)
 			fprintf(stderr,"Invalid usage: input TFM and output TFM must be different.\n");
 			exit(100);
 		}
-	}
-
-	if (useset3 && !ucs) {
-		fprintf(stderr,"[Warning] Option -3 invalid in non-UCS mode, ignored.\n");
-		useset3 = 0;
-	}
-
-	if (hankana && !ucs) {
-		fprintf(stderr,"[Warning] Option -H invalid in non-UCS mode, ignored.\n");
-		hankana = 0;
 	}
 
 	if (usertable) {
