@@ -244,6 +244,21 @@ end
     last_node_subtype_code: cur_val:=last_node_subtype;
 @z
 
+@x
+procedure scan_ascii_num;
+@y
+procedure scan_char_type;
+begin scan_int;
+if (cur_val<0)or(cur_val>255) then
+  begin print_err("Bad character type");
+@.Bad character type@>
+  help2("A character type must be between 0 and 255.")@/
+    ("I changed this one to zero."); int_error(cur_val); cur_val:=0;
+  end;
+end;
+procedure scan_ascii_num;
+@z
+
 @x e-pTeX: if primitives - leave room for three e-TeX codes
 @d if_tdir_code=if_case_code+1 { `\.{\\iftdir}' }
 @y
@@ -624,8 +639,16 @@ othercases goto next_p
 @z
 
 @x e-pTeX: if_font_char_code l.28633
+if_font_char_code:begin scan_font_ident; n:=cur_val; scan_char_num;
+  if (font_bc[n]<=cur_val)and(font_ec[n]>=cur_val) then
     b:=char_exists(char_info(n)(qi(cur_val)))
 @y
+if_font_char_code:begin scan_font_ident; n:=cur_val;
+  if font_dir[n]<>dir_default then {Japanese font}
+    scan_char_type
+  else
+    scan_char_num;
+  if (font_bc[n]<=cur_val)and(font_ec[n]>=cur_val) then
     b:=char_exists(orig_char_info(n)(qi(cur_val)))
 @z
 
