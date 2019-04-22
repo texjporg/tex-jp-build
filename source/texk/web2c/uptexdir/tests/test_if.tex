@@ -1,9 +1,18 @@
 \kcatcode`あ=18
 \def\xA{あ}\let\yA=あ
 \kcatcode`あ=17
+\def\xB{あ}\let\yB=あ
+\kcatcode`あ=16
 
 \message{\ifcat あ\xA Y\else N\fi}
 \message{\ifcat あ\yA Y\else N\fi}
+\message{\ifcat あ\xB Y\else N\fi}
+\message{\ifcat あ\yB Y\else N\fi}
+
+\message{\if    あ\xA Y\else N\fi}
+\message{\if    あ\yA Y\else N\fi}
+\message{\if    い\xA Y\else N\fi}
+\message{\if    い\yA Y\else N\fi}
 
 \ifx\ucs\undefined\else
   \kcatcode"100=16
