@@ -142,6 +142,7 @@ if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d max_quarterword=255 {largest allowable value in a |quarterword|}
 @d min_halfword==-@"FFFFFFF {smallest allowable value in a |halfword|}
 @d max_halfword==@"FFFFFFF {largest allowable value in a |halfword|}
+@d max_cjk_val=@"10000
 @y
 @d min_quarterword=0 {smallest allowable value in a |quarterword|}
 @d max_quarterword=@"FFFF {largest allowable value in a |quarterword|}
