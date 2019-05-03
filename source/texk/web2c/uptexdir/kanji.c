@@ -444,7 +444,7 @@ integer kcatcodekey(integer c)
                || (LATIN_SMALL_LETTER_O_WITH_STROKE  <=c && c<=LATIN_SMALL_LETTER_Y_WITH_DIAERESIS  ) )
             return 0x1FD;
         }
-        if (block==0xa0) {
+        if (block==0xa1) {
             /* Fullwidth ASCII variants  except for U+FF01..FF0F, U+FF1A..FF20, U+FF3B..FF40, U+FF5B..FF5E */
             if (  (FULLWIDTH_DIGIT_0  <=c && c<=FULLWIDTH_DIGIT_9  )
                || (FULLWIDTH_CAPITAL_A<=c && c<=FULLWIDTH_CAPITAL_Z)
