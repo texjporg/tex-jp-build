@@ -39,6 +39,7 @@
 % (2018-01-21) HK   Added \uptexversion primitive and co.
 % (2018-02-24) TTK  upTeX u1.23
 % (2019-02-23) TTK  upTeX u1.24
+% (2019-05-06) HK   Hironori Kitagawa fixed a bug in \if.
 % (2019-05-06) TTK  upTeX u1.25
 
 @x upTeX: banner
