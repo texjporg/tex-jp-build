@@ -1,3 +1,16 @@
+2019-05-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
+	uptex_version.h: upTeX version u1.25.
+	* kanji.c:
+	Fix bug of kcatcode at Fullwidth ASCII variants and
+	Halfwidth Katakana variants from Yusuke Terada san:
+	https://github.com/texjporg/tex-jp-build/pull/79
+	Set default internal encoding EUC/SJIS if command name is
+	start by "p" or "ep", intending to be compatible with
+	pTeX family (ptex, eptex, pbibtex, pdvitype, ppltotf, ptftopl)
+	(experimental).
+
 2019-02-23  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
@@ -24,7 +37,7 @@
 2018-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* upbibtex.ch: Fix bug of substring$
-	from Takashi Sakai:
+	from Takashi Sakai san:
 	https://github.com/texjporg/tex-jp-build/issues/64
 	https://github.com/texjporg/tex-jp-build/pull/66
 
