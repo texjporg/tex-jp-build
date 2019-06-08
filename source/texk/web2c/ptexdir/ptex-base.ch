@@ -308,6 +308,39 @@ while j<str_start[s+1] do
 exit:end;
 @z
 
+@x [27] slow_print: diagnosis
+procedure slow_print(@!s:integer); {prints string |s|}
+var j:pool_pointer; {current character code position}
+begin if (s>=str_ptr) or (s<256) then print(s)
+else begin j:=str_start[s];
+  while j<str_start[s+1] do
+    begin print(so(str_pool[j])); incr(j);
+    end;
+  end;
+end;
+@y
+procedure slow_print(@!s:integer); {prints string |s|}
+var j:pool_pointer; {current character code position}
+old_sel: integer;
+begin if (s>=str_ptr) or (s<256) then print(s)
+else begin j:=str_start[s];
+  old_sel:=selector; selector:=term_only;
+  print("SLOW_PRINT[[");
+  selector:=old_sel;
+  while j<str_start[s+1] do
+    begin 
+    old_sel:=selector; selector:=term_only;
+    print("("); print(so(str_pool[j])); print(")");
+    selector:=old_sel;
+    print(so(str_pool[j])); incr(j);
+    end;
+  end;
+  old_sel:=selector; selector:=term_only;
+  print("]]");
+  selector:=old_sel;
+end;
+@z
+
 @x [5.61] l.1656 - pTeX:
 @<Initialize the output...@>=
 if src_specials_p or file_line_error_style_p or parse_first_line_p then
@@ -1519,7 +1552,8 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @y
 @<Display the token ...@>=
 case m of
-kanji,kana,other_kchar: print_kanji(KANJI(c));
+kanji,kana,other_kchar: 
+  begin print("("); print_kanji(KANJI(c)); print(")"); end;
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
   letter,other_char: print(c);
 @z
@@ -2327,14 +2361,33 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @z
 
 @x [27.464] l.9475 - pTeX: str_toks
+while k<pool_ptr do
+  begin t:=so(str_pool[k]);
   if t=" " then t:=space_token
   else t:=other_token+t;
+  fast_store_new_token(t);
+  incr(k);
+  end;
 @y
+print("STR_TOKS[[");
+while k<pool_ptr do
+  begin t:=so(str_pool[k]);
+  if t<@"80 then begin
+    print("("); print_char(t); print(")");
+    end
+  else begin
+    print("("); print_hex(t); print(")");
+    end;
   if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
     begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
+    print("["); print_hex(so(str_pool[k])); print("]");
     end
   else if t=" " then t:=space_token
   else t:=other_token+t;
+  fast_store_new_token(t);
+  incr(k);
+  end;
+print("]]");
 @z
 
 @x [27.468] l.9531 - pTeX: convert KANJI code
