@@ -301,6 +301,7 @@ exit:end;
 @z
 
 @x l.1603 - pTeX
+@<Basic print...@>=
 procedure print(@!s:integer); {prints string |s|}
 label exit;
 var j:pool_pointer; {current character code position}
@@ -330,6 +331,13 @@ while j<str_start[s+1] do
   end;
 exit:end;
 @y
+@<Glob...@>=
+is_print_filename: boolean;
+
+@ @<Set init...@>=
+is_print_filename:=false;
+
+@ @<Basic print...@>=
 procedure print(@!s:integer); {prints string |s|}
 label exit;
 var j:pool_pointer; {current character code position}
@@ -347,15 +355,20 @@ else if s<256 then
         end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
-    j:=str_start[s];
-    while j<str_start[s+1] do
-      begin print_char(so(str_pool[j])); incr(j);
-      end;
+    if is_print_filename then print_char_raw(s)
+    else begin
+      j:=str_start[s];
+      while j<str_start[s+1] do
+        begin print_char(so(str_pool[j])); incr(j);
+        end;
+    end;
     new_line_char:=nl; return;
     end;
 j:=str_start[s];
 while j<str_start[s+1] do
-  begin print_char(so(str_pool[j])); incr(j);
+  begin 
+  if is_print_filename then print_char_raw(so(str_pool[j])) else print_char(so(str_pool[j]));
+  incr(j);
   end;
 exit:end;
 @z
@@ -2553,6 +2566,31 @@ string_code:if cur_cs<>0 then sprint_cs(cur_cs)
   else print_kanji(cx);
 @z
 
+@x
+font_name_code: begin print(font_name[cur_val]);
+  if font_size[cur_val]<>font_dsize[cur_val] then
+    begin print(" at "); print_scaled(font_size[cur_val]);
+    print("pt");
+    end;
+  end;
+@y
+font_name_code: begin 
+  is_print_filename:=true; print(font_name[cur_val]); is_print_filename:=false;
+  if font_size[cur_val]<>font_dsize[cur_val] then
+    begin print(" at "); print_scaled(font_size[cur_val]);
+    print("pt");
+    end;
+  end;
+@z
+
+@x
+job_name_code: print(job_name);
+@y
+job_name_code: begin
+  is_print_filename:=true; print(job_name); is_print_filename:=false;
+  end;
+@z
+
 @x [28.487] l.9852 - pTeX: iftdir, ifydir, ifddir, iftbox, ifybox, ifdbox
 @d if_case_code=16 { `\.{\\ifcase}' }
 @y
@@ -2695,7 +2733,7 @@ else  begin str_room(1); append_char(c); {contribute |c| to the current string}
 end;
 @z
 
-@x [29] pTeX: print file name
+@x [29] pTeX: print_file_name
 @d print_quoted(#) == {print string |#|, omitting quotes}
 if #<>0 then
   for j:=str_start[#] to str_start[#+1]-1 do
@@ -2703,10 +2741,13 @@ if #<>0 then
       print(so(str_pool[j]))
 @y
 @d print_quoted(#) == {print string |#|, omitting quotes}
-if #<>0 then
-  for j:=str_start[#] to str_start[#+1]-1 do
-    if so(str_pool[j])<>"""" then
-      if so(str_pool[j])>=@"80 then print_char_raw(so(str_pool[j])) else print(so(str_pool[j]))
+begin is_print_filename:=true;
+  if #<>0 then
+    for j:=str_start[#] to str_start[#+1]-1 do
+      if so(str_pool[j])<>"""" then
+        print(so(str_pool[j]));
+  is_print_filename:=false;
+  end
 @z
 
 @x [29.526] l.10668 - pTeX: scan file name
@@ -2759,6 +2800,13 @@ else
   wlog(' (');
   wlog(conststringcast(get_enc_string));
   wlog(')');
+@z
+
+@x [29] pTeX: file name
+slow_print(full_source_filename_stack[in_open]); update_terminal;
+@y
+is_print_filename:=true; slow_print(full_source_filename_stack[in_open]); is_print_filename:=false; 
+update_terminal;
 @z
 
 @x [30.560] l.10968 - pTeX:
