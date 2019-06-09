@@ -1,4 +1,5 @@
-\scrollmode
+%\scrollmode
+\tracingstats=1000
 \newlinechar=`\^^J
 \font\x=ec-lmtt10 \x
 \message{^^J}
@@ -19,4 +20,11 @@
 
 \message{^^J}
 \message{\meaning\A}
+
+\jobname
+\message{^^J}
+\message{*\jobname *}
+
+\detokenize\expandafter{\meaning\A}
+
 \end

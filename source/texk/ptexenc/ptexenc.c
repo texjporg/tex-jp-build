@@ -477,7 +477,9 @@ int putc2(int c, FILE *fp)
     static int num[NOFILE];
         /* 0    : not in Kanji
            1..4 : in JIS Kanji and num[] bytes are in store[][]
-           -1   : in JIS Kanji and store[][] is empty */
+           -1   : in JIS Kanji and store[][] is empty
+           -2   : next character will be printed with no conversion
+         */
     static unsigned char store[NOFILE][4];
     const int fd = fileno(fp);
     int ret = c, output_enc;
@@ -493,7 +495,15 @@ int putc2(int c, FILE *fp)
     } else
         output_enc = get_file_enc();
 #endif
-    if (num[fd] > 0) {        /* multi-byte char */
+    if (c==0xFF) { /* next character: no conversion */
+        if (num[fd] < 0 && output_enc == ENC_JIS) {
+            put_multibyte(KANJI_OUT, fp);
+        }
+        num[fd] = -2;
+    } else if (num[fd] == -2) {
+        ret = putc(c, fp);
+        num[fd] = 0;
+    } else if (num[fd] > 0) {        /* multi-byte char */
         if (is_internalUPTEX() && iskanji1(c)) { /* error */
             ret = flush(store[fd], num[fd], fp);
             num[fd] = 0;

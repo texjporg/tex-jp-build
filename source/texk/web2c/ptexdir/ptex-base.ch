@@ -205,8 +205,54 @@ term_only: begin wterm(xchr[s]); incr(term_offset);
   end;
 no_print: do_nothing;
 pseudo: if tally<trick_count then trick_buf[tally mod error_line]:=s;
+new_string: begin if pool_ptr<pool_size then append_char(s);
+  end; {we drop characters if the string space is full}
+othercases write(write_file[selector],xchr[s])
+endcases;@/
+incr(tally);
+exit:end;
 @y
 procedure print_char(@!s:ASCII_code); {prints a single character}
+label exit; {label is not used but nonetheless kept (for other changes?)}
+begin if @<Character |s| is the current new-line character@> then
+ if selector<pseudo then
+  begin print_ln; return;
+  end;
+kcode_pos:=0;
+case selector of
+term_and_log: begin 
+  if xchr[s]>=@"80 then begin wterm(xchr[@"FF]); wlog(xchr[@"FF]); end;
+  wterm(xchr[s]); incr(term_offset);
+  if term_offset=max_print_line then
+    begin wterm_cr; term_offset:=0;
+    end;
+  wlog(xchr[s]); incr(file_offset);
+  if file_offset=max_print_line then
+    begin wlog_cr; file_offset:=0;
+    end;
+  end;
+log_only: begin if xchr[s]>=@"80 then begin wlog(xchr[@"FF]); end;
+  wlog(xchr[s]); incr(file_offset);
+  if file_offset=max_print_line then print_ln;
+  end;
+term_only: begin if xchr[s]>=@"80 then begin wterm(xchr[@"FF]); end;
+  wterm(xchr[s]); incr(term_offset);
+  if term_offset=max_print_line then print_ln;
+  end;
+no_print: do_nothing;
+pseudo: if tally<trick_count then
+  begin trick_buf[tally mod error_line]:=s;
+  trick_buf2[tally mod error_line]:=kcode_pos;
+  end;
+new_string: begin 
+  if xchr[s]>=@"80  then if pool_ptr<pool_size then append_char(@"FF);
+  if pool_ptr<pool_size then append_char(s);
+  end; {we drop characters if the string space is full}
+othercases write(write_file[selector],xchr[s])
+endcases;@/
+incr(tally);
+exit:end;
+procedure print_char_raw(@!s:ASCII_code); {prints a single character}
 label exit; {label is not used but nonetheless kept (for other changes?)}
 begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
@@ -246,6 +292,12 @@ pseudo: if tally<trick_count then
   begin trick_buf[tally mod error_line]:=s;
   trick_buf2[tally mod error_line]:=kcode_pos;
   end;
+new_string: begin if pool_ptr<pool_size then append_char(s);
+  end; {we drop characters if the string space is full}
+othercases write(write_file[selector],xchr[s])
+endcases;@/
+incr(tally);
+exit:end;
 @z
 
 @x l.1603 - pTeX
@@ -324,20 +376,27 @@ var j:pool_pointer; {current character code position}
 old_sel: integer;
 begin if (s>=str_ptr) or (s<256) then print(s)
 else begin j:=str_start[s];
-  old_sel:=selector; selector:=term_only;
+  { old_sel:=selector; selector:=term_only;
   print("SLOW_PRINT[[");
-  selector:=old_sel;
+  selector:=old_sel; }
   while j<str_start[s+1] do
-    begin 
-    old_sel:=selector; selector:=term_only;
-    print("("); print(so(str_pool[j])); print(")");
-    selector:=old_sel;
-    print(so(str_pool[j])); incr(j);
+    begin
+    if so(str_pool[j])=@"FF then
+      begin incr(j);
+      { old_sel:=selector; selector:=term_only;
+      print("@@");
+      selector:=old_sel; }
+      if j<str_start[s+1] then print(so(str_pool[j]));
+      end
+    else begin
+      print(so(str_pool[j])); 
+      end;
+    incr(j);
     end;
   end;
-  old_sel:=selector; selector:=term_only;
+  { old_sel:=selector; selector:=term_only;
   print("]]");
-  selector:=old_sel;
+  selector:=old_sel; }
 end;
 @z
 
@@ -1553,7 +1612,7 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @<Display the token ...@>=
 case m of
 kanji,kana,other_kchar: 
-  begin print("("); print_kanji(KANJI(c)); print(")"); end;
+  begin print_kanji(KANJI(c)); end;
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
   letter,other_char: print(c);
 @z
@@ -2369,25 +2428,20 @@ while k<pool_ptr do
   incr(k);
   end;
 @y
-print("STR_TOKS[[");
 while k<pool_ptr do
   begin t:=so(str_pool[k]);
-  if t<@"80 then begin
-    print("("); print_char(t); print(")");
+  if t=@"FF then begin 
+    incr(k); if k<pool_ptr then t:=other_token+so(str_pool[k]);
+    end
+  else if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
+    begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
     end
   else begin
-    print("("); print_hex(t); print(")");
+    if t=" " then t:=space_token else t:=other_token+t;
     end;
-  if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
-    begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
-    print("["); print_hex(so(str_pool[k])); print("]");
-    end
-  else if t=" " then t:=space_token
-  else t:=other_token+t;
   fast_store_new_token(t);
   incr(k);
   end;
-print("]]");
 @z
 
 @x [27.468] l.9531 - pTeX: convert KANJI code
@@ -2639,6 +2693,20 @@ else  begin str_room(1); append_char(c); {contribute |c| to the current string}
   end;
   prev_char:=c;
 end;
+@z
+
+@x [29] pTeX: print file name
+@d print_quoted(#) == {print string |#|, omitting quotes}
+if #<>0 then
+  for j:=str_start[#] to str_start[#+1]-1 do
+    if so(str_pool[j])<>"""" then
+      print(so(str_pool[j]))
+@y
+@d print_quoted(#) == {print string |#|, omitting quotes}
+if #<>0 then
+  for j:=str_start[#] to str_start[#+1]-1 do
+    if so(str_pool[j])<>"""" then
+      if so(str_pool[j])>=@"80 then print_char_raw(so(str_pool[j])) else print(so(str_pool[j]))
 @z
 
 @x [29.526] l.10668 - pTeX: scan file name
@@ -7414,7 +7482,7 @@ skip_loop: do_nothing;
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 begin
 if s>255 then
-  begin print_char(Hi(s)); print_char(Lo(s));
+  begin print_char_raw(Hi(s)); print_char_raw(Lo(s));
   end else print_char(s);
 end;
 

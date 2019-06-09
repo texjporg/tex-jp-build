@@ -1298,7 +1298,7 @@ random_seed_code:  cur_val := random_seed;
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 begin
 if s>255 then
-  begin print_char(Hi(s)); print_char(Lo(s));
+  begin print_char_raw(Hi(s)); print_char_raw(Lo(s));
   end else print_char(s);
 end;
 @y
@@ -1307,12 +1307,12 @@ begin
 if s>255 then begin
   if isprint_utf8 then begin
     s:=UCStoUTF8(toUCS(s));
-    if BYTE1(s)<>0 then print_char(BYTE1(s));
-    if BYTE2(s)<>0 then print_char(BYTE2(s));
-    if BYTE3(s)<>0 then print_char(BYTE3(s));
-                        print_char(BYTE4(s));
+    if BYTE1(s)<>0 then print_char_raw(BYTE1(s));
+    if BYTE2(s)<>0 then print_char_raw(BYTE2(s));
+    if BYTE3(s)<>0 then print_char_raw(BYTE3(s));
+                        print_char_raw(BYTE4(s));
   end
-  else begin print_char(Hi(s)); print_char(Lo(s)); end;
+  else begin print_char_raw(Hi(s)); print_char_raw(Lo(s)); end;
 end
 else print_char(s);
 end;
