@@ -1,3 +1,13 @@
+2019-06-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Distinguish a byte sequence from one-byte
+	characters and that from Japanese characters in the string pool.
+	Internally, 0xFF is prefixed to one-byte character whose
+	cheracter code is more than 0x7F in the string pool.
+	See https://github.com/texjporg/tex-jp-build/issues/81.
+	* tests/printkanji.tex: Added.
+	* ptex_version.h: pTeX version p3.8.3.
+
 2019-05-28  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* am/ptex.am: Add a new test.
@@ -650,7 +660,7 @@
 	* ptexextra.c (new): #include <ptexd.h> and <lib/texmfmp.c>.
 
 	* am/ptex.am: ptexextra.[ch] are now distributed;
-	create ptex_version.h instead of ptex.version. 
+	create ptex_version.h instead of ptex.version.
 
 2010-12-31  Hironori Kitagawa <h_kitagawa2001@yahoo.co.jp>
 

@@ -75,8 +75,8 @@
 @y
 @d pTeX_version=3
 @d pTeX_minor_version=8
-@d pTeX_revision==".2"
-@d pTeX_version_string=='-p3.8.2' {current \pTeX\ version}
+@d pTeX_revision==".3"
+@d pTeX_version_string=='-p3.8.3' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -233,7 +233,7 @@ else if iskanji1(xchr[s]) then
 else kcode_pos:=0;
 case selector of
 term_and_log: begin
-  if (not is_print_raw) and xchr[s]>=@"80 then 
+  if (not is_print_raw) and xchr[s]>=@"80 then
     begin wterm(xchr[@"FF]); wlog(xchr[@"FF]); end;
   wterm(xchr[s]); incr(term_offset);
   if term_offset=max_print_line then
@@ -249,7 +249,7 @@ log_only: begin
   wlog(xchr[s]); incr(file_offset);
   if file_offset=max_print_line then print_ln;
   end;
-term_only: begin 
+term_only: begin
   if (not is_print_raw) and xchr[s]>=@"80 then wterm(xchr[@"FF]);
   wterm(xchr[s]); incr(term_offset);
   if term_offset=max_print_line then print_ln;
@@ -259,12 +259,15 @@ pseudo: if tally<trick_count then
   begin trick_buf[tally mod error_line]:=s;
   trick_buf2[tally mod error_line]:=kcode_pos;
   end;
-new_string: begin 
+new_string: begin
   if (not is_print_raw) and (xchr[s]>=@"80) and pool_ptr<pool_size then
     append_char(@"FF);
   if pool_ptr<pool_size then append_char(s);
   end; {we drop characters if the string space is full}
-othercases write(write_file[selector],xchr[s])
+othercases begin
+  if (not is_print_raw) and xchr[s]>=@"80 then write(write_file[selector],xchr[@"FF]);
+  write(write_file[selector],xchr[s])
+  end
 endcases;@/
 incr(tally);
 exit:end;
@@ -340,7 +343,7 @@ while j<str_start[s+1] do
 exit:end;
 @z
 
-@x [27] slow_print: diagnosis
+@x [27] pTeX
 procedure slow_print(@!s:integer); {prints string |s|}
 var j:pool_pointer; {current character code position}
 begin if (s>=str_ptr) or (s<256) then print(s)
@@ -354,21 +357,30 @@ end;
 procedure slow_print(@!s:integer); {prints string |s|}
 var j:pool_pointer; {current character code position}
 old_is_print_raw: integer;
-begin if (s>=str_ptr) or (s<256) then print(s)
+begin if (s>=str_ptr) or (s<255) then print(s)
+else if s=255 then
+  begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end
 else begin j:=str_start[s];
+  old_is_print_raw:=is_print_raw; is_print_raw:=true;
   while j<str_start[s+1] do
     begin
-    if so(str_pool[j])=@"FF then
-      begin incr(j);
-      if j<str_start[s+1] then print(so(str_pool[j]));
+    if so(str_pool[j])=@"FF then begin
+      if old_is_print_raw then begin { |@"FF| is not a marker }
+        is_print_raw:=false; print(@"FF); is_print_raw:=true;
+        end
+      else { |@"FF| is a marker }
+        begin if selector<new_string then print(@"FF); { file/term/log printing }
+        incr(j);
+        if j<str_start[s+1] then
+          if so(str_pool[j])=@"FF then is_print_raw:=false;
+          print(so(str_pool[j]));
+          if so(str_pool[j])=@"FF then is_print_raw:=true;
+        end
       end
-    else begin
-      old_is_print_raw:=is_print_raw; is_print_raw:=true; 
-      print(so(str_pool[j])); 
-      is_print_raw:=old_is_print_raw;
-      end;
+    else print(so(str_pool[j]));
     incr(j);
     end;
+  is_print_raw:=old_is_print_raw;
   end;
 end;
 @z
@@ -388,6 +400,22 @@ else
   wterm(' (');
   wterm(conststringcast(get_enc_string));
   wterm(')');
+@z
+
+@x [5] pTeX: print_esc
+procedure print_esc(@!s:str_number); {prints escape character, then |s|}
+var c:integer; {the escape character code}
+begin  @<Set variable |c| to the current escape character@>;
+if c>=0 then if c<256 then print(c);
+slow_print(s);
+@y
+procedure print_esc(@!s:str_number); {prints escape character, then |s|}
+var c:integer; {the escape character code}
+old_is_print_raw: boolean;
+begin  @<Set variable |c| to the current escape character@>;
+if c>=0 then if c<256 then print(c);
+old_is_print_raw:=is_print_raw; is_print_raw:=true;
+slow_print(s); is_print_raw:=old_is_print_raw;
 @z
 
 @x
@@ -2231,7 +2259,7 @@ if not is_char_node(tx) then
 @<Fetch an item in the current node...@>=
 @z
 
-@x pTeX: \ptexversion 
+@x pTeX: \ptexversion
   begin if cur_chr=input_line_no_code then cur_val:=line
   else cur_val:=last_badness; {|cur_chr=badness_code|}
 @y
@@ -2402,13 +2430,13 @@ while k<pool_ptr do
 @y
 while k<pool_ptr do
   begin t:=so(str_pool[k]);
-  if t=@"FF then begin 
+  if t=@"FF then begin
     incr(k); if k<pool_ptr then t:=other_token+so(str_pool[k]);
     end
   else if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
     begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
     end
-  else if t=" " then t:=space_token 
+  else if t=" " then t:=space_token
   else t:=other_token+t;
   fast_store_new_token(t);
   incr(k);
@@ -2532,7 +2560,7 @@ font_name_code: begin print(font_name[cur_val]);
     end;
   end;
 @y
-font_name_code: begin 
+font_name_code: begin
   is_print_raw:=true; print(font_name[cur_val]); is_print_raw:=false;
   if font_size[cur_val]<>font_dsize[cur_val] then
     begin print(" at "); print_scaled(font_size[cur_val]);
@@ -2763,7 +2791,7 @@ else
 @x [29] pTeX: file name
 slow_print(full_source_filename_stack[in_open]); update_terminal;
 @y
-is_print_raw:=true; slow_print(full_source_filename_stack[in_open]); is_print_raw:=false; 
+is_print_raw:=true; slow_print(full_source_filename_stack[in_open]); is_print_raw:=false;
 update_terminal;
 @z
 
@@ -3797,9 +3825,9 @@ function shift_sub_exp_box(@!q:pointer):pointer;
         if box_dir(info(q))=dir_tate then d:=t_baseline_shift
         else d:=y_baseline_shift end
       else d:=y_baseline_shift;
-      if cur_style<script_style then 
+      if cur_style<script_style then
         d:=xn_over_d(d,text_baseline_shift_factor, 1000)
-      else if cur_style<script_script_style then 
+      else if cur_style<script_script_style then
         d:=xn_over_d(d,script_baseline_shift_factor, 1000)
       else
         d:=xn_over_d(d,scriptscript_baseline_shift_factor, 1000);
@@ -5079,9 +5107,9 @@ any_mode(make_box): begin_box(0);
 any_mode(make_box): begin_box(0);
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
-    if mode=hmode then 
+    if mode=hmode then
       begin print_err("Improper `"); print_cmd_chr(cur_cmd,cur_chr);
-      print("'"); 
+      print("'");
       help2("You cannot change the direction in unrestricted")
       ("horizontal mode."); error;
       end
@@ -5137,7 +5165,7 @@ q:pointer;
     else  begin p:=new_noad;
       math_type(nucleus(p)):=sub_box;
 @y
-  else  begin if abs(mode)=hmode then 
+  else  begin if abs(mode)=hmode then
     begin space_factor:=1000; inhibit_glue_flag:=false; end
     else  begin p:=new_noad;
       math_type(nucleus(p)):=sub_exp_box;
@@ -5214,7 +5242,7 @@ q:=link(p);
 until q=tx; {found |r|$\to$|p|$\to$|q=tx|}
 q:=link(tx); link(p):=q; link(tx):=null;
 if q=null then tail:=p
-else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|} 
+else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|}
   begin prev_node:=r; prev_disp:=pdisp; link(p):=null; tail:=p;
   disp_dimen(p):=disp_dimen(q); free_node(q,small_node_size);
   end
@@ -5368,7 +5396,7 @@ mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
 @x [47.???] indent_in_hmode: reset inhibit_glue_flag
   if abs(mode)=hmode then space_factor:=1000
 @y
-  if abs(mode)=hmode then 
+  if abs(mode)=hmode then
     begin space_factor:=1000; inhibit_glue_flag:=false; end
 @z
 
@@ -5642,14 +5670,14 @@ var c:integer; {hyphen character}
 begin tail_append(new_disc); inhibit_glue_flag:=false;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 @!n:integer; {length of discretionary list}
 @y
 @!n:integer; {length of discretionary list}
 @!d:integer; {direction}
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 p:=link(head); pop_nest;
 case saved(-1) of
 0:pre_break(tail):=p;
@@ -5658,13 +5686,13 @@ case saved(-1) of
 p:=link(head); d:=abs(direction); pop_nest;
 case saved(-1) of
 0:if abs(direction)=d then pre_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your first part."); error; pre_break(tail):=null; flush_node_list(p);
   end;
 1:if abs(direction)=d then post_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your second part."); error; post_break(tail):=null; flush_node_list(p);
@@ -5677,7 +5705,7 @@ push_nest; mode:=-hmode; space_factor:=1000;
 push_nest; mode:=-hmode; space_factor:=1000; inhibit_glue_flag:=false;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
 @y
@@ -5688,7 +5716,7 @@ else if (n>0)and(abs(direction)<>d) then
   end
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
-@z 
+@z
 
 @x [47.1120] l.22119 - pTeX: discretionary with disp_node
 decr(save_ptr); return;
@@ -6902,9 +6930,9 @@ while p<>null do
   ins_node,disp_node,mark_node,adjust_node,whatsit_node,penalty_node:
     do_nothing;
   math_node:
-    if (subtype(p)=before)or(subtype(p)=after) then 
+    if (subtype(p)=before)or(subtype(p)=after) then
       begin if find_first_char then
-        begin find_first_char:=false; first_char:=p; 
+        begin find_first_char:=false; first_char:=p;
         end;
         last_char:=p; flag:=true;
       end
@@ -7108,7 +7136,7 @@ begin if (subtype(p)=before)and(insert_skip=after_wchar) then
   insert_skip:=no_skip;
   end
 else if subtype(p)=after then
-  begin ax:=qo("0"); 
+  begin ax:=qo("0");
   if auto_xsp_code(ax)>=2 then
     insert_skip:=after_schar else insert_skip:=no_skip;
   end
@@ -7387,7 +7415,7 @@ again_2:
 @#
 main_loop_j+3:
   if ins_kp=true then @<Insert |pre_break_penalty| of |cur_chr|@>;
-  if main_f<>null_font then 
+  if main_f<>null_font then
     begin @<Look ahead for glue or kerning@>;
     end
   else inhibit_glue_flag:=false;
@@ -7489,7 +7517,7 @@ procedure print_kanji(@!s:KANJI_code); {prints a single character}
 var old_is_print_raw: integer;
 begin
 if s>255 then
-  begin old_is_print_raw:=is_print_raw; is_print_raw:=true; 
+  begin old_is_print_raw:=is_print_raw; is_print_raw:=true;
   print_char(Hi(s)); print_char(Lo(s));
   is_print_raw:=old_is_print_raw;
   end else print_char(s);

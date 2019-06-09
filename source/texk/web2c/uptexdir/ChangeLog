@@ -1,3 +1,7 @@
+2019-06-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* uptex-m.ch: Adapt to pTeX update.
+
 2019-05-28  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* am/uptex.am: Add a new test.

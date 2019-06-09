@@ -3,50 +3,94 @@
 \noautoxspacing
 \newlinechar=`\^^J
 \font\x=ec-lmtt10 \x
+\immediate\openout1=\jobname.out
+\def\MSG#1{%
+  \message{\string{MSG #1\string}}%
+  \immediate\write17{\string{TOT #1\string}}%
+  \immediate\write1{#1}%
+}
 \message{^^J}
+
+%================
 \def\A{^^c5^^bf ſ 顛 }
-\edef\B{\meaning\A:\jobname:}
-\message{^^J}
+A: \A
 
-\A
-\B
-
-
+\MSG{\A}
 \show\A
 
+\detokenize\expandafter{\meaning\A}
+\MSG{\detokenize\expandafter{\meaning\A}}
+%================
+\par
+\string\meaning.
+
+\edef\B{\meaning\A}
+\B
+\MSG{\meaning\B}
 \show\B
 
-\message{^^J}
-\message{\A}
-
-\message{^^J}
-\message{\meaning\A}
-
+%================
 \jobname
+\edef\C{:\jobname:}
+\MSG{*あ*\jobname *\C*\meaning\C*}
 \message{^^J}
-\message{*あ*}
 
-\message{*\jobname *}
 
-\detokenize\expandafter{\meaning\A}
-
+%================
 \catcode"C5=11
 \catcode"BF=11
+\catcode"E1=11
+\catcode"E3=11
+\catcode"81=11
+\catcode"82=11
+
+csname.
 
 \string\^^c5^^bf
 \expandafter\string\csname ^^c5^^bf\endcsname,
-\expandafter\string\csname \A\endcsname,
+\expandafter\string\csname ſ\endcsname,
 \expandafter\string\csname 顛\endcsname
-\message{\string\^^c5^^bf
-  \expandafter\string\csname \the\toks0\endcsname,
+\MSG{\string\^^c5^^bf,
   \expandafter\string\csname ^^c5^^bf\endcsname,
-  \expandafter\string\csname 顛\endcsname}
+  \expandafter\string\csname ſ\endcsname,
+  \expandafter\string\csname 顛\endcsname.}
 
-
-\pdfstrcmp{あ}{^^e3^^81^^82}
-
+%================
 \def\あ{hoge}
-\csname ^^e3^^81^^82\endcsname
-\あ
+\MSG{\pdfstrcmp{あ}{^^e3^^81^^82}}
+\message{^^J}
+\def\TEST#1#2{%
+  \par\toks0={#2}
+  \expandafter\string\csname #1\endcsname => \csname #1\endcsname,\par
+  \expandafter\string\csname #2\endcsname => \csname #2\endcsname,\par
+  \expandafter\string\csname \the\toks0\endcsname => \csname \the\toks0\endcsname.
+  \MSG{%
+    \expandafter\string\csname #1\endcsname => \csname #1\endcsname,
+    \expandafter\string\csname #2\endcsname => \csname #2\endcsname.
+    \expandafter\string\csname \the\toks0\endcsname => \csname \the\toks0\endcsname.
+  }%
+}
+\ifx\ucs\undefined
+  \TEST{あ}{^^a4^^a2}
+\else
+  \TEST{あ}{^^e3^^81^^82}
+\fi
+
+%================
+0xFF.
+\catcode"FF=11
+\message{^^J}
+
+\def\^^ff^^c5^^ff^^bf{あ}
+\edef\A{(\string\^^ff^^c5^^ff^^bf:\meaning\^^ff^^c5^^ff^^bf)}
+\^^ff^^c5^^ff^^bf, \A, \string\^^ff^^c5^^ff^^bf, \meaning\A.
+\MSG{\^^ff^^c5^^ff^^bf, \A, \string\^^ff^^c5^^ff^^bf, \meaning\A.}
+
+\def\^^ff{い}
+\edef\A{(\string\^^ff :\meaning\^^ff)}
+\^^ff, \A, \string\^^ff, \meaning\A.
+\MSG{\^^ff, \A, \string\^^ff, \meaning\A.}
+
+\immediate\closeout1
 
 \end
