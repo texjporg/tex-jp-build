@@ -1624,8 +1624,7 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @y
 @<Display the token ...@>=
 case m of
-kanji,kana,other_kchar: 
-  begin print_kanji(KANJI(c)); end;
+kanji,kana,other_kchar: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
   letter,other_char: print(c);
 @z
@@ -2449,9 +2448,8 @@ while k<pool_ptr do
   else if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
     begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
     end
-  else begin
-    if t=" " then t:=space_token else t:=other_token+t;
-    end;
+  else if t=" " then t:=space_token 
+  else t:=other_token+t;
   fast_store_new_token(t);
   incr(k);
   end;

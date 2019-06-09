@@ -603,30 +603,37 @@ begin str_room(1);
 p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
   begin t:=so(str_pool[k]);
-  if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
+  if t=@"FF then begin 
+    incr(k); if k<pool_ptr then t:=other_token+so(str_pool[k]);
+    end
+  else if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
     begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
   else t:=other_token+t;
 @y
-@!t:halfword; {token being appended}
+@!t,tx:halfword; {token being appended}
 @!k:pool_pointer; {index into |str_pool|}
 @!cc:escape..max_char_code;
 begin str_room(1);
 p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
-  begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k);
-  cc:=kcat_code(kcatcodekey(t));
-  if (multistrlen(ustringcast(str_pool), pool_ptr, k)>1)and
-       check_kcat_code(cc) then
-    begin if (cc=not_cjk) then cc:=other_kchar;
-	  t:=t+cc*max_cjk_val;
-	  k:=k+multistrlen(ustringcast(str_pool), pool_ptr, k)-1;
+  begin t:=so(str_pool[k]);
+  if t=@"FF then begin 
+    incr(k); if k<pool_ptr then t:=other_token+so(str_pool[k]);
     end
-  else begin t:=so(str_pool[k]);
-    if t=" " then t:=space_token
+  else begin
+    tx:=fromBUFF(ustringcast(str_pool), pool_ptr, k);
+    cc:=kcat_code(kcatcodekey(tx));
+    if (multistrlen(ustringcast(str_pool), pool_ptr, k)>1)and
+         check_kcat_code(cc) then
+      begin if (cc=not_cjk) then cc:=other_kchar;
+        t:=tx+cc*max_cjk_val;
+	k:=k+multistrlen(ustringcast(str_pool), pool_ptr, k)-1;
+      end
+    else if t=" " then t:=space_token
     else t:=other_token+t;
-  end;
+    end;
 @z
 
 @x
@@ -1237,16 +1244,16 @@ begin if is_char_node(link(p)) then
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 begin
 if s>255 then
-  begin print_char(Hi(s)); print_char(Lo(s));
+  begin print_char_raw(Hi(s)); print_char_raw(Lo(s));
   end else print_char(s);
 @y
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 begin
 s:=toBUFF(s mod max_cjk_val);
-if BYTE1(s)<>0 then print_char(BYTE1(s));
-if BYTE2(s)<>0 then print_char(BYTE2(s));
-if BYTE3(s)<>0 then print_char(BYTE3(s));
-                    print_char(BYTE4(s));
+if BYTE1(s)<>0 then print_char_raw(BYTE1(s));
+if BYTE2(s)<>0 then print_char_raw(BYTE2(s));
+if BYTE3(s)<>0 then print_char_raw(BYTE3(s));
+                    print_char_raw(BYTE4(s));
 end;
 
 function check_kcat_code(@!ct:integer):integer;
