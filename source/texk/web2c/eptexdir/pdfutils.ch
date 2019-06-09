@@ -1311,7 +1311,7 @@ begin
 if s>255 then begin
   old_is_print_raw:=is_print_raw; is_print_raw:=true; 
   if isprint_utf8 then begin
-    s:=UCStoUTF8(toUCS(s));
+    is_print_raw:=false; s:=UCStoUTF8(toUCS(s));
     if BYTE1(s)<>0 then print_char(BYTE1(s));
     if BYTE2(s)<>0 then print_char(BYTE2(s));
     if BYTE3(s)<>0 then print_char(BYTE3(s));

@@ -30,4 +30,23 @@
 
 \detokenize\expandafter{\meaning\A}
 
+\catcode"C5=11
+\catcode"BF=11
+
+\string\^^c5^^bf
+\expandafter\string\csname ^^c5^^bf\endcsname,
+\expandafter\string\csname \A\endcsname,
+\expandafter\string\csname 顛\endcsname
+\message{\string\^^c5^^bf
+  \expandafter\string\csname \the\toks0\endcsname,
+  \expandafter\string\csname ^^c5^^bf\endcsname,
+  \expandafter\string\csname 顛\endcsname}
+
+
+\pdfstrcmp{あ}{^^e3^^81^^82}
+
+\def\あ{hoge}
+\csname ^^e3^^81^^82\endcsname
+\あ
+
 \end
