@@ -218,46 +218,6 @@ begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
-kcode_pos:=0;
-case selector of
-term_and_log: begin 
-  if xchr[s]>=@"80 then begin wterm(xchr[@"FF]); wlog(xchr[@"FF]); end;
-  wterm(xchr[s]); incr(term_offset);
-  if term_offset=max_print_line then
-    begin wterm_cr; term_offset:=0;
-    end;
-  wlog(xchr[s]); incr(file_offset);
-  if file_offset=max_print_line then
-    begin wlog_cr; file_offset:=0;
-    end;
-  end;
-log_only: begin if xchr[s]>=@"80 then begin wlog(xchr[@"FF]); end;
-  wlog(xchr[s]); incr(file_offset);
-  if file_offset=max_print_line then print_ln;
-  end;
-term_only: begin if xchr[s]>=@"80 then begin wterm(xchr[@"FF]); end;
-  wterm(xchr[s]); incr(term_offset);
-  if term_offset=max_print_line then print_ln;
-  end;
-no_print: do_nothing;
-pseudo: if tally<trick_count then
-  begin trick_buf[tally mod error_line]:=s;
-  trick_buf2[tally mod error_line]:=kcode_pos;
-  end;
-new_string: begin 
-  if xchr[s]>=@"80  then if pool_ptr<pool_size then append_char(@"FF);
-  if pool_ptr<pool_size then append_char(s);
-  end; {we drop characters if the string space is full}
-othercases write(write_file[selector],xchr[s])
-endcases;@/
-incr(tally);
-exit:end;
-procedure print_char_raw(@!s:ASCII_code); {prints a single character}
-label exit; {label is not used but nonetheless kept (for other changes?)}
-begin if @<Character |s| is the current new-line character@> then
- if selector<pseudo then
-  begin print_ln; return;
-  end;
 if kcode_pos=1 then kcode_pos:=2
 else if iskanji1(xchr[s]) then
   begin kcode_pos:=1;
@@ -272,7 +232,10 @@ else if iskanji1(xchr[s]) then
   end
 else kcode_pos:=0;
 case selector of
-term_and_log: begin wterm(xchr[s]); incr(term_offset);
+term_and_log: begin
+  if (not is_print_raw) and xchr[s]>=@"80 then 
+    begin wterm(xchr[@"FF]); wlog(xchr[@"FF]); end;
+  wterm(xchr[s]); incr(term_offset);
   if term_offset=max_print_line then
     begin wterm_cr; term_offset:=0;
     end;
@@ -281,10 +244,14 @@ term_and_log: begin wterm(xchr[s]); incr(term_offset);
     begin wlog_cr; file_offset:=0;
     end;
   end;
-log_only: begin wlog(xchr[s]); incr(file_offset);
+log_only: begin
+  if (not is_print_raw) and xchr[s]>=@"80 then wlog(xchr[@"FF]);
+  wlog(xchr[s]); incr(file_offset);
   if file_offset=max_print_line then print_ln;
   end;
-term_only: begin wterm(xchr[s]); incr(term_offset);
+term_only: begin 
+  if (not is_print_raw) and xchr[s]>=@"80 then wterm(xchr[@"FF]);
+  wterm(xchr[s]); incr(term_offset);
   if term_offset=max_print_line then print_ln;
   end;
 no_print: do_nothing;
@@ -292,7 +259,10 @@ pseudo: if tally<trick_count then
   begin trick_buf[tally mod error_line]:=s;
   trick_buf2[tally mod error_line]:=kcode_pos;
   end;
-new_string: begin if pool_ptr<pool_size then append_char(s);
+new_string: begin 
+  if (not is_print_raw) and (xchr[s]>=@"80) and pool_ptr<pool_size then
+    append_char(@"FF);
+  if pool_ptr<pool_size then append_char(s);
   end; {we drop characters if the string space is full}
 othercases write(write_file[selector],xchr[s])
 endcases;@/
@@ -332,10 +302,10 @@ while j<str_start[s+1] do
 exit:end;
 @y
 @<Glob...@>=
-is_print_filename: boolean;
+is_print_raw: boolean;
 
 @ @<Set init...@>=
-is_print_filename:=false;
+is_print_raw:=false;
 
 @ @<Basic print...@>=
 procedure print(@!s:integer); {prints string |s|}
@@ -355,20 +325,17 @@ else if s<256 then
         end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
-    if is_print_filename then print_char_raw(s)
-    else begin
-      j:=str_start[s];
+    if is_print_raw then print_char(s)
+    else begin j:=str_start[s];
       while j<str_start[s+1] do
         begin print_char(so(str_pool[j])); incr(j);
         end;
-    end;
+      end;
     new_line_char:=nl; return;
     end;
 j:=str_start[s];
 while j<str_start[s+1] do
-  begin 
-  if is_print_filename then print_char_raw(so(str_pool[j])) else print_char(so(str_pool[j]));
-  incr(j);
+  begin print_char(so(str_pool[j])); incr(j);
   end;
 exit:end;
 @z
@@ -386,30 +353,23 @@ end;
 @y
 procedure slow_print(@!s:integer); {prints string |s|}
 var j:pool_pointer; {current character code position}
-old_sel: integer;
+old_is_print_raw: integer;
 begin if (s>=str_ptr) or (s<256) then print(s)
 else begin j:=str_start[s];
-  { old_sel:=selector; selector:=term_only;
-  print("SLOW_PRINT[[");
-  selector:=old_sel; }
   while j<str_start[s+1] do
     begin
     if so(str_pool[j])=@"FF then
       begin incr(j);
-      { old_sel:=selector; selector:=term_only;
-      print("@@");
-      selector:=old_sel; }
       if j<str_start[s+1] then print(so(str_pool[j]));
       end
     else begin
+      old_is_print_raw:=is_print_raw; is_print_raw:=true; 
       print(so(str_pool[j])); 
+      is_print_raw:=old_is_print_raw;
       end;
     incr(j);
     end;
   end;
-  { old_sel:=selector; selector:=term_only;
-  print("]]");
-  selector:=old_sel; }
 end;
 @z
 
@@ -2573,7 +2533,7 @@ font_name_code: begin print(font_name[cur_val]);
   end;
 @y
 font_name_code: begin 
-  is_print_filename:=true; print(font_name[cur_val]); is_print_filename:=false;
+  is_print_raw:=true; print(font_name[cur_val]); is_print_raw:=false;
   if font_size[cur_val]<>font_dsize[cur_val] then
     begin print(" at "); print_scaled(font_size[cur_val]);
     print("pt");
@@ -2585,7 +2545,7 @@ font_name_code: begin
 job_name_code: print(job_name);
 @y
 job_name_code: begin
-  is_print_filename:=true; print(job_name); is_print_filename:=false;
+  is_print_raw:=true; print(job_name); is_print_raw:=false;
   end;
 @z
 
@@ -2739,12 +2699,12 @@ if #<>0 then
       print(so(str_pool[j]))
 @y
 @d print_quoted(#) == {print string |#|, omitting quotes}
-begin is_print_filename:=true;
+begin is_print_raw:=true;
   if #<>0 then
     for j:=str_start[#] to str_start[#+1]-1 do
       if so(str_pool[j])<>"""" then
         print(so(str_pool[j]));
-  is_print_filename:=false;
+  is_print_raw:=false;
   end
 @z
 
@@ -2803,7 +2763,7 @@ else
 @x [29] pTeX: file name
 slow_print(full_source_filename_stack[in_open]); update_terminal;
 @y
-is_print_filename:=true; slow_print(full_source_filename_stack[in_open]); is_print_filename:=false; 
+is_print_raw:=true; slow_print(full_source_filename_stack[in_open]); is_print_raw:=false; 
 update_terminal;
 @z
 
@@ -7526,9 +7486,12 @@ skip_loop: do_nothing;
 
 @ @<Basic printing...@>=
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
+var old_is_print_raw: integer;
 begin
 if s>255 then
-  begin print_char_raw(Hi(s)); print_char_raw(Lo(s));
+  begin old_is_print_raw:=is_print_raw; is_print_raw:=true; 
+  print_char(Hi(s)); print_char(Lo(s));
+  is_print_raw:=old_is_print_raw;
   end else print_char(s);
 end;
 
