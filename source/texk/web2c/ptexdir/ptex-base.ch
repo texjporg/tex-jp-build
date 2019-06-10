@@ -1719,6 +1719,8 @@ if j>0 then for i:=start to j-1 do
 if j>0 then begin is_print_raw:=true;
   for i:=start to j-1 do
     begin if i=loc then set_trick_count;
+    if buffer[i]=@"FF then
+      begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end;
     print(buffer[i]);
     end;
   end
