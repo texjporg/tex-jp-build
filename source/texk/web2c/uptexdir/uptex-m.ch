@@ -112,9 +112,9 @@ term_only: begin
 @z
 
 @x
-if kcode_pos=1 then kcode_pos:=2
+else if kcode_pos=1 then kcode_pos:=2
 @y
-if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
+else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
    or((kcode_pos>=@'21)and(kcode_pos<=@'23)) then incr(kcode_pos)
 @z
 
@@ -1245,7 +1245,7 @@ procedure print_kanji(@!s:KANJI_code); {prints a single character}
 var old_is_print_raw: integer;
 begin
 if s>255 then
-  begin old_is_print_raw:=is_print_raw; is_print_raw:=true; 
+  begin old_is_print_raw:=is_print_raw; is_print_raw:=true;
   print_char(Hi(s)); print_char(Lo(s));
   is_print_raw:=old_is_print_raw;
   end else print_char(s);
@@ -1253,7 +1253,7 @@ if s>255 then
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 var old_is_print_raw: integer;
 begin
-old_is_print_raw:=is_print_raw; is_print_raw:=true; 
+old_is_print_raw:=is_print_raw; is_print_raw:=true;
 s:=toBUFF(s mod max_cjk_val);
 if BYTE1(s)<>0 then print_char(BYTE1(s));
 if BYTE2(s)<>0 then print_char(BYTE2(s));

@@ -218,7 +218,8 @@ begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
-if kcode_pos=1 then kcode_pos:=2
+if is_print_raw then kcode_pos:=0
+else if kcode_pos=1 then kcode_pos:=2
 else if iskanji1(xchr[s]) then
   begin kcode_pos:=1;
   if (selector=term_and_log)or(selector=log_only) then
@@ -255,9 +256,15 @@ term_only: begin
   if term_offset=max_print_line then print_ln;
   end;
 no_print: do_nothing;
-pseudo: if tally<trick_count then
-  begin trick_buf[tally mod error_line]:=s;
-  trick_buf2[tally mod error_line]:=kcode_pos;
+pseudo: begin if (not is_print_raw) and xchr[s]>=@"80 then
+  if tally<trick_count then begin
+    trick_buf[tally mod error_line]:=@"FF;
+    trick_buf2[tally mod error_line]:=0; incr(tally);
+    end;
+  if tally<trick_count then begin
+    trick_buf[tally mod error_line]:=s;
+    trick_buf2[tally mod error_line]:=kcode_pos;
+    end;
   end;
 new_string: begin
   if (not is_print_raw) and (xchr[s]>=@"80) and pool_ptr<pool_size then
@@ -1656,7 +1663,7 @@ var old_setting:0..max_selector; {saved |selector| setting}
 @y
 @d begin_pseudoprint==
   begin l:=tally; tally:=0; selector:=pseudo; kcode_pos:=0;
-  trick_count:=1000000;
+  trick_count:=1000000; is_print_raw:=false;
   end
 @z
 
@@ -1685,11 +1692,36 @@ if m+n<=error_line then p:=first_count+m else p:=first_count+(error_line-n-3);
 if trick_buf2[p mod error_line]=2 then
   begin p:=p+1; n:=n-1;
   end;
-for q:=p to first_count-1 do print_char(trick_buf[q mod error_line]);
+is_print_raw:=true;
+for q:=p to first_count-1 do begin
+  if trick_buf[q mod error_line]=@"FF then n:=n-1;
+  print_char(trick_buf[q mod error_line]);
+end;
 print_ln;
 for q:=1 to n do print_char(" "); {print |n| spaces to begin line~2}
 if m+n<=error_line then p:=first_count+m else p:=first_count+(error_line-n-3);
 if trick_buf2[(p-1) mod error_line]=1 then p:=p-1;
+@z
+
+@x [22.317] pTeX
+if m+n>error_line then print("...")
+@y
+is_print_raw:=false;
+if m+n>error_line then print("...")
+@z
+
+@x [22:318] pTeX: pseudoprint the line
+if j>0 then for i:=start to j-1 do
+  begin if i=loc then set_trick_count;
+  print(buffer[i]);
+  end
+@y
+if j>0 then begin is_print_raw:=true;
+  for i:=start to j-1 do
+    begin if i=loc then set_trick_count;
+    print(buffer[i]);
+    end;
+  end
 @z
 
 @x [22.319] l.7157 - pTeX: adjust kanji code token

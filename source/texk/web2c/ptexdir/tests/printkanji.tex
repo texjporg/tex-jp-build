@@ -82,15 +82,25 @@ csname.
 \message{^^J}
 
 \def\^^ff^^c5^^ff^^bf{あ}
-\edef\A{(\string\^^ff^^c5^^ff^^bf:\meaning\^^ff^^c5^^ff^^bf)}
-\^^ff^^c5^^ff^^bf, \A, \string\^^ff^^c5^^ff^^bf, \meaning\A.
-\MSG{\^^ff^^c5^^ff^^bf, \A, \string\^^ff^^c5^^ff^^bf, \meaning\A.}
+\edef\E{(\string\^^ff^^c5^^ff^^bf:\meaning\^^ff^^c5^^ff^^bf)}
+\^^ff^^c5^^ff^^bf, \E, \string\^^ff^^c5^^ff^^bf, \meaning\E.
+\MSG{\^^ff^^c5^^ff^^bf, \A, \string\^^ff^^c5^^ff^^bf, \meaning\E.}
 
 \def\^^ff{い}
-\edef\A{(\string\^^ff :\meaning\^^ff)}
-\^^ff, \A, \string\^^ff, \meaning\A.
-\MSG{\^^ff, \A, \string\^^ff, \meaning\A.}
+\edef\E{(\string\^^ff :\meaning\^^ff)}
+\^^ff, \E, \string\^^ff, \meaning\E.
+\MSG{\^^ff, \E, \string\^^ff, \meaning\E.}
 
 \immediate\closeout1
 
+%========
+\message{contexts.}
+
+\errorcontextlines=10000
+\def\@{\A\undefined}
+\edef\a{^^c5^^bf a\A\noexpand\@ ſ 顛 }
+\edef\+#1{\noexpand\^^ff^^c5^^ff^^bf#1\noexpand\^^ff\meaning\A}
+\+\a
+
+\^^ff^^c5^^ff^^bf ^^c5^^bf ſ 顛\a \^^ff ^^ff
 \end
