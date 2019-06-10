@@ -354,12 +354,13 @@ else begin j:=str_start[s];
   end;
 end;
 @y
-procedure slow_print(@!s:integer); {prints string |s|}
+procedure slow_print_string(@!s:integer);
+  {prints string |s| in \.{\\message}, \.{\\errmessage}}
 var j:pool_pointer; {current character code position}
 old_is_print_raw: integer;
 begin if (s>=str_ptr) or (s<255) then print(s)
 else if s=255 then
-  begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end
+  begin is_print_raw:=false; print(@"FF); end
 else begin j:=str_start[s];
   old_is_print_raw:=is_print_raw; is_print_raw:=true;
   while j<str_start[s+1] do
@@ -380,8 +381,12 @@ else begin j:=str_start[s];
     else print(so(str_pool[j]));
     incr(j);
     end;
-  is_print_raw:=old_is_print_raw;
   end;
+  is_print_raw:=false;
+end;
+procedure slow_print(@!s:integer); {prints filename or csname |s|}
+begin
+  is_print_raw:=true; slow_print_string(s);
 end;
 @z
 
@@ -400,22 +405,6 @@ else
   wterm(' (');
   wterm(conststringcast(get_enc_string));
   wterm(')');
-@z
-
-@x [5] pTeX: print_esc
-procedure print_esc(@!s:str_number); {prints escape character, then |s|}
-var c:integer; {the escape character code}
-begin  @<Set variable |c| to the current escape character@>;
-if c>=0 then if c<256 then print(c);
-slow_print(s);
-@y
-procedure print_esc(@!s:str_number); {prints escape character, then |s|}
-var c:integer; {the escape character code}
-old_is_print_raw: boolean;
-begin  @<Set variable |c| to the current escape character@>;
-if c>=0 then if c<256 then print(c);
-old_is_print_raw:=is_print_raw; is_print_raw:=true;
-slow_print(s); is_print_raw:=old_is_print_raw;
 @z
 
 @x
@@ -2786,13 +2775,6 @@ else
   wlog(' (');
   wlog(conststringcast(get_enc_string));
   wlog(')');
-@z
-
-@x [29] pTeX: file name
-slow_print(full_source_filename_stack[in_open]); update_terminal;
-@y
-is_print_raw:=true; slow_print(full_source_filename_stack[in_open]); is_print_raw:=false;
-update_terminal;
 @z
 
 @x [30.560] l.10968 - pTeX:
@@ -6297,6 +6279,18 @@ end;
 def_font: new_font(a);
 @y
 def_tfont,def_jfont,def_font: new_font(a);
+@z
+
+@x [49] pTeX: \message
+slow_print(s); update_terminal;
+@y
+slow_print_string(s); update_terminal;
+@z
+
+@x [49] pTeX: \errmessage
+begin print_err(""); slow_print(s);
+@y
+begin print_err(""); slow_print_string(s);
 @z
 
 @x [49.1292] l.24451 - pTeX: shift_case
