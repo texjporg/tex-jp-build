@@ -18,8 +18,6 @@ A: \A
 \MSG{\A}
 \show\A
 
-\detokenize\expandafter{\meaning\A}
-\MSG{\detokenize\expandafter{\meaning\A}}
 %================
 \par
 \string\meaning.
@@ -37,14 +35,23 @@ A: \A
 
 
 %================
-\catcode"C5=11
-\catcode"BF=11
-\catcode"E1=11
-\catcode"E3=11
-\catcode"81=11
-\catcode"82=11
+\catcode`\^^c5=11
+\catcode`\^^bf=11
+\catcode`\^^e1=11
+\catcode`\^^e3=11
+\catcode`\^^81=11
+\catcode`\^^82=11
 
 csname.
+
+{\def\顛{hoge}
+\show\顛
+\show\^^c5^^bf
+\expandafter\show\csname ^^c5^^bf\endcsname
+\MSG{\string\顛=>\meaning\顛}
+\MSG{\string\^^c5^^bf=>\meaning\^^c5^^bf}
+\MSG{\expandafter\string\csname ^^c5^^bf\endcsname
+  =>\expandafter\meaning\csname ^^c5^^bf\endcsname}}
 
 \string\^^c5^^bf
 \expandafter\string\csname ^^c5^^bf\endcsname,

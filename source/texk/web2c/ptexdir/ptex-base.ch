@@ -351,6 +351,7 @@ exit:end;
 @z
 
 @x [27] pTeX
+@<Basic print...@>=
 procedure slow_print(@!s:integer); {prints string |s|}
 var j:pool_pointer; {current character code position}
 begin if (s>=str_ptr) or (s<256) then print(s)
@@ -361,19 +362,24 @@ else begin j:=str_start[s];
   end;
 end;
 @y
-procedure slow_print_string(@!s:integer);
+@d slow_print_msg(#)==slow_print_inner(#,false)
   {prints string |s| in \.{\\message}, \.{\\errmessage}}
+@d slow_print(#)==slow_print_inner(#,true)
+  {prints filename or csname |s|}
+
+@<Basic print...@>=
+procedure slow_print_inner(@!s:integer; @!m:boolean);
 var j:pool_pointer; {current character code position}
 old_is_print_raw: integer;
 begin if (s>=str_ptr) or (s<255) then print(s)
 else if s=255 then
   begin is_print_raw:=false; print(@"FF); end
 else begin j:=str_start[s];
-  old_is_print_raw:=is_print_raw; is_print_raw:=true;
+  is_print_raw:=true;
   while j<str_start[s+1] do
     begin
     if so(str_pool[j])=@"FF then begin
-      if old_is_print_raw then begin { |@"FF| is not a marker }
+      if m then begin { |@"FF| is not a marker }
         is_print_raw:=false; print(@"FF); is_print_raw:=true;
         end
       else { |@"FF| is a marker }
@@ -390,10 +396,6 @@ else begin j:=str_start[s];
     end;
   end;
   is_print_raw:=false;
-end;
-procedure slow_print(@!s:integer); {prints filename or csname |s|}
-begin
-  is_print_raw:=true; slow_print_string(s);
 end;
 @z
 
@@ -6318,13 +6320,13 @@ def_tfont,def_jfont,def_font: new_font(a);
 @x [49] pTeX: \message
 slow_print(s); update_terminal;
 @y
-slow_print_string(s); update_terminal;
+slow_print_msg(s); update_terminal;
 @z
 
 @x [49] pTeX: \errmessage
 begin print_err(""); slow_print(s);
 @y
-begin print_err(""); slow_print_string(s);
+begin print_err(""); slow_print_msg(s);
 @z
 
 @x [49.1292] l.24451 - pTeX: shift_case
