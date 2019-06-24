@@ -459,13 +459,17 @@ start_cs:
 @z
 
 @x
-begin repeat cur_chr:=buffer[k]; incr(k);
+begin
+  if (cat=letter)and(cur_chr>=@"80) then supply_ff_buffer;
+  repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); incr(k);
     end
   else cat:=cat_code(cur_chr);
 @y
-begin repeat
+begin
+  if (cat=letter)and(cur_chr>=@"80) then supply_ff_buffer;
+  repeat
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat) then begin
@@ -516,6 +520,9 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
 @x
   if check_kanji(info(p)) then {|wchar_token|}
     begin buffer[j]:=Hi(info(p)); incr(j);
+    end
+  else if Lo(info(p))>=@"80 then
+    begin buffer[j]:=@"FF; incr(j);
     end;
   buffer[j]:=Lo(info(p)); incr(j); p:=link(p);
 @y
@@ -528,7 +535,9 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     p:=link(p);
     end
   else
-    begin buffer[j]:=info(p) mod max_char_val; incr(j); p:=link(p);
+    begin if (info(p) mod max_char_val)>=@"80 then
+      begin buffer[j]:=@"FF; incr(j); end;
+    buffer[j]:=info(p) mod max_char_val; incr(j); p:=link(p);
     end;
 @z
 

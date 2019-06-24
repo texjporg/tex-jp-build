@@ -362,13 +362,13 @@ else begin j:=str_start[s];
   end;
 end;
 @y
-@d slow_print_msg(#)==slow_print_inner(#,false)
+@d slow_print_msg(#)==slow_print_inner(#,0)
   {prints string |s| in \.{\\message}, \.{\\errmessage}}
-@d slow_print(#)==slow_print_inner(#,true)
+@d slow_print(#)==slow_print_inner(#,1)
   {prints filename or csname |s|}
 
 @<Basic print...@>=
-procedure slow_print_inner(@!s:integer; @!m:boolean);
+procedure slow_print_inner(@!s:integer; @!m:integer);
 var j:pool_pointer; {current character code position}
 old_is_print_raw: integer;
 begin if (s>=str_ptr) or (s<255) then print(s)
@@ -379,16 +379,20 @@ else begin j:=str_start[s];
   while j<str_start[s+1] do
     begin
     if so(str_pool[j])=@"FF then begin
-      if m then begin { |@"FF| is not a marker }
+      if m=1 then begin { |@"FF| is not a marker }
         is_print_raw:=false; print(@"FF); is_print_raw:=true;
         end
-      else { |@"FF| is a marker }
+      else if m=0 then { |@"FF| is a marker }
         begin if selector<new_string then print(@"FF); { file/term/log printing }
         incr(j);
         if j<str_start[s+1] then
-          if so(str_pool[j])=@"FF then is_print_raw:=false;
+          begin if so(str_pool[j])=@"FF then is_print_raw:=false;
           print(so(str_pool[j]));
           if so(str_pool[j])=@"FF then is_print_raw:=true;
+          end
+        end
+      else { |@"FF| is a marker; csname }
+        begin print(@"FF); 
         end
       end
     else print(so(str_pool[j]));
@@ -414,6 +418,22 @@ else
   wterm(' (');
   wterm(conststringcast(get_enc_string));
   wterm(')');
+@z
+
+@x
+procedure print_esc(@!s:str_number); {prints escape character, then |s|}
+var c:integer; {the escape character code}
+begin  @<Set variable |c| to the current escape character@>;
+if c>=0 then if c<256 then print(c);
+slow_print(s);
+end;
+@y
+procedure print_esc(@!s:str_number); {prints escape character, then |s|}
+var c:integer; {the escape character code}
+begin  @<Set variable |c| to the current escape character@>;
+if c>=0 then if c<256 then print(c);
+slow_print_inner(s, 2);
+end;
 @z
 
 @x
@@ -1721,8 +1741,9 @@ if j>0 then for i:=start to j-1 do
 if j>0 then begin is_print_raw:=true;
   for i:=start to j-1 do
     begin if i=loc then set_trick_count;
-    if buffer[i]=@"FF then
-      begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end;
+      { if (buffer[i]=@"FF)and(i<j-1) then
+        if buffer[i+1]=@"FF then
+          begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end; }
     print(buffer[i]);
     end;
   end
@@ -1949,12 +1970,25 @@ if k>loc+1 then {multiletter control sequence has been scanned}
   end;
 end
 @y
-@ @<Scan ahead in the buffer...@>=
-begin repeat cur_chr:=buffer[k]; incr(k);
+@ @d supply_ff_buffer==
+  begin l:=limit;
+  if l=buf_size then overflow("buffer size",buf_size);
+@:TeX capacity exceeded buffer size}{\quad buffer size@>
+  while l>=(k) do
+    begin buffer[l+1]:=buffer[l]; decr(l); end;
+  incr(limit); incr(first);
+  buffer[k]:=cur_chr; buffer[k-1]:=@"FF; incr(k);
+  end
+
+@<Scan ahead in the buffer...@>=
+begin
+  if (cat=letter)and(cur_chr>=@"80) then supply_ff_buffer;
+  repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); incr(k);
     end
   else cat:=cat_code(cur_chr);
+  if (cat=letter)and(cur_chr>=@"80) then supply_ff_buffer;
   while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
     begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
       begin d:=2;
@@ -1967,6 +2001,8 @@ begin repeat cur_chr:=buffer[k]; incr(k);
       else if c<@'100 then cur_chr:=c+@'100
       else cur_chr:=c-@'100;
       cat:=cat_code(cur_chr);
+      if (cat=letter)and(cur_chr>=@"80) then
+        begin buffer[k-1]:=@"FF; incr(k); decr(d); end;
       if (cat=letter)or(cat=sup_mark) then
         begin buffer[k-1]:=cur_chr;
         limit:=limit-d; first:=first-d;
@@ -1981,8 +2017,12 @@ until not((cat=letter)or(cat=kanji)or(cat=kana))or(k>limit);
 {@@<If an expanded...@@>;}
 if not((cat=letter)or(cat=kanji)or(cat=kana)) then decr(k);
 if cat=other_kchar then decr(k); {now |k| points to first nonletter}
-if k>loc+1 then {multiletter control sequence has been scanned}
-  begin cur_cs:=id_lookup(loc,k-loc); loc:=k; goto found;
+if k>loc+1 then begin {multiletter control sequence has been scanned}
+  if (k>loc+2)or(buffer[loc]<>@"FF)or(buffer[loc+1]<@"80) then
+    { actually one-character control sequence prefixed by |@"FF| }
+    begin cur_cs:=id_lookup(loc,k-loc); loc:=k; goto found;
+    end
+  else incr(loc);
   end;
 end
 @z
@@ -2088,6 +2128,9 @@ while p<>null do
     end;
   if check_kanji(info(p)) then {|wchar_token|}
     begin buffer[j]:=Hi(info(p)); incr(j);
+    end
+  else if Lo(info(p))>=@"80 then
+    begin buffer[j]:=@"FF; incr(j);
     end;
   buffer[j]:=Lo(info(p)); incr(j); p:=link(p);
   end;

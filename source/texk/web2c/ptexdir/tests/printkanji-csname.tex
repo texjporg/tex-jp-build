@@ -1,0 +1,30 @@
+\catcode`\^^c5=11
+\catcode`\^^be=11
+\catcode`\^^bf=11
+\catcode`\^^bd=11
+\catcode`\^^ff=11
+\font\x=ec-lmtt10 \x\scrollmode
+
+\def\^^c5^^bf{a}
+\def\顛{b}
+\message{\string\^^c5^^bf \string\^^ff^^c5}
+
+\^^ff^^c5;^^ff^^c5:\^^c5^^be;^^c5^^be:\^^c5^^bf;^^c5^^bf:\^^c5^^bd;^^c5^^bd:^^ff^^c5
+
+\ž.\ſ.\Ž.\転.\顛.\貼.
+
+SHOW \show\ſ \show\顛
+\expandafter\show\csname ſ\endcsname
+\expandafter\show\csname 顛\endcsname
+
+STRING \string\ſ \string\顛
+\expandafter\string\csname ſ\endcsname
+\expandafter\string\csname 顛\endcsname
+
+MEANING \meaning\ſ.\meaning\顛.%
+\expandafter\meaning\csname ſ\endcsname.%
+\expandafter\meaning\csname 顛\endcsname.%
+
+
+
+\bye
