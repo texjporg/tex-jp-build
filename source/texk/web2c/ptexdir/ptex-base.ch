@@ -125,7 +125,7 @@ var k,@!l:KANJI_code; {small indices or counters}
   (k<" ")or(k>"~")
 @y
 @<Character |k| cannot be printed@>=
-   not (ismultiprn(k) or xprn[k])
+  (k<" ")or(k>"~") { not (ismultiprn(k) or xprn[k]) }
 @z
 
 @x [5.54] l.1514 - pTeX: Global variables
@@ -335,7 +335,7 @@ else if s<256 then
         end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
-    if is_print_raw then print_char(s)
+    if ((s>=@"80)and is_print_raw)or(xprn[s]<>0) then print_char(s)
     else begin j:=str_start[s];
       while j<str_start[s+1] do
         begin print_char(so(str_pool[j])); incr(j);
@@ -370,32 +370,28 @@ end;
 @<Basic print...@>=
 procedure slow_print_inner(@!s:integer; @!m:integer);
 var j:pool_pointer; {current character code position}
-old_is_print_raw: integer;
-begin if (s>=str_ptr) or (s<255) then print(s)
-else if s=255 then
-  begin is_print_raw:=false; print(@"FF); end
+c: integer;
+begin if (s>=str_ptr) or (s<256) then 
+  begin is_print_raw:=false; print(s); end
 else begin j:=str_start[s];
-  is_print_raw:=true;
   while j<str_start[s+1] do
     begin
-    if so(str_pool[j])=@"FF then begin
+    c:=so(str_pool[j]); is_print_raw:=xprn[c]<>0;
+    if c=@"FF then begin
       if m=1 then begin { |@"FF| is not a marker }
-        is_print_raw:=false; print(@"FF); is_print_raw:=true;
+        print(@"FF);
         end
-      else if m=0 then { |@"FF| is a marker }
-        begin if selector<new_string then print(@"FF); { file/term/log printing }
-        incr(j);
-        if j<str_start[s+1] then
-          begin if so(str_pool[j])=@"FF then is_print_raw:=false;
-          print(so(str_pool[j]));
-          if so(str_pool[j])=@"FF then is_print_raw:=true;
-          end
-        end
-      else { |@"FF| is a marker; csname }
-        begin print(@"FF); 
+      else { |@"FF| is a marker }
+        begin incr(j); c:=so(str_pool[j]);
+        if j<str_start[s+1] then 
+          begin is_print_raw:=xprn[c]<>0; 
+          if is_print_raw then print_char(@"FF);
+          print(c); end;
         end
       end
-    else print(so(str_pool[j]));
+    else begin
+      is_print_raw:=(m<>1)or(xprn[c]<>0); print(so(str_pool[j]));
+      end;
     incr(j);
     end;
   end;
@@ -1738,13 +1734,15 @@ if j>0 then for i:=start to j-1 do
   print(buffer[i]);
   end
 @y
-if j>0 then begin is_print_raw:=true;
-  for i:=start to j-1 do
+if j>0 then begin is_print_raw:=true; i:=start;
+  while i<=j-1 do
     begin if i=loc then set_trick_count;
-      { if (buffer[i]=@"FF)and(i<j-1) then
-        if buffer[i+1]=@"FF then
-          begin is_print_raw:=false; print(@"FF); is_print_raw:=true; end; }
-    print(buffer[i]);
+    if (buffer[i]=@"FF)and(i<j-1) then 
+      begin incr(i); 
+      if xprn[buffer[i]]<>0 then print_char(@"FF) else is_print_raw:=false; 
+      print(buffer[i]); is_print_raw:=true; end
+    else print(buffer[i]);
+    incr(i);
     end;
   end
 @z
