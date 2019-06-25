@@ -1933,6 +1933,16 @@ begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
   end;
 end
 @y
+@d supply_ff_buffer==
+  begin l:=limit;
+  if l=buf_size then overflow("buffer size",buf_size);
+@:TeX capacity exceeded buffer size}{\quad buffer size@>
+  while l>=(k) do
+    begin buffer[l+1]:=buffer[l]; decr(l); end;
+  incr(limit); incr(first);
+  buffer[k]:=cur_chr; buffer[k-1]:=@"FF; incr(k);
+  end
+
 @<If an expanded...@>=
 begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
   begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
@@ -1953,6 +1963,7 @@ begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
     goto start_cs;
     end;
   end;
+  if buffer[loc]>=@"80 then begin supply_ff_buffer; incr(loc); end;
 end
 @z
 
@@ -1968,17 +1979,7 @@ if k>loc+1 then {multiletter control sequence has been scanned}
   end;
 end
 @y
-@ @d supply_ff_buffer==
-  begin l:=limit;
-  if l=buf_size then overflow("buffer size",buf_size);
-@:TeX capacity exceeded buffer size}{\quad buffer size@>
-  while l>=(k) do
-    begin buffer[l+1]:=buffer[l]; decr(l); end;
-  incr(limit); incr(first);
-  buffer[k]:=cur_chr; buffer[k-1]:=@"FF; incr(k);
-  end
-
-@<Scan ahead in the buffer...@>=
+@ @<Scan ahead in the buffer...@>=
 begin
   if (cat=letter)and(cur_chr>=@"80) then supply_ff_buffer;
   repeat cur_chr:=buffer[k]; incr(k);
