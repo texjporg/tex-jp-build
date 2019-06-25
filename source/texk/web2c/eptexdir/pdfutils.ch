@@ -26,14 +26,18 @@
 %%
 
 @x
-@* \[8] Packed data.
+\def\section{\mathhexbox278}
 @y
-@* \[7b] Random numbers.
-
+\def\section{\mathhexbox278}
 \font\tenlogo=logo10 % font used for the METAFONT logo
 \def\MP{{\tenlogo META}\-{\tenlogo POST}}
 \def\pdfTeX{pdf\TeX}
+@z
 
+@x
+@* \[8] Packed data.
+@y
+@* \[7b] Random numbers.
 This section is (almost) straight from MetaPost. I had to change
 the types (use |integer| instead of |fraction|), but that should
 not have any influence on the actual calculations (the original

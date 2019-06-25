@@ -125,7 +125,7 @@ var k,@!l:KANJI_code; {small indices or counters}
   (k<" ")or(k>"~")
 @y
 @<Character |k| cannot be printed@>=
-  (k<" ")or(k>"~") { not (ismultiprn(k) or xprn[k]) }
+  (not xprn[k])
 @z
 
 @x [5.54] l.1514 - pTeX: Global variables
@@ -178,6 +178,27 @@ no_print,pseudo,new_string: do_nothing;
 othercases write_ln(write_file[selector])
 endcases;@/
 kcode_pos:=0;
+@z
+
+@x [5.58]pTeX: print_char
+@ The |print_char| procedure sends one character to the desired destination,
+using the |xchr| array to map it into an external character compatible with
+|input_ln|. All printing comes through |print_ln| or |print_char|.
+@y
+@ The |print_char| procedure sends one character to the desired destination,
+using the |xchr| array to map it into an external character compatible with
+|input_ln|. All printing comes through |print_ln| or |print_char|.
+
+In (u)\pTeX, a byte whose value is greater than or equal to |@"80| can be
+a part of Japanese character, so it is usually printed ``directly''
+(might be coverted in ptexenc)..
+However, a byte which is preceded by |@"FF| is considered that it is not
+a part of Japanese character, so it won't converted by ptexenc.
+
+Global variable |is_print_raw| (defined later) controls several printing
+routines.
+If |is_print_raw| is false, then the argument |s| (assume $|s|\geq 128$)
+is not a part of Japanese character, so |@"FF| is printed just before |s|.
 @z
 
 @x [5.58] l.1557 - pTeX: kcode_pos, trick_buf2
@@ -280,6 +301,16 @@ incr(tally);
 exit:end;
 @z
 
+@x pTeX: print and is_print_raw
+routine when it knows that this is safe. (The present implementation
+assumes that it is always safe to print a visible ASCII character.)
+@^system dependencies@>
+@y
+routine when it knows that this is safe. (The present implementation
+assumes that it is always safe to print a visible ASCII character.)
+@^system dependencies@>
+@z
+
 @x l.1603 - pTeX
 @<Basic print...@>=
 procedure print(@!s:integer); {prints string |s|}
@@ -333,10 +364,11 @@ else if s<256 then
       if selector<pseudo then
         begin print_ln; return;
         end;
-    nl:=new_line_char; new_line_char:=-1;
-      {temporarily disable new-line character}
     if ((s>=@"80)and is_print_raw)or(xprn[s]<>0) then print_char(s)
-    else begin j:=str_start[s];
+    else begin 
+      nl:=new_line_char; new_line_char:=-1;
+      {temporarily disable new-line character}
+      j:=str_start[s];
       while j<str_start[s+1] do
         begin print_char(so(str_pool[j])); incr(j);
         end;
