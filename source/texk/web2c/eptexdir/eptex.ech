@@ -49,6 +49,31 @@
 @d banner_k==epTeX_banner_k
 @z
 
+@x e-pTeX: pseudo file
+is_print_raw: boolean;
+
+@ @<Set init...@>=
+is_print_raw:=false;
+@y
+is_print_raw: boolean;
+is_print_for_pseudo_file:boolean;
+
+@ @<Set init...@>=
+is_print_raw:=false; is_print_for_pseudo_file:=false;
+@z
+
+@x e-pTeX: pseudo file
+          begin is_print_raw:=xprn[c]<>0;
+          if is_print_raw then print_char(@"FF);
+          print(c); end;
+@y
+          begin if is_print_for_pseudo_file then is_print_raw:=true
+          else begin is_print_raw:=xprn[c]<>0; 
+            if is_print_raw then print_char(@"FF); end;
+          print(c);
+          end;
+@z
+
 @x
 @d max_quarterword=255 {largest allowable value in a |quarterword|}
 @y
@@ -613,6 +638,21 @@ othercases goto next_p
     mem[r+6]:=mem[p+6]; mem[r+5]:=mem[p+5]; {copy the last three words}
     add_glue_ref(space_ptr(r)); add_glue_ref(xspace_ptr(r));
 @z
+
+@x e-pTeX: pseudo_start
+old_setting:=selector; selector:=new_string;
+token_show(temp_head); selector:=old_setting;
+flush_list(link(temp_head));
+str_room(1); s:=make_string;
+@y
+old_setting:=selector; selector:=new_string;
+is_print_for_pseudo_file:=true;
+token_show(temp_head); selector:=old_setting;
+is_print_for_pseudo_file:=false;
+flush_list(link(temp_head));
+str_room(1); s:=make_string;
+@z
+
 
 @x e-pTeX: ifcsname l.28620
   buffer[m]:=info(p) mod @'400; incr(m); p:=link(p);
