@@ -2147,6 +2147,12 @@ while p<>null do
     end;
   buffer[j]:=info(p) mod @'400; incr(j); p:=link(p);
   end;
+if j>first+1 then
+  begin no_new_control_sequence:=false; cur_cs:=id_lookup(first,j-first);
+  no_new_control_sequence:=true;
+  end
+else if j=first then cur_cs:=null_cs {the list is empty}
+else cur_cs:=single_base+buffer[first] {the list has length one}
 @y
 @ @<Look up the characters of list |r| in the hash table...@>=
 j:=first; p:=link(r);
@@ -2165,6 +2171,15 @@ while p<>null do
     end;
   buffer[j]:=Lo(info(p)); incr(j); p:=link(p);
   end;
+if j>first+1 then
+  begin if (j>first+2)or(buffer[first]<>@"FF)or(buffer[first+1]<@"80) then
+    begin no_new_control_sequence:=false; cur_cs:=id_lookup(first,j-first);
+    no_new_control_sequence:=true;
+	end
+  else cur_cs:=single_base+buffer[first+1];
+  end
+else if j=first then cur_cs:=null_cs {the list is empty}
+else cur_cs:=single_base+buffer[first] {the list has length one}
 @z
 
 @x [25.380] l.8221 - pTeX: get_x_token
