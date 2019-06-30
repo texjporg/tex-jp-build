@@ -58,8 +58,10 @@ extern PTENCDLL boolean iskanji2(int c);
 
 /* internal (EUC/SJIS/UPTEX) from/to buffer (EUC/SJIS/UTF-8) code conversion */
 extern PTENCDLL int multistrlen(unsigned char *s, int len, int pos);
+extern PTENCDLL int multistrlenpool(unsigned short *s, int len, int pos);
 extern PTENCDLL int multibytelen (int first_byte);
 extern PTENCDLL long fromBUFF(unsigned char *s, int len, int pos);
+extern PTENCDLL long fromBUFFpool(unsigned short *s, int len, int pos);
 extern PTENCDLL long toBUFF(long inter);
 
 /* internal (EUC/SJIS/UPTEX) from/to DVI (JIS/UCS) code conversion */
@@ -81,8 +83,8 @@ extern PTENCDLL int putc2(int c, FILE *fp);
 extern PTENCDLL int fputs2(const char *s, FILE *fp);
 
 /* input line with encoding conversion */
-extern PTENCDLL long input_line2(FILE *fp, unsigned char *buff, long pos,
-				const long buffsize, int *lastchar);
+extern PTENCDLL long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2,
+                                long pos, const long buffsize, int *lastchar);
 
 /* set current encoding */
 extern PTENCDLL boolean setinfileenc(FILE *fp, const char *str);

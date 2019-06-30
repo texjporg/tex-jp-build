@@ -1360,7 +1360,11 @@ ipcpage (int is_eof)
     {
     unsigned i;
     for (i=0; i<len; i++)
+#if IS_pTeX
+      name[i] =  0xFF&strpool[i+strstart[outputfilename]];
+#else
       name[i] =  strpool[i+strstartar[outputfilename - 65536L]];
+#endif
     }
 #endif
     name[len] = 0;
@@ -2397,7 +2401,8 @@ input_line (FILE *f)
 
   /* Recognize either LF or CR as a line terminator.  */
 #if IS_pTeX
-  last = input_line2(f, (unsigned char *)buffer, first, bufsize, &i);
+  last = input_line2(f, (unsigned char *)buffer, (unsigned char *)buffer2,
+                     first, bufsize, &i);
 #else
 #ifdef WIN32
   if (f != Poptr && fileno (f) != fileno (stdin)) {
@@ -2931,13 +2936,17 @@ gettexstring (strnumber s)
   len = strstartar[s + 1 - 65536L] - strstartar[s - 65536L];
 #endif
   name = (string)xmalloc (len + 1);
-#if !defined(Aleph)
+#if !defined(Aleph) && !IS_pTeX
   strncpy (name, (string)&strpool[strstart[s]], len);
 #else
   {
   poolpointer i;
   /* Don't use strncpy.  The strpool is not made up of chars. */
+#if defined (IS_pTeX)
+  for (i=0; i<len; i++) name[i] =  0xFF&strpool[i+strstart[s]];
+#else
   for (i=0; i<len; i++) name[i] =  strpool[i+strstartar[s - 65536L]];
+#endif
   }
 #endif
   name[len] = 0;
@@ -3174,7 +3183,11 @@ char *makecstring(integer s)
     }
     p = cstrbuf;
     for (i = 0; i < l; i++)
+#if IS_pTeX
+        *p++ = 0xFF&strpool[i + strstart[s]];
+#else
         *p++ = strpool[i + strstart[s]];
+#endif
     *p = 0;
     return cstrbuf;
 }
@@ -3205,7 +3218,7 @@ char *makecfilename(integer s)
 void getcreationdate(void)
 {
     size_t len;
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     int i;
 #endif
     initstarttime();
@@ -3221,7 +3234,7 @@ void getcreationdate(void)
         return;
     }
 
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     for (i = 0; i < len; i++)
         strpool[poolptr++] = (uint16_t)start_time_str[i];
 #else
@@ -3257,7 +3270,7 @@ void getfilemoddate(integer s)
             poolptr = poolsize;
             /* error by str_toks that calls str_room(1) */
         } else {
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
             int i;
 
             for (i = 0; i < len; i++)
@@ -3305,7 +3318,7 @@ void getfilesize(integer s)
             poolptr = poolsize;
             /* error by str_toks that calls str_room(1) */
         } else {
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
             for (i = 0; i < len; i++)
                 strpool[poolptr++] = (uint16_t)buf[i];
 #else
@@ -3323,7 +3336,7 @@ void getfiledump(integer s, int offset, int length)
 {
     FILE *f;
     int read, i;
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     char *readbuffer, strbuf[3];
     int j, k;
 #else
@@ -3363,7 +3376,7 @@ void getfiledump(integer s, int offset, int length)
         xfree(file_name);
         return;
     }
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     readbuffer = (char *)xmalloc (length + 1);
     read = fread(readbuffer, sizeof(char), length, f);
     fclose(f);
@@ -3391,7 +3404,7 @@ void getfiledump(integer s, int offset, int length)
         check_nprintf(i, 3);
         poolptr += i;
     }
-#endif /* XeTeX */
+#endif /* XeTeX || IS_pTeX */
     xfree(file_name);
 }
 
@@ -3423,7 +3436,7 @@ void getmd5sum(strnumber s, boolean file)
     md5_byte_t digest[DIGEST_SIZE];
     char outbuf[2 * DIGEST_SIZE + 1];
     int len = 2 * DIGEST_SIZE;
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     char *xname;
     int i;
 #endif
@@ -3462,7 +3475,7 @@ void getmd5sum(strnumber s, boolean file)
     } else {
         /* s contains the data */
         md5_init(&state);
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
         xname = gettexstring (s);
         md5_append(&state,
                    (md5_byte_t *) xname,
@@ -3481,7 +3494,7 @@ void getmd5sum(strnumber s, boolean file)
         return;
     }
     convertStringToHexString((char *) digest, outbuf, DIGEST_SIZE);
-#if defined(XeTeX)
+#if defined(XeTeX) || IS_pTeX
     for (i = 0; i < 2 * DIGEST_SIZE; i++)
         strpool[poolptr++] = (uint16_t)outbuf[i];
 #else

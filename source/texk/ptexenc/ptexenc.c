@@ -270,6 +270,14 @@ int multistrlen(unsigned char *s, int len, int pos)
     return 1;
 }
 
+int multistrlenpool(unsigned short *s, int len, int pos)
+{
+    unsigned char sc[6];
+    s += pos; len -= pos;
+    for (int i=0;i<(len<6 ? len : 6);i++) sc[i]=0xFF&s[i];
+    return multistrlen(sc, (len<6 ? len : 6), 0);
+}
+
 /* with not so strict range check */
 int multibytelen (int first_byte)
 {
@@ -298,6 +306,14 @@ long fromBUFF(unsigned char *s, int len, int pos)
         if (isEUCkanji1(s[0])  && isEUCkanji2(s[1]))  return HILO(s[0], s[1]);
     }
     return s[0];
+}
+
+long fromBUFFpool(unsigned short *s, int len, int pos)
+{
+    unsigned char sc[6];
+    s += pos; len -= pos;
+    for (int i=0;i<(len<6 ? len : 6);i++) sc[i]=0xFF&s[i];
+    return fromBUFF(sc, (len<6 ? len : 6), 0);
 }
 
 /* internal (EUC/SJIS/UPTEX) to buffer (EUC/SJIS/UTF-8) code conversion */
@@ -481,7 +497,6 @@ int putc2(int c, FILE *fp)
     static unsigned char store[NOFILE][4];
     const int fd = fileno(fp);
     int ret = c, output_enc;
-
 #ifdef WIN32
     if ((fp == stdout || fp == stderr) && (_isatty(fd) || !prior_file_enc)) {
         output_enc = ENC_UTF8;
@@ -493,12 +508,18 @@ int putc2(int c, FILE *fp)
     } else
         output_enc = get_file_enc();
 #endif
-    if (num[fd] > 0) {        /* multi-byte char */
-        if (is_internalUPTEX() && iskanji1(c)) { /* error */
+    if (c<256) {
+        if (num[fd] < 0 && output_enc == ENC_JIS) {
+            put_multibyte(KANJI_OUT, fp);
+        }
+        ret = putc(c, fp);
+        num[fd] = 0;
+    } else if (num[fd] > 0) {        /* multi-byte char */
+        if (is_internalUPTEX() && iskanji1(c-256)) { /* error */
             ret = flush(store[fd], num[fd], fp);
             num[fd] = 0;
         }
-        store[fd][num[fd]] = c;
+        store[fd][num[fd]] = c-256;
         num[fd]++;
         if (multistrlen(store[fd], num[fd], 0) == num[fd]) {
             long i = fromBUFF(store[fd], num[fd], 0);
@@ -509,17 +530,17 @@ int putc2(int c, FILE *fp)
             ret = flush(store[fd], num[fd], fp);
             num[fd] = -1;
         }
-    } else if (iskanji1(c)) { /* first multi-byte char */
+    } else if (iskanji1(c-256)) { /* first multi-byte char */
         if (num[fd] == 0 && output_enc == ENC_JIS) {
             ret = put_multibyte(KANJI_IN, fp);
         }
-        store[fd][0] = c;
+        store[fd][0] = c-256;
         num[fd] = 1;
     } else {                  /* ASCII */
         if (num[fd] < 0 && output_enc == ENC_JIS) {
             put_multibyte(KANJI_OUT, fp);
         }
-        ret = putc(c, fp);
+        ret = putc(c-256, fp);
         num[fd] = 0;
     }
     return ret;
@@ -745,8 +766,8 @@ static int infile_enc[NOFILE]; /* ENC_UNKNOWN (=0): not determined
                                   other: determined */
 
 /* input line with encoding conversion */
-long input_line2(FILE *fp, unsigned char *buff, long pos,
-                 const long buffsize, int *lastchar)
+long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2, 
+                 long pos, const long buffsize, int *lastchar)
 {
     long i = 0;
     static boolean injis = false;
@@ -826,6 +847,7 @@ long input_line2(FILE *fp, unsigned char *buff, long pos,
     if (i == EOF || i == '\n' || i == '\r') injis = false;
     if (lastchar != NULL) *lastchar = i;
 
+    for (i=pos; i<=last; i++) buff2[i] = 0;
     return last;
 }
 

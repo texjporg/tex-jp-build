@@ -91,6 +91,21 @@
 @y
 @!ASCII_code=0..255; {eight-bit numbers}
 @!KANJI_code=0..65535; {sixteen-bit numbers}
+@!ext_ASCII_code=0..32768; { only use 0--511 }
+@z
+
+@x pTeX: xchr
+xchr: array [ASCII_code] of text_char;
+   { specifies conversion of output characters }
+@y
+xchr: array [ext_ASCII_code] of ext_ASCII_code;
+   { specifies conversion of output characters }
+@z
+
+@x pTeX: xchr
+for i:=@'177 to @'377 do xchr[i]:=i;
+@y
+for i:=@'177 to @'777 do xchr[i]:=i;
 @z
 
 @x [3.??] l.870 - pTeX:
@@ -108,6 +123,29 @@
 @ Kanji code handling.
 @z
 
+@x [3.??] pTeX
+@!buffer:^ASCII_code; {lines of characters being read}
+@y
+@!buffer:^ASCII_code; {lines of characters being read}
+@!buffer2:^ASCII_code;
+{ |buffer2[i]| is nonzero iff |buffer[i]| is part of a Japanese character }
+@z
+
+@x [4]
+@!packed_ASCII_code = 0..255; {elements of |str_pool| array}
+@y
+@!packed_ASCII_code = 0..32768; {elements of |str_pool| array}
+  { 256..511 are used by Japanese characters }
+@z
+
+@x [4] pTeX: str_eq_buf
+while j<str_start[s+1] do
+  begin if so(str_pool[j])<>buffer[k] then
+@y
+while j<str_start[s+1] do
+  begin if so(str_pool[j])<>buffer2[k]*@"100+buffer[k] then
+@z
+
 @x [4.47] l.1325 - pTeX:
 @!init function get_strings_started:boolean; {initializes the string pool,
   but returns |false| if something goes wrong}
@@ -120,19 +158,11 @@ label done,exit;
 var k,@!l:KANJI_code; {small indices or counters}
 @z
 
-@x [4.49] l.1384 - pTeX:
-@<Character |k| cannot be printed@>=
-  (k<" ")or(k>"~")
-@y
-@<Character |k| cannot be printed@>=
-   not (ismultiprn(k) or xprn[k])
-@z
-
 @x [5.54] l.1514 - pTeX: Global variables
 @!trick_buf:array[0..ssup_error_line] of ASCII_code; {circular buffer for
   pseudoprinting}
 @y
-@!trick_buf:array[0..ssup_error_line] of ASCII_code; {circular buffer for
+@!trick_buf:array[0..ssup_error_line] of ext_ASCII_code; {circular buffer for
   pseudoprinting}
 @!trick_buf2:array[0..ssup_error_line] of 0..2; {pTeX: buffer for KANJI}
 @!kcode_pos: 0..2; {pTeX: denotes whether first byte or second byte of KANJI}
@@ -206,14 +236,15 @@ term_only: begin wterm(xchr[s]); incr(term_offset);
 no_print: do_nothing;
 pseudo: if tally<trick_count then trick_buf[tally mod error_line]:=s;
 @y
-procedure print_char(@!s:ASCII_code); {prints a single character}
+procedure print_char(@!s:ext_ASCII_code); {prints a single character}
 label exit; {label is not used but nonetheless kept (for other changes?)}
 begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
-if kcode_pos=1 then kcode_pos:=2
-else if iskanji1(xchr[s]) then
+if s<256 then kcode_pos:=0
+else if kcode_pos=1 then kcode_pos:=2
+else if iskanji1(xchr[s-256]) then
   begin kcode_pos:=1;
   if (selector=term_and_log)or(selector=log_only) then
     if file_offset>=max_print_line-1 then
@@ -295,6 +326,7 @@ else if s<256 then
         end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
+    if (s>=@"100)or xprn[s] then begin print_char(s); return; end;
     j:=str_start[s];
     while j<str_start[s+1] do
       begin print_char(so(str_pool[j])); incr(j);
@@ -306,6 +338,30 @@ while j<str_start[s+1] do
   begin print_char(so(str_pool[j])); incr(j);
   end;
 exit:end;
+@z
+
+@x
+procedure slow_print(@!s:integer); {prints string |s|}
+var j:pool_pointer; {current character code position}
+begin if (s>=str_ptr) or (s<256) then print(s)
+else begin j:=str_start[s];
+  while j<str_start[s+1] do
+    begin print(so(str_pool[j])); incr(j);
+    end;
+  end;
+end;
+@y
+procedure slow_print(@!s:integer); {prints string |s|}
+var j:pool_pointer; {current character code position}
+c:integer;
+begin if (s>=str_ptr) or (s<256) then print(s)
+else begin j:=str_start[s];
+  while j<str_start[s+1] do
+    begin c:=so(str_pool[j]);
+    if c>=@"100 then print_char(c) else print(c); incr(j);
+    end;
+  end;
+end;
 @z
 
 @x [5.61] l.1656 - pTeX:
@@ -1428,14 +1484,20 @@ end;
 tats
 @z
 
-@x [17.???] l.???? - pTeX multibyte control symbol
+@x [18] buffer2
+for k:=j to j+l-1 do append_char(buffer[k]);
+@y
+for k:=j to j+l-1 do append_char(buffer2[k]*@"100+buffer[k]);
+@z
+
+@x [18.???] l.???? - pTeX multibyte control symbol
 procedure print_cs(@!p:integer); {prints a purported control sequence}
 @y
 procedure print_cs(@!p:integer); {prints a purported control sequence}
 var j, l:pool_pointer; @!cat:0..max_char_code;
 @z
 
-@x
+@x [18]
 else  begin print_esc(text(p));
   print_char(" ");
   end;
@@ -1443,8 +1505,8 @@ else  begin print_esc(text(p));
 else  begin l:=text(p);
   print_esc(l); j:=str_start[l]; l:=str_start[l+1];
   if l>j+1 then begin
-    if l-j=multistrlen(ustringcast(str_pool), l, j) then
-      begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(str_pool), l, j)));
+    if l-j=multistrlenpool(str_pool, l, j) then
+      begin cat:=kcat_code(kcatcodekey(fromBUFFpool(str_pool, l, j)));
       if (cat<>other_kchar) then print_char(" ");
       end
     else print_char(" "); end
@@ -1657,6 +1719,8 @@ begin switch: if loc<=limit then {current line not yet finished}
     if multistrlen(ustringcast(buffer), limit+1, loc-1)=2 then
       begin cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc-1);
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+      for c:=loc-1 to loc-2+multistrlen(ustringcast(buffer), limit+1, loc-1) do
+        buffer2[c]:=1;
       incr(loc);
       end
     else reswitch: cur_cmd:=cat_code(cur_chr);
@@ -1745,7 +1809,10 @@ end
 begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
 else  begin k:=loc; cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
-    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); incr(k);
+    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); 
+    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[c]:=1;
+    incr(k);
     end
   else cat:=cat_code(cur_chr);
 start_cs:
@@ -1808,10 +1875,10 @@ begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
       end
     else if c<@'100 then buffer[k-1]:=c+@'100
     else buffer[k-1]:=c-@'100;
-    limit:=limit-d; first:=first-d;
+    buffer2[k-1]:=0; limit:=limit-d; first:=first-d;
     l:=k; cur_chr:=buffer[k-1]; cat:=cat_code(cur_chr);
     while l<=limit do
-      begin buffer[l]:=buffer[l+d]; incr(l);
+      begin buffer[l]:=buffer[l+d]; buffer2[l]:=buffer2[l+d]; incr(l);
       end;
     goto start_cs;
     end;
@@ -1834,7 +1901,10 @@ end
 @ @<Scan ahead in the buffer...@>=
 begin repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
-    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); incr(k);
+    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
+    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[c]:=1;
+    incr(k);
     end
   else cat:=cat_code(cur_chr);
   while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
@@ -1850,11 +1920,11 @@ begin repeat cur_chr:=buffer[k]; incr(k);
       else cur_chr:=c-@'100;
       cat:=cat_code(cur_chr);
       if (cat=letter)or(cat=sup_mark) then
-        begin buffer[k-1]:=cur_chr;
+        begin buffer[k-1]:=cur_chr; buffer2[k-1]:=0;
         limit:=limit-d; first:=first-d;
         l:=k;
         while l<=limit do
-          begin buffer[l]:=buffer[l+d]; incr(l);
+          begin buffer[l]:=buffer[l+d]; buffer2[l]:=buffer2[l+d]; incr(l);
           end;
         end;
       end;
@@ -1958,6 +2028,12 @@ while p<>null do
     end;
   buffer[j]:=info(p) mod @'400; incr(j); p:=link(p);
   end;
+if j>first+1 then
+  begin no_new_control_sequence:=false; cur_cs:=id_lookup(first,j-first);
+  no_new_control_sequence:=true;
+  end
+else if j=first then cur_cs:=null_cs {the list is empty}
+else cur_cs:=single_base+buffer[first] {the list has length one}
 @y
 @ @<Look up the characters of list |r| in the hash table...@>=
 j:=first; p:=link(r);
@@ -1969,10 +2045,17 @@ while p<>null do
 @:TeX capacity exceeded buffer size}{\quad buffer size@>
     end;
   if check_kanji(info(p)) then {|wchar_token|}
-    begin buffer[j]:=Hi(info(p)); incr(j);
-    end;
+    begin buffer[j]:=Hi(info(p)); buffer2[j]:=1; incr(j); buffer2[j]:=1;
+    end
+  else buffer2[j]:=0;
   buffer[j]:=Lo(info(p)); incr(j); p:=link(p);
   end;
+if j>first+1 then
+  begin no_new_control_sequence:=false; cur_cs:=id_lookup(first,j-first);
+  no_new_control_sequence:=true;
+  end
+else if j=first then cur_cs:=null_cs {the list is empty}
+else cur_cs:=single_base+buffer[first] {the list has length one}
 @z
 
 @x [25.380] l.8221 - pTeX: get_x_token
@@ -2330,8 +2413,8 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
   if t=" " then t:=space_token
   else t:=other_token+t;
 @y
-  if multistrlen(ustringcast(str_pool), pool_ptr, k)=2 then
-    begin t:=fromBUFF(ustringcast(str_pool), pool_ptr, k); incr(k);
+  if t>=@"100 then 
+    begin t:=fromBUFFpool(str_pool, pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
   else t:=other_token+t;
@@ -2605,8 +2688,8 @@ skip_mode:=false;
 loop@+begin
   if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then {is kanji}
     begin str_room(2);
-    append_char(Hi(cur_chr)); {kanji upper byte}
-    append_char(Lo(cur_chr)); {kanji lower byte}
+    append_char(@"100+Hi(cur_chr)); {kanji upper byte}
+    append_char(@"100+Lo(cur_chr)); {kanji lower byte}
     end
   else if (cur_cmd>other_char)or(cur_chr>255) then {not an alphabet}
     begin back_input; goto done;
@@ -6191,6 +6274,24 @@ show_code: @<Show the current meaning of a token, then |goto common_ending|@>;
 show_mode: @<Show the current japanese processing mode@>;
 @z
 
+@x dump
+@!format_engine: ^text_char;
+@y
+@!w: four_quarters; {four ASCII codes}
+@!format_engine: ^text_char;
+@z
+
+@x undump
+@!format_engine: ^text_char;
+@!dummy_xord: ASCII_code;
+@!dummy_xchr: text_char;
+@y
+@!w: four_quarters; {four ASCII codes}
+@!format_engine: ^text_char;
+@!dummy_xord: ASCII_code;
+@!dummy_xchr: ext_ASCII_code;
+@z
+
 @x
 libc_free(format_engine);@/
 @y
@@ -6203,6 +6304,28 @@ libc_free(format_engine);
 @y
 libc_free(format_engine);
 undump_kanji(fmt_file);
+@z
+
+@x
+dump_things(str_pool[0], pool_ptr);
+@y
+for k:=0 to str_ptr do dump_int(str_start[k]);
+k:=0;
+while k+4<pool_ptr do
+  begin dump_four_ASCII; k:=k+4;
+  end;
+k:=pool_ptr-4; dump_four_ASCII;
+@z
+
+@x
+undump_things(str_pool[0], pool_ptr);
+@y
+for k:=0 to str_ptr do undump(0)(pool_ptr)(str_start[k]);
+k:=0;
+while k+4<pool_ptr do
+  begin undump_four_ASCII; k:=k+4;
+  end;
+k:=pool_ptr-4; undump_four_ASCII;
 @z
 
 @x l.24982
@@ -6262,6 +6385,13 @@ undump_things(ctype_base[null_font], font_ptr+1-null_font);
 undump_things(char_base[null_font], font_ptr+1-null_font);
 @z
 
+@x
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+@y
+  buffer:=xmalloc_array (ASCII_code, buf_size);
+  buffer2:=xmalloc_array (ASCII_code, buf_size);
+@z
+
 @x l.25363 - pTeX
   font_info:=xmalloc_array (fmemory_word, font_mem_size);
 @y
@@ -6315,6 +6445,19 @@ open_node:@<Implement \.{\\openout}@>;
 
 @ @<Set init...@>=
 @!debug debug_format_file:=true; @+gubed;
+@z
+
+@x pTeX: xchr
+  if eight_bit_p then
+    for k:=0 to 255 do
+      xprn[k]:=1;
+end;
+@y
+  if eight_bit_p then
+    for k:=0 to 255 do
+      xprn[k]:=1;
+end;
+for k:=256 to 511 do xchr[k]:=k;
 @z
 
 @x l.26984 - pTeX
@@ -7360,8 +7503,8 @@ skip_loop: do_nothing;
 @ @<Basic printing...@>=
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
 begin
-if s>255 then
-  begin print_char(Hi(s)); print_char(Lo(s));
+if s>@"FF then
+  begin print_char(@"100+Hi(s)); print_char(@"100+Lo(s));
   end else print_char(s);
 end;
 
