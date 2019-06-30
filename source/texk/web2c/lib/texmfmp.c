@@ -3337,7 +3337,7 @@ void getfiledump(integer s, int offset, int length)
     FILE *f;
     int read, i;
 #if defined(XeTeX) || IS_pTeX
-    char *readbuffer, strbuf[3];
+    unsigned char *readbuffer, strbuf[3];
     int j, k;
 #else
     poolpointer data_ptr;

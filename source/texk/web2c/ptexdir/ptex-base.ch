@@ -326,7 +326,7 @@ else if s<256 then
         end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
-    if (s>=@"100)or xprn[s] then begin print_char(s); return; end;
+    if xprn[s] then begin print_char(s); return; end;
     j:=str_start[s];
     while j<str_start[s+1] do
       begin print_char(so(str_pool[j])); incr(j);
@@ -1670,6 +1670,16 @@ print_ln;
 for q:=1 to n do print_char(" "); {print |n| spaces to begin line~2}
 if m+n<=error_line then p:=first_count+m else p:=first_count+(error_line-n-3);
 if trick_buf2[(p-1) mod error_line]=1 then p:=p-1;
+@z
+
+@x pTeX: buffer
+  begin if i=loc then set_trick_count;
+  print(buffer[i]);
+  end
+@y
+  begin if i=loc then set_trick_count;
+  if buffer2[i]>0 then print_char(256+buffer[i]) else print(buffer[i]);
+  end
 @z
 
 @x [22.319] l.7157 - pTeX: adjust kanji code token

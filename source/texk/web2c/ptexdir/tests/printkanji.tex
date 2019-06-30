@@ -1,6 +1,6 @@
 %\scrollmode
 \tracingstats=1000
-\noautoxspacing
+\noautoxspacing\scrollmode
 \newlinechar=`\^^J
 \font\x=ec-lmtt10 \x
 \immediate\openout1=\jobname.out
@@ -9,6 +9,7 @@
   \immediate\write17{\string{TOT #1\string}}%
   \immediate\write1{#1}%
 }
+\def\head#1{\message{■#1.}\par\noindent\hbox{■\null}#1.\par}
 \message{^^J}
 
 %================
@@ -20,7 +21,7 @@ A: \A
 
 %================
 \par
-\string\meaning.
+\head{\string\meaning}
 
 \edef\B{\meaning\A}
 \meaning\B
@@ -30,7 +31,7 @@ A: \A
 \show\B
 
 %================
-\jobname
+\head{\string\jobname}
 \edef\C{:\jobname:}
 \MSG{*あ*\jobname *\C*\meaning\C*}
 \message{^^J}
@@ -43,7 +44,7 @@ A: \A
 \catcode`\^^81=11
 \catcode`\^^82=11
 
-oneletter.
+\head{oneletter}
 
 \string\^^c4.\string\^^c5.\string\^^ff.
 \count0=`\^^c5%
@@ -56,7 +57,7 @@ oneletter.
 \MSG{\string\catcode`顛 = \the\count0}%
 
 %================
-csname.
+\head{csname1}
 
 {\def\顛{hoge}\def\^^c5^^bf{piyo}
 \show\顛
@@ -77,6 +78,7 @@ csname.
   \expandafter\string\csname 顛\endcsname.}
 
 %================
+
 \def\あ{hoge}
 \message{^^J}
 \def\TEST#1#2{%
@@ -98,7 +100,7 @@ csname.
 \fi
 
 %================
-0xFF.
+\head{0xFF}
 \catcode"FF=11
 \message{^^J}
 
@@ -115,7 +117,7 @@ csname.
 \immediate\closeout1
 
 %========
-\message{contexts.}
+\head{contexts}
 
 \errorcontextlines=10000
 \def\@{\A\undefined}
@@ -127,4 +129,40 @@ csname.
 \^^ff^^c5^^ff^^bf ^^c5^^bf \^^c5^^bf ſ顛\a \^^ff ^^ff\^^c5^^bf
 
 \^^c5\^^ff\^^c4\^^fe
+
+\catcode`\^^c5=11
+\catcode`\^^be=11
+\catcode`\^^bf=11
+\catcode`\^^bd=11
+\catcode`\^^ff=11
+\font\x=ec-lmtt10 \x\scrollmode
+
+\def\^^c5^^bf{a}
+\def\顛{b}
+\def\転{c}
+\message{\string\^^c5^^bf \string\^^ff^^c5}
+
+\def\b{\ž.\ſ.\Ž..\転.\顛.\貼.}
+\b
+
+\ž.\ſ.\Ž..\転.\顛.\貼.
+
+
+%========
+\head{csname2}
+
+SHOW \show\ſ.\show\顛.%
+\expandafter\show\csname ſ\endcsname.%
+\expandafter\show\csname 顛\endcsname
+
+STRING \string\ſ.\string\顛.%
+\expandafter\string\csname ſ\endcsname.%
+\expandafter\string\csname 顛\endcsname
+
+MEANING \meaning\ſ.\meaning\顛.%
+\expandafter\meaning\csname ſ\endcsname.%
+\expandafter\meaning\csname 顛\endcsname.%
+
+\message{\string\^^e3^^81^^82 \string\あ}
+
 \end

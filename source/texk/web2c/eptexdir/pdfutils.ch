@@ -1367,6 +1367,7 @@ procedure compare_strings; {to implement \.{\\pdfstrcmp}}
 label done;
 var s1, s2: str_number;
     i1, i2, j1, j2: pool_pointer;
+    c1, c2: integer;
     save_cur_cs: pointer;
 begin
     save_cur_cs:=cur_cs; call_func(scan_toks(false, true));
@@ -1380,14 +1381,10 @@ begin
     i2 := str_start[s2];
     j2 := str_start[s2 + 1];
     while (i1 < j1) and (i2 < j2) do begin
-        if str_pool[i1] < str_pool[i2] then begin
-            cur_val := -1;
-            goto done;
-        end;
-        if str_pool[i1] > str_pool[i2] then begin
-            cur_val := 1;
-            goto done;
-        end;
+        if str_pool[i1]>=@"100 then c1:=str_pool[i1]-@"100 else c1:=str_pool[i1];
+        if str_pool[i2]>=@"100 then c2:=str_pool[i2]-@"100 else c2:=str_pool[i2];
+        if c1<c2 then begin cur_val := -1; goto done; end
+        else if c1>c2 then begin cur_val := 1; goto done; end;
         incr(i1);
         incr(i2);
     end;
