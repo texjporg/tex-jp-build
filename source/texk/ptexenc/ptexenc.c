@@ -253,30 +253,25 @@ boolean iskanji2(int c)
 }
 
 /* multi-byte char length in s[pos] */
-int multistrlen(unsigned char *s, int len, int pos)
-{
-    s += pos; len -= pos;
-    if (is_internalUPTEX()) {
-        int ret = UTF8Slength(s, len);
-        if (ret < 0) return 1;
-        return ret;
-    }
-    if (len < 2) return 1;
-    if (is_internalSJIS()) {
-        if (isSJISkanji1(s[0]) && isSJISkanji2(s[1])) return 2;
-    } else { /* EUC */
-        if (isEUCkanji1(s[0])  && isEUCkanji2(s[1]))  return 2;
-    }
-    return 1;
+#define DEFINE_MULTISTRLEN(SUFF,TYPE) \
+int multistrlen ## SUFF(TYPE *s, int len, int pos) \
+{ \
+    s += pos; len -= pos; \
+    if (is_internalUPTEX()) { \
+        int ret = UTF8Slength ## SUFF(s, len); \
+        if (ret < 0) return 1; \
+        return ret; \
+    } \
+    if (len < 2) return 1; \
+    if (is_internalSJIS()) { \
+        if (isSJISkanji1(s[0]) && isSJISkanji2(s[1])) return 2; \
+    } else { /* EUC */ \
+        if (isEUCkanji1(s[0])  && isEUCkanji2(s[1]))  return 2; \
+    } \
+    return 1; \
 }
-
-int multistrlenpool(unsigned short *s, int len, int pos)
-{
-    unsigned char sc[6];
-    s += pos; len -= pos;
-    for (int i=0;i<(len<6 ? len : 6);i++) sc[i]=0xFF&s[i];
-    return multistrlen(sc, (len<6 ? len : 6), 0);
-}
+DEFINE_MULTISTRLEN(,unsigned char);
+DEFINE_MULTISTRLEN(short,unsigned short);
 
 /* with not so strict range check */
 int multibytelen (int first_byte)
@@ -308,7 +303,7 @@ long fromBUFF(unsigned char *s, int len, int pos)
     return s[0];
 }
 
-long fromBUFFpool(unsigned short *s, int len, int pos)
+long fromBUFFshort(unsigned short *s, int len, int pos)
 {
     unsigned char sc[6];
     s += pos; len -= pos;

@@ -1505,8 +1505,8 @@ else  begin print_esc(text(p));
 else  begin l:=text(p);
   print_esc(l); j:=str_start[l]; l:=str_start[l+1];
   if l>j+1 then begin
-    if l-j=multistrlenpool(str_pool, l, j) then
-      begin cat:=kcat_code(kcatcodekey(fromBUFFpool(str_pool, l, j)));
+    if l-j=multistrlenshort(str_pool, l, j) then
+      begin cat:=kcat_code(kcatcodekey(fromBUFFshort(str_pool, l, j)));
       if (cat<>other_kchar) then print_char(" ");
       end
     else print_char(" "); end
@@ -2414,7 +2414,7 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
   else t:=other_token+t;
 @y
   if t>=@"100 then 
-    begin t:=fromBUFFpool(str_pool, pool_ptr, k); incr(k);
+    begin t:=fromBUFFshort(str_pool, pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
   else t:=other_token+t;

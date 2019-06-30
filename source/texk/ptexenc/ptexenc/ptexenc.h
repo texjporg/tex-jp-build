@@ -58,10 +58,10 @@ extern PTENCDLL boolean iskanji2(int c);
 
 /* internal (EUC/SJIS/UPTEX) from/to buffer (EUC/SJIS/UTF-8) code conversion */
 extern PTENCDLL int multistrlen(unsigned char *s, int len, int pos);
-extern PTENCDLL int multistrlenpool(unsigned short *s, int len, int pos);
+extern PTENCDLL int multistrlenshort(unsigned short *s, int len, int pos);
 extern PTENCDLL int multibytelen (int first_byte);
 extern PTENCDLL long fromBUFF(unsigned char *s, int len, int pos);
-extern PTENCDLL long fromBUFFpool(unsigned short *s, int len, int pos);
+extern PTENCDLL long fromBUFFshort(unsigned short *s, int len, int pos);
 extern PTENCDLL long toBUFF(long inter);
 
 /* internal (EUC/SJIS/UPTEX) from/to DVI (JIS/UCS) code conversion */

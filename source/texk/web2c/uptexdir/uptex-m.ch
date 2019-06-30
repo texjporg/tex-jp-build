@@ -619,7 +619,7 @@ p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
   begin t:=so(str_pool[k]);
   if t>=@"100 then 
-    begin t:=fromBUFFpool(str_pool, pool_ptr, k); incr(k);
+    begin t:=fromBUFFshort(str_pool, pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
   else t:=other_token+t;
@@ -632,10 +632,10 @@ p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
   begin  t:=so(str_pool[k]);
   if t>=@"100 then
-    begin t:=fromBUFFpool(str_pool, pool_ptr, k); cc:=kcat_code(kcatcodekey(t));
+    begin t:=fromBUFFshort(str_pool, pool_ptr, k); cc:=kcat_code(kcatcodekey(t));
     if (cc=not_cjk) then cc:=other_kchar;
     t:=t+cc*max_cjk_val;
-    k:=k+multistrlenpool(str_pool, pool_ptr, k)-1;
+    k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
     end
   else begin t:=so(str_pool[k]);
     if t=" " then t:=space_token

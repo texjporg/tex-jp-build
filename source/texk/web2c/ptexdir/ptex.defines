@@ -7,9 +7,9 @@
 
 @define function iskanji1 ();
 @define function multistrlen ();
-@define function multistrlenpool ();
+@define function multistrlenshort ();
 @define function fromBUFF ();
-@define function fromBUFFpool ();
+@define function fromBUFFshort ();
 @define function toBUFF ();
 
 @define function fromDVI ();
