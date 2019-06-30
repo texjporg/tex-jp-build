@@ -842,7 +842,9 @@ long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2,
     if (i == EOF || i == '\n' || i == '\r') injis = false;
     if (lastchar != NULL) *lastchar = i;
 
-    for (i=pos; i<=last; i++) buff2[i] = 0;
+    if (buff2!= NULL) for (i=pos; i<=last; i++) buff2[i] = 0;
+    /* buff2 is initialized */
+
     return last;
 }
 
