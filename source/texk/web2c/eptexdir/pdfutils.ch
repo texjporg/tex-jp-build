@@ -1073,15 +1073,10 @@ normal_deviate_code:      print_int(norm_rand);
 @x e-pTeX: if primitives - leave room for \ifincsname
 @d if_tdir_code=if_case_code+4 { `\.{\\iftdir}' }
 @y
-@d if_tdir_code=if_case_code+5 { `\.{\\iftdir}' }
-@z
-
-@x \[if]pdfprimitive
-@d if_mbox_code=if_dbox_code+1 { `\.{\\ifmbox}' }
-@y
-@d if_mbox_code=if_dbox_code+1 { `\.{\\ifmbox}' }
+@d if_in_csname_code=20 { `\.{\\ifincsname}';  |if_font_char_code| + 1 }
+@d if_pdfprimitive_code=21 { `\.{\\ifpdfprimitive}' }
 @#
-@d if_pdfprimitive_code=if_mbox_code+1 { `\.{\\ifpdfprimitive}' }
+@d if_tdir_code=if_pdfprimitive_code+1 { `\.{\\iftdir}' }
 @z
 
 @x \[if]pdfprimitive
@@ -1345,13 +1340,6 @@ pdf_shell_escape_code:
   end;
 elapsed_time_code: cur_val := get_microinterval;
 random_seed_code:  cur_val := random_seed;
-@z
-
-@x \ifincsname
-@d if_font_char_code=19 { `\.{\\iffontchar}' }
-@y
-@d if_font_char_code=19 { `\.{\\iffontchar}' }
-@d if_in_csname_code=20 { `\.{\\ifincsname}' }
 @z
 
 @x
