@@ -1,3 +1,8 @@
+2019-07-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: Add primitive \ifincsname.
+	* eptex.ech, eptex_version.h: e-pTeX version 190709.
+
 2019-05-28  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* am/eptex.am: Add a new test.
