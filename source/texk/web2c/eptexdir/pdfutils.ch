@@ -24,6 +24,8 @@
 %%
 %% \pdfelapsedtime and \pdfresettimer
 %%
+%% \expanded
+%%
 %% \ifincsname
 
 @x
