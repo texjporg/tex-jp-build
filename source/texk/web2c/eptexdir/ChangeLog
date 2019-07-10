@@ -7,7 +7,7 @@
 	    - c >= 0: true iff is_font_kanji(c)
 	    - c < 0: true iff f has char_type -(c+1)
 	  - \fontcharwd (Japanese font f) (number c):
-	    - c >= 0: return thw width of character c
+	    - c >= 0: return the width of character c
 	    - c < 0: return the width of char_type -(c+1)
 	* tests/fontchar.{sh,tex}, tests/zero_search.tex: Added.
 	* eptex.ech, eptex_version.h: e-pTeX version 190709.
