@@ -1378,12 +1378,11 @@ if_cs_code:begin n:=get_avail; p:=n; {head of the list of characters}
 @z
 
 @x
-if_font_char_code:begin scan_font_ident; n:=cur_val; scan_char_num;
+if_font_char_code:begin scan_font_ident; n:=cur_val;
 @y
 if_in_csname_code: b := is_in_csname;
-if_font_char_code:begin scan_font_ident; n:=cur_val; scan_char_num;
+if_font_char_code:begin scan_font_ident; n:=cur_val;
 @z
-
 
 @x
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
