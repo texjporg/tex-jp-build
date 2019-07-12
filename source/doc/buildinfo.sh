@@ -12,15 +12,35 @@ fi
 
 printf 'UNAME\t"%s"\n'    "`uname -a`"
 
-# /etc/issue often contains only placeholders, so don't bother.
+# /etc/issue often contains only placeholders, so don't bother with it.
 
+# Return version identification for $1, by calling it with --version.
+# gcc on Macs, when linked to cc, has a useless "Configured with:" as
+# the first line. Likely we'll need to generalize for other compilers.
+# We intentionally don't quote $1 in case CC was set to something like
+# "cc --someopt".
+compiler_version () {
+  $1 --version 2>&1 | grep -v '^Configured' | sed 1q
+}
+
+printf 'MAKE\t"%s"\n'     "${MAKE-make}"
 printf 'MAKE-v\t"%s"\n'   "`${MAKE-make} -v 2>&1 | sed 1q`"
 # BSD make does not give version info with -v, but the
 # first line of the usage message is sort of an identifier.
 
-# our configure defaults to using gcc and g++.
-printf 'CC-v\t"%s"\n'     "`${CC-gcc} --version 2>&1 | sed 1q`"
-printf 'CXX-v\t"%s"\n'    "`${CXX-g++} --version 2>&1 | sed 1q`"
+# our configure defaults to using gcc and g++, so we will too.
+printf 'CC\t"%s"\n'       "${CC-gcc}"
+printf 'CFLAGS\t"%s"\n'   "${CFLAGS}"
+printf 'CC-v\t"%s"\n'     "`compiler_version ${CC-gcc}`"
+# 
+printf 'CXX\t"%s"\n'      "${CXX-g++}"
+printf 'CXXFLAGS\t"%s"\n' "${CXXFLAGS}"
+printf 'CXX-v\t"%s"\n'    "`compiler_version ${CXX-g++}`"
+#
+printf 'OBJCXX\t"%s"\n'      "${OBJCXX-cc}"
+printf 'OBJCXXFLAGS\t"%s"\n' "${OBJCXXFLAGS}"
+#
+printf 'LDFLAGS\t"%s"\n'  "${LDFLAGS}"
 
 # Some Linux-based systems provide this, but don't worry if not there.
 # Let's hope that other systems are sufficiently identified by uname,

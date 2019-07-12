@@ -1,0 +1,97 @@
+This is e-upTeX, Version 3.14159265-p3.8.3-u1.25-190131-2.6 (utf8.uptex) (TeX Live 2020/dev) (preloaded format=euptex 2019.6.26)  26 JUN 2019 00:19
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+ (./utf8.tcx)
+**printkanji-csname.tex
+(./printkanji-csname.tex
+\ſ\^^ff�
+! Undefined control sequence.
+l.12 \^^ff�
+           ;^^ff^^c5:\^^c5^^be;^^c5^^be:\^^c5^^bf;^^c5^^bf:\^^c5^^bd;^^c5^^b...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.12 \^^ff�;^^ff^^c5:\ž
+                        ;^^c5^^be:\^^c5^^bf;^^c5^^bf:\^^c5^^bd;^^c5^^bd:^^ff...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.12 ...ff^^c5:\ž;^^c5^^be:\ſ;^^c5^^bf:\Ž
+                                            ;^^c5^^bd:^^ff^^c5
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.14 \ž
+        .\ſ.\Ž.\転.\顛.\貼.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.14 \ž.\ſ.\Ž
+                .\転.\顛.\貼.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.14 \ž.\ſ.\Ž.\転
+                     .\顛.\貼.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.14 \ž.\ſ.\Ž.\転.\顛.\貼
+                               .
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+> \ſ=macro:
+->a.
+l.16 SHOW \show\ſ
+                   \show\顛
+
+> \顛=macro:
+->b.
+l.16 SHOW \show\ſ \show\顛
+                            
+
+> \ſ=macro:
+->a.
+<recently read> \ſ 
+                    
+l.17 \expandafter\show\csname ſ\endcsname
+                                          
+
+> \顛=macro:
+->b.
+<recently read> \顛 
+                     
+l.18 \expandafter\show\csname 顛\endcsname
+                                           
+
+\あ \あ [1] )
+Output written on printkanji-csname.dvi (1 page, 460 bytes).
