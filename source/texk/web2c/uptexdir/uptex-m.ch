@@ -385,8 +385,8 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
     if multistrlen(ustringcast(buffer), limit+1, loc-1)=2 then
       begin cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc-1);
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
-      for c:=loc-1 to loc-2+multistrlen(ustringcast(buffer), limit+1, loc-1) do
-        buffer2[c]:=1;
+      for l:=loc-1 to loc-2+multistrlen(ustringcast(buffer), limit+1, loc-1) do
+        buffer2[l]:=1;
       incr(loc);
       end
     else reswitch: cur_cmd:=cat_code(cur_chr);
@@ -396,8 +396,8 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
     cur_cmd:=kcat_code(kcatcodekey(cur_chr));
     if (multistrlen(ustringcast(buffer), limit+1, loc)>1) and check_kcat_code(cur_cmd) then begin
       if (cur_cmd=not_cjk) then cur_cmd:=other_kchar;
-      for c:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
-        buffer2[c]:=1;
+      for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
+        buffer2[l]:=1;
       loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc) end
     else begin
       cur_chr:=buffer[loc]; incr(loc);
@@ -430,8 +430,8 @@ hangul_code(skip_blanks),hangul_code(new_line),hangul_code(mid_kanji):
 else  begin k:=loc; cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
-    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
-      buffer2[c]:=1;
+    for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[l]:=1;
     incr(k);
     end
   else cat:=cat_code(cur_chr);
@@ -443,8 +443,8 @@ else  begin k:=loc;
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat) then begin
     if (cat=not_cjk) then cat:=other_kchar;
-    for c:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[c]:=1;
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=1;
     k:=k+multistrlen(ustringcast(buffer), limit+1, k) end
   else begin {not multi-byte char}
     cur_chr:=buffer[k];
@@ -471,8 +471,8 @@ start_cs:
 begin repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
-    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
-      buffer2[c]:=1;
+    for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[l]:=1;
     incr(k);
     end
   else cat:=cat_code(cur_chr);
@@ -482,8 +482,8 @@ begin repeat
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat) then begin
     if (cat=not_cjk) then cat:=other_kchar;
-    for c:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[c]:=1;
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=1;
     k:=k+multistrlen(ustringcast(buffer), limit+1, k) end
   else begin {not multi-byte char}
     cur_chr:=buffer[k];

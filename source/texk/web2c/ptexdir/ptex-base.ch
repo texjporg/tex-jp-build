@@ -1729,8 +1729,8 @@ begin switch: if loc<=limit then {current line not yet finished}
     if multistrlen(ustringcast(buffer), limit+1, loc-1)=2 then
       begin cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc-1);
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
-      for c:=loc-1 to loc-2+multistrlen(ustringcast(buffer), limit+1, loc-1) do
-        buffer2[c]:=1;
+      for l:=loc-1 to loc-2+multistrlen(ustringcast(buffer), limit+1, loc-1) do
+        buffer2[l]:=1;
       incr(loc);
       end
     else reswitch: cur_cmd:=cat_code(cur_chr);
@@ -1820,8 +1820,8 @@ begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
 else  begin k:=loc; cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); 
-    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
-      buffer2[c]:=1;
+    for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[l]:=1;
     incr(k);
     end
   else cat:=cat_code(cur_chr);
@@ -1912,8 +1912,8 @@ end
 begin repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
-    for c:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
-      buffer2[c]:=1;
+    for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
+      buffer2[l]:=1;
     incr(k);
     end
   else cat:=cat_code(cur_chr);
