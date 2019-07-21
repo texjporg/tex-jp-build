@@ -1505,7 +1505,7 @@ else  begin print_esc(text(p));
 else  begin l:=text(p);
   print_esc(l); j:=str_start[l]; l:=str_start[l+1];
   if l>j+1 then begin
-    if l-j=multistrlenshort(str_pool, l, j) then
+    if (str_pool[j]>=@"100)and(l-j=multistrlenshort(str_pool, l, j)) then
       begin cat:=kcat_code(kcatcodekey(fromBUFFshort(str_pool, l, j)));
       if (cat<>other_kchar) then print_char(" ");
       end
