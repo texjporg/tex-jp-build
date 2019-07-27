@@ -4773,6 +4773,15 @@ if ((head=tail) and (mode>0)) then begin
 end;
 adjust_space_factor;@/
 if direction=dir_tate then disp:=t_baseline_shift else disp:=y_baseline_shift;
+if last_jchr<>null then
+  begin if is_char_node(tail) then
+    begin if link(last_jchr)=tail then { Kanji -> Ascii }
+      @<Insert |pre_break_penalty| of |cur_chr|@>;
+    end
+  else if (type(tail)=penalty_node)and(subtype(tail)=kinsoku_pena)
+    and(link(link(last_jchr))=tail) then { Kanji -> kinsoku -> Ascii }
+      @<Insert |pre_break_penalty| of |cur_chr|@>;
+  end;
 @<Append |disp_node| at begin of displace area@>;
 @z
 
@@ -7267,7 +7276,6 @@ again_2:
   endcases;
 @#
 main_loop_j+3:
-  if ins_kp=true then @<Insert |pre_break_penalty| of |cur_chr|@>;
   if main_f<>null_font then 
     begin @<Look ahead for glue or kerning@>;
     end
