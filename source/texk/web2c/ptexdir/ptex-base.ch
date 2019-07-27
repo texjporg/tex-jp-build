@@ -7204,14 +7204,6 @@ end;
 @ This section is a part of |main_control|.
 
 @<Append KANJI-character |cur_chr| ...@>=
-if is_char_node(tail) then
-  begin if not( (last_jchr<>null) and (link(last_jchr)=tail) ) then
-    begin cx:=qo(character(tail)); @<Insert |post_break_penalty|@>;
-    end;
-  end
-else if type(tail)=ligature_node then
-  begin cx:=qo(character(lig_char(tail))); @<Insert |post_break_penalty|@>;
-  end;
 if direction=dir_tate then
   begin if font_dir[main_f]=dir_tate then disp:=0
   else if font_dir[main_f]=dir_yoko then disp:=t_baseline_shift-y_baseline_shift
@@ -7223,6 +7215,17 @@ else
   else if font_dir[main_f]=dir_tate then disp:=y_baseline_shift-t_baseline_shift
   else disp:=y_baseline_shift;
   main_f:=cur_jfont;
+  end;
+if (type(tail)=disp_node)and(prev_node<>null)and(link(prev_node)=tail) then
+  begin disp:=disp_dimen(tail); gp:=prev_node; end
+else gp:=tail;
+if is_char_node(gp) then
+  begin if not( (last_jchr<>null) and (link(last_jchr)=gp) ) then
+    begin cx:=qo(character(gp)); @<Insert |post_break_penalty|@>;
+    end;
+  end
+else if type(gp)=ligature_node then
+  begin cx:=qo(character(lig_char(gp))); @<Insert |post_break_penalty|@>;
   end;
 @<Append |disp_node| at end of displace area@>;
 ins_kp:=false; ligature_present:=false;

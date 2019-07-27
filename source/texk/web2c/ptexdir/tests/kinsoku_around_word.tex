@@ -8,17 +8,45 @@
 \postbreakpenalty`\^^L=601
 \postbreakpenalty`漢=6020
 \prebreakpenalty`字=4020
+%\ybaselineshift=1pt
 
-\setbox0=\hbox{.漢\relax.漢\null.漢.A{}.漢{}.\showlists}
-\setbox0=\hbox{.字\relax.字\null.字.A{}.字{}.\showlists}
+%\setbox0=\hbox{.漢\relax.漢\null.漢.A{}.漢{}.\showlists}
+%\setbox0=\hbox{.字\relax.字\null.字.A{}.字{}.\showlists}
 
-\setbox0=\hbox{,漢,\relax 漢\null,漢{},\showlists}
-\setbox0=\hbox{,字,\relax 字\null,字{},\showlists}
+%\setbox0=\hbox{,漢,\relax 漢\null,漢{},\showlists}
+%\setbox0=\hbox{,字,\relax 字\null,字{},\showlists}
 
-\setbox0=\hbox{あ.\null {あ}.\null あ{.}\null{あ}{.}\showlists}
-\setbox0=\hbox{,あ\null ,{あ}\null {,}あ\null{,}{あ}\showlists}
+\setbox0=\hbox{あ.\showlists}%    => 901 期待
+\setbox0=\hbox{{あ}.\showlists}%  => 901 期待
+\setbox0=\hbox{あ{.}\showlists}%  => 901 期待
+\setbox0=\hbox{{あ}{.}\showlists}%=> 901 期待
 
-\setbox0=\hbox{漢f漢fi字\showlists}
+\setbox0=\hbox{,あ\showlists}%    => 801 期待
+\setbox0=\hbox{,{あ}\showlists}%  => 801 期待
+\setbox0=\hbox{{,}あ\showlists}%  => 801 期待
+\setbox0=\hbox{{,}{あ}\showlists}%=> 801 期待
+
+{\ybaselineshift=1pt
+\setbox0=\hbox{あ.\showlists}%    => 901 期待
+\setbox0=\hbox{{あ}.\showlists}%  => 901 期待
+\setbox0=\hbox{あ{.}\showlists}%  => 901 期待
+\setbox0=\hbox{{あ}{.}\showlists}%=> 901 期待
+
+\setbox0=\hbox{,あ\showlists}%    => 801 期待
+\setbox0=\hbox{,{あ}\showlists}%  => 801 期待
+\setbox0=\hbox{{,}あ\showlists}%  => 801 期待
+\setbox0=\hbox{{,}{あ}\showlists}%=> 801 期待
+
+\setbox0=\hbox{fiあ\showlists}%    => 
+\setbox0=\hbox{fi{あ}\showlists}%  => 
+\setbox0=\hbox{{fi}あ\showlists}%  => 
+\setbox0=\hbox{{fi}{あ}\showlists}%=> 
+}
+
+
+\setbox0=\hbox{漢f\showlists} % => 6721 (= 6020 + 701)
+\setbox0=\hbox{fi字\showlists}% => 4621 (= 4020 + 601)
+
 
 
 \bye
