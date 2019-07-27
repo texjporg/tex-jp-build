@@ -7219,6 +7219,7 @@ else
 if (type(tail)=disp_node)and(prev_node<>null)and(link(prev_node)=tail) then
   begin disp:=disp_dimen(tail); gp:=prev_node; end
 else gp:=tail;
+@<Append |disp_node| at end of displace area@>;
 if is_char_node(gp) then
   begin if not( (last_jchr<>null) and (link(last_jchr)=gp) ) then
     begin cx:=qo(character(gp)); @<Insert |post_break_penalty|@>;
@@ -7227,7 +7228,6 @@ if is_char_node(gp) then
 else if type(gp)=ligature_node then
   begin cx:=qo(character(lig_char(gp))); @<Insert |post_break_penalty|@>;
   end;
-@<Append |disp_node| at end of displace area@>;
 ins_kp:=false; ligature_present:=false;
 cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
 main_i:=orig_char_info(main_f)(qi(0));
