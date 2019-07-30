@@ -4780,11 +4780,10 @@ if last_jchr<>null then
     end
   else if (type(tail)=penalty_node)and(subtype(tail)=kinsoku_pena)
     and(link(link(last_jchr))=tail) then { Kanji -> kinsoku -> Ascii }
-      gp:=null
+      gp:=tail
   else gp:=null;
   end
 else gp:=null;
-@<Append |disp_node| at begin of displace area@>;
 @z
 
 @x [46.1035] - pTeX: kinsoku penalty
@@ -4793,8 +4792,9 @@ else gp:=null;
   if gp<>null then 
     begin
     print_nl("P<"); print_char(cur_l); print(":"); print_int(cur_l); print("L>");
-    gq:=tail; tail:=cur_q; insert_pre_break_penalty(cur_l);
-    link(tail):=link(cur_q); cur_q:=tail; tail:=gq; gp:=null;
+    gq:=tail; tail:=gp; t:=link(gp); insert_pre_break_penalty(cur_l);
+    append_disp_begin; link(tail):=t; if cur_q=gp then cur_q:=tail; 
+    tail:=gq; gp:=null;
     end;
   link(cur_q):=main_p; tail:=main_p; ligature_present:=false;
 @z
@@ -4812,8 +4812,8 @@ else gp:=null;
   else if gp<>null then 
     begin 
     print("W<"); print_char(cur_l); print(":"); print_int(cur_l); print(">");
-    gq:=tail; tail:=gp; insert_pre_break_penalty(cur_l);
-    link(tail):=gq; tail:=gq; gp:=null;
+    gq:=tail; tail:=gp; t:=link(gp); insert_pre_break_penalty(cur_l);
+    append_disp_begin; link(tail):=t; tail:=gq; gp:=null;
     end;
 @z
 
@@ -7323,20 +7323,23 @@ main_loop_j+3:
     goto reswitch;
   end;
 
-@ @<Append |disp_node| at begin ...@>=
-begin if not is_char_node(tail)and(type(tail)=disp_node) then
-  begin if prev_disp=disp then
-    begin free_node(tail,small_node_size); tail:=prev_node; link(tail):=null;
+@ @d append_disp_begin==
+  begin if not is_char_node(tail)and(type(tail)=disp_node) then
+    begin if prev_disp=disp then
+      begin free_node(tail,small_node_size); tail:=prev_node; link(tail):=null;
+      end
+    else disp_dimen(tail):=disp;
     end
-  else disp_dimen(tail):=disp;
+  else
+    if disp<>0 or not disp_called then
+      begin prev_node:=tail; tail_append(get_node(small_node_size));
+      type(tail):=disp_node; disp_dimen(tail):=disp; prev_disp:=disp;
+      disp_called:=true
+      end;
   end
-else
-  if disp<>0 or not disp_called then
-    begin prev_node:=tail; tail_append(get_node(small_node_size));
-    type(tail):=disp_node; disp_dimen(tail):=disp; prev_disp:=disp;
-	disp_called:=true
-    end;
-end;
+
+@<Append |disp_node| at begin ...@>=
+append_disp_begin;
 
 @ @<Append |disp_node| at end ...@>=
 if disp<>0 then

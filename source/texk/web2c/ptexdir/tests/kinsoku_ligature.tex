@@ -9,10 +9,14 @@
 \font\test=trip \test
 \def\OUT#1{%
   \setbox0=\hbox{漢#1}\showbox0
-  \setbox0=\hbox{{漢}#1}\showbox0
-  \setbox0=\hbox{漢{#1}}\showbox0
-  \setbox0=\hbox{{漢}{#1}}\showbox0
+  \setbox0=\hbox{\postbreakpenalty`漢=30 漢#1}\showbox0
+  \setbox0=\hbox{\ybaselineshift=1pt 漢#1}\showbox0
+  \setbox0=\hbox{\postbreakpenalty`漢=30\ybaselineshift=1pt 漢#1}\showbox0
+%  \setbox0=\hbox{{漢}#1}\showbox0
+%  \setbox0=\hbox{漢{#1}}\showbox0
+%  \setbox0=\hbox{{漢}{#1}}\showbox0
 }
+\OUT{-}
 \OUT{-\char`\^^@\char`\^^@}
 \OUT{BBBB} % LIG
 \OUT{pt} % LIG
