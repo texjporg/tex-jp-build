@@ -4775,47 +4775,27 @@ adjust_space_factor;@/
 if direction=dir_tate then disp:=t_baseline_shift else disp:=y_baseline_shift;
 if last_jchr<>null then
   begin if is_char_node(tail) then
-    begin if link(last_jchr)=tail then gp:=tail { Kanji -> Ascii }
-      else gp:=null;
+    begin if link(last_jchr)=tail then { Kanji -> Ascii }
+      @<Insert |pre_break_penalty| of |cur_chr|@>;
     end
   else if (type(tail)=penalty_node)and(subtype(tail)=kinsoku_pena)
     and(link(link(last_jchr))=tail) then { Kanji -> kinsoku -> Ascii }
-      gp:=null
-  else gp:=null;
-  end
-else gp:=null;
+      @<Insert |pre_break_penalty| of |cur_chr|@>;
+  end;
 @<Append |disp_node| at begin of displace area@>;
 @z
 
-@x [46.1035] - pTeX: kinsoku penalty
-  link(cur_q):=main_p; tail:=main_p; ligature_present:=false;
-@y
-  if gp<>null then 
-    begin
-    print_nl("P<"); print_char(cur_l); print(":"); print_int(cur_l); print("L>");
-    gq:=tail; tail:=cur_q; insert_pre_break_penalty(cur_l);
-    link(tail):=link(cur_q); cur_q:=tail; tail:=gq; gp:=null;
-    end;
-  link(cur_q):=main_p; tail:=main_p; ligature_present:=false;
-@z
-
-@x [46.1035] - pTeX: kinsoku penalty
-@d wrapup(#)==if cur_l<non_char then
-  begin if link(cur_q)>null then
-    if character(tail)=qi(hyphen_char[main_f]) then ins_disc:=true;
-  if ligature_present then pack_lig(#);
-@y
-@d wrapup(#)==if cur_l<non_char then
-  begin if link(cur_q)>null then
-    if character(tail)=qi(hyphen_char[main_f]) then ins_disc:=true;
-  if ligature_present then pack_lig(#)
-  else if gp<>null then 
-    begin 
-    print("W<"); print_char(cur_l); print(":"); print_int(cur_l); print(">");
-    gq:=tail; tail:=gp; insert_pre_break_penalty(cur_l);
-    link(tail):=gq; tail:=gq; gp:=null;
-    end;
-@z
+%@x [46.1035] l.20850 - pTeX: kinsoku penalty
+%@<Make a ligature node, if |ligature_present|;...@>=
+%wrapup(rt_hit)
+%@y
+%@<Make a ligature node, if |ligature_present|;...@>=
+%wrapup(rt_hit);
+%if ins_kp=true then
+%  begin cx:=KANJI(cur_l); @<Insert kinsoku penalty@>;
+%  ins_kp:=false;
+%  end
+%@z
 
 @x [46.1036] l.20854 - pTeX: disp_node
 if lig_stack=null then goto reswitch;
@@ -4825,15 +4805,6 @@ if lig_stack=null then
   goto reswitch;
   end;
 @z
-
-% this section no need to change
-%@x [46] pTeX - pTeX: kinsoku penalty
-%if main_p>null then tail_append(main_p); {append a single character}
-%@y
-%if main_p>null then tail_append(main_p); {append a single character}
-%@z
-
-
 
 @x [46.1037] l.20886 - pTeX: Look ahead for another character
 @<Look ahead for another character...@>=
@@ -6697,21 +6668,18 @@ if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
   end;
 end;
 
-@ @d insert_pre_break_penalty(#)==
-  begin kp:=get_kinsoku_pos(#,cur_pos);
-  if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
-    begin if kinsoku_type(kp)=pre_break_penalty_code then
-      if not is_char_node(tail)and(type(tail)=penalty_node) then
-        penalty(tail):=penalty(tail)+kinsoku_penalty(kp)
-      else
-        begin tail_append(new_penalty(kinsoku_penalty(kp)));
-        subtype(tail):=kinsoku_pena;
-        end;
-    end;
-  end
-
-@<Insert |pre_break_penalty| of |cur_chr|@>=
-insert_pre_break_penalty(cur_chr);
+@ @<Insert |pre_break_penalty| of |cur_chr|@>=
+begin kp:=get_kinsoku_pos(cur_chr,cur_pos);
+if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
+  begin if kinsoku_type(kp)=pre_break_penalty_code then
+    if not is_char_node(tail)and(type(tail)=penalty_node) then
+      penalty(tail):=penalty(tail)+kinsoku_penalty(kp)
+    else
+      begin tail_append(new_penalty(kinsoku_penalty(kp)));
+      subtype(tail):=kinsoku_pena;
+      end;
+  end;
+end;
 
 @ @<Insert |post_break_penalty|@>=
 begin kp:=get_kinsoku_pos(cx,cur_pos);
@@ -6820,12 +6788,7 @@ while p<>null do
       else if find_first_char then find_first_char:=false
         else last_char:=null;
     end;
-  ligature_node:
-    begin if find_first_char then
-      begin first_char:=lig_char(p); find_first_char:=false
-      end;
-    last_char:=lig_char(p); flag:=true;
-    end;
+  ligature_node: if check_box(lig_ptr(p)) then flag:=true;
   ins_node,disp_node,mark_node,adjust_node,whatsit_node,penalty_node:
     do_nothing;
   math_node:
@@ -7043,10 +7006,17 @@ else insert_skip:=no_skip;
 end
 
 @ @<Insert ligature surround spacing@>=
-begin ax:=qo(character(lig_char(p)));
+begin t:=lig_ptr(p);
+if is_char_node(t) then
+  begin ax:=qo(character(t));
   if insert_skip=after_wchar then @<Insert KANJI-ASCII spacing@>;
-  if auto_xsp_code(ax)>=2 then
-    insert_skip:=after_schar else insert_skip:=no_skip;
+  while link(t)<>null do t:=link(t);
+  if is_char_node(t) then
+    begin ax:=qo(character(t));
+    if auto_xsp_code(ax)>=2 then
+      insert_skip:=after_schar else insert_skip:=no_skip;
+    end;
+  end;
 end
 
 @ @<Insert penalty or displace surround spacing@>=
