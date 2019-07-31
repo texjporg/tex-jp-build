@@ -1,4 +1,30 @@
-\tracingonline1 \showboxbreadth10000 \showboxdepth10000
+\tracingonline1 \showboxbreadth10000 \showboxdepth10000 \errorcontextlines-1
+\jfont\min=jis at 10pt\min
+
+\def\testA{%
+\setbox0=\hbox{）f）漢字f}\showbox0
+\setbox0=\hbox{）fi）漢字fi}\showbox0
+}
+
+\def\testB#1#2#3{%
+  \immediate\write17{TEST mode: 
+    \ifnum#1=1 D\else.\fi
+    \ifnum#2=1 Po\else. \fi
+    \ifnum#3=1 Pr\else. \fi}
+  {\ifnum#1=1 \ybaselineshift=-1pt\fi
+   \ifnum#3=0 \prebreakpenalty`f=0 \prebreakpenalty`\^^L=0 \prebreakpenalty`漢=0
+   \else \prebreakpenalty`f=100 \prebreakpenalty`\^^L=100 \prebreakpenalty`漢=100 \fi
+   \ifnum#2=1 \postbreakpenalty`）=1000 \postbreakpenalty`字=1000
+   \else\postbreakpenalty`）=0 \postbreakpenalty`字=0 \fi
+   \testA}
+}
+
+\testB000 \testB001
+\testB010 \testB011
+\testB100 \testB101
+\testB110 \testB111
+\bye
+
 \count0=0
 \loop\ifnum\count0<128
   \count2=\count0\multiply\count2by100\advance\count2by1
@@ -6,6 +32,16 @@
   \xspcode\count0=0 \advance\count0by1
 \repeat
 
+{\prebreakpenalty`\^^L=0 \ybaselineshift=10pt
+\setbox0=\hbox{）fi ）漢}\showbox0
+{\postbreakpenalty`）=1203\setbox0=\hbox{）fi ）漢}\showbox0}
+\prebreakpenalty`\^^L=70 \prebreakpenalty`漢=30
+\setbox0=\hbox{）fi ）漢}\showbox0
+{\postbreakpenalty`）=1203\setbox0=\hbox{）fi ）漢}\showbox0}
+}
+
+
+\bye
 \font\test=trip \test
 \def\OUT#1{%
   \setbox0=\hbox{漢#1}\showbox0

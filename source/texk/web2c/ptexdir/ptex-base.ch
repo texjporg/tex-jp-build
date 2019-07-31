@@ -75,8 +75,8 @@
 @y
 @d pTeX_version=3
 @d pTeX_minor_version=8
-@d pTeX_revision==".2"
-@d pTeX_version_string=='-p3.8.2' {current \pTeX\ version}
+@d pTeX_revision==".3l"
+@d pTeX_version_string=='-p3.8.3l' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -4714,7 +4714,7 @@ var@!t:integer; {general-purpose temporary variable}
 var@!t:integer; {general-purpose temporary variable}
 @!cx:KANJI_code; {kanji character}
 @!kp:pointer; {kinsoku penalty register}
-@!gp,gq:pointer; {temporary registers for list manipulation}
+@!gp,gq,gs:pointer; {temporary registers for list manipulation}
 @!disp:scaled; {displacement register}
 @!ins_kp:boolean; {whether insert kinsoku penalty}
 @z
@@ -4774,13 +4774,24 @@ end;
 adjust_space_factor;@/
 if direction=dir_tate then disp:=t_baseline_shift else disp:=y_baseline_shift;
 if last_jchr<>null then
-  begin if is_char_node(tail) then
+  begin gq:=null;
+  if is_char_node(tail) then
     begin if link(last_jchr)=tail then gp:=tail { Kanji -> Ascii }
       else gp:=null;
     end
-  else if (type(tail)=penalty_node)and(subtype(tail)=kinsoku_pena)
-    and(link(link(last_jchr))=tail) then { Kanji -> kinsoku -> Ascii }
-      gp:=tail
+  else if link(link(last_jchr))<>null then
+    begin gp:=link(link(last_jchr));
+    if (type(gp)=penalty_node)and(subtype(gp)=kinsoku_pena) then
+      begin if gp=tail then do_nothing { Kanji -> kinsoku -> Ascii }
+      else if (link(gp)<>tail)
+        or not((type(tail)=glue_node)and(subtype(tail)=jfm_skip+1)) then
+        { not (Kanji -> kinsoku -> jfm -> Ascii) }
+        gp:=null else gq:=tail;
+      end
+    else if (gp<>tail) or not((type(tail)=glue_node)and(subtype(tail)=jfm_skip+1)) then
+      gp:=null { not (Kanji -> jfm -> Ascii) }
+    else begin gq:=gp; gp:=link(last_jchr); end;
+    end
   else gp:=null;
   end
 else gp:=null;
@@ -4791,10 +4802,11 @@ else gp:=null;
 @y
   if gp<>null then 
     begin
-    print_nl("P<"); print_char(cur_l); print(":"); print_int(cur_l); print("L>");
-    gq:=tail; tail:=gp; t:=link(gp); insert_pre_break_penalty(cur_l);
-    append_disp_begin; link(tail):=t; if cur_q=gp then cur_q:=tail; 
-    tail:=gq; gp:=null;
+    { print_nl("P<"); print_char(cur_l); print(":"); print_int(cur_l); print("L>"); }
+    t:=tail; tail:=gp; gs:=link(gp); insert_pre_break_penalty(cur_l);
+    if gq<>null then begin link(tail):=gq; tail:=gq; gs:=link(gs); end;
+    append_disp_begin; if (cur_q=gp)or(cur_q=gq) then cur_q:=tail; link(tail):=gs; 
+    tail:=t; gp:=null;
     end;
   link(cur_q):=main_p; tail:=main_p; ligature_present:=false;
 @z
@@ -4810,10 +4822,11 @@ else gp:=null;
     if character(tail)=qi(hyphen_char[main_f]) then ins_disc:=true;
   if ligature_present then pack_lig(#)
   else if gp<>null then 
-    begin 
-    print("W<"); print_char(cur_l); print(":"); print_int(cur_l); print(">");
-    gq:=tail; tail:=gp; t:=link(gp); insert_pre_break_penalty(cur_l);
-    append_disp_begin; link(tail):=t; tail:=gq; gp:=null;
+    begin
+    { print("W<"); print_char(cur_l); print(":"); print_int(cur_l); print(">"); }
+    t:=tail; tail:=gp; gs:=link(gp); link(gp):=null; insert_pre_break_penalty(cur_l);
+    if gq<>null then begin link(tail):=gq; tail:=gq; gs:=link(gq); end;
+    append_disp_begin; link(tail):=gs; tail:=t; gp:=null;
     end;
 @z
 
