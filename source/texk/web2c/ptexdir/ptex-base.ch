@@ -4778,9 +4778,22 @@ if last_jchr<>null then
     begin if link(last_jchr)=tail then { Kanji -> Ascii }
       @<Insert |pre_break_penalty| of |cur_chr|@>;
     end
-  else if (type(tail)=penalty_node)and(subtype(tail)=kinsoku_pena)
-    and(link(link(last_jchr))=tail) then { Kanji -> kinsoku -> Ascii }
-      @<Insert |pre_break_penalty| of |cur_chr|@>;
+  else begin gp:=link(link(last_jchr));
+    if (type(gp)=penalty_node)and(subtype(gp)=kinsoku_pena) then
+      begin if gp=tail then @<Insert |pre_break_penalty| of |cur_chr|@> { Kanji -> kinsoku -> Ascii }
+      else if link(gp)=tail then
+        if (type(tail)=glue_node)and(subtype(tail)=jfm_skip+1) then
+          { Kanji -> kinsoku -> jfm -> Ascii }
+          begin gq:=tail; tail:=gp; @<Insert |pre_break_penalty| of |cur_chr|@>;
+          link(tail):=gq; tail:=gq;
+          end;
+      end
+    else if (gp=tail)and(type(tail)=glue_node)and(subtype(tail)=jfm_skip+1) then
+      { Kanji -> jfm -> Ascii }
+      begin gp:=tail; tail:=link(last_jchr); @<Insert |pre_break_penalty| of |cur_chr|@>;
+      link(tail):=gp; tail:=gp;
+      end
+    end;
   end;
 @<Append |disp_node| at begin of displace area@>;
 @z
@@ -6679,7 +6692,7 @@ if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
       subtype(tail):=kinsoku_pena;
       end;
   end;
-end;
+end
 
 @ @<Insert |post_break_penalty|@>=
 begin kp:=get_kinsoku_pos(cx,cur_pos);
