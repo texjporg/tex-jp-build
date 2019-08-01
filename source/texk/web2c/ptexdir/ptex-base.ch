@@ -4767,6 +4767,11 @@ if ((head=tail) and (mode>0)) then begin
 end;
 adjust_space_factor;@/
 @y
+@d is_jfm_glue_or_kern(#)==
+  (((type(#)=glue_node)and(subtype(#)=jfm_skip+1))
+  or((type(#)=kern_node)and(subtype(#)=normal)))
+  { assume that |#| is a non-char node }
+
 @<Append character |cur_chr|...@>=
 if ((head=tail) and (mode>0)) then begin
   if (insert_src_special_auto) then append_src_special;
@@ -4784,11 +4789,11 @@ if last_jchr<>null then
     if (type(gp)=penalty_node)and(subtype(gp)=kinsoku_pena) then
       begin if gp=tail then do_nothing { Kanji -> kinsoku -> Ascii }
       else if (link(gp)<>tail)
-        or not((type(tail)=glue_node)and(subtype(tail)=jfm_skip+1)) then
+        or not is_jfm_glue_or_kern(tail) then
         { not (Kanji -> kinsoku -> jfm -> Ascii) }
         gp:=null else gq:=tail;
       end
-    else if (gp<>tail) or not((type(tail)=glue_node)and(subtype(tail)=jfm_skip+1)) then
+    else if (gp<>tail) or not is_jfm_glue_or_kern(tail) then
       gp:=null { not (Kanji -> jfm -> Ascii) }
     else begin gq:=gp; gp:=link(last_jchr); end;
     end
