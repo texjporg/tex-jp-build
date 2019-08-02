@@ -4880,13 +4880,14 @@ cur_r:=qi(cur_chr); character(lig_stack):=cur_r;
 if cur_r=false_bchar then cur_r:=non_char {this prevents spurious ligatures}
 
 @ @<goto |main_lig_loop|@>=
-begin bchar:=non_char; cur_r:=bchar; lig_stack:=null;
-if ligature_present then pack_lig(rt_hit);
-if ins_kp=true then
-  begin cx:=cur_l; @<Insert kinsoku penalty@>;
-  end;
-ins_kp:=false;
-goto main_loop_j;
+begin cur_r:=bchar; lig_stack:=null; ins_kp:=false; goto main_lig_loop;
+{ begin bchar:=non_char; cur_r:=bchar; lig_stack:=null;
+  if ligature_present then pack_lig(rt_hit);
+  if ins_kp=true then <- this true-clause won't be executed
+    begin cx:=cur_l; @<Insert kinsoku penalty@>;
+    end;
+  ins_kp:=false;
+  goto main_loop_j; }
 end
 @z
 
@@ -7304,10 +7305,8 @@ main_loop_j+3:
   if ins_kp=false then begin { Kanji -> Kanji }
     goto main_loop_j+1;
   end else if ins_kp=true then begin { Kanji -> Ascii }
-    {@@<Append |disp_node| at begin of displace area@@>;}
     ins_kp:=false; goto main_loop;
   end else begin { Kanji -> cs }
-    {@@<Append |disp_node| at begin of displace area@@>;}
     goto reswitch;
   end;
 
@@ -7341,7 +7340,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin { print("IF");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
@@ -7389,7 +7388,7 @@ if inhibit_glue_flag<>true then
   end;
 end
 else
-  begin { print("IT");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   end;
 skip_loop: do_nothing;
