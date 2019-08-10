@@ -1045,7 +1045,6 @@ unsigned char *ptenc_from_internal_enc_string_to_utf8(const unsigned char *is)
             u = U_REPLACEMENT_CHARACTER;
             break;
         }
-
         write_multibyte(UCStoUTF8(u));
     }
     buffer[last] = '\0';

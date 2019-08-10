@@ -242,6 +242,7 @@ begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
+if s>@"1FF then s:=s mod 256;
 if s<256 then kcode_pos:=0
 else if kcode_pos=1 then kcode_pos:=2
 else if iskanji1(xchr[s-256]) then
@@ -2007,6 +2008,25 @@ else  begin {we are done with this token list}
   end
 @z
 
+@x ptex - firm_up_the_line
+  if start<limit then for k:=start to limit-1 do print(buffer[k]);
+  first:=limit; prompt_input("=>"); {wait for user response}
+@.=>@>
+  if last>first then
+    begin for k:=first to last-1 do {move line down in buffer}
+      buffer[k+start-first]:=buffer[k];
+@y
+  if start<limit then for k:=start to limit-1 do 
+    if buffer[k]>=@"100 then print_char(buffer[k]) else print(buffer[k]);
+  first:=limit; prompt_input("=>"); {wait for user response}
+@.=>@>
+  if last>first then
+    begin for k:=first to last-1 do {move line down in buffer}
+      begin buffer[k+start-first]:=buffer[k]; buffer2[k+start-first]:=buffer2[k]; end;
+@z
+
+
+
 @x [24.365] l.7935 - pTeX: get_token
 @p procedure get_token; {sets |cur_cmd|, |cur_chr|, |cur_tok|}
 begin no_new_control_sequence:=false; get_next; no_new_control_sequence:=true;
@@ -2689,6 +2709,32 @@ else  begin str_room(1); append_char(c); {contribute |c| to the current string}
 end;
 @z
 
+@x [29.518] - print_quoted in pTeX: file name is always printed with code conversion
+@d print_quoted(#) == {print string |#|, omitting quotes}
+if #<>0 then
+  for j:=str_start[#] to str_start[#+1]-1 do
+    if so(str_pool[j])<>"""" then
+      print(so(str_pool[j]))
+
+@y
+@d print_quoted(#) == {print string |#|, omitting quotes}
+if #<>0 then
+  for j:=str_start[#] to str_start[#+1]-1 do
+    if so(str_pool[j])<>"""" then print_char(@"100+(so(str_pool[j]) mod @"100))
+@z
+
+@x
+@d append_to_name(#)==begin c:=#; if not (c="""") then begin incr(k);
+  if k<=file_name_size then name_of_file[k]:=xchr[c];
+  end end
+@y
+@d append_to_name(#)==begin if (#)>=@"100 then c:=(#)-256 else c:=#;
+  { Since the type of |c| is |ASCII_code|, above if-statement might not be needed }
+  if not (c="""") then begin incr(k);
+  if k<=file_name_size then name_of_file[k]:=xchr[c];
+  end end
+@z
+
 @x [29.526] l.10668 - pTeX: scan file name
 loop@+begin if (cur_cmd>other_char)or(cur_chr>255) then {not a character}
     begin back_input; goto done;
@@ -2720,6 +2766,16 @@ loop@+begin
   end;
 done: end_name; name_in_progress:=false;
 skip_mode:=true;
+@z
+
+@x [29.???] open_log_file
+if buffer[l]=end_line_char then decr(l);
+for k:=1 to l do print(buffer[k]);
+print_ln; {now the transcript file contains the first line of input}
+@y
+if buffer[l]=end_line_char then decr(l);
+for k:=1 to l do if buffer2[k]>0 then print_char(@"100+buffer[k]) else print(buffer[k]);
+print_ln; {now the transcript file contains the first line of input}
 @z
 
 @x [29.536] l.10834 - pTeX:
