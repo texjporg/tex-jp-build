@@ -1679,7 +1679,9 @@ if trick_buf2[(p-1) mod error_line]=1 then p:=p-1;
   end
 @y
   begin if i=loc then set_trick_count;
-  if buffer2[i]>0 then print_char(256+buffer[i]) else print(buffer[i]);
+  if (trick_count<>1000000)or(buffer2[i]>0) then
+    print_char(@"100++buffer[i]) else print(buffer[i]);
+  { |trick_count<>1000000| means line 2 }
   end
 @z
 
