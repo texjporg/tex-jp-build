@@ -382,6 +382,18 @@ else
   wterm(')');
 @z
 
+@x [5.??] - pTeX: term_input
+@p procedure term_input; {gets a line from the terminal}
+@y
+procedure@?print_unread_buffer_with_ptenc; forward;@t\2@>@/
+@p procedure term_input; {gets a line from the terminal}
+@z
+@x [5.??] - pTeX: term_input
+if last<>first then for k:=first to last-1 do print(buffer[k]);
+@y
+if last<>first then print_unread_buffer_with_ptenc(first,last);
+@z
+
 @x
 @d max_halfword==@"FFFFFFF {largest allowable value in a |halfword|}
 @y
@@ -1683,8 +1695,7 @@ if j>0 then begin
   for i:=start to loc-1 do
     if buffer2[i]>0 then
       print_char(@"100*buffer2[i]+buffer[i]) else print(buffer[i]);
-  set_trick_count;
-  @<Print |buffer[loc..j-1]|, possibly with code conversion@>;
+  set_trick_count; print_unread_buffer_with_ptenc(loc,j);
   end
 @z
 
@@ -1825,7 +1836,7 @@ end
 begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
 else  begin k:=loc; cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
-    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1))); 
+    begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
     for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
       buffer2[l]:=1;
     incr(k);
@@ -2021,7 +2032,7 @@ else  begin {we are done with this token list}
     begin for k:=first to last-1 do {move line down in buffer}
       buffer[k+start-first]:=buffer[k];
 @y
-  if start<limit then for k:=start to limit-1 do 
+  if start<limit then for k:=start to limit-1 do
     if buffer[k]>=@"100 then print_char(buffer[k]) else print(buffer[k]);
   first:=limit; prompt_input("=>"); {wait for user response}
 @.=>@>
@@ -2284,7 +2295,7 @@ if not is_char_node(tx) then
 @<Fetch an item in the current node...@>=
 @z
 
-@x pTeX: \ptexversion 
+@x pTeX: \ptexversion
   begin if cur_chr=input_line_no_code then cur_val:=line
   else cur_val:=last_badness; {|cur_chr=badness_code|}
 @y
@@ -2456,7 +2467,7 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
   if t=" " then t:=space_token
   else t:=other_token+t;
 @y
-  if t>=@"100 then 
+  if t>=@"100 then
     begin t:=fromBUFFshort(str_pool, pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
@@ -2778,8 +2789,7 @@ if buffer[l]=end_line_char then decr(l);
 for k:=1 to l do print(buffer[k]);
 print_ln; {now the transcript file contains the first line of input}
 @y
-if buffer[l]=end_line_char then decr(l);
-for k:=1 to l do if buffer2[k]>0 then print_char(@"100+buffer[k]) else print(buffer[k]);
+if buffer[l]=end_line_char then decr(l); print_unread_buffer_with_ptenc(1,l+1);
 print_ln; {now the transcript file contains the first line of input}
 @z
 
@@ -3832,9 +3842,9 @@ function shift_sub_exp_box(@!q:pointer):pointer;
         if box_dir(info(q))=dir_tate then d:=t_baseline_shift
         else d:=y_baseline_shift end
       else d:=y_baseline_shift;
-      if cur_style<script_style then 
+      if cur_style<script_style then
         d:=xn_over_d(d,text_baseline_shift_factor, 1000)
-      else if cur_style<script_script_style then 
+      else if cur_style<script_script_style then
         d:=xn_over_d(d,script_baseline_shift_factor, 1000)
       else
         d:=xn_over_d(d,scriptscript_baseline_shift_factor, 1000);
@@ -5114,9 +5124,9 @@ any_mode(make_box): begin_box(0);
 any_mode(make_box): begin_box(0);
 any_mode(chg_dir):
   begin  if cur_group<>align_group then
-    if mode=hmode then 
+    if mode=hmode then
       begin print_err("Improper `"); print_cmd_chr(cur_cmd,cur_chr);
-      print("'"); 
+      print("'");
       help2("You cannot change the direction in unrestricted")
       ("horizontal mode."); error;
       end
@@ -5172,7 +5182,7 @@ q:pointer;
     else  begin p:=new_noad;
       math_type(nucleus(p)):=sub_box;
 @y
-  else  begin if abs(mode)=hmode then 
+  else  begin if abs(mode)=hmode then
     begin space_factor:=1000; inhibit_glue_flag:=false; end
     else  begin p:=new_noad;
       math_type(nucleus(p)):=sub_exp_box;
@@ -5249,7 +5259,7 @@ q:=link(p);
 until q=tx; {found |r|$\to$|p|$\to$|q=tx|}
 q:=link(tx); link(p):=q; link(tx):=null;
 if q=null then tail:=p
-else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|} 
+else if fd then {|r|$\to$|p=disp_node|$\to$|q=disp_node|}
   begin prev_node:=r; prev_disp:=pdisp; link(p):=null; tail:=p;
   disp_dimen(p):=disp_dimen(q); free_node(q,small_node_size);
   end
@@ -5403,7 +5413,7 @@ mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
 @x [47.???] indent_in_hmode: reset inhibit_glue_flag
   if abs(mode)=hmode then space_factor:=1000
 @y
-  if abs(mode)=hmode then 
+  if abs(mode)=hmode then
     begin space_factor:=1000; inhibit_glue_flag:=false; end
 @z
 
@@ -5677,14 +5687,14 @@ var c:integer; {hyphen character}
 begin tail_append(new_disc); inhibit_glue_flag:=false;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 @!n:integer; {length of discretionary list}
 @y
 @!n:integer; {length of discretionary list}
 @!d:integer; {direction}
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 p:=link(head); pop_nest;
 case saved(-1) of
 0:pre_break(tail):=p;
@@ -5693,13 +5703,13 @@ case saved(-1) of
 p:=link(head); d:=abs(direction); pop_nest;
 case saved(-1) of
 0:if abs(direction)=d then pre_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your first part."); error; pre_break(tail):=null; flush_node_list(p);
   end;
 1:if abs(direction)=d then post_break(tail):=p
-  else begin 
+  else begin
     print_err("Direction Incompatible");
     help2("\discretionary's argument and outer hlist must have same direction.")@/
     ("I delete your second part."); error; post_break(tail):=null; flush_node_list(p);
@@ -5712,7 +5722,7 @@ push_nest; mode:=-hmode; space_factor:=1000;
 push_nest; mode:=-hmode; space_factor:=1000; inhibit_glue_flag:=false;
 @z
 
-@x pTeX: direction check in \discretionary 
+@x pTeX: direction check in \discretionary
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
 @y
@@ -5723,7 +5733,7 @@ else if (n>0)and(abs(direction)<>d) then
   end
 else link(tail):=p;
 if n<=max_quarterword then replace_count(tail):=n
-@z 
+@z
 
 @x [47.1120] l.22119 - pTeX: discretionary with disp_node
 decr(save_ptr); return;
@@ -6997,9 +7007,9 @@ while p<>null do
   ins_node,disp_node,mark_node,adjust_node,whatsit_node,penalty_node:
     do_nothing;
   math_node:
-    if (subtype(p)=before)or(subtype(p)=after) then 
+    if (subtype(p)=before)or(subtype(p)=after) then
       begin if find_first_char then
-        begin find_first_char:=false; first_char:=p; 
+        begin find_first_char:=false; first_char:=p;
         end;
         last_char:=p; flag:=true;
       end
@@ -7203,7 +7213,7 @@ begin if (subtype(p)=before)and(insert_skip=after_wchar) then
   insert_skip:=no_skip;
   end
 else if subtype(p)=after then
-  begin ax:=qo("0"); 
+  begin ax:=qo("0");
   if auto_xsp_code(ax)>=2 then
     insert_skip:=after_schar else insert_skip:=no_skip;
   end
@@ -7482,7 +7492,7 @@ again_2:
 @#
 main_loop_j+3:
   if ins_kp=true then @<Insert |pre_break_penalty| of |cur_chr|@>;
-  if main_f<>null_font then 
+  if main_f<>null_font then
     begin @<Look ahead for glue or kerning@>;
     end
   else inhibit_glue_flag:=false;
@@ -7617,19 +7627,23 @@ else begin
   end;
 end;
 
-@ This routine prints the second line in showing contexts.
+@ This routine is used in printing the second line in showing contexts.
 This part is not read by |get_next| yet, so we don't know which bytes
 are part of Japaense characters.
 
-@<Print |buffer[loc..j-1]|, possibly with code conversion@>=
-  i:=loc;
-  while i<j do begin
-    p:=multistrlen(ustringcast(buffer), j, i);
+@<Basic printing...@>=
+procedure print_unread_buffer_with_ptenc(@!f, @!l: integer);
+var @!i,@!j,@!p: integer;
+begin
+  i:=f;
+  while i<l do begin
+    p:=multistrlen(ustringcast(buffer), l, i);
 	if p<>1 then
-	  begin for q:=i to i+p-1 do print_char(@"100+buffer[q]);
+	  begin for j:=i to i+p-1 do print_char(@"100+buffer[j]);
 	  i:=i+p; end
 	else begin print(buffer[i]); incr(i); end;
-  end
+  end;
+end;
 
 @* \[56] System-dependent changes.
 @z
