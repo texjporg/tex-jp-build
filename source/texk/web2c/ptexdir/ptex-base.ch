@@ -1674,14 +1674,17 @@ if trick_buf2[(p-1) mod error_line]=1 then p:=p-1;
 @z
 
 @x pTeX: buffer
+if j>0 then for i:=start to j-1 do
   begin if i=loc then set_trick_count;
   print(buffer[i]);
   end
 @y
-  begin if i=loc then set_trick_count;
-  if (trick_count<>1000000)or(buffer2[i]>0) then
-    print_char(@"100++buffer[i]) else print(buffer[i]);
-  { |trick_count<>1000000| means line 2 }
+if j>0 then begin
+  for i:=start to loc-1 do
+    if buffer2[i]>0 then
+      print_char(@"100*buffer2[i]+buffer[i]) else print(buffer[i]);
+  set_trick_count;
+  @<Print |buffer[loc..j-1]|, possibly with code conversion@>;
   end
 @z
 
@@ -7613,6 +7616,20 @@ else begin
   ("marks and whatsits."); error;
   end;
 end;
+
+@ This routine prints the second line in showing contexts.
+This part is not read by |get_next| yet, so we don't know which bytes
+are part of Japaense characters.
+
+@<Print |buffer[loc..j-1]|, possibly with code conversion@>=
+  i:=loc;
+  while i<j do begin
+    p:=multistrlen(ustringcast(buffer), j, i);
+	if p<>1 then
+	  begin for q:=i to i+p-1 do print_char(@"100+buffer[q]);
+	  i:=i+p; end
+	else begin print(buffer[i]); incr(i); end;
+  end
 
 @* \[56] System-dependent changes.
 @z
