@@ -124,11 +124,18 @@ for i:=@'177 to @'777 do xchr[i]:=i;
 @z
 
 @x [3.??] pTeX
+@<Glob...@>=
 @!buffer:^ASCII_code; {lines of characters being read}
 @y
+In \pTeX, we use another array |buffer2[]| to indicate which byte 
+is a part of a Japanese character. 
+|buffer2[]| is initialized to zero in reading one line from a file
+(|input_ln|). |buffer2[i]| is set to one when |buffer[i]| is known
+to be a part of a Japanese character, in |get_next| routine.
+
+@<Glob...@>=
 @!buffer:^ASCII_code; {lines of characters being read}
 @!buffer2:^ASCII_code;
-{ |buffer2[i]| is nonzero iff |buffer[i]| is part of a Japanese character }
 @z
 
 @x [4]
@@ -385,8 +392,8 @@ else
 @x [5.??] - pTeX: term_input
 @p procedure term_input; {gets a line from the terminal}
 @y
-procedure@?print_unread_buffer_with_ptenc; forward;@t\2@>@/
-@p procedure term_input; {gets a line from the terminal}
+@p procedure@?print_unread_buffer_with_ptenc; forward;@t\2@>@/
+procedure term_input; {gets a line from the terminal}
 @z
 @x [5.??] - pTeX: term_input
 if last<>first then for k:=first to last-1 do print(buffer[k]);
@@ -1510,7 +1517,7 @@ procedure print_cs(@!p:integer); {prints a purported control sequence}
 var j, l:pool_pointer; @!cat:0..max_char_code;
 @z
 
-@x [18]
+@x [18.???]
 else  begin print_esc(text(p));
   print_char(" ");
   end;
@@ -1525,6 +1532,13 @@ else  begin l:=text(p);
     else print_char(" "); end
   else print_char(" ");
   end;
+@z
+
+@x [18.???] pTeX: ensure buffer2[]=0 in primitive
+  for j:=0 to l-1 do buffer[j]:=so(str_pool[k+j]);
+@y
+  for j:=0 to l-1 do begin
+    buffer[j]:=Lo(so(str_pool[k+j])); buffer2[j]:=Hi(so(str_pool[k+j])); end;
 @z
 
 @x [18.265] l.5903 - pTeX: \jfont \tfont
@@ -1724,6 +1738,13 @@ if token_type<macro then
 else show_token_list(link(start),loc,100000); {avoid reference count}
 done1:
 @z
+
+@x [23.???] pTeX: init the input routines
+first:=buf_size; repeat buffer[first]:=0; decr(first); until first=0;
+@y
+first:=buf_size; repeat buffer[first]:=0; buffer2[first]:=0; decr(first); until first=0;
+@z
+
 
 @x [24.341] l.7479 - pTeX: set last_chr
 @!cat:0..max_char_code; {|cat_code(cur_chr)|, usually}
@@ -2033,7 +2054,7 @@ else  begin {we are done with this token list}
       buffer[k+start-first]:=buffer[k];
 @y
   if start<limit then for k:=start to limit-1 do
-    if buffer[k]>=@"100 then print_char(buffer[k]) else print(buffer[k]);
+    if buffer2[k]>=@"100 then print_char(buffer[k]) else print(buffer[k]);
   first:=limit; prompt_input("=>"); {wait for user response}
 @.=>@>
   if last>first then
@@ -7536,7 +7557,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin { print("IF");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
@@ -7584,7 +7605,7 @@ if inhibit_glue_flag<>true then
   end;
 end
 else
-  begin { print("IT");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   end;
 skip_loop: do_nothing;
@@ -7627,21 +7648,22 @@ else begin
   end;
 end;
 
-@ This routine is used in printing the second line in showing contexts.
+@ This procedure is used in printing the second line in showing contexts.
 This part is not read by |get_next| yet, so we don't know which bytes
-are part of Japaense characters.
+are part of Japaense characters when the procedure is called.
 
 @<Basic printing...@>=
 procedure print_unread_buffer_with_ptenc(@!f, @!l: integer);
+{ print |buffer[f..l-1]| with code conversion }
 var @!i,@!j,@!p: integer;
 begin
   i:=f;
   while i<l do begin
     p:=multistrlen(ustringcast(buffer), l, i);
-	if p<>1 then
-	  begin for j:=i to i+p-1 do print_char(@"100+buffer[j]);
-	  i:=i+p; end
-	else begin print(buffer[i]); incr(i); end;
+    if p<>1 then
+      begin for j:=i to i+p-1 do print_char(@"100+buffer[j]);
+      i:=i+p; end
+    else begin print(buffer[i]); incr(i); end;
   end;
 end;
 

@@ -16,6 +16,12 @@
 @d count_base=int_base+int_pars {256 user \.{\\count} registers}
 @z
 
+@x [18.???] pTeX: ensure buffer2[]=0 in primitive
+  for j:=0 to l-1 do buffer[first+j]:=so(str_pool[k+j]);
+@y
+  for j:=0 to l-1 do buffer[j]:=so(str_pool[k+j]);
+@z
+
 @x [26.413]
   {fetch an internal parameter}
 label exit;

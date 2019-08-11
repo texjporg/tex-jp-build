@@ -484,7 +484,10 @@ static int flush (unsigned char *buff, int num, FILE *fp)
 
 /* putc() with code conversion */
 int putc2(int c, FILE *fp)
-/* c in [256,511]: writes the character c-256, without code conversion */
+/*
+  c in [0,255]:  writes the character c, without code conversion
+  c in [256,511]: writes the character c-256, with code conversion
+*/
 {
     static int num[NOFILE];
         /* 0    : not in Kanji

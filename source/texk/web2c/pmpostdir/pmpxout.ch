@@ -497,7 +497,7 @@ static integer mpx_lookup_ctype (MPX mpx,integer f, integer c)
 so that the state always results in normal at the end of the procedure.
 Kanji characters need to be converted into output Kanji encoding
 from DVI(JIS). For conversion, the first argument of |putc2| need to be
-greater than 256.
+greater than 255.
 
 
 @<Declare subroutines for printing strings@>=
