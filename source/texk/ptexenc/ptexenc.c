@@ -998,7 +998,7 @@ unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
 
 	     j = (u !=0) ? toBUFF(fromUCS(u)) : 0;
         if (j == 0) { /* can't represent in EUC/SJIS */
-            if (last+16>=len) buffer = xrealloc(buffer, len=last+64);
+            if (last+16>=len) buffer = buf = xrealloc(buffer, len=last+64);
             write_hex(i1);
             if (i2 != '\0') write_hex(i2);
             if (i3 != '\0') write_hex(i3);

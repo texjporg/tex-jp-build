@@ -3007,7 +3007,7 @@ gettexstring (strnumber s)
   {
   poolpointer i;
   /* Don't use strncpy.  The strpool is not made up of chars. */
-#if defined (IS_pTeX)
+#if IS_pTeX
   for (i=0; i<len; i++) name[i] =  0xFF&strpool[i+strstart[s]];
 #else
   for (i=0; i<len; i++) name[i] =  strpool[i+strstartar[s - 65536L]];
