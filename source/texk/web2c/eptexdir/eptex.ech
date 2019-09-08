@@ -26,8 +26,8 @@
 @y
 @d eTeX_version_string=='-2.6' {current \eTeX\ version}
 @#
-@d epTeX_version_string=='-190709'
-@d epTeX_version_number==190709
+@d epTeX_version_string=='-190908'
+@d epTeX_version_number==190908
 @z
 
 @x e-pTeX: banner
@@ -639,6 +639,24 @@ othercases goto next_p
     buffer2[last+2]:=0; buffer2[last+3]:=0;
 @z
 
+@x e-pTeX: \readline
+@ @<Handle \.{\\readline} and |goto done|@>=
+if j=1 then
+  begin while loc<=limit do {current line not yet finished}
+    begin cur_chr:=buffer[loc]; incr(loc);
+    if cur_chr=" " then cur_tok:=space_token
+    @+else cur_tok:=cur_chr+other_token;
+@y
+@ @<Handle \.{\\readline} and |goto done|@>=
+if j=1 then
+  begin while loc<=limit do {current line not yet finished}
+    begin cur_chr:=buffer[loc]; incr(loc);
+    if multistrlen(ustringcast(buffer), limit+1, loc-1)=2 then
+      begin cur_tok:=fromBUFF(ustringcast(buffer),  limit+1, loc-1); incr(loc);
+      end
+    else if cur_chr=" " then cur_tok:=space_token
+    @+else cur_tok:=cur_chr+other_token;
+@z
 
 @x e-pTeX: ifcsname l.28620
   buffer[m]:=info(p) mod @'400; incr(m); p:=link(p);
