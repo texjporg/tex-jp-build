@@ -765,7 +765,7 @@ static int infile_enc[NOFILE]; /* ENC_UNKNOWN (=0): not determined
                                   other: determined */
 
 /* input line with encoding conversion */
-long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2, 
+long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2,
                  long pos, const long buffsize, int *lastchar)
 {
     long i = 0;
@@ -967,7 +967,7 @@ unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
     first = last = 0;
 
     for (i=0; i<strlen(is); i++) {
-        i1 = is[i]; i2 = '\0'; i3 = '\0'; i4 = '\0';
+        i1 = is[i]; i2 = i3 = i4 = '\0';
         switch (UTF8length(i1)) {
         case 1:
             buffer[last++] = i1; /* ASCII */
@@ -996,7 +996,7 @@ unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
             break;
         }
 
-	     j = (u !=0) ? toBUFF(fromUCS(u)) : 0;
+        j = (u != 0) ? toBUFF(fromUCS(u)) : 0;
         if (j == 0) { /* can't represent in EUC/SJIS */
             if (last+16>=len) buffer = buf = xrealloc(buffer, len=last+64);
             write_hex(i1);
@@ -1006,7 +1006,6 @@ unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
         } else {
             write_multibyte(j);
         }
-        i2 = i3 = i4 = '\0';
     }
     buffer[last] = '\0';
  end:
