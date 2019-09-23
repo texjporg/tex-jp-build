@@ -947,7 +947,6 @@ int nkf_close(FILE *fp) {
     return fclose(fp);
 }
 
-
 #define break_if_bad_utf8_second(k) if ((k<0x80)||(k>0xBF)) { i--; k='\0'; break; }
 unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
 {
