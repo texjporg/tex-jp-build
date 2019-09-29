@@ -3,7 +3,7 @@
 % Load plain if necessary, i.e., if running under initex.
 \expandafter\ifx\csname fmtname\endcsname\relax\input plain\fi
 %
-\def\texinfoversion{2019-09-08.12}
+\def\texinfoversion{2019-09-24.13}
 %
 % Copyright 1985, 1986, 1988, 1990-2019 Free Software Foundation, Inc.
 %
@@ -1052,7 +1052,7 @@ where each line of input produces a line of output.}
             tex.sprint(
               string.format(string.char(0x5c) .. string.char(0x25) .. '03o' ..
                             string.char(0x5c) .. string.char(0x25) .. '03o',
-                            (c / 256), (c % 256)))
+                            math.floor(c / 256), math.floor(c % 256)))
           else
             c = c - 0x10000
             local c_hi = c / 1024 + 0xd800
@@ -1062,8 +1062,8 @@ where each line of input produces a line of output.}
                             string.char(0x5c) .. string.char(0x25) .. '03o' ..
                             string.char(0x5c) .. string.char(0x25) .. '03o' ..
                             string.char(0x5c) .. string.char(0x25) .. '03o',
-                            (c_hi / 256), (c_hi % 256),
-                            (c_lo / 256), (c_lo % 256)))
+                            math.floor(c_hi / 256), math.floor(c_hi % 256),
+                            math.floor(c_lo / 256), math.floor(c_lo % 256)))
           end
         end
       end
@@ -3099,11 +3099,16 @@ end
 \def\wordbefore{before}
 \def\wordnone{none}
 
-% Allow a ragged right output to aid breaking long URL's.  Putting stretch in
-% between characters of the URL doesn't look good.
+% Allow a ragged right output to aid breaking long URL's.  There can
+% be a break at the \allowbreak with no extra glue (if the existing stretch in
+% the line is sufficent), a break at the \penalty100 with extra glue added
+% at the end of the line, or no break at all here.
+%   Changing the value of the penalty and/or the amount of stretch affects how
+% preferrable one choice is over the other.
 \def\urefallowbreak{%
-  \hskip 0pt plus 4 em\relax
   \allowbreak
+  \hskip 0pt plus 4 em\relax
+  \penalty100
   \hskip 0pt plus -4 em\relax
 }
 
