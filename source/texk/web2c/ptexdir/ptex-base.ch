@@ -60,6 +60,7 @@
 % (2018-01-21) HK  Added \ptexversion primitive and co. pTeX p3.8.
 % (2018-04-14) HK  pTeX p3.8.1 Bug fix for discontinuous KINSOKU table.
 % (2019-02-03) HK  pTeX p3.8.2 Change \inhibitglue, add \disinhibitglue.
+% (2019-10-14) HY  pTeX p3.8.3 Allow getting \kansujichar.
 %
 
 @x
