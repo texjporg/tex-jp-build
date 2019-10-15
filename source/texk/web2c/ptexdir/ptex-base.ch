@@ -60,6 +60,7 @@
 % (2018-01-21) HK  Added \ptexversion primitive and co. pTeX p3.8.
 % (2018-04-14) HK  pTeX p3.8.1 Bug fix for discontinuous KINSOKU table.
 % (2019-02-03) HK  pTeX p3.8.2 Change \inhibitglue, add \disinhibitglue.
+% (2019-10-14) HY  pTeX p3.8.3 Allow getting \kansujichar.
 %
 
 @x
@@ -2060,6 +2061,7 @@ begin m:=cur_chr;
 case cur_cmd of
 assign_kinsoku: @<Fetch breaking penalty from some table@>;
 assign_inhibit_xsp_code: @<Fetch inhibit type from some table@>;
+set_kansuji_char: @<Fetch kansuji char code from some table@>;
 def_code: @<Fetch a character code from some table@>;
 toks_register,assign_toks,def_family,set_font,def_font,def_jfont,def_tfont:
   @<Fetch a token list or font identifier, provided that |level=tok_val|@>;
@@ -6460,6 +6462,17 @@ else if (n<0)or(n>9) then
 else
   define(kansuji_base+n,n,tokanji(toDVI(cur_val)));
 end;
+
+@ @<Fetch kansuji char code from some table@>=
+begin scan_int;
+  if (cur_val<0)or(cur_val>9) then
+    begin print_err("Invalid KANSUJI number ("); print_int(cur_val); print_char(")");
+    help1("I'm skipping this control sequences.");@/
+    error; return;
+    end
+  else
+    cur_val:=fromDVI(kansuji_char(cur_val));
+end
 
 @ |print_kansuji| procedure converts a number to KANJI number.
 
