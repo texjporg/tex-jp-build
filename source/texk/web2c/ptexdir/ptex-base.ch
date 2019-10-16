@@ -333,9 +333,9 @@ else if s<256 then
       if selector<pseudo then
         begin print_ln; return;
         end;
+    if xprn[s] then begin print_char(s); return; end;
     nl:=new_line_char; new_line_char:=-1;
       {temporarily disable new-line character}
-    if xprn[s] then begin print_char(s); return; end;
     j:=str_start[s];
     while j<str_start[s+1] do
       begin print_char(so(str_pool[j])); incr(j);
