@@ -452,12 +452,7 @@ begin
     if k = false then
       begin begin_diagnostic;
       print_nl("Unknown encoding `");
-      case selector of
-      term_and_log: begin wterm(stringcast(name_of_file + 1));
-        wlog(stringcast(name_of_file + 1)); end;
-      log_only:  wlog(stringcast(name_of_file + 1));
-      term_only: wterm(stringcast(name_of_file + 1));
-      endcases;
+	  slow_print(cur_area); slow_print(cur_name); slow_print(cur_ext);
       print("'"); end_diagnostic(false);
       end
     end
