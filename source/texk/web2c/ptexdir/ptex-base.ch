@@ -2766,7 +2766,11 @@ if #<>0 then
 @d print_quoted(#) == {print string |#|, omitting quotes}
 if #<>0 then
   for j:=str_start[#] to str_start[#+1]-1 do
-    if so(str_pool[j])<>"""" then print_char(@"100+(so(str_pool[j]) mod @"100))
+    if so(str_pool[j])<>"""" then
+      begin 
+      if so(str_pool[j])>=@"100 then print_char(so(str_pool[j]))
+      else print(so(str_pool[j])); end
+
 @z
 
 @x
