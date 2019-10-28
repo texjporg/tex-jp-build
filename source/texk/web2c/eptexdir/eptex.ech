@@ -727,12 +727,8 @@ current_spacing_mode_code: print_esc("currentspacingmode");
 current_xspacing_mode_code: print_esc("currentxspacingmode");
 
 @ @<Cases for fetching an integer value@>=
-current_spacing_mode_code: begin
-  if auto_spacing>0 then cur_val:=1 else cur_val:=0;
-  end;
-current_xspacing_mode_code: begin
-  if auto_xspacing>0 then cur_val:=1 else cur_val:=0;
-  end;
+current_spacing_mode_code: cur_val:=auto_spacing;
+current_xspacing_mode_code: cur_val:=auto_xspacing;
 
 @* \[56] System-dependent changes.
 @z
