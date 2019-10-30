@@ -1104,7 +1104,7 @@ pdf_file_dump_code:
   end;
 uniform_deviate_code:     scan_int;
 normal_deviate_code:      do_nothing;
-Uchar_convert_code: scan_char_num;
+Uchar_convert_code:       scan_char_num;
 Ucharcat_convert_code:
   begin
     scan_ascii_num;
@@ -1118,7 +1118,7 @@ Ucharcat_convert_code:
       error; cat:=12;
     end else cat:=cur_val;
     cur_val:=i;
-  end;
+    end;
 @z
 
 @x
@@ -1129,7 +1129,8 @@ pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
 Uchar_convert_code,
-Ucharcat_convert_code: print_char(cur_val);
+Ucharcat_convert_code:
+if is_char_ascii(cur_val) then print_char(cur_val) else print_kanji(cur_val);
 @z
 
 @x e-pTeX: if primitives - leave room for \ifincsname

@@ -1,0 +1,42 @@
+% euptex
+
+\kcatcode`α=15
+\def\KCAT{%
+  \message{\expandafter\ifcat\x 空 [kanji]\fi}%
+  \message{\expandafter\ifcat\x ア [kana]\fi}%
+  \message{\expandafter\ifcat\x ｛ [other\string_kchar]\fi}%
+  \message{\expandafter\ifcat\x 한 [hangul]\fi}%
+}
+\font\x=ec-lmtt10 \x
+\scrollmode
+
+\edef\x{\Uchar`\$}
+\expandafter\show\x
+
+\edef\x{\Uchar`漢}\KCAT
+
+\edef\x{\Uchar`あ}\KCAT
+
+\edef\x{\Uchar`）}\KCAT
+
+\edef\x{\Uchar"03B1}\KCAT
+
+\edef\x{\Ucharcat`\# 3}
+\expandafter\show\x
+
+\edef\x{\Ucharcat`\# 16} % error "! Invalid code (16)"
+\expandafter\show\x
+
+\edef\x{\Ucharcat`漢 3} % error "! Bad character code" in eptex
+\KCAT
+
+\edef\x{\Ucharcat`＄ 16}\KCAT
+\edef\x{\Ucharcat`： 17}\KCAT
+\edef\x{\Ucharcat`あ 18}\KCAT
+\edef\x{\Ucharcat`漢 19}\KCAT
+
+\edef\x{\Ucharcat"03B1 17}\KCAT
+
+
+\end
+
