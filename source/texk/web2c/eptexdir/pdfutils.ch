@@ -843,7 +843,9 @@ function str_toks_cat(@!b:pool_pointer;@!cat:small_number):pointer;
   else t:=other_token+t;
 @y
   else if (t=" ")and(cat=0) then t:=space_token
-  else if cat=0 then t:=other_token+t else t:=left_brace_token*cat+t;
+  else if (cat=0)or(cat>=kanji) then t:=other_token+t 
+  else if cat=active_char then t:= cs_token_flag + active_base + t
+  else t:=left_brace_token*cat+t;
 @z
 
 @x \Ucharcat: str_toks_cat
@@ -1128,9 +1130,10 @@ eTeX_revision_code: print(eTeX_revision);
 pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
-Uchar_convert_code,
-Ucharcat_convert_code:
+Uchar_convert_code:
 if is_char_ascii(cur_val) then print_char(cur_val) else print_kanji(cur_val);
+Ucharcat_convert_code:
+if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
 @z
 
 @x e-pTeX: if primitives - leave room for \ifincsname
