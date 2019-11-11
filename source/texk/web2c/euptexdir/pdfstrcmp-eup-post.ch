@@ -49,7 +49,8 @@ Ucharcat_convert_code:
     scan_ascii_num;
 @y
 Uchar_convert_code: begin scan_char_num;
-    if not is_char_ascii(cur_val) then cat:=other_kchar;
+    if not is_char_ascii(cur_val) then
+	  if kcat_code(kcatcodekey(cur_val))=not_cjk then cat:=other_kchar;
     end;
 Ucharcat_convert_code:
   begin
