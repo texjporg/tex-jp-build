@@ -17,11 +17,9 @@
 @z
 
 @x
-       check_kcat_code(cc) then
-    begin if (cc=not_cjk) then cc:=other_kchar;
+    if (cc=not_cjk) then cc:=other_kchar;
 @y
-       ((cat>=kanji)or check_kcat_code(cc)) then
-    begin if cat>=kanji then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
+    if cat>=kanji then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
 @z
 
 @x
