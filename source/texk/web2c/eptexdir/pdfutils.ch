@@ -843,7 +843,7 @@ function str_toks_cat(@!b:pool_pointer;@!cat:small_number):pointer;
   else t:=other_token+t;
 @y
   else if (t=" ")and(cat=0) then t:=space_token
-  else if (cat=0)or(cat>=kanji) then t:=other_token+t 
+  else if (cat=0)or(cat>=kanji) then t:=other_token+t
   else if cat=active_char then t:= cs_token_flag + active_base + t
   else t:=left_brace_token*cat+t;
 @z
@@ -885,8 +885,8 @@ begin str_toks:=str_toks_cat(b,0); end;
 primitive("jobname",convert,job_name_code);@/
 @y
 @#
-primitive("expanded",convert,expanded_code);@/ 
-@!@:expanded_}{\.{\\expanded} primitive@> 
+primitive("expanded",convert,expanded_code);@/
+@!@:expanded_}{\.{\\expanded} primitive@>
 @#
 primitive("jobname",convert,job_name_code);@/
 @z
@@ -1664,7 +1664,7 @@ s:=0; t:=0; bl:=true;
 while (k<pool_ptr)and bl do
   if (sop(k)>='0')and (sop(k)<='9') then begin s:=10*s+sop(k)-'0'; incr(k); @+end
   else bl:=false;
-ifps(1) sop(k)='.' then 
+ifps(1) sop(k)='.' then
   begin incr(k); bl:=true; i:=0; dig[0]:=0;
   while (k<pool_ptr)and bl do begin
     if (sop(k)>='0')and (sop(k)<='9') then
@@ -1677,7 +1677,7 @@ ifps(1) sop(k)='.' then
 if k+4>pool_ptr then
   if (sop(k)='t')and(sop(k+1)='r')and(sop(k+2)='u')and(sop(k+3)='e') then
     k:=k+4;
-if mag<>1000 then 
+if mag<>1000 then
   begin s:=xn_over_d(s,1000,mag);
   t:=(1000*t+@'200000*remainder) div mag;
   s:=s+(t div @'200000); t:=t mod @'200000;

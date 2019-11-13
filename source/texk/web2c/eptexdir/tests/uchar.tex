@@ -58,12 +58,14 @@
 \ifdefined\ucs %======
 \immediate\write0{■\string\Uchar\space and \string\kcatcode}
 {\kcatcode"03B1=15 \kcatcode"FF=15
-\edef\x{\Uchar"FF}\KCAT%"}
-\edef\x{\Uchar"03B1}\KCAT%"}
+\edef\x{\Uchar"FF}\KCAT%"
+\edef\x{\Uchar"03B1}\KCAT%"
+}
 
 {\kcatcode"03B1=17 \kcatcode"FF=17
-\edef\x{\Uchar"FF}\KCAT%"}
-\edef\x{\Uchar"03B1}\KCAT%"}
+\edef\x{\Uchar"FF}\KCAT%"
+\edef\x{\Uchar"03B1}\KCAT%"
+}
 \fi %======
 
 \immediate\write0{■\string\Ucharcat.}
