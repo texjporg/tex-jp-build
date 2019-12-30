@@ -339,6 +339,7 @@ texmf_other_scripts = \
 	glossaries/makeglossaries \
 	glossaries/makeglossaries-lite.lua \
 	jfmutil/jfmutil.pl \
+	ketcindy/ketcindy.pl \
 	kotex-utils/jamo-normalize.pl \
 	kotex-utils/komkindex.pl \
 	kotex-utils/ttf2kotexfont.pl \
@@ -407,6 +408,10 @@ texmf_other_scripts = \
 	texlive/fmtutil-sys.sh \
 	texlive/fmtutil-user.sh \
 	texlive/fmtutil.pl \
+	texlive/mktexlsr \
+	texlive/mktexmf \
+	texlive/mktexpk \
+	texlive/mktextfm \
 	texlive/rungs.tlu \
 	texlive/tlmgr.pl \
 	texlive/updmap-sys.sh \
@@ -442,6 +447,7 @@ bin_links = \
 	cluttex:clxelatex \
 	cluttex:cllualatex \
 	epstopdf:repstopdf \
+	mktexlsr:texhash \
 	pdfcrop:rpdfcrop \
 	texdef:latexdef
 
