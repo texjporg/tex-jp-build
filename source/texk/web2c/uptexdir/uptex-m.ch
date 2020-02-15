@@ -259,8 +259,8 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"93):=hangul; { Hangul Jamo Extended-B }
   @t\hskip10pt@>kcat_code(@"98):=kanji; { CJK Compatibility Ideographs }
   { \hskip10pt|kcat_code(@"A1):=other_kchar;| Halfwidth and Fullwidth Forms }
-  @+@t\1@>for k:=@"FD to @"FF do kcat_code(k):=kana; { Kana Supplement .. Small Kana Extension }
-  @+@t\1@>for k:=@"122 to @"127 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. CJK Compatibility Ideographs Supplement }
+  @+@t\1@>for k:=@"103 to @"105 do kcat_code(k):=kana; { Kana Supplement .. Small Kana Extension }
+  @+@t\1@>for k:=@"129 to @"12F do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. G }
   @t\hskip10pt@>kcat_code(@"1FD):=not_cjk; { Latin-1 Letters }
   @t\hskip10pt@>kcat_code(@"1FE):=kana; { Fullwidth digit and latin alphabet }
   @t\hskip10pt@>kcat_code(@"1FF):=kana; { Halfwidth katakana }
