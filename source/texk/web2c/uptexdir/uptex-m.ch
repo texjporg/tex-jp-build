@@ -1,4 +1,4 @@
-% This is a change file for upTeX u1.25
+% This is a change file for upTeX u1.26
 % By Takuji Tanaka.
 %
 % (02/26/2007) TTK  upTeX u0.01
@@ -41,6 +41,7 @@
 % (2019-02-23) TTK  upTeX u1.24
 % (2019-05-06) HK   Hironori Kitagawa fixed a bug in \if.
 % (2019-05-06) TTK  upTeX u1.25
+% (2020-02-22) TTK  upTeX u1.26
 
 @x upTeX: banner
   {printed when \pTeX\ starts}
@@ -48,8 +49,8 @@
   {printed when \pTeX\ starts}
 @#
 @d upTeX_version=1
-@d upTeX_revision==".25"
-@d upTeX_version_string=='-u1.25' {current u\pTeX\ version}
+@d upTeX_revision==".26"
+@d upTeX_version_string=='-u1.26' {current u\pTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.14159265',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
