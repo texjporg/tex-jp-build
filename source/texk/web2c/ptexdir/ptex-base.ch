@@ -2834,6 +2834,18 @@ done: end_name; name_in_progress:=false;
 skip_mode:=true;
 @z
 
+@x [29.???] scan_file_name_braced
+  for i:=str_start[s] to str_start[s+1]-1 do
+    dummy := more_name(str_pool[i]); {add each read character to the current file name}
+@y
+  for i:=str_start[s] to str_start[s+1]-1 do
+    if str_pool[i]>=@"100 then
+	  begin str_room(1); append_char(str_pool[i]);
+	  end
+	else
+      dummy := more_name(str_pool[i]); {add each read character to the current file name}
+@z
+
 @x [29.???] open_log_file
 if buffer[l]=end_line_char then decr(l);
 for k:=1 to l do print(buffer[k]);
