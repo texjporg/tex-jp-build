@@ -64,7 +64,7 @@ struct vf
   struct font_def *dev_fonts;
   unsigned char **ch_pkt;
   uint32_t *pkt_len;
-  unsigned num_chars;
+  unsigned num_chars, max_char;
 };
 
 struct vf *vf_fonts = NULL;
@@ -139,6 +139,9 @@ static void read_a_char_def(FILE *vf_file, int thisfont, uint32_t pkt_len,
     (vf_fonts[thisfont].ch_pkt)[ch] = pkt;
   }
   (vf_fonts[thisfont].pkt_len)[ch] = pkt_len;
+  if (ch > vf_fonts[thisfont].max_char) {
+    vf_fonts[thisfont].max_char = ch;
+  }
   return;
 }
 
@@ -275,6 +278,7 @@ int vf_locate_font (const char *tex_name, spt_t ptsize)
 	strcpy (vf_fonts[thisfont].tex_name, tex_name);
 	vf_fonts[thisfont].ptsize = ptsize;
 	vf_fonts[thisfont].num_chars = 0;
+	vf_fonts[thisfont].max_char = 0;
 	vf_fonts[thisfont].ch_pkt = NULL;
 	vf_fonts[thisfont].pkt_len = NULL;
       }
@@ -413,6 +417,15 @@ void vf_set_char(int32_t ch, int vf_font)
     dvi_vf_init (default_font);
     if (ch >= vf_fonts[vf_font].num_chars ||
 	!(start = (vf_fonts[vf_font].ch_pkt)[ch])) {
+      if (vf_fonts[vf_font].max_char >= 0x100 && ch < 0x1000000 &&
+          dpx_conf.compat_mode == dpx_mode_normal_mode) {
+        /* fallback multibyte character for (u)pTeX */
+        if (dpx_conf.verbose_level > 0)
+	  WARN ("Fallback multibyte character in virtual font: char=0x%06x(%d)", ch, ch);
+        dvi_set (ch);
+        dvi_vf_finish();
+        return;
+      }
       fprintf (stderr, "\nchar=0x%x(%d)\n", ch, ch);
       fprintf (stderr, "Tried to set a nonexistent character in a virtual font");
       start = end = NULL;
