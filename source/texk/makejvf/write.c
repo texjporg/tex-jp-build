@@ -93,8 +93,6 @@ void writevf(int code, FILE *fp)
 
 	w = jfmread(code); /* rightamount is also obtained */
 
-	fputc(242,fp); /* long_char */
-
 	skip2=baseshift;
 	switch (code) {
 	case 0x2146: /* ¡Æ */
@@ -127,6 +125,7 @@ void writevf(int code, FILE *fp)
 				skip2+=-(int)(zh*3/5.0); /* skip2+=-(int)((0.6)*zh); */
 			}
 
+			fputc(242,fp); /* long_char */
 			if (kanatfm)
 				cc=4;
 			else
@@ -195,6 +194,7 @@ void writevf(int code, FILE *fp)
 				skip2+=(int)(zh*3/5.0); /* skip2+=(int)((0.6)*zh); */
 			}
 
+			fputc(242,fp); /* long_char */
 			if (kanatfm)
 				cc=4;
 			else
@@ -305,8 +305,15 @@ void writevf(int code, FILE *fp)
 				skip = -(zw-w)/2;
 			}
 		}
+		else {
+			if (omitzw) { /* Omit entries in VF for characters with default ZW metric */
+				return;
+			}
+		}
 		break;
 	}
+
+	fputc(242,fp); /* long_char */
 
 	for (l = 0; l < usertable_replace_max; l++) {
 		if (code == usertable_replace[l].codepoint) {
@@ -375,8 +382,6 @@ void writevfu(int code, FILE *fp)
 
 	w = jfmread(code); /* rightamount is also obtained */
 
-	fputc(242,fp); /* long_char */
-
 	skip2=baseshift;
 	switch (code) {
 	case 0x2018: /* ¡Æ */
@@ -404,6 +409,7 @@ void writevfu(int code, FILE *fp)
 				skip = -(zw-w); /* changed */
 			/* no correction needed for skip2 */
 
+			fputc(242,fp); /* long_char */
 			if (kanatfm)
 				cc=4;
 			else
@@ -432,6 +438,7 @@ void writevfu(int code, FILE *fp)
 			return;
 		}
 		else if (ucsqtfm) { /* UniJIS-UCS2-H·Ï¤ØÊÑ´¹ */
+			fputc(242,fp); /* long_char */
 			cc=4;
 			skip = -(zw-w);
 			if (skip)
@@ -456,6 +463,7 @@ void writevfu(int code, FILE *fp)
 		}
 		else if (jfm_id == 11 && jistfm) { /* ²£½ñ¤­»þ¤ÏJIS·Ï¤ØÊÑ´¹ */
 		  /* UCS U+2018 ¢ª JIS 0x2146, UCS U+201C ¢ª JIS 0x2148 */
+			fputc(242,fp); /* long_char */
 			cc=4;
 			skip = -(zw-w);
 			if (skip)
@@ -528,6 +536,7 @@ void writevfu(int code, FILE *fp)
 				skip = zw; /* changed */
 			/* no correction needed for skip2 */
 
+			fputc(242,fp); /* long_char */
 			if (kanatfm)
 				cc=4;
 			else
@@ -562,6 +571,7 @@ void writevfu(int code, FILE *fp)
 			return;
 		}
 		else if (ucsqtfm) { /* UniJIS-UCS2-H·Ï¤ØÊÑ´¹ */
+			fputc(242,fp); /* long_char */
 			cc=4;
 			if (skip2)
 				cc+=numcount(skip2)+1;
@@ -579,6 +589,7 @@ void writevfu(int code, FILE *fp)
 		}
 		else if (jfm_id == 11 && jistfm) { /* ²£½ñ¤­»þ¤ÏJIS·Ï¤ØÊÑ´¹ */
 		  /* UCS U+2019 ¢ª JIS 0x2147, UCS U+201D ¢ª JIS 0x2149 */
+			fputc(242,fp); /* long_char */
 			cc=4;
 			if (skip2)
 				cc+=numcount(skip2)+1;
@@ -711,8 +722,15 @@ void writevfu(int code, FILE *fp)
 				skip = -(zw-w)/2;
 			}
 		}
+		else {
+			if (omitzw) { /* Omit entries in VF for characters with default ZW metric */
+				return;
+			}
+		}
 		break;
 	}
+
+	fputc(242,fp); /* long_char */
 
 	for (l = 0; l < usertable_replace_max; l++) {
 		if (code == usertable_replace[l].codepoint) {
