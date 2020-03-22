@@ -307,7 +307,8 @@ void writevf(int code, FILE *fp)
 		}
 		else {
 			if (omitzw) { /* Omit entries in VF for characters with default ZW metric */
-				return;
+				if (!kanatfm || code > 0x2576)
+					return;
 			}
 		}
 		break;
@@ -724,7 +725,8 @@ void writevfu(int code, FILE *fp)
 		}
 		else {
 			if (omitzw) { /* Omit entries in VF for characters with default ZW metric */
-				return;
+				if (!kanatfm || uniblock_iskanji)
+					return;
 			}
 		}
 		break;
