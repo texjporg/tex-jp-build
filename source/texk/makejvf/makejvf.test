@@ -32,5 +32,8 @@
 TEXMFCNF=$srcdir/../kpathsea \
 	./makejvf -k0 -a abc && exit 100
 
+./makejvf -t $srcdir/tests/uni10.cnf -O $srcdir/tests/skipjfmp rml && \
+ exit 101
+
 exit 0
 
