@@ -142,15 +142,20 @@ dochar:
                   fprintf(stderr, "Wrong char code: %04X\n", mychar);
                   error("! a non-existent virtual character is being used; check vf/tfm files");
                }
+               ffont0 = curfnt->localfonts;
+               if (ffont0==NULL)
+                  curfnt = NULL;
+               else
+                  ppreselectfont(ffont0->desc);
             } else {
                curpos = cd->packptr + 2;
                curlim = curpos + (256*(long)(*cd->packptr)+(*(cd->packptr+1)));
+               ffont = curfnt->localfonts;
+               if (ffont==NULL)
+                  curfnt = NULL;
+               else
+                  ppreselectfont(ffont->desc);
             }
-            ffont0 = curfnt->localfonts;
-            if (ffont0==NULL)
-               curfnt = NULL;
-            else
-               ppreselectfont(ffont0->desc);
          } else if (curfnt->loaded == 3)
             curfnt->chardesc[mychar].flags = EXISTS;
          break;

@@ -222,15 +222,20 @@ dochar:
                   fprintf(stderr, "Wrong char code: %04X\n", mychar);
                   error("! a non-existent virtual character is being used; check vf/tfm files");
                }
+               ffont0 = curfnt->localfonts;
+               if (ffont0==NULL)
+                  curfnt = NULL;
+               else if (!preselectfont(ffont0->desc))
+                  goto outofmem;
             } else {
                curpos = cd->packptr + 2;
                curlim = curpos + (256*(long)(*cd->packptr)+(*(cd->packptr+1)));
+               ffont = curfnt->localfonts;
+               if (ffont==NULL)
+                  curfnt = NULL;
+               else if (!preselectfont(ffont->desc))
+                  goto outofmem;
             }
-            ffont0 = curfnt->localfonts;
-            if (ffont0==NULL)
-               curfnt = NULL;
-            else if (!preselectfont(ffont0->desc))
-               goto outofmem;
          } else {
             pagecost++;
             if (!prescanchar(curfnt->chardesc + mychar))
