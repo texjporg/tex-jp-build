@@ -6587,6 +6587,19 @@ case cur_chr of
 open_node:@<Implement \.{\\openout}@>;
 @z
 
+@x [53.????] ignore "flag bit" in str_pool for system(3)
+      runsystem_ret := runsystem(conststringcast(addressof(
+                                              str_pool[str_start[str_ptr]])));
+@y
+      if name_of_file then libc_free(name_of_file);
+      name_of_file := xmalloc(cur_length * 3 + 2);
+      k := 0;
+      for d:=0 to cur_length-1 do
+        append_to_name(str_pool[str_start[str_ptr]+d]);
+      name_of_file[k+1] := 0;
+      runsystem_ret := runsystem(conststringcast(name_of_file+1));
+@z
+
 @x [53.1376] l.26309 - pTeX:
 @<Glob...@> =
 @!debug_format_file: boolean;
