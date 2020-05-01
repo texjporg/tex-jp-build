@@ -430,7 +430,7 @@ int chk_font_file(FILE * fp)
     finfo = (struct FINFO *)gth_buf;
     fardir = (struct FARDIR *)gth_buf;
 
-    fread(gth_buf, sizeof(struct FINFO), 1, fp);
+    if (fread(gth_buf, sizeof(struct FINFO), 1, fp)<1) goto err;
 
     if (strcmp(gth_buf + 8, "gather") == 0)
         goto gth;
@@ -451,7 +451,7 @@ int chk_font_file(FILE * fp)
         if (f_v)
             printf("\n");
         fseek(fp, start, SEEK_SET);
-        fread((char *)fardir, sizeof(struct FARDIR), 1, fp);
+        if (fread((char *)fardir, sizeof(struct FARDIR), 1, fp)<1) goto err;
 
         start = ftell(fp);
         font.n = fardir->f_name;
@@ -475,11 +475,11 @@ int chk_font_file(FILE * fp)
         if (f_v)
             printf("\n");
         fseek(fp, start, SEEK_SET);
-        fread(gth_buf, sizeof(struct FINFO), 1, fp);
+        if (fread(gth_buf, sizeof(struct FINFO), 1, fp)<1) goto err;
 
         start = ftell(fp);
         font.n = finfo->f_name;
-        printf("%s:%d(%d)\n", 
+        printf("%s:%ld(%ld)\n",
             font.n, to_long(finfo->f_pos), to_long(finfo->f_size));
         f_end = to_long(finfo->f_pos) + to_long(finfo->f_size);
         fseek(fp, to_long(finfo->f_pos), SEEK_SET);
@@ -488,6 +488,10 @@ int chk_font_file(FILE * fp)
             printf("\n");
     }
     return (0);
+
+  err:
+    fprintf(stderr, "Cannot read data\n");
+    exit(250);
 }
 
 void show_dvi_data(DVIFILE_INFO *dvi)
@@ -1284,7 +1288,7 @@ void get_list(char *fname)
             return;
         if (buf[0] == '#' || buf[0] == ';')
             continue;
-        if (sscanf(buf, "%15s %X %X",
+        if (sscanf(buf, "%15s %lX %lX",
                    chkfont[n_data].f_name,
                    &(chkfont[n_data].oldd),
                    &(chkfont[n_data].neww)) != 3) {
