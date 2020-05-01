@@ -71,6 +71,7 @@
 #include <config.h>
 
 #include "dd.h"
+#include "common.h"
 
 #define ID          2
 #define ID_PTEX     3
@@ -1362,6 +1363,7 @@ void usage()
         "eufm10	BF989013	8F256EB2\n"
         "# The line beginning with # or ; is ignored.\n"
         );
+    fprintf(stderr, "\nEmail bug reports to %s.\n", BUG_ADDRESS);
     exit(0);
 }
 
