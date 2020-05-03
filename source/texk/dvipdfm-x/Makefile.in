@@ -1949,7 +1949,7 @@ uninstall-man: uninstall-man1
 
 $(xdvipdfmx_OBJECTS): config.force
 
-# $Id$
+# $Id: bin_links.am 43248 2017-02-16 21:38:29Z karl $
 # am/bin_links.am: Makefile fragment for bindir links.
 .PHONY: install-bin-links uninstall-bin-links
 
