@@ -1,3 +1,8 @@
+2020-05-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* vf.c: reduce message by '-v' less than by '-vv' for
+	fallback of virtual fonts.
+
 2020-05-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* dvipdfmx-upjf.test, Makefile.{am,in},
@@ -18,7 +23,7 @@
 	* configure.ac: version 20200315.
 	https://github.com/texjporg/tex-jp-build/issues/99
 
-	A new rule for virtual fonts are implemented:
+	A new rule for virtual fonts is implemented:
 	If a virtual font has no entry of a codepoint and the first
 	MAPFONT designates a (u)pTeX TFM(JFM), then we designate the
 	glyph (usually with a fullwidth metric) of the same codepoint
