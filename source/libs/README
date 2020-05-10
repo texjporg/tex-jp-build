@@ -15,7 +15,7 @@ pplib 2.05.0 - checked 21apr20
 cairo 1.16.0 - checked 20oct18
   http://cairographics.org/releases/
 
-freetype2 2.10.1 - checked 02jul19
+freetype2 2.10.2 - checked 10may20
   http://savannah.nongnu.org/download/freetype/
 
 gd 2.3.0 - checked 10apr20
@@ -59,8 +59,8 @@ poppler 0.68.0 - checked 20aug18
   http://poppler.freedesktop.org/ - used by xetex
   (requires C++11)
 
-teckit 2.5.9 - checked 03may19
-  https://github.com/silnrsi/teckit/archive/2.5.9.tar.gz
+teckit 2.5.10 - checked 06may20
+  https://github.com/silnrsi/teckit/archive/2.5.10.tar.gz
 
 xpdf 4.02 - checked 29sep19
   http://www.xpdfreader.com/download.html
