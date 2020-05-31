@@ -1177,7 +1177,7 @@ begin if is_char_node(link(p)) then
 @y
     begin KANJI(cx):=info(link(p)) mod max_cjk_val;
     i:=info(link(p)) div max_cjk_val; k:=0;
-    print_nl(">> "); print_hex(cx);print(" "); print_int(i);
+    { print_nl(">> "); print_hex(cx);print(" "); print_int(i); }
     if (i=kanji)or(i=kana)or(i=hangul) then begin t:=q; s:=p; end;
 @z
 
