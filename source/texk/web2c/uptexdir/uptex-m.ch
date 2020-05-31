@@ -1177,13 +1177,15 @@ begin if is_char_node(link(p)) then
 @y
     begin KANJI(cx):=info(link(p)) mod max_cjk_val;
     i:=info(link(p)) div max_cjk_val; k:=0;
+    print_nl(">> "); print_hex(cx);print(" "); print_int(i);
     if (i=kanji)or(i=kana)or(i=hangul) then begin t:=q; s:=p; end;
 @z
 
 @x
     fast_get_avail(main_p); info(main_p):=KANJI(cur_chr);
 @y
-    fast_get_avail(main_p); info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val;
+    fast_get_avail(main_p);
+    info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(cur_chr))*max_cjk_val;
 @z
 
 @x

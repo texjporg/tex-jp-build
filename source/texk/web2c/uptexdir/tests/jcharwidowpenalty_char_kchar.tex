@@ -1,0 +1,33 @@
+%#!uplatex
+\documentclass{article}
+\ifdefined\kchar\usepackage[uplatex]{otf}\else\usepackage{otf}\fi
+\def\TEST#1{{\setbox0=\vbox{\noindent
+  あああああああああ#1}\showboxbreadth10000\showboxdepth10000\tracingonline1\showbox0}}
+
+\begin{document}
+
+\chardef\CR=`す
+\TEST{す{\kcatcode`す=18 す}。}
+\TEST{\CR。}
+
+\TEST{す。}
+\TEST{す\char\kuten"0103}
+\TEST{す\UTF{3002}}
+\ifdefined\kchar\TEST{す\kchar\kuten"0103}\fi
+
+\TEST{\char\kuten"0419。}
+\TEST{\char\kuten"0419\char\kuten"0103}
+\TEST{\char\kuten"0419\UTF{3002}}
+\ifdefined\kchar\TEST{\char\kuten"0419\kchar\kuten"0103}\fi
+
+\ifdefined\kchar
+\kchardef\KR=`す
+\TEST{\KR。}
+\TEST{\kchar\kuten"0419。}
+\TEST{\kchar\kuten"0419\char\kuten"0103}
+\TEST{\kchar\kuten"0419\UTF{3002}}
+\TEST{\kchar\kuten"0419\kchar\kuten"0103}
+\fi
+
+\end{document}
+
