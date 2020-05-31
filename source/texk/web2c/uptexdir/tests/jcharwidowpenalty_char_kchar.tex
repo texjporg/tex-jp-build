@@ -2,19 +2,13 @@
 \documentclass{article}
 \ifdefined\kchar\usepackage[uplatex]{otf}\else\usepackage{otf}\fi
 \def\TEST#1{{\setbox0=\vbox{\noindent
-  ああああああ\scantokens{#1}}\showboxbreadth10000\showboxdepth10000\tracingonline1\showbox0}}
+  あああああああああ#1}\showboxbreadth10000\showboxdepth10000\tracingonline1\showbox0}}
+
 \begin{document}
-\typeout{XXX}す\UTF{3059}\CID{13}\kchar"3058
 
 \chardef\CR=`す
-\TEST{す{\kcatcode`す=18 す}「。}
+\TEST{す{\kcatcode`す=18 す}。}
 \TEST{\CR。}
-\ifdefined\Ucharcat
-\TEST{\Ucharcat`す 16。}
-\TEST{\Ucharcat`す 17。}
-\TEST{\Ucharcat`す 18。}
-\TEST{\Ucharcat`す 19。}
-\fi
 
 \TEST{す。}
 \TEST{す\char\kuten"0103}
