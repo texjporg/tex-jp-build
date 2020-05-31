@@ -254,7 +254,7 @@ var q:xref_number; {pointer to previous cross reference}
 begin if (reserved(p)or(byte_start[p]+1=byte_start[p+ww]))and
 @y
 If the user has sent the |no_xref| flag (the -x option of the command line),
-then it is unnecessary to keep track of cross references for identifers.
+then it is unnecessary to keep track of cross references for identifiers.
 If one were careful, one could probably make more changes around module
 100 to avoid a lot of identifier looking up.
 
@@ -364,7 +364,7 @@ begin
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
     if getopt_return_val = -1 then begin
-      {End of arguments; we exit the loop below.} ;
+      do_nothing; {End of arguments; we exit the loop below.}
 
     end else if getopt_return_val = "?" then begin
       usage (my_name);

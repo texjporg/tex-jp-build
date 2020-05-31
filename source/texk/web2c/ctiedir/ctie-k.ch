@@ -19,10 +19,59 @@
 
 @x l.19 Add macro definitions
 \def\title{The CTIE processor}
+\def\botofcontents{%
+\vfill
+$\copyright$ 2002,2003 Julian Gilbey
+
+All rights reserved.
+
+This program is distributed WITHOUT ANY WARRANTY, express or implied.
+
+Permission is granted to make and distribute verbatim copies of this
+program provided that the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+program under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+}
 @y
 \def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}}
 
 \def\title{The CTIE processor}
+\def\topofcontents{\null\vfill
+  \centerline{\titlefont The {\ttitlefont CTIE} processor}
+  \vskip 15pt
+  \centerline{(Version 1.1 [\TeX~Live])}
+  \vfill}
+\def\covernote{\vbox{\ninerm\noindent
+Copyright \copyright\ 2002, 2003 Julian Gilbey
+\smallskip\noindent
+All rights reserved.
+\bigskip\noindent
+This program is distributed WITHOUT ANY WARRANTY, express or implied.
+\smallskip\noindent
+Permission is granted to make and distribute verbatim copies of this
+program provided that the copyright notice and this permission notice
+are preserved on all copies.
+\smallskip\noindent
+Permission is granted to copy and distribute modified versions of this
+program under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+}}
+@z
+
+@x l.81
+@d copyright 
+    "Copyright 2002,2003 Julian Gilbey.  All rights reserved.  There is no warranty.\n\
+Run with the --version option for other important information."
+@y
+@d copyright
+    "Copyright 2002,2003 Julian Gilbey."@|
+    "  All rights reserved.  There is no warranty.\n"@|
+    "Run with the --version option for other important information."
 @z
 
 @x l.102
@@ -101,6 +150,22 @@ behind the scenes.
 This variable must be initialized.
 @y
 This variable must be initialised.
+@z
+
+@x l.158
+@d spotless 0
+@d troublesome 1
+@d fatal 2
+
+@<Global variables@>=
+int history=spotless;
+@y
+@<Global variables@>=
+typedef enum {
+    spotless,
+    troublesome,
+    fatal } return_code;
+static return_code history=spotless;
 @z
 
 @x l.170 The kpathsea include files must be first.
@@ -311,6 +376,14 @@ int wrap_up()
 int wrap_up (void)
 @z
 
+@x l.667
+    if (history > spotless) return 1;
+    else return 0;
+@y
+    if (history > spotless) return EXIT_FAILURE;
+    else return EXIT_SUCCESS;
+@z
+
 @x l.674
 int wrap_up();
 @y
@@ -490,6 +563,12 @@ usage_error (void)
     fprintf(stderr, "Usage: ctie -m|-c outfile master changefile(s)\n");
 @z
 
+@x l.1111
+    exit(1);
+@y
+    exit(EXIT_FAILURE);
+@z
+
 @x l.1119 Add Web2C version to banner string
 printf("%s\n", banner); /* print a ``banner line'' */
 @y
@@ -537,6 +616,12 @@ usage_help (void)
     const_string *message=CTIEHELP;
 @z
 
+@x l.1248
+    exit(0);
+@y
+    exit(EXIT_SUCCESS);
+@z
+
 @x l.1253
 void print_version_and_exit(name, version)
         string name, version;
@@ -568,7 +653,7 @@ print_version_and_exit (const_string name, const_string version)
     puts ("Primary author of CTIE: Julian Gilbey.");
     puts ("Kpathsea written by Karl Berry and others.");
 
-    exit (0);
+    exit (EXIT_SUCCESS);
 }
 @z
 

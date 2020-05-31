@@ -1029,7 +1029,7 @@ if (last_cite = max_cites) then
     while (last_cite < max_cites) do
         begin
         type_list[last_cite] := empty;@/
-        cite_info[last_cite] := any_value;  {to appeas \PASCAL's boolean evaluation}
+        cite_info[last_cite] := any_value;  {to appease \PASCAL's boolean evaluation}
         incr(last_cite);
         end;
 @z
@@ -1621,7 +1621,7 @@ begin
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
     if getopt_return_val = -1 then begin
-      {End of arguments; we exit the loop below.} ;
+      do_nothing; {End of arguments; we exit the loop below.}
 
     end else if getopt_return_val = "?" then begin
       usage (my_name);
