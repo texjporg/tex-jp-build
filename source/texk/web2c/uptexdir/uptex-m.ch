@@ -929,7 +929,9 @@ else if cur_cmd=char_num then
   if check_echar_range(cur_val) then q:=new_character(f,cur_val)
   else  begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val
+    KANJI(cx):=cur_val;
+    { print_nl("CN1> "); print_int(cx); print(" "); print_int(cur_cmd); }
+    cur_cmd:=kcat_code(kcatcodekey(cx));
     end
   end
 else if cur_cmd=kchar_given then
@@ -940,7 +942,9 @@ else if cur_cmd=kchar_given then
 else if cur_cmd=kchar_num then
   begin scan_char_num;
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val
+    KANJI(cx):=cur_val;
+    { print_nl("KN1> "); print_int(cx); print(" "); print_int(cur_cmd); }
+    cur_cmd:=kcat_code(kcatcodekey(cx));
   end
 @z
 
@@ -1185,7 +1189,13 @@ begin if is_char_node(link(p)) then
     fast_get_avail(main_p); info(main_p):=KANJI(cur_chr);
 @y
     fast_get_avail(main_p);
-    info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(cur_chr))*max_cjk_val;
+    { print_nl("K> "); print_hex(KANJI(cur_chr));print(" ");
+      print_int(cur_cmd); print(" ");
+      print_int(kcat_code(kcatcodekey(KANJI(cur_chr)))); }
+    if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+      info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
+    else
+      info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
 @z
 
 @x
@@ -1227,12 +1237,16 @@ begin if is_char_node(link(p)) then
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      { print_nl("CN0> "); print_int(cur_chr); print(" "); print_int(cur_cmd); }
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     kchar_given: begin
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       end;
     kchar_num: begin scan_char_num; cur_chr:=cur_val;
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      { print_nl("KN0> "); print_int(cur_chr); print(" "); print_int(cur_cmd); }
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
 @z
 
