@@ -1,5 +1,7 @@
 %#!uplatex
+\UseRawInputEncoding
 \documentclass{article}
+\usepackage[T1]{fontenc}
 \ifdefined\kchar\usepackage[uplatex]{otf}\else\usepackage{otf}\fi
 \def\TEST#1{{\setbox0=\vbox{\noindent
   ああああああ\scantokens{#1}}\showboxbreadth10000\showboxdepth10000\tracingonline1\showbox0}}
@@ -34,6 +36,20 @@
 \TEST{\kchar\kuten"0419\char\kuten"0103}
 \TEST{\kchar\kuten"0419\UTF{3002}}
 \TEST{\kchar\kuten"0419\kchar\kuten"0103}
+
+{\kcatcode`α=15
+  \def\S{\kchar"03B1}
+\TEST{い\kchar"03B1。}
+\TEST{\kchar"03B1。}
+\TEST{\relax\kchar"03B1。}
+\TEST{\vrule\kchar"03B1。}
+\TEST{b\kchar"03B1。}
+\TEST{い\S。}
+%%\TEST{い\char"03B2。}
+%\TEST{\char"03B2。}
+%\TEST{b\char"03B2。}
+%\TEST{\relax\char"03B2。}
+}
 \fi
 
 \end{document}

@@ -770,6 +770,7 @@ loop@+  begin get_x_token;
   reswitch: case cur_cmd of
   letter,other_char,char_given,kchar_given:@<Append a new letter or hyphen@>;
   char_num,kchar_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
+    print_nl("KN4> "); print_int(cur_chr); print(" "); print_int(cur_cmd);
     goto reswitch;
     end;
 @z
@@ -790,9 +791,12 @@ hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+kchar_given: goto ma
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop else goto main_loop_j;
 hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
-  if check_echar_range(cur_chr) then goto main_loop else goto main_loop_j;
+  if check_echar_range(cur_chr) then goto main_loop
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
   end;
 hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
+  { print_nl("KN3> "); print_int(cur_chr); print(" "); print_int(cur_cmd); }
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   goto main_loop_j;
   end;
 hmode+no_boundary: begin get_x_token;
@@ -848,10 +852,12 @@ if cur_cmd=char_given then
 if cur_cmd=char_num then
   begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else @<goto |main_lig_loop|@>;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_num then
   begin scan_char_num; cur_chr:=cur_val;
+  { print_nl("KN2> "); print_int(cur_chr); print(" "); print_int(cur_cmd); }
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   @<goto |main_lig_loop|@>;
   end;
 @z
@@ -1189,13 +1195,13 @@ begin if is_char_node(link(p)) then
     fast_get_avail(main_p); info(main_p):=KANJI(cur_chr);
 @y
     fast_get_avail(main_p);
-    { print_nl("K> "); print_hex(KANJI(cur_chr));print(" ");
-      print_int(cur_cmd); print(" ");
-      print_int(kcat_code(kcatcodekey(KANJI(cur_chr)))); }
     if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
       info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
     else
       info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
+    { print_nl("K> "); print_hex(KANJI(cur_chr));print(" ");
+      print_int(cur_cmd); print(" ");
+      print_hex(info(main_p)); }
 @z
 
 @x
