@@ -38,17 +38,40 @@
 \TEST{\kchar\kuten"0419\kchar\kuten"0103}
 
 {\kcatcode`α=15
+  \typeout{KCHAR"3B1, kcatcode=15}
   \def\S{\kchar"03B1}
-\TEST{い\kchar"03B1。}
-\TEST{\kchar"03B1。}
-\TEST{\relax\kchar"03B1。}
-\TEST{\vrule\kchar"03B1。}
-\TEST{b\kchar"03B1。}
-\TEST{い\S。}
-%%\TEST{い\char"03B2。}
-%\TEST{\char"03B2。}
-%\TEST{b\char"03B2。}
-%\TEST{\relax\char"03B2。}
+  \TEST{い\kchar"03B1。}
+  \TEST{\kchar"03B1。}
+  \TEST{\relax\kchar"03B1。}
+  \TEST{\vrule\kchar"03B1。}
+  \TEST{b\kchar"03B1。}
+  \TEST{い\S。}
+
+  \typeout{CHAR"3B1, kcatcode=15}
+  \def\S{\char"03B1}
+  \TEST{い\char"03B1。}
+  \TEST{\char"03B1。}
+  \TEST{\relax\char"03B1。}
+  \TEST{\vrule\char"03B1。}
+  \TEST{b\char"03B1。}
+  \TEST{い\S。}
+
+  \typeout{KCHARDEF"3B1, kcatcode=15}
+  \chardef\KA="3B1
+  \TEST{い\KA 。}
+  \TEST{\KA 。}
+  \TEST{\relax\KA 。}
+  \TEST{\vrule\KA 。}
+  \TEST{b\KA 。}
+  \TEST{い\S。}
+
+  \typeout{CHARDEF"3B1, kcatcode=15}
+  \chardef\CA="3B1
+  \TEST{い\CA 。}
+  \TEST{\CA 。}
+  \TEST{\relax\CA 。}
+  \TEST{\vrule\CA 。}
+  \TEST{b\CA 。}
 }
 \fi
 
