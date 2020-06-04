@@ -1197,6 +1197,8 @@ begin if is_char_node(link(p)) then
     fast_get_avail(main_p);
     if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
       info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
+    else if cur_cmd=not_cjk then
+      info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
     else
       info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
     { print_nl("K> "); print_hex(KANJI(cur_chr));print(" ");
