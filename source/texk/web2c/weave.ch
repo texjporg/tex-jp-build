@@ -75,7 +75,7 @@ procedure initialize;
 const @<Constants in the outer block@>@/
 type @<Types in the outer block@>@/
 var @<Globals in the outer block@>@/
-@<Define |parse_arguments|@>
+@<Define |parse_arguments|@>@/
 @<Error handling procedures@>@/
 procedure initialize;
   var @<Local variables for initialization@>@/
@@ -91,15 +91,25 @@ procedure initialize;
 @!max_names=5000; {number of identifiers, index entries, and module names;
   must be less than 10240}
 @y
-@!max_bytes=65536; {|1/ww| times the number of bytes in identifiers,
+@!max_bytes=65535; {|1/ww| times the number of bytes in identifiers,
   index entries, and module names; must be less than 65536}
-@!max_names=10220; {number of identifiers, index entries, and module names;
+@!max_names=10239; {number of identifiers, index entries, and module names;
   must be less than 10240}
 @z
 @x
+@!max_modules=2000;{greater than the total number of modules}
+@!hash_size=353; {should be prime}
 @!buf_size=100; {maximum length of input line}
+@!longest_name=400; {module names shouldn't be longer than this}
+@!long_buf_size=500; {|buf_size+longest_name|}
+@!line_length=80; {lines of \TeX\ output have at most this many characters,
 @y
-@!buf_size=3000; {maximum length of input line}
+@!max_modules=10239; {greater than the total number of modules}
+@!hash_size=8501; {should be prime}
+@!buf_size=1000; {maximum length of input line}
+@!longest_name=10000; {module names shouldn't be longer than this}
+@!long_buf_size=buf_size+longest_name; {C arithmetic in \PASCAL\ constant}
+@!line_length=80; {lines of \TeX\ output have at most this many characters,
 @z
 @x
 @!max_refs=30000; {number of cross references; must be less than 65536}
@@ -110,10 +120,10 @@ procedure initialize;
 @!max_scraps=1000; {number of tokens in \PASCAL\ texts being parsed}
 @!stack_size=200; {number of simultaneous output levels}
 @y
-@!max_refs=65000; {number of cross references; must be less than 65536}
-@!max_toks=65000; {number of symbols in \PASCAL\ texts being parsed;
+@!max_refs=65535; {number of cross references; must be less than 65536}
+@!max_toks=65535; {number of symbols in \PASCAL\ texts being parsed;
   must be less than 65536}
-@!max_texts=10000; {number of phrases in \PASCAL\ texts being parsed;
+@!max_texts=10239; {number of phrases in \PASCAL\ texts being parsed;
   must be less than 10240}
 @!max_scraps=10000; {number of tokens in \PASCAL\ texts being parsed}
 @!stack_size=2000; {number of simultaneous output levels}
@@ -254,7 +264,7 @@ var q:xref_number; {pointer to previous cross reference}
 begin if (reserved(p)or(byte_start[p]+1=byte_start[p+ww]))and
 @y
 If the user has sent the |no_xref| flag (the -x option of the command line),
-then it is unnecessary to keep track of cross references for identifers.
+then it is unnecessary to keep track of cross references for identifiers.
 If one were careful, one could probably make more changes around module
 100 to avoid a lot of identifier looking up.
 
@@ -364,7 +374,7 @@ begin
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
     if getopt_return_val = -1 then begin
-      {End of arguments; we exit the loop below.} ;
+      do_nothing; {End of arguments; we exit the loop below.}
 
     end else if getopt_return_val = "?" then begin
       usage (my_name);
@@ -425,8 +435,7 @@ long_options[current_option].flag := address_of (no_xref);
 long_options[current_option].val := 1;
 incr (current_option);
 
-@
-@<Global...@> =
+@ @<Global...@> =
 @!no_xref:c_int_type;
 
 @ An element with all zeros always ends the list.

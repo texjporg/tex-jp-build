@@ -295,9 +295,9 @@ end
 % Now follows the simplest change -- although the bigest one.
 % The primitives of \MF\ and \MP\ are reshuffled into
 % three categories:
-%   -- primitivies common for \MF\ and \MP
-%   -- primitivies specific for \MF
-%   -- primitivies specific for \MP
+%   -- primitives common for \MF\ and \MP
+%   -- primitives specific for \MF
+%   -- primitives specific for \MP
 
 @x [65]
 @ The intended use of the macros above might not be immediately obvious,
@@ -988,7 +988,7 @@ begin
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
     if getopt_return_val = -1 then begin
-      {End of arguments; we exit the loop below.} ;
+      do_nothing; {End of arguments; we exit the loop below.}
 
     end else if getopt_return_val = "?" then begin
       usage (my_name);

@@ -613,7 +613,7 @@ begin
     getopt_return_val := getopt_long_only (argc, argv, '', long_options,
                                            address_of (option_index));
     if getopt_return_val = -1 then begin
-      {End of arguments; we exit the loop below.} ;
+      do_nothing; {End of arguments; we exit the loop below.}
 
     end else if getopt_return_val = "?" then begin
       usage (my_name);
@@ -669,12 +669,10 @@ long_options[current_option].flag := address_of (verbose);
 long_options[current_option].val := 1;
 incr (current_option);
 
-@
-@<Glob...@> =
+@ @<Glob...@> =
 @!verbose: c_int_type;
 
-@
-@<Initialize the option...@> =
+@ @<Initialize the option...@> =
 verbose := false;
 
 @ Change how far from the right edge of the character boxes we print
