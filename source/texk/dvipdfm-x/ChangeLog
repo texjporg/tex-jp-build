@@ -1,3 +1,18 @@
+2020-07-04  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* pdfcolor.c, spc_util.c: Fix a bug in pdfcolor.c.
+	Add initialization of a variable and NULL pointer check.
+	* configure.ac: Version 20200704.
+
+2020-07-02  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* pdfdoc.c, spc_pdfm.c: Possible fix for a bug that pdf:btrans
+	inside pdf:bcontent and pdf:econtent does not work correctly.
+	Extend pdf:bann to accept a reference ID which can be used
+	later to refer the annotation dictionary object. When
+	line-breaks occur, it just points to the first annotation
+	dictionary of the line-breaking annotation series.
+
 2020-06-28  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
 
 	* dvi.[ch], spc_dvipdfmx.c, spc_pdfm.c, specials.[ch]: Two new
