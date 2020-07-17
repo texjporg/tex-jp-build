@@ -1,6 +1,6 @@
 /* This is dvipdfmx, an eXtended version of dvipdfm by Mark A. Wicks.
 
-    Copyright (C) 2002-2019 by Jin-Hwan Cho and Shunsaku Hirata,
+    Copyright (C) 2002-2020 by Jin-Hwan Cho and Shunsaku Hirata,
     the dvipdfmx project team.
     
     Copyright (C) 1998, 1999 by Mark A. Wicks <mwicks@kettering.edu>
@@ -619,6 +619,11 @@ graphics_mode (void)
     pdf_doc_add_page_content(text_state.is_mb ? ">]TJ" : ")]TJ", 4);  /* op: TJ */
     /* continue */
   case TEXT_MODE:
+    if (text_state.bold_param != 0.0) {
+      /* fake-bold "2 Tr" is still active */
+      pdf_doc_add_page_content(" 0 Tr", 5);  /* op: Tr */
+      text_state.bold_param  = 0.0;
+    }
     pdf_doc_add_page_content(" ET", 3);  /* op: ET */
     text_state.force_reset =  0;
     text_state.font_id     = -1;
@@ -1359,6 +1364,7 @@ pdf_dev_bop (const pdf_tmatrix *M)
 
   pdf_dev_reset_fonts(1);
   pdf_dev_reset_color(0);
+  pdf_dev_reset_xgstate(0);
 }
 
 void

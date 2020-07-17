@@ -58,6 +58,19 @@
 @z
 
 @x
+\def\botofcontents{\vfill
+@y
+\def\covernote{\vbox{%
+@z
+
+@x
+}
+@y
+}}
+\datecontentspage
+@z
+
+@x
 @s not_eq normal @q unreserve a C++ keyword @>
 @y
 @z
@@ -111,8 +124,8 @@ extern int strncmp(); /* compare up to $n$ string characters */
 extern char* strncpy(); /* copy up to $n$ string characters */
 @y
 @ For string handling we include the {\mc ANSI C} system header file instead
-of predeclaring the standard system functions |strlen|, |strcmp|, |strcpy|,
-|strncmp|, and |strncpy|.
+of predeclaring the standard system functions |@!strlen|, |@!strcmp|,
+|@!strcpy|, |@!strncmp|, and |@!strncpy|.
 @^system dependencies@>
 
 @<Include files@>=
@@ -349,8 +362,10 @@ char **av@t\2\2@>) /* argument values */
 
 @x
 @d max_scraps 2000 /* number of tokens in \CEE/ texts being parsed */
+@d stack_size 400 /* number of simultaneous output levels */
 @y
 @d max_scraps 10000 /* number of tokens in \CEE/ texts being parsed */
+@d stack_size 2000 /* number of simultaneous output levels */
 @z
 
 @x
@@ -1290,6 +1305,12 @@ copy_limbo(void)
 @y
         case right_start: right_start_switch=1; break;
         default: err_print(_("! Double @@ should be used in limbo"));
+@z
+
+@x
+@ @f copy_TeX TeX
+@y
+@f copy_TeX TeX
 @z
 
 @x
@@ -2866,6 +2887,12 @@ for (c=0; c<256; c++) bucket[c]=NULL;
 @z
 
 @x
+@ @<Rest of |trans_plus| union@>=
+@y
+@<Rest of |trans_plus| union@>=
+@z
+
+@x
 collate[0]=0;
 strcpy(collate+1," \1\2\3\4\5\6\7\10\11\12\13\14\15\16\17");
 /* 16 characters + 1 = 17 */
@@ -3093,9 +3120,11 @@ created by numerous contributors over the course of a quarter century. They
 make \.{CWEB} adhere to modern coding standards and introduce new or improved
 features.
 
-Care has been taken to keep the original section numbering intact, so this new
-section should have the same number as the original ``\&{275.~Index},'' and
-additional material follows below.
+\bigskip
+\font\itt=cmitt10
+{\noindent \it Although \.{\itt CTWILL} is based on \.{\itt cweave.w}, new and
+modified material is incorporated all over the place, without taking special
+care for keeping the original section numbering intact.}
 
 @* Set {\tt CWEAVE} flags.
 At least one of these is already used in \.{COMMON}.
@@ -3198,7 +3227,7 @@ else {
   rename(check_file_name,tex_file_name);
 }
 
-@* Put ``version'' information in a single spot.
+@* Put ``version'' information in \.{COMMON}.
 Don't do this at home, kids! Push our local macro to the variable in \.{COMMON}
 for printing the |banner| and the |versionstring| from there.
 

@@ -57,6 +57,7 @@
 
 #include "dvipdfmx.h"
 
+#define SPC_PDFM_SUPPORT_ANNOT_TRANS 1
 
 /* PLEASE REMOVE THIS */
 struct resource_map {
@@ -641,7 +642,39 @@ parse_pdf_dict_with_tounicode (const char **pp, const char *endptr, struct touni
   return  dict;
 }
 
-#define SPC_PDFM_SUPPORT_ANNOT_TRANS 1
+static void
+set_rect (pdf_rect *rect, pdf_coord cp1, pdf_coord cp2, pdf_coord cp3, pdf_coord cp4)
+{
+  rect->llx = cp1.x;
+  if (cp2.x < rect->llx)
+    rect->llx = cp2.x;
+  if (cp3.x < rect->llx)
+    rect->llx = cp3.x;
+  if (cp4.x < rect->llx)
+    rect->llx = cp4.x;
+  rect->urx = cp1.x;
+  if (cp2.x > rect->urx)
+    rect->urx = cp2.x;
+  if (cp3.x > rect->urx)
+    rect->urx = cp3.x;
+  if (cp4.x > rect->urx)
+    rect->urx = cp4.x;
+  rect->lly = cp1.y;
+  if (cp2.y < rect->lly)
+    rect->lly = cp2.y;
+  if (cp3.y < rect->lly)
+    rect->lly = cp3.y;
+  if (cp4.y < rect->lly)
+    rect->lly = cp4.y;
+  rect->ury = cp1.y;
+  if (cp2.y > rect->ury)
+    rect->ury = cp2.y;
+  if (cp3.y > rect->ury)
+    rect->ury = cp3.y;
+  if (cp4.y > rect->ury)
+    rect->ury = cp4.y;
+}
+
 static int
 spc_handler_pdfm_annot (struct spc_env *spe, struct spc_arg *args)
 {
@@ -715,35 +748,8 @@ spc_handler_pdfm_annot (struct spc_env *spe, struct spc_arg *args)
     pdf_dev_transform(&cp1, NULL);
     pdf_dev_transform(&cp2, NULL);
     pdf_dev_transform(&cp3, NULL);
-    pdf_dev_transform(&cp4, NULL);
-    rect.llx = cp1.x;
-    if (cp2.x < rect.llx)
-      rect.llx = cp2.x;
-    if (cp3.x < rect.llx)
-      rect.llx = cp3.x;
-    if (cp4.x < rect.llx)
-      rect.llx = cp4.x;
-    rect.urx = cp1.x;
-    if (cp2.x > rect.urx)
-      rect.urx = cp2.x;
-    if (cp3.x > rect.urx)
-      rect.urx = cp3.x;
-    if (cp4.x > rect.urx)
-      rect.urx = cp4.x;
-    rect.lly = cp1.y;
-    if (cp2.y < rect.lly)
-      rect.lly = cp2.y;
-    if (cp3.y < rect.lly)
-      rect.lly = cp3.y;
-    if (cp4.y < rect.lly)
-      rect.lly = cp4.y;
-    rect.ury = cp1.y;
-    if (cp2.y > rect.ury)
-      rect.ury = cp2.y;
-    if (cp3.y > rect.ury)
-      rect.ury = cp3.y;
-    if (cp4.y > rect.ury)
-      rect.ury = cp4.y;
+    pdf_dev_transform(&cp4, NULL);    
+    set_rect(&rect, cp1, cp2, cp3, cp4);
 #ifdef USE_QUADPOINTS
     qpoints = pdf_new_array();
     pdf_add_array(qpoints, pdf_new_number(ROUND(cp1.x, 0.01)));
@@ -792,11 +798,15 @@ spc_handler_pdfm_annot (struct spc_env *spe, struct spc_arg *args)
   return 0;
 }
 
-/* NOTE: This can't have ident. See "Dvipdfm User's Manual". */
+/* NOTE: This can't have ident. See "Dvipdfm User's Manual".
+ * 1 Jul. 2020: ident allowed (upon request)
+ * Only first annotation can be accessed in line break cases.
+ */
 static int
 spc_handler_pdfm_bann (struct spc_env *spe, struct spc_arg *args)
 {
   struct spc_pdf_ *sd = &_pdf_stat;
+  char  *ident = NULL;
   int    error = 0;
 
   if (sd->annot_dict) {
@@ -805,19 +815,31 @@ spc_handler_pdfm_bann (struct spc_env *spe, struct spc_arg *args)
   }
 
   skip_white(&args->curptr, args->endptr);
+  if (args->curptr[0] == '@') {
+    ident = parse_opt_ident(&args->curptr, args->endptr);
+    skip_white(&args->curptr, args->endptr);
+  }
 
   sd->annot_dict = parse_pdf_dict_with_tounicode(&args->curptr, args->endptr, &sd->cd);
   if (!sd->annot_dict) {
     spc_warn(spe, "Ignoring annotation with invalid dictionary.");
+    if (ident)
+      RELEASE(ident);
     return  -1;
   } else if (!PDF_OBJ_DICTTYPE(sd->annot_dict)) {
     spc_warn(spe, "Invalid type: not a dictionary object.");
     pdf_release_obj(sd->annot_dict);
     sd->annot_dict = NULL;
+    if (ident)
+      RELEASE(ident);
     return  -1;
   }
 
-  error = spc_begin_annot(spe, sd->annot_dict);
+  error = spc_begin_annot(spe, pdf_link_obj(sd->annot_dict));
+  if (ident) {
+    spc_push_object(ident, pdf_link_obj(sd->annot_dict));
+    RELEASE(ident);
+  }
 
   return  error;
 }
@@ -841,6 +863,96 @@ spc_handler_pdfm_eann (struct spc_env *spe, struct spc_arg *args)
   return  error;
 }
 
+/* For supporting \phantom within bann-eann.
+ *
+ *   \special{pdf:xann width 50pt height 8pt depth 1pt}
+ * 
+ * tells dvipdfmx to extend the current annotation rectangle
+ * by the amount specified (witdh 50pt, height 8pt, depth 1pt)
+ * This was introduced since in the following situation
+ * 
+ *   \special{pdf:bann ...}\phantom{Some texts}\special{pdf:eann}
+ * 
+ * annotation is not created since there is no annotation
+ * rectangle calculated due to no object being put.
+ */
+static int
+spc_handler_pdfm_xann (struct spc_env *spe, struct spc_arg *args)
+{
+  pdf_rect       rect;
+  transform_info ti;
+
+  if (!spc_is_tracking_boxes(spe)) {
+    /* Silently ignore */
+    args->curptr = args->endptr;
+    return 0;
+  }
+
+  skip_white(&args->curptr, args->endptr);
+
+  transform_info_clear(&ti);
+  if (spc_util_read_dimtrns(spe, &ti, args, 0) < 0) {
+    return  -1;
+  }
+
+  if ((ti.flags & INFO_HAS_USER_BBOX) &&
+      ((ti.flags & INFO_HAS_WIDTH) || (ti.flags & INFO_HAS_HEIGHT))) {
+    spc_warn(spe, "You can't specify both bbox and width/height.");
+    return  -1;
+  }
+
+#ifdef SPC_PDFM_SUPPORT_ANNOT_TRANS
+  {
+    pdf_coord cp1, cp2, cp3, cp4;
+
+    if (ti.flags & INFO_HAS_USER_BBOX) {
+      cp1.x = spe->x_user + ti.bbox.llx;
+      cp1.y = spe->y_user + ti.bbox.lly;
+      cp2.x = spe->x_user + ti.bbox.urx;
+      cp2.y = spe->y_user + ti.bbox.lly;
+      cp3.x = spe->x_user + ti.bbox.urx;
+      cp3.y = spe->y_user + ti.bbox.ury;
+      cp4.x = spe->x_user + ti.bbox.llx;
+      cp4.y = spe->y_user + ti.bbox.ury;
+    } else {
+      cp1.x = spe->x_user;
+      cp1.y = spe->y_user - spe->mag * ti.depth;
+      cp2.x = spe->x_user + spe->mag * ti.width;
+      cp2.y = spe->y_user - spe->mag * ti.depth;
+      cp3.x = spe->x_user + spe->mag * ti.width;
+      cp3.y = spe->y_user + spe->mag * ti.height;
+      cp4.x = spe->x_user;
+      cp4.y = spe->y_user + spe->mag * ti.height;
+    }
+    pdf_dev_transform(&cp1, NULL);
+    pdf_dev_transform(&cp2, NULL);
+    pdf_dev_transform(&cp3, NULL);
+    pdf_dev_transform(&cp4, NULL);    
+    set_rect(&rect, cp1, cp2, cp3, cp4);
+  }
+#else
+  {
+    pdf_coord cp;
+
+    cp.x = spe->x_user; cp.y = spe->y_user;
+    pdf_dev_transform(&cp, NULL);
+    if (ti.flags & INFO_HAS_USER_BBOX) {
+      rect.llx = ti.bbox.llx + cp.x;
+      rect.lly = ti.bbox.lly + cp.y;
+      rect.urx = ti.bbox.urx + cp.x;
+      rect.ury = ti.bbox.ury + cp.y;
+    } else {
+      rect.llx = cp.x;
+      rect.lly = cp.y - spe->mag * ti.depth;
+      rect.urx = cp.x + spe->mag * ti.width;
+      rect.ury = cp.y + spe->mag * ti.height;
+    }
+  }
+#endif
+  pdf_doc_expand_box(&rect);
+
+  return 0;
+}
 
 /* Color:.... */
 static int
@@ -910,6 +1022,7 @@ static int
 spc_handler_pdfm_btrans (struct spc_env *spe, struct spc_arg *args)
 {
   pdf_tmatrix     M;
+  double          x_user, y_user, xpos, ypos;
   transform_info  ti;
 
   transform_info_clear(&ti);
@@ -917,10 +1030,16 @@ spc_handler_pdfm_btrans (struct spc_env *spe, struct spc_arg *args)
     return -1;
   }
 
+  /* btrans inside bcontent-econtent bug fix.
+   * I don't know if this is the only place needs to be fixed...
+   */
+  pdf_dev_get_coord(&xpos, &ypos);
+  x_user = spe->x_user - xpos;
+  y_user = spe->y_user - ypos;
   /* Create transformation matrix */
   pdf_copymatrix(&M, &(ti.matrix));
-  M.e += ((1.0 - M.a) * spe->x_user - M.c * spe->y_user);
-  M.f += ((1.0 - M.d) * spe->y_user - M.b * spe->x_user);
+  M.e += ((1.0 - M.a) * x_user - M.c * y_user);
+  M.f += ((1.0 - M.d) * y_user - M.b * x_user);
 
   pdf_dev_gsave();
   pdf_dev_concat(&M);
@@ -942,6 +1061,7 @@ spc_handler_pdfm_etrans (struct spc_env *spe, struct spc_arg *args)
    * starting a new page.
    */
   pdf_dev_reset_color(0);
+  pdf_dev_reset_xgstate(0);
 
   return 0;
 }
@@ -1513,6 +1633,7 @@ spc_handler_pdfm_econtent (struct spc_env *spe, struct spc_arg *args)
   pdf_dev_pop_coord();
   pdf_dev_grestore();
   pdf_dev_reset_color(0);
+  pdf_dev_reset_xgstate(0);
 
   return 0;
 }
@@ -2093,6 +2214,36 @@ spc_handler_pdfm_pageresources (struct spc_env *spe, struct spc_arg *args)
 }
 
 static int
+spc_handler_pdfm_bxgstate (struct spc_env *spe, struct spc_arg *args)
+{
+  pdf_obj *object;
+
+  skip_white(&args->curptr, args->endptr);
+  object = parse_pdf_object(&args->curptr, args->endptr, NULL);
+  if (!object) {
+    spc_warn(spe, "Could not find an object definition.");
+    return -1;
+  } else if (!PDF_OBJ_DICTTYPE(object)) {
+    spc_warn(spe, "Parsed object for ExtGState not a dictionary object!");
+    pdf_release_obj(object);
+    return -1;
+  }
+  pdf_dev_xgstate_push(object);
+
+  skip_white(&args->curptr, args->endptr);
+
+  return 0;
+}
+
+static int
+spc_handler_pdfm_exgstate (struct spc_env *spe, struct spc_arg *args)
+{
+  pdf_dev_xgstate_pop();
+  skip_white(&args->curptr, args->endptr);
+  return 0;
+}
+
+static int
 spc_handler_pdft_compat_page (struct spc_env *spe, struct spc_arg *args)
 {
   skip_white(&args->curptr, args->endptr);
@@ -2219,6 +2370,13 @@ static struct spc_handler pdfm_handlers[] = {
 
   {"pageresources", spc_handler_pdfm_pageresources},
   {"trailerid", spc_handler_pdfm_do_nothing},
+
+  {"xannot",      spc_handler_pdfm_xann},
+  {"extendann",   spc_handler_pdfm_xann},
+  {"xann",        spc_handler_pdfm_xann}, 
+
+  {"bxgstate",    spc_handler_pdfm_bxgstate},
+  {"exgstate",    spc_handler_pdfm_exgstate},
 };
 
 static struct spc_handler pdft_compat_handlers[] = {

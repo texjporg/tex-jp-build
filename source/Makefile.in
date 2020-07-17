@@ -107,7 +107,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/kpse-cairo-flags.m4 \
 	$(top_srcdir)/m4/kpse-options.m4 \
 	$(top_srcdir)/m4/kpse-pixman-flags.m4 \
 	$(top_srcdir)/m4/kpse-pkgs.m4 \
-	$(top_srcdir)/m4/kpse-poppler-flags.m4 \
+	$(top_srcdir)/m4/kpse-pplib-flags.m4 \
 	$(top_srcdir)/m4/kpse-ptexenc-flags.m4 \
 	$(top_srcdir)/m4/kpse-setup.m4 \
 	$(top_srcdir)/m4/kpse-teckit-flags.m4 \
@@ -173,13 +173,13 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/kpse-cairo-flags.m4 \
 	$(top_srcdir)/texk/xdvik/ac/xdvik.ac \
 	$(top_srcdir)/texk/texlive/ac/withenable.ac \
 	$(top_srcdir)/texk/texlive/ac/texlive.ac \
+	$(top_srcdir)/libs/pplib/ac/withenable.ac \
 	$(top_srcdir)/libs/harfbuzz/ac/withenable.ac \
 	$(top_srcdir)/libs/icu/ac/withenable.ac \
 	$(top_srcdir)/libs/teckit/ac/withenable.ac \
 	$(top_srcdir)/libs/graphite2/ac/withenable.ac \
 	$(top_srcdir)/libs/zziplib/ac/withenable.ac \
 	$(top_srcdir)/libs/xpdf/ac/withenable.ac \
-	$(top_srcdir)/libs/poppler/ac/withenable.ac \
 	$(top_srcdir)/libs/mpfr/ac/withenable.ac \
 	$(top_srcdir)/libs/gmp/ac/withenable.ac \
 	$(top_srcdir)/libs/cairo/ac/withenable.ac \
@@ -205,7 +205,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/kpse-cairo-flags.m4 \
 	$(top_srcdir)/libs/cairo/ac/cairo.ac \
 	$(top_srcdir)/libs/gmp/ac/gmp.ac \
 	$(top_srcdir)/libs/mpfr/ac/mpfr.ac \
-	$(top_srcdir)/libs/poppler/ac/poppler.ac \
 	$(top_srcdir)/libs/xpdf/ac/xpdf.ac \
 	$(top_srcdir)/libs/zziplib/ac/zziplib.ac \
 	$(top_srcdir)/libs/graphite2/ac/graphite2.ac \
@@ -492,7 +491,11 @@ DIST_SUBDIRS = auxdir/auxsub doc $(CONF_SUBDIRS) libs utils texk
 recurse_this = 
 recurse_top = 
 
-# $Id$
+# am/recurse.am: Makefile fragment to configure and build subdirs.
+#
+# Copyright 2017-2020 Karl Berry <tex-live@tug.org>
+# Copyright 2013      Peter Breitenlohner <tex-live@tug.org>
+# You may freely use, modify and/or distribute this file.
 #
 # Requires $(recurse_this) and $(recurse_top).
 # Uses CONF_SUBDIRS and MAKE_SUBDIRS (set by kpse-setup.m4).
@@ -1045,8 +1048,11 @@ world: all
 	@echo "top-level make $@: running install-strip..."
 	$(MAKE) $(AM_MAKEFLAGS) install-strip
 #
-	@echo "top-level make $@: making run-texlinks in $(texlinks_dir) ..."
-	cd $(texlinks_dir) && $(MAKE) $(AM_MAKEFLAGS) run-texlinks
+# Just in case it's not a full checkout.
+	if test -d "$(texlinks_dir)"; then \
+	  echo "top-level make $@: making run-texlinks in $(texlinks_dir) ..."; \
+	  cd $(texlinks_dir) && $(MAKE) $(AM_MAKEFLAGS) run-texlinks; \
+	else :; fi
 #
 	@echo "top-level make $@: running $(check_target)..."
 	$(MAKE) $(AM_MAKEFLAGS) $(check_target)

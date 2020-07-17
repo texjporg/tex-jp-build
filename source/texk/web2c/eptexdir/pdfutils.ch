@@ -1569,6 +1569,7 @@ end;
 @ @<Implement \.{\\pdfsavepos}@>=
 begin
     new_whatsit(pdf_save_pos_node, small_node_size);
+    inhibit_glue_flag:=false;
 end
 
 @ @<Save current position in DVI mode@>=

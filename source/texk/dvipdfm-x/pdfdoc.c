@@ -1,6 +1,6 @@
 /* This is dvipdfmx, an eXtended version of dvipdfm by Mark A. Wicks.
 
-    Copyright (C) 2008-2019 by Jin-Hwan Cho, Matthias Franz, and Shunsaku Hirata,
+    Copyright (C) 2008-2020 by Jin-Hwan Cho, Matthias Franz, and Shunsaku Hirata,
     the dvipdfmx project team.
     
     Copyright (C) 1998, 1999 by Mark A. Wicks <mwicks@kettering.edu>
@@ -536,19 +536,15 @@ pdf_doc_add_page_resource (const char *category,
   pdf_obj *resources;
   pdf_obj *duplicate;
 
-#if 0
-  if (!PDF_OBJ_INDIRECTTYPE(resource_ref)) {
-    WARN("Passed non indirect reference...");
-    resource_ref = pdf_ref_obj(resource_ref); /* leak */
-  }
-#endif
   resources = pdf_doc_get_page_resources(p, category);
   duplicate = pdf_lookup_dict(resources, resource_name);
-  if (duplicate && pdf_compare_reference(duplicate, resource_ref)) {
-    WARN("Conflicting page resource found (page: %d, category: %s, name: %s).",
-         pdf_doc_current_page_number(), category, resource_name);
-    WARN("Ignoring...");
-    pdf_release_obj(resource_ref);
+  if (duplicate) {
+    if (pdf_compare_reference(duplicate, resource_ref)) {
+      WARN("Possibly two different resource using the same name... (page: %d, category: %s, name: %s).",
+           pdf_doc_current_page_number(), category, resource_name);
+      WARN("Ignoring...");
+    }
+    pdf_release_obj(resource_ref); /* Discard */
   } else {
     pdf_add_dict(resources, pdf_new_name(resource_name), resource_ref);
   }
@@ -2401,14 +2397,14 @@ pdf_doc_finish_page (pdf_doc *p)
   return;
 }
 
-static pdf_color bgcolor = { 1, NULL, { 1.0 } };
+static pdf_color bgcolor = { -1, PDF_COLORSPACE_TYPE_GRAY, 1, NULL, { 1.0 }, -1};
 
 void
 pdf_doc_set_bgcolor (const pdf_color *color)
 {
-  if (color)
+  if (color) {
     pdf_color_copycolor(&bgcolor, color);
-  else { /* as clear... */
+  } else { /* as clear... */
     pdf_color_white(&bgcolor);
   }
 }
@@ -2721,6 +2717,7 @@ pdf_doc_begin_grabbing (const char *ident,
    */
   pdf_dev_reset_fonts(1);
   pdf_dev_reset_color(1);  /* force color operators to be added to stream */
+  pdf_dev_reset_xgstate(1);
 
   return xobj_id;
 }
@@ -2767,6 +2764,7 @@ pdf_doc_end_grabbing (pdf_obj *attrib)
 
   pdf_dev_reset_fonts(1);
   pdf_dev_reset_color(0);
+  pdf_dev_reset_xgstate(0);
 
   RELEASE(fnode);
 
@@ -2801,6 +2799,8 @@ void
 pdf_doc_end_annot (void)
 {
   pdf_doc_break_annot();
+  if (breaking_state.annot_dict)
+    pdf_release_obj(breaking_state.annot_dict);
   breaking_state.annot_dict = NULL;
 }
 
@@ -2811,12 +2811,14 @@ pdf_doc_break_annot (void)
   double   g = p->opt.annot_grow;
 
   if (breaking_state.dirty) {
-    pdf_obj  *annot_dict;
+    pdf_obj  *annot_dict, *annot_copy;
     pdf_rect  rect;
 
     /* Copy dict */
-    annot_dict = pdf_new_dict();
-    pdf_merge_dict(annot_dict, breaking_state.annot_dict);
+    annot_dict = breaking_state.annot_dict;
+    annot_copy = pdf_new_dict();
+    pdf_merge_dict(annot_copy, breaking_state.annot_dict);
+    breaking_state.annot_dict = annot_copy;
     rect = breaking_state.rect;
     rect.llx -= g;
     rect.lly -= g;

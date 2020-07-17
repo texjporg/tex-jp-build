@@ -147,6 +147,10 @@ static struct loaded_font
   spt_t size;
   int   source;     /* Source is either DVI or VF */
   uint32_t rgba_color;
+  uint8_t  rgba_used;
+                    /* Indicates that rgba_color is used or not.
+                     * It enables full range of opacity: 0-255.
+                     */
   int      xgs_id;  /* Transparency ExtGState */
   struct tt_longMetrics *hvmt;
   int   ascent;
@@ -180,6 +184,10 @@ static struct font_def
   int    used;
   int    native; /* boolean */
   uint32_t rgba_color;   /* only used for native fonts in XeTeX */
+  uint8_t  rgba_used;
+                    /* Indicates that rgba_color is used or not.
+                     * It enables full range of opacity: 0-255.
+                     */
   uint32_t face_index;
   int    layout_dir; /* 1 = vertical, 0 = horizontal */
   int    extend;
@@ -196,6 +204,17 @@ static struct font_def
 
 static int num_def_fonts = 0, max_def_fonts = 0;
 static int compute_boxes = 0, link_annot    = 1;
+/* If "catch_phantom" is non-zero, dvipdfmx try to catch phantom texts.
+ * Dvipdfmx treats DVI horizontal movement instructions (x, w, right) differently
+ * when "catch_phantom" is non-zero. Amount of horizontal move will be added to
+ * the current annotation rectangle with "height" and "depth" estimated as,
+ * 
+ *   catch_phantom=1: with current font size
+ *   catch_phantom=2: with specified height and depth
+ */
+static int    catch_phantom  = 0;
+static double phantom_height = 0.0;
+static double phantom_depth  = 0.0;
 
 #define DVI_PAGE_BUF_CHUNK              0x10000U        /* 64K should be plenty for most pages */
 
@@ -554,6 +573,7 @@ read_font_record (int32_t tex_id)
   def_fonts[num_def_fonts].used        = 0;
   def_fonts[num_def_fonts].native      = 0;
   def_fonts[num_def_fonts].rgba_color  = 0xffffffff;
+  def_fonts[num_def_fonts].rgba_used   = 0;
   def_fonts[num_def_fonts].face_index  = 0;
   def_fonts[num_def_fonts].layout_dir  = 0;
   def_fonts[num_def_fonts].extend      = 0x00010000; /* 1.0 */
@@ -599,6 +619,7 @@ read_native_font_record (int32_t tex_id)
 
   def_fonts[num_def_fonts].layout_dir  = 0;
   def_fonts[num_def_fonts].rgba_color  = 0xffffffff;
+  def_fonts[num_def_fonts].rgba_used   = 0;
   def_fonts[num_def_fonts].extend      = 0x00010000;
   def_fonts[num_def_fonts].slant       = 0;
   def_fonts[num_def_fonts].embolden    = 0;
@@ -606,8 +627,10 @@ read_native_font_record (int32_t tex_id)
   if (flags & XDV_FLAG_VERTICAL)
     def_fonts[num_def_fonts].layout_dir = 1;
 
-  if (flags & XDV_FLAG_COLORED)
-    def_fonts[num_def_fonts].rgba_color  = get_unsigned_quad(dvi_file);
+  if (flags & XDV_FLAG_COLORED) {
+    def_fonts[num_def_fonts].rgba_color = get_unsigned_quad(dvi_file);
+    def_fonts[num_def_fonts].rgba_used = 1;
+  }
 
   if (flags & XDV_FLAG_EXTEND)
     def_fonts[num_def_fonts].extend = get_signed_quad(dvi_file);
@@ -767,6 +790,20 @@ int
 dvi_is_tracking_boxes(void)
 {
   return (compute_boxes && link_annot && marked_depth >= tagged_depth);
+}
+
+void
+dvi_set_linkmode (int mode)
+{
+  catch_phantom  = mode != 0 ? 1 : 0;
+}
+
+void
+dvi_set_phantom_height (double height, double depth)
+{
+  phantom_height = height;
+  phantom_depth  = depth;
+  catch_phantom  = 2;
 }
 
 void
@@ -969,13 +1006,13 @@ dvi_locate_native_font (const char *filename, uint32_t index,
     MESG("<%s@%.2fpt", filename, ptsize * dvi2pts);
 
   if ((path = dpx_find_dfont_file(filename)) != NULL &&
-      (fp = fopen(path, "rb")) != NULL)
+      (fp = MFOPEN(path, "rb")) != NULL)
     is_dfont = 1;
   else if ((path = dpx_find_type1_file(filename)) != NULL)
     is_type1 = 1;
   else if (((path = dpx_find_opentype_file(filename)) == NULL
          && (path = dpx_find_truetype_file(filename)) == NULL)
-         || (fp = fopen(path, "rb")) == NULL) {
+         || (fp = MFOPEN(path, "rb")) == NULL) {
     ERROR("Cannot proceed without the font: %s", filename);
   }
   need_more_fonts(1);
@@ -1092,9 +1129,10 @@ static void do_moveto (int32_t x, int32_t y)
   dvi_state.v = y;
 }
 
-/* FIXME: dvi_forward() might be a better name */
 void dvi_right (int32_t x)
 {
+  spt_t save_h, save_v;
+
   if (lr_mode >= SKIMMING) {
     lr_width += x;
     return;
@@ -1103,6 +1141,9 @@ void dvi_right (int32_t x)
   if (lr_mode == RTYPESETTING)
     x = -x;
 
+  save_h = dvi_state.h;
+  save_v = dvi_state.v;
+
   switch (dvi_state.d) {
   case 0:
     dvi_state.h += x; break;
@@ -1110,6 +1151,31 @@ void dvi_right (int32_t x)
     dvi_state.v += x; break;
   case 3:
     dvi_state.v -= x; break;
+  }
+
+  if (dvi_is_tracking_boxes() && catch_phantom > 0) {
+    pdf_rect rect;
+    spt_t    width, height, depth;
+    if (catch_phantom == 1) {
+      height = loaded_fonts[current_font].size;
+      depth  = 0.0;
+    } else {
+      height = phantom_height / dvi2pts;
+      depth  = phantom_depth  / dvi2pts;
+    }
+    switch (dvi_state.d) {
+    case 0:
+      width = dvi_state.h - save_h;
+      break;
+    case 1:
+    case 2:
+      width = dvi_state.v - save_v;
+      break;
+    default:
+      width = dvi_state.h - save_h;
+    }
+    pdf_dev_set_rect  (&rect, save_h, -save_v, width, height, depth);
+    pdf_doc_expand_box(&rect);
   }
 }
 
@@ -1492,8 +1558,9 @@ do_fnt (int32_t tex_id)
                                 def_fonts[i].point_size);
     }
     loaded_fonts[font_id].rgba_color = def_fonts[i].rgba_color;
-    /* Opacity: 0xff is fully opaque. */
-    if ((loaded_fonts[font_id].rgba_color & 0xff) == 0xff) {
+    loaded_fonts[font_id].rgba_used = def_fonts[i].rgba_used;
+    /* if rgba_used == 0, not a colored font */
+    if (loaded_fonts[font_id].rgba_used == 0) {
       loaded_fonts[font_id].xgs_id = -1;
     } else {
       pdf_obj *xgs_dict;
@@ -1716,7 +1783,7 @@ do_glyphs (int do_actual_text)
     yloc[i] = get_buffered_signed_quad();
   }
 
-  if (font->rgba_color != 0xffffffff) {
+  if (font->rgba_used == 1) {
     pdf_color color;
     pdf_color_rgbcolor(&color,
       (double)((unsigned char)(font->rgba_color >> 24) & 0xff) / 255,
@@ -1787,7 +1854,7 @@ do_glyphs (int do_actual_text)
                        glyph_width, font->font_id, -1);
   }
 
-  if (font->rgba_color != 0xffffffff) {
+  if (font->rgba_used == 1) {
     if (font->xgs_id >= 0) {
       graphics_mode(); 
       pdf_dev_grestore();

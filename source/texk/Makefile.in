@@ -107,7 +107,6 @@ am__aclocal_m4_deps = $(top_srcdir)/../m4/kpse-cairo-flags.m4 \
 	$(top_srcdir)/../m4/kpse-options.m4 \
 	$(top_srcdir)/../m4/kpse-pixman-flags.m4 \
 	$(top_srcdir)/../m4/kpse-pkgs.m4 \
-	$(top_srcdir)/../m4/kpse-poppler-flags.m4 \
 	$(top_srcdir)/../m4/kpse-ptexenc-flags.m4 \
 	$(top_srcdir)/../m4/kpse-setup.m4 \
 	$(top_srcdir)/../m4/kpse-teckit-flags.m4 \
@@ -171,13 +170,13 @@ am__aclocal_m4_deps = $(top_srcdir)/../m4/kpse-cairo-flags.m4 \
 	$(top_srcdir)/../texk/xdvik/ac/xdvik.ac \
 	$(top_srcdir)/../texk/texlive/ac/withenable.ac \
 	$(top_srcdir)/../texk/texlive/ac/texlive.ac \
+	$(top_srcdir)/../libs/pplib/ac/withenable.ac \
 	$(top_srcdir)/../libs/harfbuzz/ac/withenable.ac \
 	$(top_srcdir)/../libs/icu/ac/withenable.ac \
 	$(top_srcdir)/../libs/teckit/ac/withenable.ac \
 	$(top_srcdir)/../libs/graphite2/ac/withenable.ac \
 	$(top_srcdir)/../libs/zziplib/ac/withenable.ac \
 	$(top_srcdir)/../libs/xpdf/ac/withenable.ac \
-	$(top_srcdir)/../libs/poppler/ac/withenable.ac \
 	$(top_srcdir)/../libs/mpfr/ac/withenable.ac \
 	$(top_srcdir)/../libs/gmp/ac/withenable.ac \
 	$(top_srcdir)/../libs/cairo/ac/withenable.ac \
@@ -418,7 +417,11 @@ NEVER_NAMES_LT = -o -name .libs -o -name '*.lo'
 recurse_this = texk/
 recurse_top = ../
 
-# $Id: recurse.am 43261 2017-02-17 22:37:44Z karl $
+# am/recurse.am: Makefile fragment to configure and build subdirs.
+#
+# Copyright 2017-2020 Karl Berry <tex-live@tug.org>
+# Copyright 2013      Peter Breitenlohner <tex-live@tug.org>
+# You may freely use, modify and/or distribute this file.
 #
 # Requires $(recurse_this) and $(recurse_top).
 # Uses CONF_SUBDIRS and MAKE_SUBDIRS (set by kpse-setup.m4).
