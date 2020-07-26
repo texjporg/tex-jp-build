@@ -54,6 +54,11 @@ permission notice identical to this one.
 
 Section 1.
 
+@x l.96
+E.g.\ it will not use the |enum| type declarations.
+@y
+@z
+
 @x l.105
 @d banner  "This is TIE, CWEB Version 2.4."
 @y
@@ -178,6 +183,18 @@ The \.{kpathsea} include files handle the definition of |@!malloc|, too.
 
 Sections 18 and 19: use enum as requested in tie.w
 
+@x l.522
+\leavevmode |file_types| is used to describe whether a file
+@y
+\leavevmode \&{file\_types} is used to describe whether a file
+@z
+
+@x l.526 Fix case glitch.
+the kind of output. (this would even be necessary if we
+@y
+the kind of output. (This would even be necessary if we
+@z
+
 @x l.530
 #define search 0
 #define test 1
@@ -198,6 +215,12 @@ typedef enum {
     @!unknown,
     @!master,
     @!chf } file_types;
+@z
+
+@x l.541
+@ A variable of type |out_md_type| will tell us in what state the output
+@y
+@ A variable of type \&{out\_md\_type} will tell us in what state the output
 @z
 
 @x l.548

@@ -1,3 +1,20 @@
+2020-07-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* mft.ch: Swap \MF and \MP to match meaning of 'metapost' flag.
+
+2020-07-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* tex.ch: Place Web2c changes together;
+	avoid overful hboxes in the amended table-of-contents.
+
+2020-07-19  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (TeX extensions): add [e][u]pTeX. Other small
+	additions to the engine descriptions.
+
+	* NEWS: mention new \tracinglostchars>=3 causing an error.
+	See pdftexdir/ChangeLog for details.
+
 2020-07-17  Andreas Scherer  <https://ascherer.github.io>
 
 	* Makefile.am,
