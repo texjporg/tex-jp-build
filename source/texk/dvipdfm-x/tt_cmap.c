@@ -1,6 +1,6 @@
 /* This is dvipdfmx, an eXtended version of dvipdfm by Mark A. Wicks.
 
-    Copyright (C) 2002-2019 by Jin-Hwan Cho and Shunsaku Hirata,
+    Copyright (C) 2002-2020 by Jin-Hwan Cho and Shunsaku Hirata,
     the dvipdfmx project team.
     
     This program is free software; you can redistribute it and/or modify
@@ -1605,17 +1605,20 @@ otf_try_load_GID_to_CID_map (const char *map_name, int ttc_index, int wmode)
   ULONG       offset      = 0;
   char       *cmap_name   = NULL;
   FILE       *fp          = NULL;
+  int         len;
 
   if (!map_name)
     return -1;
 
-  if (ttc_index > 999 || ttc_index < 0) {
-    return -1; /* Sorry for this... */
+  if (ttc_index > 0xFFFFFFFFu || ttc_index < 0) {
+    return -1;
   }
 
   /* Check if already loaded */
-  cmap_name = NEW(strlen(map_name)+strlen("-GID")+5, char);
-  sprintf(cmap_name, "%s:%3d-GID", map_name, ttc_index);
+  len = strlen(map_name) + 32;
+  cmap_name = NEW(len, char);
+  snprintf(cmap_name, len, "%s:%d-%1d-GID", map_name, ttc_index, wmode);
+  cmap_name[len-1] = '\0';
   cmap_id = CMap_cache_find(cmap_name);
   if (cmap_id >= 0) {
     RELEASE(cmap_name);
