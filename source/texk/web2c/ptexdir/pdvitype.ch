@@ -286,7 +286,7 @@ endif('HEX_CHAR_CODE')
   @t\4@>@<Cases for commands |nop|, |bop|, \dots, |pop|@>@;
 @y
   dir: begin
-    if not ptex_p then bad_dvi('dir command widthin normal dvi file');
+    if not ptex_p then bad_dvi('dir command within normal dvi file');
     major('dir ',p:1); dd:=p; goto done;
     end;
   @t\4@>@<Cases for commands |nop|, |bop|, \dots, |pop|@>@;
