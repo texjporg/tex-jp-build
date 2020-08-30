@@ -28,7 +28,7 @@ cd source && mkdir -p Work && cd Work
   --enable-euptex \
   --enable-pmp \
   --enable-upmp \
-  --disable-web-progs \
+  --enable-web-progs \
   --disable-tex \
   --disable-mf \
   --disable-mflua \
