@@ -1,3 +1,31 @@
+2020-09-06  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* spc_pdfm.c: pdf:bcolor and pdf:scolor now accept new
+	keywords "fill" and "stroke" to indicate either of fill/stroke
+	color is specified.
+	* spc_misc.[ch], specials.[ch]: New special commands for
+	pdfcolorstack are added. This is a compatibility feature to
+	pdfcolorstack in pdftex.
+	* configure.ac: Version 20200906.
+
+2020-09-05  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* spc_pdfm.c: Workaround for an issue that occurs when an
+	indirect object (object reference) is used for a resource
+	dictionary entry in pdf:put command. The content of an already
+	existing resource dictionary is copied to the new dictionary.
+	* pdfobj.c, pdfdoc.c: pdf_indirect stores a pointer to the
+	object itself but there is no way to know if the object is
+	released. This can result in using junk pointers. To resolve
+	this issue, a list is added to record released indirect objects.
+	* configure.ac: Version 20200905.
+
+2020-09-02  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* pdfnames.c: Fix an incompatible behavior introduced by the
+	previous changes on the named object (rev.55887).
+	* configure.ac: Version 20200902.
+
 2020-08-26  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
 
 	* spc_pdfm.c: Fix a bug exposed by the previous changes on the
