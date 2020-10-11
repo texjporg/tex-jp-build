@@ -1,3 +1,39 @@
+2020-10-08  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* dvi.c: Fix problems introduced by the changes on 2020/10/03.
+	Fix a possible problem of invalid access. Fix a problem that
+	non-BMP characters are not handled properly for the "unicode"
+	encoding.
+	* spc_pdfm.c: pdf:bcolor and pdf:scolor accept both fill and
+	stroke color specified at the same time. Change the behavior
+	when an indirect object is specified for pdf:pageresources.
+	* configure.ac: Version 20201008.
+
+2020-10-06  Akira Kakuto  <kakuto@w32tex.org>
+
+	* spc_dvips.c: Add an option -dALLOWPSTRANSPARENCY in
+	GS_CALCULATOR to obtain correct results in PSTrics for XeTeX
+	in the case of newer Ghostscript such as gs-9.53.3.
+	Reported in
+	https://tug.org/pipermail/dvipdfmx/2020-October/000109.html
+
+2020-10-06  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* dvipdfmx.c: Fix a bug that printing output file name is wrong.
+	* dvi.c: Change XeTeX font handling. Convert glyph metrics to
+	an internal format at load time. Don't interpret type1
+	CharStrings again and again.
+	* configure.ac: Version 20201006.
+
+2020-10-05  Karl Berry  <karl@tug.org>
+
+	* man/dvipdfmx.1: update date.
+
+2020-10-05  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* man/dvipdfmx.1: Fix a problem in the man page as reported in
+	https://tug.org/pipermail/dvipdfmx/2020-October/000107.html.
+
 2020-10-03  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
 
 	* cid.c, cid.h: Add "const" attribute to arguments fontmap_rec
