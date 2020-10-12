@@ -331,9 +331,64 @@ incr(current_option);
 @ An element with all zeros always ends the list.
 @z
 
+@x procedure x_is_kanji_str
+procedure x_is_kanji_str;
+label exit;
+@y
+procedure x_is_kanji_str;
+label exit;
+var ctmp,clen:integer;
+@z
+
+@x procedure x_is_kanji_str (cont.)
+        while sp_ptr<sp_end do begin
+            if str_pool[sp_ptr]>127 then begin
+                push_lit_stk(1,stk_int);
+                return;
+            end else begin
+                incr(sp_ptr);
+            end;
+        end;
+@y
+        while sp_ptr<sp_end do begin
+            clen := multibytelen(str_pool[sp_ptr]);
+            if sp_ptr+clen<=sp_end then
+                ctmp := fromBUFF(str_pool, sp_ptr+clen, sp_ptr)
+            else
+                ctmp := str_pool[sp_ptr];
+            if is_char_kanji_upbibtex(ctmp) then begin
+                push_lit_stk(1,stk_int);
+                return;
+            end else begin
+                if sp_ptr+clen<=sp_end then
+                    sp_ptr := sp_ptr + clen
+                else
+                    incr(sp_ptr);
+            end;
+        end;
+@z
+
 @x
 exit:end;
 @y
+exit:end;
+
+@ @<Procedures and functions for handling numbers, characters, and strings@>=
+function is_char_kanji_upbibtex(@!c:integer):boolean;
+label exit;
+var k:integer;
+begin
+  is_char_kanji_upbibtex := false;
+  if (is_internalUPTEX) then begin { should be in sync with |kcat_code| of uptex-m.ch }
+    k := kcatcodekey(c);
+    if k=@"0 then return
+    else if (k>=@"2)and(k<=@"3) then return { Latin Extended-A, Latin Extended-B }
+    else if k=@"45 then return { Latin Extended Additional }
+    else if k=@"1FD then return; { Latin-1 Letters }
+    end
+  else { is_internalEUC }
+    if is_char_ascii(c) then return;
+  is_char_kanji_upbibtex := true;
 exit:end;
 
 @ @<Initialize variables depending on Kanji code@>=
