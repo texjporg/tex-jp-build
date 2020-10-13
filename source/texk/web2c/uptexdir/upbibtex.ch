@@ -378,19 +378,24 @@ function is_char_kanji_upbibtex(@!c:integer):boolean;
 label exit;
 var k:integer;
 begin
-  { based on upTeX-1.26 kcatcode status: 16,17->true / 15,18,19->false }
+  { based on upTeX-1.26 kcatcode status: 16,17,19->true / 15,18->false }
   is_char_kanji_upbibtex := true;
   if (is_internalUPTEX) then begin { should be in sync with |kcat_code| of uptex-m.ch }
     k := kcatcodekey(c);
-    if (k>=@"67)and(k<=@"69) then return { CJK Radicals Supplement .. Ideographic Description Characters }
+    if k=@"24 then return { Hangul Jamo }
+    else if (k>=@"67)and(k<=@"69) then return { CJK Radicals Supplement .. Ideographic Description Characters }
     else if (k>=@"6B)and(k<=@"6C) then return { Hiragana, Katakana }
     else if k=@"6D then return { Bopomofo }
+    else if k=@"6E then return { Hangul Compatibility Jamo }
     else if (k>=@"6F)and(k<=@"71) then return { Kanbun .. CJK Strokes }
     else if k=@"72 then return { Katakana Phonetic Extensions }
     else if k=@"75 then return { CJK Unified Ideographs Extension A }
     else if k=@"77 then return { CJK Unified Ideographs }
+    else if k=@"87 then return { Hangul Jamo Extended-A }
+    else if k=@"92 then return { Hangul Syllables }
+    else if k=@"93 then return { Hangul Jamo Extended-B }
     else if k=@"98 then return { CJK Compatibility Ideographs }
-    else if (k>=@"103)and(k<=@"105) then return { Kana Supplement .. Small Kana Extensions }
+    else if (k>=@"103)and(k<=@"105) then return { Kana Supplement .. Small Kana Extension }
     else if (k>=@"129)and(k<=@"12F) then return { CJK Unified Ideographs Extension B .. G }
     else if k=@"1FE then return { Fullwidth digit and latin alphabet }
     else if k=@"1FF then return; { Halfwidth katakana }
