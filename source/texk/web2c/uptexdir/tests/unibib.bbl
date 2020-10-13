@@ -1,0 +1,35 @@
+\begin{thebibliography}{1}
+
+\bibitem{björk2020}
+Tomas Björk.
+\newblock {\em Arbitrage Theory in Continuous Time}.
+\newblock Oxford University Press, 2020.
+
+\bibitem{nikos}
+Νίκος Καζαντζάκης.
+\newblock {\em Συμπόσιον}.
+\newblock 京緑社, 2020.
+
+\bibitem{knuth86}
+Donald~E. Knuth.
+\newblock {\em The \TeX book}.
+\newblock Addison-Wesley, 1986.
+
+\bibitem{gim}
+김만중.
+\newblock 구운몽.
+\newblock 高麗書林, 1975.
+
+\bibitem{platexbook}
+中野賢.
+\newblock 日本語{\LaTeXe}ブック.
+\newblock アスキー, 1996.
+
+\bibitem{Boswell-2012}
+Dustin Boswell and Trevor Foucher.
+\newblock リーダブルコード
+  ―より良いコードを書くためのシンプルで実践的
+  なテクニック (Theory in practice).
+\newblock オライリージャパン, 2012.
+
+\end{thebibliography}
