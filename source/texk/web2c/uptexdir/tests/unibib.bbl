@@ -5,10 +5,22 @@ Tomas Björk.
 \newblock {\em Arbitrage Theory in Continuous Time}.
 \newblock Oxford University Press, 2020.
 
+\bibitem{boswell}
+Dustin Boswell and Trevor Foucher.
+\newblock リーダブルコード
+  ―より良いコードを書くためのシンプルで実践的
+  なテクニック (Theory in practice).
+\newblock オライリージャパン, 2012.
+
 \bibitem{dostoevskii}
 Фёдор~Миха́йлович Достое́вский.
 \newblock {\em Братья Карамазовы}.
 \newblock Гослитиздат, 1958.
+
+\bibitem{gim}
+김만중.
+\newblock 구운몽.
+\newblock 高麗書林, 1975.
 
 \bibitem{nikos}
 Νίκος Καζαντζάκης.
@@ -20,21 +32,9 @@ Donald~E. Knuth.
 \newblock {\em The \TeX book}.
 \newblock Addison-Wesley, 1986.
 
-\bibitem{gim}
-김만중.
-\newblock 구운몽.
-\newblock 高麗書林, 1975.
-
-\bibitem{platexbook}
+\bibitem{ken-na}
 中野賢.
 \newblock 日本語{\LaTeXe}ブック.
 \newblock アスキー, 1996.
-
-\bibitem{Boswell-2012}
-Dustin Boswell and Trevor Foucher.
-\newblock リーダブルコード
-  ―より良いコードを書くためのシンプルで実践的
-  なテクニック (Theory in practice).
-\newblock オライリージャパン, 2012.
 
 \end{thebibliography}

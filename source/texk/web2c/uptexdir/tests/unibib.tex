@@ -18,7 +18,7 @@
 }
 
 %% 日本人姓名；読み仮名つき
-@book{platexbook,
+@book{ken-na,
   author    = "中野 賢",
   yomi      = "Ken Nakano",
   title     = "日本語{\LaTeXe}ブック",
@@ -47,14 +47,14 @@
 %% ハングル：金萬重「九雲夢」
 @book{gim,
   author    = "김 만중",
-  yomi      = "Gim Manjung",
+  yomi      = "Manjung Gim",
   title     = "구운몽",
   publisher = "高麗書林",
   year      = 1975,
 }
 
 %% 日本語文献；著者は非・日本人
-@book{Boswell-2012,
+@book{boswell,
   author     = {Boswell, Dustin and Foucher, Trevor},
   title      = {リーダブルコード ―より良いコードを書くためのシンプルで実践的
                 なテクニック (Theory in practice) },
@@ -62,7 +62,7 @@
   publisher  = {オライリージャパン},
   translator = {角 征典},
   language   = {ja},
-  yomi       = {ぼすうぇる}
+  yomi       = {boswell}
 }
 \end{filecontents}
 
@@ -70,8 +70,8 @@
 % ギリシャ文字・キリル文字を欧文扱い
 \ltjsetparameter{jacharrange={-2}}
 \usepackage{luatexja-fontspec}
-\setmainfont{XITS}
-\setmainjfont{SourceHanSerif-Regular}
+\usepackage[sourcehan]{luatexja-preset}
+\setmainfont{XITS}% ギリシャ文字・キリル文字を含む
 \begin{document}
 test
 \nocite{*}
