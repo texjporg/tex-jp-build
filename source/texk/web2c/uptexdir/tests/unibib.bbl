@@ -37,4 +37,14 @@ Donald~E. Knuth.
 \newblock 日本語{\LaTeXe}ブック.
 \newblock アスキー, 1996.
 
+\bibitem{kigou}
+Foo Hoge.
+\newblock {\em ＄£（！？）☃♪、。§○●}.
+\newblock Snowman commedian Press, 2020.
+
+\bibitem{fullwidth}
+Bar Fuga.
+\newblock １.
+\newblock TeXnician Co., Ltd., 2020.
+
 \end{thebibliography}
