@@ -214,7 +214,7 @@ dochar:
                if (!noptex && mychar<0x1000000 && curfnt->kind == VF_PTEX) { /* fallback */
 #ifdef DEBUG
    if (dd(D_FONTS))
-      fprintf(stderr,
+      fprintf_str(stderr,
               "We will fallback pTeX vf:%s to %s\n",
                curfnt->name, curfnt->localfonts->desc->name);
 #endif /* DEBUG */
@@ -300,7 +300,6 @@ endofpage:
  */
    return(2);
 outofmem:
-   printf("###sp:DBG000 %p\n", ffont);
    if (frp != frames) {
       curpos = frames->curp;
       curlim = frames->curl;
