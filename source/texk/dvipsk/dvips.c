@@ -365,7 +365,7 @@ error_with_perror(const char *s, const char *fname)
    if (prettycolumn > 0)
         fprintf(stderr,"\n");
    prettycolumn = 0;
-   fprintf(stderr, "%s: %s", progname, s);
+   fprintf_str(stderr, "%s: %s", progname, s);
    if (fname) {
      putc (' ', stderr);
      perror (fname);
@@ -1321,19 +1321,19 @@ default:
 #ifdef DEBUG
    if (dd(D_PATHS)) {
 #ifdef SHORTINT
-        fprintf(stderr,"input file %s output file %s swmem %ld\n",
+        fprintf_str(stderr,"input file %s output file %s swmem %ld\n",
 #else /* ~SHORTINT */
-           fprintf(stderr,"input file %s output file %s swmem %d\n",
+           fprintf_str(stderr,"input file %s output file %s swmem %d\n",
 #endif /* ~SHORTINT */
            iname, oname, swmem);
 #ifndef KPATHSEA
-   fprintf(stderr,"tfm path %s\npk path %s\n", tfmpath, pkpath);
-   fprintf(stderr,"fig path %s\nvf path %s\n", figpath, vfpath);
-   fprintf(stderr,"config path %s\nheader path %s\n",
+   fprintf_str(stderr,"tfm path %s\npk path %s\n", tfmpath, pkpath);
+   fprintf_str(stderr,"fig path %s\nvf path %s\n", figpath, vfpath);
+   fprintf_str(stderr,"config path %s\nheader path %s\n",
                   configpath, headerpath);
 #endif
 #ifdef FONTLIB
-   fprintf(stderr,"fli path %s\nfli names %s\n", flipath, fliname);
+   fprintf_str(stderr,"fli path %s\nfli names %s\n", flipath, fliname);
 #endif
    } /* dd(D_PATHS) */
 #endif /* DEBUG */
@@ -1482,7 +1482,7 @@ default:
                   fprintf(stderr, "\n");
                   prettycolumn = 0;
                }
-               fprintf(stderr, "(-> %s) ", oname);
+               fprintf_str(stderr, "(-> %s) ", oname);
                prettycolumn += strlen(oname) + 6;
             }
 #ifdef HPS
