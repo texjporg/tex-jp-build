@@ -250,7 +250,7 @@ copyfile_general(const char *s, struct header_list *cur_header)
             prettycolumn = 0;
          }
 #if defined(VMCMS) || defined (MVSXA)
-         fprintf_str(stderr, "<%s>", trunc_s);
+         fprintf(stderr, "<%s>", trunc_s);
 #else
          fprintf_str(stderr, "<%s>", realnameoffile);
 #endif
