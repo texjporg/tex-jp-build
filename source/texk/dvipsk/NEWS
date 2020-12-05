@@ -1,10 +1,14 @@
 $Id$
 This file records noteworthy changes.  (Public domain.)
 
+dvips 2021.1 (TeX Live 2021):
+  Default title is now the basename of the input file isntead of the
+  full path, and can be overridden with new option -title.
+  Support new feature of virtual font to fallback Japanese font definition.
+
 dvips 2020.1 (TeX Live 2020):
   Encodings for bitmap fonts.
   https://tug.org/TUGboat/tb40-2/tb125rokicki-type3search.pdf
-  Support new feature of virtual font to fallback Japanese font definition.
   
 dvips 5.999 (TeX Live 2019):
   Buffer overflows.
