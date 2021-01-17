@@ -2,7 +2,7 @@
 
     DVIPDFMx, an eXtended version of DVIPDFM by Mark A. Wicks.
 
-    Copyright (C) 2002-2020 by Jin-Hwan Cho, Matthias Franz, and Shunsaku Hirata,
+    Copyright (C) 2002-2021 by Jin-Hwan Cho, Matthias Franz, and Shunsaku Hirata,
     the DVIPDFMx project team.
     
     Copyright (c) 2006 SIL. (xdvipdfmx extensions for XeTeX support)
@@ -89,7 +89,8 @@ static int    pdf_version_minor = 5;
 static int    compression_level = 9;
 
 /* PDF document navigation feature settings */
-static double annot_grow        = 0.0;
+static double annot_grow_x      = 0.0;
+static double annot_grow_y      = 0.0;
 static int    bookmark_open     = 0;
 static double mag               = 1.0;
 static int    enable_thumbnail  = 0;
@@ -173,8 +174,8 @@ show_version (void)
   if (*my_name == 'x')
     printf ("an extended version of DVIPDFMx, which in turn was\n");
   printf ("an extended version of dvipdfm-0.13.2c developed by Mark A. Wicks.\n");
-  printf ("\nCopyright (C) 2002-2020 the DVIPDFMx project team\n");
-  printf ("Copyright (C) 2006-2020 SIL International.\n");
+  printf ("\nCopyright (C) 2002-2021 the DVIPDFMx project team\n");
+  printf ("Copyright (C) 2006-2021 SIL International.\n");
   printf ("\nThis is free software; you can redistribute it and/or modify\n");
   printf ("it under the terms of the GNU General Public License as published by\n");
   printf ("the Free Software Foundation; either version 2 of the License, or\n");
@@ -513,7 +514,7 @@ do_args_first_pass (int argc, char *argv[], const char *source, int unsafe)
 static void
 do_args_second_pass (int argc, char *argv[], const char *source, int unsafe)
 {
-  int         c;
+  int         c, error = 0;
   char       *nextptr;
   const char *nnextptr;
 
@@ -548,7 +549,24 @@ do_args_second_pass (int argc, char *argv[], const char *source, int unsafe)
 
     case 'g':
       nnextptr = nextptr = optarg;
-      dpx_util_read_length(&annot_grow, 1.0, &nnextptr, nextptr + strlen(nextptr));
+      {
+        const char *comma;
+
+        comma  = strchr(optarg, ',');
+        if (comma) {
+          error = dpx_util_read_length(&annot_grow_x, 1.0, &nnextptr, comma);
+          nnextptr = comma + 1;
+          if (!error)
+            error = dpx_util_read_length(&annot_grow_y, 1.0, &nnextptr, nextptr + strlen(nextptr));
+        } else {
+          error = dpx_util_read_length(&annot_grow_x, 1.0, &nnextptr, nextptr + strlen(nextptr));
+          if (!error)
+            annot_grow_y = annot_grow_x;
+        }
+        if (error) {
+          WARN("Error reading argument for \"-g\" option: %s", optarg);
+        }
+      }
       break;
 
     case 'x':
@@ -1178,11 +1196,12 @@ main (int argc, char *argv[])
   if (landscape_mode) {
     SWAP(paper_width, paper_height);
   }  
-  settings.media_width        = paper_width;
-  settings.media_height       = paper_height;
-  settings.annot_grow_amount  = annot_grow;
-  settings.outline_open_depth = bookmark_open;
-  settings.check_gotos        = !(opt_flags & OPT_PDFDOC_NO_DEST_REMOVE);
+  settings.media_width         = paper_width;
+  settings.media_height        = paper_height;
+  settings.annot_grow_amount.x = annot_grow_x;
+  settings.annot_grow_amount.y = annot_grow_y;
+  settings.outline_open_depth  = bookmark_open;
+  settings.check_gotos         = !(opt_flags & OPT_PDFDOC_NO_DEST_REMOVE);
   settings.enable_manual_thumb = enable_thumbnail;
 
   /* PDF page output settings */

@@ -1,8 +1,26 @@
+2021-01-16  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* pdfximage.c: Dvipdfmx behavior changed. Now it stops
+	processing and exits with non-zero exit status when image
+	inclusion fails.
+	* dvi.c: Ignore dvi_set with invalid gid when processing DVI
+	files created by dvilua[la]tex.
+	* dvipdfmx.c: Bump copyright year.
+	* configure.ac: Version 20210116.
+
+2021-01-15  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
+
+	* dvi.c, dvipdfmx.c, pdfdoc.[ch]: Experimental support for
+	dviluatex extended fnt_def. Separate annot_grow (linkmargin)
+	for horizontal and vertical direction can be specified.
+	* configure.ac: Version 20210115.
+
 2021-01-10  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
 
 	* cmap_read.c, t1_load.c: Fix a bug causing a segfault
 	reported as dvipdfmx-upjf.test test failure. Add missing size
 	tests for the data comparison.
+	https://tug.org/pipermail/tlbuild/2021q1/004765.html
 
 2021-01-09  Shunsaku Hirata  <shunsaku.hirata74@gmail.com>
 
