@@ -56,10 +56,10 @@
 @z
 
 @x [1] Define my_name
-@d banner=='This is WEAVE, Version 4.4'
+@d banner=='This is WEAVE, Version 4.5'
 @y
 @d my_name=='weave'
-@d banner=='This is WEAVE, Version 4.4'
+@d banner=='This is WEAVE, Version 4.5'
 @z
 
 @x [2] No global labels, define and call parse_arguments.
@@ -302,13 +302,6 @@ var q:xref_number; {pointer to previous cross-reference}
 @!m,@!n: sixteen_bits; {new and previous cross-reference value}
 begin if no_xref then return;
 if (reserved(p)or(byte_start[p]+1=byte_start[p+ww]))and
-@z
-
-@x [179] only used when debugging
-@!k:0..long_buf_size; {index into |buffer|}
-@y
-@!debug @!k:0..long_buf_size; {index into |buffer|}
-gubed@;
 @z
 
 @x [239] omit index and module names if no_xref set
