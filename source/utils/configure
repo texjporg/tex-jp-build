@@ -709,6 +709,7 @@ enable_xindy
 enable_xindy_rules
 enable_xindy_docs
 with_clisp_runtime
+enable_xml2pmx
 enable_xpdfopen
 enable_web2c
 with_banner_add
@@ -1494,6 +1495,7 @@ Optional Features:
   --enable-xindy          build the xindy package
   --enable-xindy-rules      build and install make-rules package
   --enable-xindy-docs       build and install documentation
+  --disable-xml2pmx       do not build the xml2pmx package
   --disable-xpdfopen      do not build the xpdfopen package
   --disable-web2c         do not build the web2c (TeX & Co.) package
   --enable-auto-core        cause TeX&MF to dump core, given a certain
@@ -3633,6 +3635,24 @@ $as_echo "$as_me: Assuming \`--with-clisp-runtime=$with_clisp_runtime'" >&6;}
     if test ! -f "$with_clisp_runtime"; then :
   as_fn_error $? "no such file: \"$with_clisp_runtime\"" "$LINENO" 5
 fi ;;
+esac
+
+## utils/xml2pmx/ac/withenable.ac: configure.ac fragment for the TeX Live subdirectory utils/xml2pmx/
+## configure options and TL libraries required for xml2pmx
+# Check whether --enable-xml2pmx was given.
+if test "${enable_xml2pmx+set}" = set; then :
+  enableval=$enable_xml2pmx;
+fi
+case $enable_xml2pmx in #(
+  yes|no) :
+     ;; #(
+  *) :
+
+   enable_xml2pmx=$enable_all_pkgs
+     { $as_echo "$as_me:${as_lineno-$LINENO}: Assuming \`--enable-xml2pmx=$enable_xml2pmx'" >&5
+$as_echo "$as_me: Assuming \`--enable-xml2pmx=$enable_xml2pmx'" >&6;}
+     ac_configure_args="$ac_configure_args '--enable-xml2pmx=$enable_xml2pmx'"
+    ;;
 esac
 
 ## utils/xpdfopen/ac/withenable.ac: configure.ac fragment for the TeX Live subdirectory utils/xpdfopen/
@@ -6425,54 +6445,86 @@ CONF_SUBDIRS=
 if test -x $srcdir/autosp/configure; then
   test "x$enable_autosp" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS autosp"
   CONF_SUBDIRS="$CONF_SUBDIRS autosp"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/autosp/configure' >&5
 fi
 if test -x $srcdir/axodraw2/configure; then
   test "x$enable_axodraw2" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS axodraw2"
   CONF_SUBDIRS="$CONF_SUBDIRS axodraw2"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/axodraw2/configure' >&5
 fi
 if test -x $srcdir/devnag/configure; then
   test "x$enable_devnag" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS devnag"
   CONF_SUBDIRS="$CONF_SUBDIRS devnag"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/devnag/configure' >&5
 fi
 if test -x $srcdir/lacheck/configure; then
   test "x$enable_lacheck" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS lacheck"
   CONF_SUBDIRS="$CONF_SUBDIRS lacheck"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/lacheck/configure' >&5
 fi
 if test -x $srcdir/m-tx/configure; then
   test "x$enable_m_tx" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS m-tx"
   CONF_SUBDIRS="$CONF_SUBDIRS m-tx"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/m-tx/configure' >&5
 fi
 if test -x $srcdir/pmx/configure; then
   test "x$enable_pmx" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS pmx"
   CONF_SUBDIRS="$CONF_SUBDIRS pmx"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/pmx/configure' >&5
 fi
 if test -x $srcdir/ps2eps/configure; then
   test "x$enable_ps2eps" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS ps2eps"
   CONF_SUBDIRS="$CONF_SUBDIRS ps2eps"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/ps2eps/configure' >&5
 fi
 if test -x $srcdir/t1utils/configure; then
   test "x$enable_t1utils" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS t1utils"
   CONF_SUBDIRS="$CONF_SUBDIRS t1utils"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/t1utils/configure' >&5
 fi
 if test -x $srcdir/texdoctk/configure; then
   test "x$enable_texdoctk" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS texdoctk"
   CONF_SUBDIRS="$CONF_SUBDIRS texdoctk"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/texdoctk/configure' >&5
 fi
 if test -x $srcdir/tpic2pdftex/configure; then
   test "x$enable_tpic2pdftex" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS tpic2pdftex"
   CONF_SUBDIRS="$CONF_SUBDIRS tpic2pdftex"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/tpic2pdftex/configure' >&5
 fi
 if test -x $srcdir/vlna/configure; then
   test "x$enable_vlna" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS vlna"
   CONF_SUBDIRS="$CONF_SUBDIRS vlna"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/vlna/configure' >&5
 fi
 if test -x $srcdir/xindy/configure; then
   test "x$enable_xindy" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS xindy"
   CONF_SUBDIRS="$CONF_SUBDIRS xindy"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/xindy/configure' >&5
+fi
+if test -x $srcdir/xml2pmx/configure; then
+  test "x$enable_xml2pmx" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS xml2pmx"
+  CONF_SUBDIRS="$CONF_SUBDIRS xml2pmx"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/xml2pmx/configure' >&5
 fi
 if test -x $srcdir/xpdfopen/configure; then
   test "x$enable_xpdfopen" = xyes && MAKE_SUBDIRS="$MAKE_SUBDIRS xpdfopen"
   CONF_SUBDIRS="$CONF_SUBDIRS xpdfopen"
+else
+  echo 'tldbg:_KPSE_RECURSE skipping subdir, no (executable) configure: '"$srcdir"'/xpdfopen/configure' >&5
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MAKE_SUBDIRS" >&5

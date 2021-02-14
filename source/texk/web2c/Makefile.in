@@ -3774,7 +3774,9 @@ tex_prereq = texd.h $(am__append_127)
 tex_ch_srcs = \
 	tex.web \
 	tex.ch \
-	enctex.ch \
+	enctexdir/enctex1.ch \
+	enctexdir/enctex-tex.ch \
+	enctexdir/enctex2.ch \
 	$(tex_ch_synctex) \
 	tex-binpool.ch
 
@@ -4267,7 +4269,9 @@ etex_ch_srcs = \
 	etexdir/tex.ch0 \
 	tex.ch \
 	zlib-fmt.ch \
-	enctex.ch \
+	enctexdir/enctex1.ch \
+	enctexdir/enctex-tex.ch \
+	enctexdir/enctex2.ch \
 	$(etex_ch_synctex) \
 	etexdir/tex.ch1 \
 	etexdir/tex.ech \
@@ -4302,6 +4306,7 @@ ptex_prereq = ptexd.h ptexdir/ptex_version.h $(am__append_135)
 ptex_web_srcs = \
 	tex.web \
 	tex.ch \
+	tracingstacklevels.ch \
 	zlib-fmt.ch
 
 ptex_ch_srcs = \
@@ -4361,6 +4366,7 @@ eptex_web_srcs = \
 	etexdir/etex.ch \
 	etexdir/tex.ch0 \
 	tex.ch \
+	tracingstacklevels.ch \
 	zlib-fmt.ch \
 	etexdir/tex.ech
 
@@ -4405,6 +4411,7 @@ uptex_prereq = uptexd.h ptexdir/ptex_version.h \
 uptex_web_srcs = \
 	tex.web \
 	tex.ch \
+	tracingstacklevels.ch \
 	zlib-fmt.ch
 
 uptex_ch_srcs = \
@@ -4469,6 +4476,7 @@ euptex_web_srcs = \
 	etexdir/etex.ch \
 	etexdir/tex.ch0 \
 	tex.ch \
+	tracingstacklevels.ch \
 	zlib-fmt.ch \
 	etexdir/tex.ech
 
@@ -4539,8 +4547,11 @@ pdftex_ch_srcs = \
 	pdftexdir/pdftex.web \
 	pdftexdir/tex.ch0 \
 	tex.ch \
+	tracingstacklevels.ch \
 	zlib-fmt.ch \
-	enctex.ch \
+	enctexdir/enctex1.ch \
+	enctexdir/enctex-pdftex.ch \
+	enctexdir/enctex2.ch \
 	$(pdftex_ch_synctex) \
 	pdftexdir/pdftex.ch \
 	pdftexdir/char-warning-pdftex.ch \
@@ -5228,6 +5239,7 @@ xetex_ch_srcs = \
 	xetexdir/xetex.web \
 	xetexdir/tex.ch0 \
 	tex.ch \
+	tracingstacklevels.ch \
 	$(xetex_ch_synctex) \
 	xetexdir/xetex.ch \
 	$(xetex_post_ch_synctex) \
