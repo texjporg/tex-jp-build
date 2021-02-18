@@ -1,3 +1,27 @@
+2021-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.in,
+	* am/bootstrap.am: Main CWEB modules depend on COMMON interface.
+
+2021-02-17  Karl Berry  <karl@tug.org>
+
+	* NEWS,
+	* doc/web2c.texi: 2021 release.
+
+2021-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Reshuffle byte_mem pointer.
+
+2021-02-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* tracingstacklevels.ch,
+	* ptexdir/ptex-base.ch: Fix Pascal variable in comment.
+
+2021-02-14  Petr Olsak  <petr@olsak.net>
+
+	* tracingstacklevels.ch: slow_print(cur_ext) also.
+
 2021-02-13  Karl Berry  <karl@freefriends.org>
 
 	* enctexdir/enctex1.ch,
