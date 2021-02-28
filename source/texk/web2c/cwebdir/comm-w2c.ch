@@ -17,16 +17,16 @@
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
 @x
-\def\title{Common code for CTANGLE and CWEAVE (Version 4.0)}
+\def\title{Common code for CTANGLE and CWEAVE (Version 4.2)}
 @y
 \def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}} \ifacro\sanitizecommand\Kpathsea{KPATHSEA}\fi
-\def\title{Common code for CTANGLE and CWEAVE (4.0 [\TeX~Live])}
+\def\title{Common code for CTANGLE and CWEAVE (4.2 [\TeX~Live])}
 @z
 
 @x
-  \centerline{(Version 4.0)}
+  \centerline{(Version 4.2)}
 @y
-  \centerline{(Version 4.0 [\TeX~Live])}
+  \centerline{(Version 4.2 [\TeX~Live])}
 @z
 
 @x
@@ -99,7 +99,7 @@ cweb program; /* \.{CTANGLE} or \.{CWEAVE} or \.{CTWILL}? */
 @z
 
 @x
-char alt_web_file_name[max_file_name_length]; /* alternate name to try */
+static char alt_web_file_name[max_file_name_length]; /* alternate name to try */
 @y
 @z
 
@@ -259,7 +259,7 @@ The remainder of the \.{@@i} line after the file name is ignored.
     strcpy(cur_file_name,temp_file_name);
     cur_file_name[l]='/'; /* \UNIX/ pathname separator */
     if ((cur_file=fopen(cur_file_name,"r"))!=NULL) {
-      cur_line=0; print_where=1;
+      cur_line=0; print_where=true;
       goto restart; /* success */
     }
   }
@@ -390,8 +390,8 @@ can be made sensitive to these conditions.
 @z
 
 @x
-  if (history > harmless_message) return(1);
-  else return(0);
+  if (history > harmless_message) return EXIT_FAILURE;
+  else return EXIT_SUCCESS;
 @y
   switch(history) {
   case harmless_message: return RETURN_WARN;
@@ -523,10 +523,10 @@ otherwise we add |".w"|.
   { show_banner=show_progress=show_happiness=0; continue; }
   for(dot_pos=*argv+1;*dot_pos>'\0';dot_pos++)
     if (*dot_pos=='v') {
-      show_banner=show_progress=show_happiness=1;
+      show_banner=show_progress=show_happiness=true;
     } else
     if (*dot_pos=='q') {
-      show_banner=show_progress=show_happiness=0;
+      show_banner=show_progress=show_happiness=false;
     } else
     if (*dot_pos=='d') {
       if (sscanf(++dot_pos,"%u",&kpathsea_debug)!=1) @<Print usage error...@>@;
@@ -686,10 +686,9 @@ resulting \.{*.po} files to the maintainers at \.{tex-k@@tug.org}.
 does \\{not} set |HAVE_GETTEXT| at build-time, so \.{i18n} is ``off'' by
 default.  If you want to create \.{CWEB} executables with NLS support, you
 have to recompile the \TeX~Live sources with a positive value for
-|HAVE_GETTEXT| both in \.{comm-w2c.ch} and \.{comm-w2c.h}.  Also you
-have to ``compile'' the NLS catalogs provided for \.{CWEB} in the source
-tree with \.{msgfmt} and store the resulting \.{.mo} files at an appropriate
-place in the file system.
+|HAVE_GETTEXT| in \.{comm-w2c.h}.  Also you have to ``compile'' the NLS
+catalogs provided for \.{CWEB} in the source tree with \.{msgfmt} and store the
+resulting \.{.mo} files at an appropriate place in the file system.
 
 Plans for \TeX~Live are to store NLS catalogs inside the ``\TeX\ Directory
 Structure'' (TDS) and look them up with the help of the configuration variable

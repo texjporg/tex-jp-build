@@ -43,12 +43,9 @@ i386-netbsd, amd64-netbsd:
   Except that we take Nelson's asy build.
 
 i386-freebsd, amd64-freebsd:
-  http://anthesphoria.net/FreeBSD/TeXLive-2018/ has details for 2018.
-  2019 and forward built on contextgarden (see below).
-  In 2020: FreeBSD 12.1-RELEASE-p1
-  (e.g.,
-https://build.contextgarden.net/#/builders/56/builds/141/steps/2/logs/build _info
-  ) Except that we take Nelson's asy build.
+  Built on contextgarden, see below.
+  FreeBSD 11.4
+  Except that we take Nelson's asy build.
 
 i386-linux: see travis below.
 
@@ -63,7 +60,7 @@ i386-solaris, x86_64-solaris:
 i386-cygwin, x86_64-cygwin: gcc-4.8.2, cygwin-1.7.29.
   ./Build (with --enable-xindy for i386).
 
-x86_64-darwin: See Master/source/mactexdoc.tar.xz.
+universal-darwin: See Master/source/mactexdoc.tar.xz.
 
 x86_64-darwinlegacy:
   Mac OS X 10.6, clang 5.0, libc++ required

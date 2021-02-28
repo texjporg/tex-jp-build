@@ -34,9 +34,9 @@
 @z
 
 @x
-\def\title{CWEAVE (Version 4.0)}
+\def\title{CWEAVE (Version 4.2)}
 @y
-\def\title{CTWILL (Version 4.0 [\TeX~Live])}
+\def\title{CTWILL (Version 4.2 [\TeX~Live])}
 @z
 
 @x
@@ -46,9 +46,9 @@
 @z
 
 @x
-  \centerline{(Version 4.0)}
+  \centerline{(Version 4.2)}
 @y
-  \centerline{(Version 4.0 [\TeX~Live])}
+  \centerline{(Version 4.2 [\TeX~Live])}
 @z
 
 @x
@@ -75,7 +75,7 @@ Crusius, and others who have contributed improvements.
 The ``banner line'' defined here should be changed whenever \.{CWEAVE}
 is modified.
 
-@d banner "This is CWEAVE (Version 4.0)"
+@d banner "This is CWEAVE (Version 4.2)"
 @y
 This is the \.{CTWILL} program by D. E. Knuth, based
 on \.{CWEAVE} by Silvio Levy and D.~E. Knuth. It is also based on
@@ -94,7 +94,7 @@ reprinted in {\sl Digital Typography\/} (1999), 225--245.
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 modified. The version number parallels the corresponding version of \.{CWEAVE}.
 
-@d banner "This is CTWILL, Version 4.0"
+@d banner "This is CTWILL, Version 4.2"
   /* will be extended by the \TeX~Live |versionstring| */
 @z
 
@@ -285,16 +285,16 @@ outbursts of new code.)
 @x
 turned on during the first phase.
 
-@<Global...@>=
-boolean change_exists; /* has any section changed? */
+@<Private...@>=
+static boolean change_exists; /* has any section changed? */
 @y
 turned on during the first phase---NOT!
 @z
 
 @x
-sixteen_bits xref_switch,section_xref_switch; /* either zero or |def_flag| */
+static sixteen_bits xref_switch,section_xref_switch; /* either zero or |def_flag| */
 @y
-sixteen_bits xref_switch,section_xref_switch; /* either zero or |def_flag| */
+static sixteen_bits xref_switch,section_xref_switch; /* either zero or |def_flag| */
 
 @ \.{CTWILL} also has special data structures to keep track of current
 and temporary meanings. These structures were not designed for maximum
@@ -312,26 +312,26 @@ typedef struct {
   char tex_part[max_tex_chars]; /* \TeX\ part of meaning */
 } meaning_struct;
 
-@ @<Glob...@>=
+@ @<Private...@>=
 struct perm_meaning {
   meaning_struct perm; /* current meaning of an identifier */
   int stamp; /* last section number in which further output suppressed */
   struct perm_meaning *link; /* another meaning to output in this section */
 } cur_meaning[max_names]; /* the current ``permanent'' meanings */
-struct perm_meaning *top_usage; /* first meaning to output in this section */
-meaning_struct temp_meaning_stack[max_meanings]; /* the current ``temporary'' meanings */
-meaning_struct *temp_meaning_ptr; /* first available slot in |temp_meaning_stack| */
-meaning_struct *max_temp_meaning_ptr; /* its maximum value so far */
-name_pointer title_code[max_titles]; /* program names seen so far */
-name_pointer *title_code_ptr; /* first available slot in |title_code| */
-char ministring_buf[max_tex_chars]; /* \TeX\ code being generated */
-char *ministring_ptr; /* first available slot in |ministring_buf| */
-boolean ms_mode; /* are we outputting to |ministring_buf|? */
+static struct perm_meaning *top_usage; /* first meaning to output in this section */
+static meaning_struct temp_meaning_stack[max_meanings]; /* the current ``temporary'' meanings */
+static meaning_struct *temp_meaning_ptr; /* first available slot in |temp_meaning_stack| */
+static meaning_struct *max_temp_meaning_ptr; /* its maximum value so far */
+static name_pointer title_code[max_titles]; /* program names seen so far */
+static name_pointer *title_code_ptr; /* first available slot in |title_code| */
+static char ministring_buf[max_tex_chars]; /* \TeX\ code being generated */
+static char *ministring_ptr; /* first available slot in |ministring_buf| */
+static boolean ms_mode; /* are we outputting to |ministring_buf|? */
 
 @ @<Set init...@>=
 max_temp_meaning_ptr=temp_meaning_stack;
 title_code_ptr=title_code;
-ms_mode=0;
+ms_mode=false;
 
 @ Here's a routine that converts a program title from the buffer
 into an internal number for the |prog_no| field of a meaning.
@@ -383,7 +383,7 @@ new_meaning(
   name_pointer p)
 {
   struct perm_meaning *q=p-name_dir+cur_meaning;
-  ms_mode=0;
+  ms_mode=false;
   if (q->stamp!=section_count) {
     if (*(ministring_ptr-1)==' ') ministring_ptr--;
     if (ministring_ptr>=&ministring_buf[max_tex_chars])
@@ -443,8 +443,8 @@ id_lookup("make_pair",NULL,func_template);
 @y
 id_lookup("make_pair",NULL,func_template);
 
-@ @<Glob...@>=
-sixteen_bits int_loc, ext_loc; /* locations of special reserved words */
+@ @<Private...@>=
+static sixteen_bits int_loc, ext_loc; /* locations of special reserved words */
 @z
 
 @x
@@ -500,11 +500,11 @@ ccode['r']=ccode['R']=right_start;
 @z
 
 @x
-static eight_bits skip_TeX(void);@/
+static eight_bits skip_TeX(void);
 
 @ @c
 @y
-static eight_bits skip_TeX(void);@/
+static eight_bits skip_TeX(void);
 
 @ We look for a clue about the program's title, because this will become
 part of all meanings.
@@ -513,9 +513,9 @@ part of all meanings.
 @z
 
 @x
-    if (loc>limit && get_line()==0) return;
+    if (loc>limit && get_line()==false) return;
 @y
-    if (loc>limit && get_line()==0) return;
+    if (loc>limit && get_line()==false) return;
     if (loc==buffer && strncmp(buffer,"\\def\\title{",11)==0) {
       loc=buffer+10;
       title_lookup(); /* this program's title will be code zero */
@@ -569,8 +569,8 @@ skip_TeX(void)
     case underline: xref_switch=def_flag; continue;
 @y
     case underline: xref_switch=def_flag; continue;
-    case temp_meaning: temp_switch=1-temp_switch; continue;
-    case right_start: right_start_switch=1; continue;
+    case temp_meaning: temp_switch=true-temp_switch; continue;
+    case right_start: right_start_switch=true; continue;
 @z
 
 @x
@@ -692,7 +692,7 @@ skip_restricted(void)
 @z
 
 @x
-  skip_limbo(); change_exists=0;
+  skip_limbo(); change_exists=false;
 @y
   skip_limbo();
   @<Give a default title to the program, if necessary@>;
@@ -712,12 +712,12 @@ skip_restricted(void)
 
 @x
   changed_section[section_count]=changing;
-     /* it will become 1 if any line changes */
+     /* it will become |true| if any line changes */
 @y
 @z
 
 @x
-  if (changed_section[section_count]) change_exists=1;
+  if (changed_section[section_count]) change_exists=true;
 @y
 @z
 
@@ -831,7 +831,7 @@ the section is changed, we output `\.{\\*}' just after the number.
 @x
         default: err_print("! Double @@ should be used in limbo");
 @y
-        case right_start: right_start_switch=1; break;
+        case right_start: right_start_switch=true; break;
         default: err_print(_("! Double @@ should be used in limbo"));
 @z
 
@@ -885,10 +885,10 @@ the section is changed, we output `\.{\\*}' just after the number.
 @z
 
 @x
-scrap scrap_info[max_scraps]; /* memory array for scraps */
+static scrap scrap_info[max_scraps]; /* memory array for scraps */
 @y
-scrap scrap_info[max_scraps]; /* memory array for scraps */
-scrap null_scrap; /* a scrap with empty translation */
+static scrap scrap_info[max_scraps]; /* memory array for scraps */
+static scrap null_scrap; /* a scrap with empty translation */
 @z
 
 @x
@@ -899,17 +899,15 @@ null_scrap.trans=&tok_start[0];
 @z
 
 @x
-static void print_text(text_pointer p);@/
-@y
-#if 0
-static void print_text(text_pointer p);@/
-#endif
-@z
+@d inner_tok_flag 5*id_flag /* signifies a token list in `\pb' */
 
-@x
+@c
 static void
 print_text(@t\1\1@> /* prints a token list for debugging; not used in |main| */
 @y
+@d inner_tok_flag 5*id_flag /* signifies a token list in `\pb' */
+
+@c
 #if 0
 static void
 print_text(@t\1\1@> /* prints a token list for debugging; not used in |main| */
@@ -925,6 +923,15 @@ print_text(@t\1\1@> /* prints a token list for debugging; not used in |main| */
 }
 @y
 }
+#endif
+@z
+
+@x
+@ @<Predecl...@>=@+static void print_text(text_pointer p);
+@y
+@ @<Predecl...@>=
+#if 0
+static void print_text(text_pointer p);
 #endif
 @z
 
@@ -964,7 +971,7 @@ static token_pointer tok_loc; /* where the first identifier appears */
 @ \.{CTWILL} needs the following procedure, which appends tokens of a
 translated text until coming to |tok_loc|, then suppresses text that may
 appear between parentheses or brackets. The calling routine should set
-|ident_seen=0| first. (This is admittedly tricky.)
+|ident_seen=false| first. (This is admittedly tricky.)
 
 @c boolean ident_seen;
 static boolean app_supp(
@@ -982,15 +989,15 @@ static boolean app_supp(
   }
   for (j=*p;j<*(p+1);j++) {
     if (*j<tok_flag) {
-      if (*j==inserted) return 0;
-      if (j==tok_loc) ident_seen=1;
+      if (*j==inserted) return false;
+      if (j==tok_loc) ident_seen=true;
       else app(*j);
     } else if (*j>=inner_tok_flag) confusion(_("inner"));
     else if (app_supp(*j-tok_flag+tok_start)) goto catch14;;
   }
-  return 0;
-catch14: if (*(*(p+1)-1)=='9') return 1; /* production 14 was used */
-  else return 0;
+  return false;
+catch14: if (*(*(p+1)-1)=='9') return true; /* production 14 was used */
+  else return false;
 }
 
 @ The trickiest part of \.{CTWILL} is the procedure |make_ministring(l)|,
@@ -1016,10 +1023,10 @@ make_ministring(
     /* now we're ready for the mathness that follows (I think) */
     /* (without the mod 4 times 5, comments posed a problem) */
     /* (namely in cases like |int a(b,c)| followed by comment) */
-  ident_seen=0;@+app_supp((pp+l)->trans);
+  ident_seen=false;@+app_supp((pp+l)->trans);
   null_scrap.mathness=10; big_app1(&null_scrap);
    /* now |cur_mathness==no_math| */
-  ms_mode=1; ministring_ptr=ministring_buf;
+  ms_mode=true; ministring_ptr=ministring_buf;
   if (l==2) *ministring_ptr++='=';
   make_output(); /* translate the current text into a ministring */
   tok_ptr=*(--text_ptr); /* delete that text */
@@ -1041,8 +1048,8 @@ if (l==0) { app(int_loc+res_flag); app(' '); cur_mathness=no_math; }
 else {
   q=(pp+l-1)->trans;
   ast_count=0;
-  non_ast_seen=0;
-  while (1) {
+  non_ast_seen=false;
+  while (true) {
     if (*(q+1)==*q+1) {
       r=q;@+break; /* e.g. \&{struct}; we're doing production 45 or 46 */
     }
@@ -1051,7 +1058,7 @@ else {
     if ((t=*(*(q+1)-2))>=tok_flag && **(t-tok_flag+tok_start)=='*') {
            /* production 34 */
       if (!non_ast_seen) ast_count++; /* count immediately preceding |*|'s */
-    } else non_ast_seen=1;
+    } else non_ast_seen=true;
     if (*(*q+1)==' ' && *(q+1)==*q+2) break; /* production 27 */
     if (*(*q+1)=='{' && *(*q+2)=='}' && *(*q+3)=='$' && *(*q+4)==' '@|
        && *(q+1)==*q+5) break; /* production 27 in disguise */
@@ -1397,11 +1404,11 @@ reset_input(); if (show_progress) fputs(_("\nWriting the output file..."),stdout
 @z
 
 @x
-section_count=0; format_visible=1; copy_limbo();
+section_count=0; format_visible=true; copy_limbo();
 @y
-temp_switch=0; temp_meaning_ptr=temp_meaning_stack;
+temp_switch=false; temp_meaning_ptr=temp_meaning_stack;
 @<Read the \.{.aux} file, if present; then open it for output@>;
-section_count=0; format_visible=1; right_start_switch=0; copy_limbo();
+section_count=0; format_visible=true; right_start_switch=false; copy_limbo();
 @z
 
 @x
@@ -1412,9 +1419,9 @@ while (!input_has_ended) @<Translate the current section@>@;
 while (!input_has_ended) @<Translate the current section@>@;
 }
 
-@ @<Glob...@>=
-FILE *aux_file;
-char aux_file_name[max_file_name_length]; /* name of \.{.aux} file */
+@ @<Private...@>=
+static FILE *aux_file;
+static char aux_file_name[max_file_name_length]; /* name of \.{.aux} file */
 
 @ @<Read the \.{.aux} file, if present; then open it for output@>=
 memcpy(aux_file_name,tex_file_name,strlen(tex_file_name)-4);
@@ -1439,19 +1446,19 @@ if ((aux_file=fopen(aux_file_name,"wb"))==NULL)
 @z
 
 @x
-boolean group_found=0; /* has a starred section occurred? */
+static boolean group_found=false; /* has a starred section occurred? */
 
 @ @<Translate the current section@>= {
   section_count++;
 @y
-boolean group_found=0; /* has a starred section occurred? */
-boolean right_start_switch; /* has `\.{@@r}' occurred recently? */
-boolean temp_switch; /* has `\.{@@\%}' occurred recently? */
+static boolean group_found=false; /* has a starred section occurred? */
+static boolean right_start_switch; /* has `\.{@@r}' occurred recently? */
+static boolean temp_switch; /* has `\.{@@\%}' occurred recently? */
 
 @ @d usage_sentinel (struct perm_meaning *)1
 @<Translate the current section@>= {
   section_count++;
-  temp_switch=0; temp_meaning_ptr=temp_meaning_stack;
+  temp_switch=false; temp_meaning_ptr=temp_meaning_stack;
   top_usage=usage_sentinel;
 @z
 
@@ -1460,7 +1467,7 @@ if (*(loc-1)!='*') out_str("\\M");
 @y
 if (*(loc-1)!='*') {
   if (right_start_switch) {
-    out_str("\\shortpage\n"); right_start_switch=0;
+    out_str("\\shortpage\n"); right_start_switch=false;
 @.\\shortpage@>
   }
   out_str("\\M");
@@ -1472,7 +1479,7 @@ if (*(loc-1)!='*') {
 @y
 @.\\N@>
   if (right_start_switch) {
-    out_str("N"); right_start_switch=0;
+    out_str("N"); right_start_switch=false;
 @.\\NN@>
   }
 @z
@@ -1481,15 +1488,15 @@ if (*(loc-1)!='*') {
 out_str("{");out_section(section_count); out_str("}");
 @y
 out_str("{");out_section(section_count); out_str("}");
-flush_buffer(out_ptr,0,0);
+flush_buffer(out_ptr,false,false);
 @z
 
 @x
     case '@@': out('@@'); break;
 @y
     case '@@': out('@@'); break;
-    case temp_meaning: temp_switch=1-temp_switch; break;
-    case right_start: right_start_switch=1; break;
+    case temp_meaning: temp_switch=true-temp_switch; break;
+    case right_start: right_start_switch=true; break;
 @z
 
 @x
@@ -1512,27 +1519,27 @@ flush_buffer(out_ptr,0,0);
 @z
 
 @x
-  outer_parse(); finish_C(format_visible); format_visible=1;
-  doing_format=0;
+  outer_parse(); finish_C(format_visible); format_visible=true;
+  doing_format=false;
 }
 @y
   outer_parse();
   if (is_macro) @<Make ministring for a new macro@>;
-  finish_C(format_visible); format_visible=1;
-  doing_format=0;
+  finish_C(format_visible); format_visible=true;
+  doing_format=false;
 }
 
-@ @<Glob...@>=
-boolean is_macro; /* it's a macro def, not a format def */
-int def_diff; /* 0 iff the current macro has parameters */
-name_pointer id_being_defined; /* the definee */
+@ @<Private...@>=
+static boolean is_macro; /* it's a macro def, not a format def */
+static int def_diff; /* 0 iff the current macro has parameters */
+static name_pointer id_being_defined; /* the definee */
 @z
 
 @x
 @<Start a macro...@>= {
 @y
 @<Start a macro...@>= {
-  is_macro=1;
+  is_macro=true;
 @z
 
 @x
@@ -1544,12 +1551,12 @@ name_pointer id_being_defined; /* the definee */
 @x
 @.Improper macro definition@>
   else {
-    app('$'); app_cur_id(0);
+    app('$'); app_cur_id(false);
 @y
 @.Improper macro definition@>
   else {
     id_being_defined=id_lookup(id_first,id_loc,normal);
-    app('$'); app_cur_id(0);
+    app('$'); app_cur_id(false);
     def_diff=*loc-'(';
 @z
 
@@ -1561,11 +1568,11 @@ name_pointer id_being_defined; /* the definee */
 
 @x
 @ @<Start a format...@>= {
-  doing_format=1;
+  doing_format=true;
 @y
 @ @<Make ministring for a new macro@>=
 {
-  ms_mode=1; ministring_ptr=ministring_buf;
+  ms_mode=true; ministring_ptr=ministring_buf;
   *ministring_ptr++='=';
   if (def_diff) { /* parameterless */
     scrap_pointer s=scrap_ptr;
@@ -1581,8 +1588,8 @@ name_pointer id_being_defined; /* the definee */
 }
 
 @ @<Start a format...@>= {
-  doing_format=1;
-  is_macro=0;
+  doing_format=true;
+  is_macro=false;
 @z
 
 @x
@@ -1606,14 +1613,14 @@ name_pointer id_being_defined; /* the definee */
 @x
 out_str("\\fi"); finish_line();
 @.\\fi@>
-flush_buffer(out_buf,0,0); /* insert a blank line, it looks nice */
+flush_buffer(out_buf,false,false); /* insert a blank line, it looks nice */
 @y
 finish_line(); out_str("\\mini"); finish_line();
 @.\\mini@>
 @<Output information about usage of id's defined in other sections@>;
 out_str("}\\FI"); finish_line();
 @.\\FI@>
-flush_buffer(out_buf,0,0); /* insert a blank line, it looks nice */
+flush_buffer(out_buf,false,false); /* insert a blank line, it looks nice */
 
 @ The following code is performed for each identifier parsed during
 a section. Variable |top_usage| is always nonzero; it has the sentinel
@@ -1633,7 +1640,7 @@ placed on the list, unless they are reserved and their current
 }
 
 @ @<Output information about usage of id's defined in other sections@>=
-{@+struct perm_meaning *q;
+{ struct perm_meaning *q;
   while (temp_meaning_ptr>temp_meaning_stack) {
     out_mini(--temp_meaning_ptr);
     q=temp_meaning_ptr->id-name_dir+cur_meaning;
@@ -1646,9 +1653,6 @@ placed on the list, unless they are reserved and their current
     if (q->stamp!=section_count) out_mini(&(q->perm));
   }
 }
-
-@ @<Predec...@>=
-static void out_mini(meaning_struct *);@/
 
 @ @c static void
 out_mini(
@@ -1668,6 +1672,8 @@ out_mini(
   @<Mini-output the name at |cur_name|@>;
   out(' '); out_str(m->tex_part); finish_line();
 }
+
+@ @<Predec...@>=@+static void out_mini(meaning_struct *);
 
 @ @<Mini-output...@>=
 switch (cur_name->ilk) {
@@ -1696,7 +1702,7 @@ lowcase: out_str("\\\\");
   default: out_str("\\&");
 @.\\\&@>
 }
-out_name(cur_name,1);
+out_name(cur_name,true);
 name_done:
 
 @z
@@ -1762,6 +1768,9 @@ finish_line(); fclose(active_file); active_file=NULL;
 
 @x
 the index section itself.
+
+@<Private...@>=
+static sixteen_bits k_section; /* runs through the sections */
 @y
 the index section itself---NOT!
 @z
@@ -1813,7 +1822,7 @@ rest of the job.
 @z
 
 @x
-  case roman: not_an_identifier: out_name(cur_name,0); goto name_done;
+  case roman: not_an_identifier: out_name(cur_name,false); goto name_done;
   case custom: {char *j; out_str("$\\");
     for (j=cur_name->byte_start;j<(cur_name+1)->byte_start;j++)
       out(*j=='_'? 'x': *j=='$'? 'X': *j);
@@ -1821,15 +1830,15 @@ rest of the job.
     goto name_done;
     }
 @y
-not_an_identifier: out_name(cur_name,0); goto name_done;
+not_an_identifier: out_name(cur_name,false); goto name_done;
   case custom: out_str("\\$"); break;
 @.\\\$@>
 @z
 
 @x
-out_name(cur_name,1);
+out_name(cur_name,true);
 @y
-if (proofing) out_name(cur_name,1);
+if (proofing) out_name(cur_name,true);
 else {
   out('{');
   {char *j;
