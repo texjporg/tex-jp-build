@@ -4,7 +4,6 @@
 	Fix bug in fallback multibyte character in virtual font for (u)pTeX.
 	Thanks 流橋 利樹-san for the report.
 	https://oku.edu.mie-u.ac.jp/tex/mod/forum/discuss.php?d=3068
-	* configure.ac: version 2021.2.
 
 2021-03-23  Karl Berry  <karl@tug.org>
 
