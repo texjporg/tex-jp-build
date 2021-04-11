@@ -181,6 +181,8 @@ through the \.{kpathsea} interface.
 
 @<Global \&{\#include}s@>=
 #include <kpathsea/kpathsea.h>
+#include <w2c/config.h>
+#include <lib/lib.h>
 @z
 
 @x l.176 And this.
@@ -420,6 +422,12 @@ char *s, *t;
 void pfatal_error (const char *s, const char *t)
 @z
 
+@x l.707
+    else fprintf(stderr, "\n");
+@y
+    else putc('\n', stderr);
+@z
+
 @x l.713
 @ We need an include file for the above.
 
@@ -581,7 +589,7 @@ usage_error (void)
 @x l.1119 Add Web2C version to banner string
 printf("%s\n", banner); /* print a ``banner line'' */
 @y
-printf("%s (%s)\n", banner, kpathsea_version_string); /* print a ``banner line'' */
+printf("%s%s\n", banner, versionstring); /* print a ``banner line'' */
 @z
 
 Section 63: use 'none' more than once.
@@ -648,7 +656,7 @@ void print_version_and_exit(name, version)
 static void
 print_version_and_exit (const_string name, const_string version)
 {
-    printf ("%s %s\n", name, version);
+    printf ("%s %s%s\n", name, version, versionstring);
     puts (kpathsea_version_string);
 
     puts ("Copyright (C) 2002,2003 Julian Gilbey.");
