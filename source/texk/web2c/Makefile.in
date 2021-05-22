@@ -4379,6 +4379,7 @@ eptex_ch_srcs = \
 	$(eptex_ch_synctex) \
 	eptexdir/fam256.ch \
 	eptexdir/pdfutils.ch \
+	eptexdir/vadjust_pre.ch \
 	eptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
 
@@ -4492,6 +4493,7 @@ euptex_ch_srcs = \
 	eptexdir/fam256.ch \
 	euptexdir/pdfstrcmp-eup-pre.ch \
 	eptexdir/pdfutils.ch \
+	eptexdir/vadjust_pre.ch \
 	euptexdir/pdfstrcmp-eup-post.ch \
 	eptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
