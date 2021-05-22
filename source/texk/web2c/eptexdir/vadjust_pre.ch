@@ -100,6 +100,12 @@ link(q):=p; p:=q;
 @z
 
 @x
+@d align_stack_node_size=5 {number of |mem| words to save alignment states}
+@y
+@d align_stack_node_size=6 {number of |mem| words to save alignment states}
+@z
+
+@x
 @!cur_head,@!cur_tail:pointer; {adjustment list pointers}
 @y
 @!cur_head,@!cur_tail:pointer; {adjustment list pointers}
@@ -294,4 +300,3 @@ if pre_t<>pre_adjust_head then
   begin link(tail):=link(pre_adjust_head); tail:=pre_t;
   end;
 @z
-
