@@ -48,6 +48,7 @@ void styread(const char *filename)
 		fprintf(stderr,"%s does not exist.\n",filename);
 		exit(0);
 	}
+	verb_printf(efp,"Scanning style file %s.",filename);
 
 	for (i=0;;i++) {
 		if (fgets(buff,4095,fp)==NULL) break;
@@ -136,6 +137,8 @@ void styread(const char *filename)
 		if (getparam(buff,"character_order",character_order)) continue;
 	}
 	nkf_close(fp);
+
+	verb_printf(efp,"...done.\n");
 }
 
 /*   analize string parameter of style file   */

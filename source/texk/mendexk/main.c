@@ -284,7 +284,6 @@ int main(int argc, char **argv)
 	initkanatable();
 
 	for (k=0;styfile[k]!=NULL;k++) {
-		verb_printf(efp,"Reading style file %s.\n",styfile[k]);
 		styread(styfile[k]);
 	}
 
