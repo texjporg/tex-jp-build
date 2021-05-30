@@ -24,6 +24,10 @@ cat $srcdir/tests/uni.idx | \
 	>uni.ind2 2>uni.ilg2 \
 	&& diff $srcdir/tests/uni.ind uni.ind2 || exit 1
 
+./upmendex -d $srcdir/tests/uni.dict -s $srcdir/tests/uni1.ist -s $srcdir/tests/uni2.ist \
+	$srcdir/tests/uni.idx -o uni.ind3 -t uni.ilg3 \
+	&& diff $srcdir/tests/uni.ind uni.ind3 || exit 1
+
 # test for page_precedence
 ./upmendex -s $srcdir/tests/pprec0.ist $srcdir/tests/pprecA.idx -o pprecA-0.ind1 -t pprecA-0.ilg \
 	&& diff $srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 1
