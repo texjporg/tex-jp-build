@@ -669,6 +669,10 @@ static void index_normalize(UChar *istr, UChar *ini, int *chset)
 		ini[0]=extkanatable[ch-EXKANATOP];
 		return;
 	}
+	if (is_circkana(ch)) {
+		ini[0]=circkanatable[ch-CRKANATOP];
+		return;
+	}
 	else if (ch==0x309F) { ini[0]=0x30E8; return; }  /* HIRAGANA YORI -> ヨ */
 	else if (ch==0x30FF) { ini[0]=0x30B3; return; }  /* KATAKANA KOTO -> コ */
 	else if (is_jpn_kana(istr)==2) {
