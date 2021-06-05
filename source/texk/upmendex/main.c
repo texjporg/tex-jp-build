@@ -281,6 +281,7 @@ int main(int argc, char **argv)
 	default:
 		break;
 	}
+	if (u_strlen(kana_head)>0) u_strcpy(atama,kana_head);
 
 /*   read idx file   */
 

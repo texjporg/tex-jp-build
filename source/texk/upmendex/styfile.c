@@ -132,8 +132,8 @@ void styread(const char *filename)
 			letter_head=atoi(&buff[cc]);
 			continue;
 		}
-		if (getparam(buff,"atama",tmp)) {
-			multibyte_to_widechar(atama,STYBUFSIZE,tmp);
+		if (getparam(buff,"kana_head",tmp)) {
+			multibyte_to_widechar(kana_head,STYBUFSIZE,tmp);
 			continue;
 		}
 		if (getparam(buff,"tumunja",tmp)) {
