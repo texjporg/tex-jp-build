@@ -131,7 +131,6 @@ void styread(const char *filename)
 			letter_head=atoi(&buff[cc]);
 			continue;
 		}
-		if (getparam(buff,"atama",atama)) continue;
 		if (getparam(buff,"page_compositor",page_compositor)) continue;
 		if (getparam(buff,"page_precedence",page_precedence)) continue;
 		if (getparam(buff,"character_order",character_order)) continue;
