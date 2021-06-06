@@ -439,4 +439,3 @@ upmendex - 索引整形ツール
 International Components for Unicode (ICU)
 http://site.icu-project.org/
 https://unicode-org.github.io/icu/
-
