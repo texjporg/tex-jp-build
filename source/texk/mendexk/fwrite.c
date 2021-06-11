@@ -121,7 +121,7 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 {
 	int i,j,hpoint=0;
 	char datama[2048],lbuff[BUFFERLEN];
-	FILE *fp;
+	FILE *fp=NULL;
 	int conv_euc_to_euc;
 
 	if (filename && kpse_out_name_ok(filename))
