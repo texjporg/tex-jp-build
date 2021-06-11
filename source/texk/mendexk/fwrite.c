@@ -219,7 +219,15 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 				if ((alphabet(ind[i-1].dic[0][0]))||(japanese(ind[i-1].dic[0]))){
 					fputs(group_skip,fp);
 					if (lethead_flag && symbol_flag) {
-						fprintf(fp,"%s%s%s",lethead_prefix,symbol,lethead_suffix);
+						if (strlen(symbol)) {
+							fprintf(fp,"%s%s%s",lethead_prefix,symbol,lethead_suffix);
+						}
+						else if (lethead_flag>0) {
+							fprintf(fp,"%s%s%s",lethead_prefix,symhead_positive,lethead_suffix);
+						}
+						else if (lethead_flag<0) {
+							fprintf(fp,"%s%s%s",lethead_prefix,symhead_negative,lethead_suffix);
+						}
 					}
 				}
 			}
