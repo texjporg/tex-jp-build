@@ -6655,6 +6655,18 @@ end;
 for k:=256 to 511 do xchr[k]:=k;
 @z
 
+@x [54/web2c.???] scan_file_name_braced
+  for i:=str_start[s] to str_start[s+1]-1 do
+    dummy := more_name(str_pool[i]); {add each read character to the current file name}
+@y
+  for i:=str_start[s] to str_start[s+1]-1 do
+    if str_pool[i]>=@"100 then
+	  begin str_room(1); append_char(str_pool[i]);
+	  end
+	else
+      dummy := more_name(str_pool[i]); {add each read character to the current file name}
+@z
+
 @x l.26984 - pTeX
 @* \[54] System-dependent changes.
 @y
@@ -7766,16 +7778,3 @@ end;
 
 @* \[56] System-dependent changes.
 @z
-
-@x [54/web2c.???] scan_file_name_braced
-  for i:=str_start[s] to str_start[s+1]-1 do
-    dummy := more_name(str_pool[i]); {add each read character to the current file name}
-@y
-  for i:=str_start[s] to str_start[s+1]-1 do
-    if str_pool[i]>=@"100 then
-	  begin str_room(1); append_char(str_pool[i]);
-	  end
-	else
-      dummy := more_name(str_pool[i]); {add each read character to the current file name}
-@z
-
