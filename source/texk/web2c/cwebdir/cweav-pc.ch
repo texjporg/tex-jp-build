@@ -11,12 +11,12 @@ that allows >64K arrays. (If you need lots more bytes, try the alternate
 change files that have -bs in their name instead of -pc.)
 
 @x section 1
-@d banner "This is CWEAVE (Version 3.64)\n"
+@d banner "This is CWEAVE (Version 4.4)"
 @y
-@d banner "This is CWEAVE (Version 3.64pc)\n"
+@d banner "This is CWEAVE (Version 4.4pc)"
 @z
 
-@x section 4
+@x section 17
 @d max_bytes 90000 /* the number of bytes in identifiers,
 @y
 @d max_bytes (unsigned)60000 /* the number of bytes in identifiers,
@@ -26,14 +26,3 @@ change files that have -bs in their name instead of -pc.)
 @y
 @d max_refs 10000 /* number of cross-references; must be less than 65536 */
 @z
-
-@x section 163
-@ @<Change |pp| to $\max...@>=
-@y
-@ @<Change |pp| to $\max...@>=
-#ifdef __MSDOS__
-if (d<0 && pp+d>pp) pp=scrap_base; /* segmented architecture caused wrap */
-else
-#endif
-@z
-

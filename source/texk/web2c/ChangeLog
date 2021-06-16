@@ -1,3 +1,334 @@
+2021-06-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: CWEB release 4.4.
+
+2021-05-18  Karl Berry  <karl@freefriends.org>
+
+	* README,
+	* PROJECTS: updates.
+
+2021-05-07  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (sup_save_size): increase to 30000000
+	(could be max_halfword). Found by Christian Schenk,
+	tex-live 18 Mar 2021 18:39:04.
+
+2021-05-07  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi,
+	* doc/ref.txi: typos.
+
+2021-04-13  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: CWEB release 4.3.
+
+2021-03-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* help.h: New options for CTANGLE, CWEAVE and CTWILL.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2021-03-08  Karl Berry  <karl@tug.org>
+
+	* doc/glue.web,
+	* doc/webman.tex: add these Knuth files here, since nowhere
+	else seems better. PDF output for them is in the knuth-pdf package.
+
+2021-03-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.in,
+	* am/cweb.am: Patch refsort and twinx with changefiles.
+
+2021-02-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: CWEB release 4.2.
+
+2021-02-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Code review.
+
+2021-02-22  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Code review.
+
+2021-02-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: CWEB release 4.1.
+
+2021-02-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Replace 'boolean' values upstream.
+
+2021-02-18  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (Common options): mention -cnf-line.
+	Also, use https instead of http for most urls,
+	update for 2021, etc.
+
+2021-02-18  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: Reshuffle a few variables (upstream).
+
+2021-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.in,
+	* am/bootstrap.am: Main CWEB modules depend on COMMON interface.
+
+2021-02-17  Karl Berry  <karl@tug.org>
+
+	* NEWS,
+	* doc/web2c.texi: 2021 release.
+
+2021-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Reshuffle byte_mem pointer.
+
+2021-02-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* tracingstacklevels.ch,
+	* ptexdir/ptex-base.ch: Fix Pascal variable in comment.
+
+2021-02-14  Petr Olsak  <petr@olsak.net>
+
+	* tracingstacklevels.ch: slow_print(cur_ext) also.
+
+2021-02-13  Karl Berry  <karl@freefriends.org>
+
+	* enctexdir/enctex1.ch,
+	* enctexdir/enctex2.ch,
+	* enctexdir/enctex-tex.ch,
+	* enctexdir/enctex-pdftex.ch: new files, from enctex.ch.
+	* am/texmf.am (tex_ch_srcs): split enctex changes into
+	common (enctex1.ch, enctex2.ch) and differing (enctex-tex.ch,
+	enctex-pdftex.ch) pieces to avoid duplicating the whole thing.
+	* enctex.ch,
+	* enctex2.ch: remove.
+
+2021-02-13  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* eptexdir/am/eptex.am, eptexdir/etex.ch1,
+	euptexdir/am/euptex.am, ptexdir/am/ptex.am,
+	ptexdir/ptex-base.ch, synctexdir/synctex-ep-mem.ch1,
+	synctexdir/synctex-p-mem.ch1, and uptexdir/am/uptex.am:
+	Support \tracingstacklevels in [e][u]pTeX.
+
+2021-02-13  Akira Kakuto  <kakuto@w32tex.org>
+
+	* enctex.ch: Recover the original enctex.ch in order to be
+	compatible with the TeX.
+	* enctex2.ch: Rename the new enctex.ch for pdfTeX.
+	* pdftexdir/am/pdftex.am: Rename enctex.ch to enctex2.ch.
+
+2021-02-12  Karl Berry  <karl@freefriends.org>
+
+	* tracingstacklevels.ch: new change file for \tracingstacklevels
+	parameter, proposed and implemented by Petr Olsak.
+	* pdftexdir/am/pdftex.am (pdftex_ch_srcs),
+	* xetexdir/am/xetex.am (xetex_ch_srcs): add it.
+	* tests/tracingstacklevels.tex,
+	* tests/tracingstacklevel2.tex: test files (for manual use; not
+	included in make check).
+	* xetexdir/xetex.ch (v): new declaration needed in start_input.
+	* enctex.ch: adjust web2c_int_pars so that this is applied after
+	tracingstacklevels.ch.
+
+2021-02-08  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Don't repeat yourself.
+
+2021-02-07  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebboot.cin: CWEB development has moved to another level.
+
+2021-02-07  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin,
+	* cwebdir/*,
+	* man/ctwill.man,
+	* man/cweb.man: New CWEB 4.0 amd CWEBbin 2021.
+
+2021-02-05  Karl Berry  <karl@freefriends.org>
+
+	* mf.ch: adjust for latest fixes.
+
+2021-02-05  Donald Knuth  <tex-k@tug.org>
+
+	* mf.web,
+	* tex.web: further fixes. Reports from Udo Wermuth
+	and Phelype Oleinik.
+	* triptrap/trip.log: update for newly added blank line.
+
+2021-01-31  Karl Berry  <karl@freefriends.org>
+
+	* weave.ch (banner): 4.5.
+
+2021-01-31  Donald Knuth  <tex-k@tug.org>
+
+	* weave.web (banner, title): should have been 4.5.
+	Report from Wolfgang Helbig.
+
+2021-01-29  Karl Berry  <karl@freefriends.org>
+
+	* NEWS: mention tuneup.
+
+	* alephdir/alephextra.h,
+	* alephdir/com16bit.ch,
+	* alephdir/eobase.ch,
+	* alephdir/eocprt.ch,
+	* alephdir/eoext.ch,
+	* alephdir/eover.ch,
+	* alephdir/om16bit.ch,
+	* alephdir/omfont.ch,
+	* alephdir/omstr.ch,
+	* eptexdir/eptex.ech,
+	* eptexdir/eptexextra.h,
+	* etexdir/etex.ch,
+	* etexdir/etexextra.h,
+	* etexdir/tex.ch0,
+	* etexdir/tex.ech,
+	* euptexdir/euptex.ch0,
+	* euptexdir/euptexextra.h,
+	* lib/texmfmp.c,
+	* mf-binpool.ch,
+	* mf.ch,
+	* mfluadir/mf-lua.ch,
+	* mfluadir/mflua_version.h,
+	* mfluadir/mfluaextra.h,
+	* mfluajitdir/mf-luajit.ch,
+	* mfluajitdir/mfluajitextra.h,
+	* mft.ch,
+	* pdftexdir/pdftexextra.h,
+	* pdftexdir/tex.ch0,
+	* ptexdir/ptex-base.ch,
+	* ptexdir/ptexextra.h,
+	* tangle.ch,
+	* tangleboot.pin,
+	* tex.ch,
+	* uptexdir/uptex-m.ch,
+	* uptexdir/uptexextra.h,
+	* weave.ch,
+	* xetexdir/xetexextra.h: updates for 2021 tuneup.
+
+	* mftraptest.test,
+	* triptest.test,
+	* triptrap-sh,
+	* mfluadir/mfluatrap/mfluatrap.diffs,
+	* etexdir/etrip/etrip.diffs,
+	* triptrap/trip.diffs,
+	* triptrap/mftrap.diffs,
+	* triptrap/mptrap.diffs,
+	* eptexdir/eptrip/eptrip.diffs,
+	* uptexdir/uptrip/uptrip.diffs,
+	* euptexdir/euptrip/euptrip.diffs,
+	* mfluajitdir/mfluajittrap/mfluajittrap.diffs,
+	* ptexdir/ptrip/ptrip.diffs: trip/trap updates for 2021 tuneup.
+
+	* tangleboot.pin: update bootstrap file.
+
+	* triptrap/README,
+	* Makefile.am: doc for running triptrap.
+
+2021-01-29  Donald Knuth  <tex-k@tug.org>
+
+	2021 tuneup update. Overview:
+	  https://tug.org/TUGboat/tb42-1/tb130knuth-tuneup21.pdf
+	Bug reporting info:
+	  https://tug.org/texmfbug/
+	New TeX version is 3.141592653, MF 2.71828182.
+
+	* dvitype.web,
+	* gftodvi.web,
+	* gftopk.web,
+	* gftype.web,
+	* mf.web,
+	* mft.web,
+	* pltotf.web,
+	* pooltype.web,
+	* tangle.web,
+	* tex.web,
+	* tftopl.web,
+	* vftovp.web,
+	* vptovf.web,
+	* weave.web: new versions. BTW, these are all of the web
+	files which DEK maintains. The rest are maintained by other people:
+	bibtex.web (Oren), patgen.web and dvicopy.web (here),
+	pktype.web and pktogf.web (Tom Rokicki).
+	
+	* triptrap/mftrap.fot,
+	* triptrap/mftrap.log,
+	* triptrap/mftrapin.log,
+	* triptrap/trap.typ,
+	* triptrap/trip.fot,
+	* triptrap/trip.log,
+	* triptrap/trip.tex,
+	* triptrap/trip.typ,
+	* triptrap/tripin.log: trip and trap test updates.
+
+2020-10-27  Karl Berry  <karl@freefriends.org>
+
+	* pktogf.web: TFM widths are 2^20 times the ratio, not 2^24.
+	Report from Richard Sandberg, 2 Jul 2019 10:49:50.
+
+2020-08-31  Karl Berry  <karl@freefriends.org>
+
+	* tests/expanded-overflow.tex: new (unused) informational file
+	for \expanded overflow.
+
+2020-08-01  Andreas Scherer  <https://ascherer.github.io>
+
+	* dvicopy.ch,
+	* dvitype.ch,
+	* gftodvi.ch,
+	* gftopk.ch,
+	* gftype.ch,
+	* mf.ch,
+	* mft.ch,
+	* patgen.ch,
+	* pktogf.ch,
+	* pktype.ch,
+	* tangle.ch,
+	* tex.ch,
+	* weave.ch: Purge non-local 'goto' labels and 'jump_out' leftovers.
+
+2020-07-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* mft.ch: Swap \MF and \MP to match meaning of 'metapost' flag.
+
+2020-07-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* tex.ch: Place Web2c changes together;
+	avoid overful hboxes in the amended table-of-contents.
+
+2020-07-19  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (TeX extensions): add [e][u]pTeX. Other small
+	additions to the engine descriptions.
+
+	* NEWS: mention new \tracinglostchars>=3 causing an error.
+	See pdftexdir/ChangeLog for details.
+
+2020-07-17  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.am,
+	* Makefile.in: Avoid changefile ambiguity.
+
+2020-07-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Recreate CWEB boot modules.
+
 2020-07-08  Andreas Scherer  <https://ascherer.github.io>
 
 	* cwebboot.cin,
@@ -10,7 +341,7 @@
 	call in unusual interactive sequences can mess up
 	the selector value, ultimately causing a segmentation fault
 	from writing to a closed stream \write15. Fix primarily
-	from David Fuchs.
+	from David Fuchs. Original report from Xiao Zhang,
 	https://tex.stackexchange.com/questions/551313/
 	https://tug.org/pipermail/tex-live/2020-June/045876.html
 

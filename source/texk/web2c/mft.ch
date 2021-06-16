@@ -37,18 +37,22 @@ Changes for \MP\ by W.~Bzyl in July, 2001.
 @z
 
 @x [2] Define my_name
-@d banner=='This is MFT, Version 2.0'
+@d banner=='This is MFT, Version 2.1'
 @y
 @d my_name=='mft'
-@d banner=='This is MFT, Version 2.0'
+@d banner=='This is MFT, Version 2.1'
 @z
 
 % [3] No need for the final label in C.
 % AIX defines `class' in <math.h>, so let's take this opportunity to
 % define that away.
 @x
+calls the `|jump_out|' procedure, which goes to the label |end_of_MFT|.
+
 @d end_of_MFT = 9999 {go here to wrap it up}
 @y
+calls the `|jump_out|' procedure.
+
 @d class == class_var
 @z
 
@@ -222,7 +226,7 @@ and exits back to the operating system.
 @<Error handling...@>=
 procedure jump_out;
 begin
-@t\4\4@>{here files should be closed if the operating system requires it}
+{here files should be closed if the operating system requires it}
   @<Print the job |history|@>;
   new_line;
   if (history <> spotless) and (history <> harmless_message) then
@@ -459,6 +463,8 @@ pr12("t")("r")("a")("c")("i")("n")("g")
  ("s")("t")("a")("t")("s")(internal);@/
 pr13("t")("r")("a")("c")("i")("n")("g")
  ("o")("n")("l")("i")("n")("e")(internal);@/
+pr15("t")("r")("a")("c")("i")("n")("g")
+ ("r")("e")("s")("t")("o")("r")("e")("s")(internal);@/
 
 @ @<Store all the primitives@>=
 pr4("y")("e")("a")("r")(internal);@/
@@ -466,7 +472,7 @@ pr5("m")("o")("n")("t")("h")(internal);@/
 pr3("d")("a")("y")(internal);@/
 pr4("t")("i")("m")("e")(internal);@/
 pr8("c")("h")("a")("r")("c")("o")("d")("e")(internal);@/
-pr7("c")("h")("a")("r")("f")("a")("m")(internal);@/
+pr7("c")("h")("a")("r")("e")("x")("t")(internal);@/
 pr6("c")("h")("a")("r")("w")("d")(internal);@/
 pr6("c")("h")("a")("r")("h")("t")(internal);@/
 pr6("c")("h")("a")("r")("d")("p")(internal);@/
@@ -731,6 +737,8 @@ pr12("t")("r")("a")("c")("i")("n")("g")
  ("s")("t")("a")("t")("s")(internal);@/
 pr13("t")("r")("a")("c")("i")("n")("g")
  ("o")("n")("l")("i")("n")("e")(internal);@/
+pr15("t")("r")("a")("c")("i")("n")("g")
+ ("r")("e")("s")("t")("o")("r")("e")("s")(internal);@/
 
 @ @<Store all the primitives@>=
 pr4("y")("e")("a")("r")(internal);@/
@@ -738,6 +746,7 @@ pr5("m")("o")("n")("t")("h")(internal);@/
 pr3("d")("a")("y")(internal);@/
 pr4("t")("i")("m")("e")(internal);@/
 pr8("c")("h")("a")("r")("c")("o")("d")("e")(internal);@/
+pr7("c")("h")("a")("r")("e")("x")("t")(internal);@/
 pr6("c")("h")("a")("r")("w")("d")(internal);@/
 pr6("c")("h")("a")("r")("h")("t")(internal);@/
 pr6("c")("h")("a")("r")("d")("p")(internal);@/
@@ -957,7 +966,7 @@ files, as UNIX knows them.
 @!style_name:array[0..max_style_name-1] of const_c_string;
 @!n_style_name:c_int_type;  {Number of values in |style_name| array.}
 @!i_style_name:c_int_type;  {The next |style_name|.}
-@!metapost:c_int_type;  {|true| for \MF, |false| for \MP}
+@!metapost:c_int_type;  {|true| for \MP, |false| for \MF}
 
 @ Look at the command line arguments and set the |name| variables accordingly.
 
@@ -1089,7 +1098,7 @@ long_options[current_option].flag := address_of (metapost);
 long_options[current_option].val := 1;
 incr (current_option);
 
-@ |metapost| defaults to false
+@ |metapost| defaults to |false|; will become |true| for \MP.
 
 @<Initialize the option...@> =
 metapost:=false;

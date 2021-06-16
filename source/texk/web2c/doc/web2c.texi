@@ -11,8 +11,8 @@ The latest version is available from ftp://ftp.tug.org/tex/texinfo.tex.}
 \fi
 @end tex
 
-@set version 2020
-@set month-year June 2020
+@set version 2021
+@set month-year May 2021
 
 @c Define new indices for commands in auxiliary files, filenames, and options.
 @defcodeindex cm
@@ -63,7 +63,7 @@ This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
 Copyright @copyright{} 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
-2004, 2005, 2007, 2008, 2009, 2010-2020 Karl Berry & Olaf Weber.
+2004, 2005, 2007, 2008, 2009, 2010-2021 Karl Berry & Olaf Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -93,7 +93,7 @@ except that this permission notice may be stated in a translation
 @subtitle @value{month-year}
 @author Karl Berry
 @author Olaf Weber
-@author @url{http://tug.org/web2c}
+@author @url{https://tug.org/web2c}
 
 @page
 @vskip 0pt plus 1filll
@@ -162,7 +162,6 @@ Therefore, it will not work without change on an arbitrary WEB program.
 @cindex licensing terms
 @cindex freedom of Web2c
 @cindex ice cream
-@cindex Henry, Patrick
 Availability: All of Web2c is freely available---``free'' both in the
 sense of no cost (free ice cream) and of having the source code to
 modify and/or redistribute (free speech).  @xref{unixtex.ftp,,,
@@ -174,9 +173,9 @@ creation; consult each source file for exact details.  The main
 practical implication for redistributors of Web2c is that most of the
 executables are covered by the GNU General Public License or GNU
 Lesser General Public License, and therefore anyone who gets a binary
-distribution must also get the sources, as explained by the terms of
-the GPL (@url{https://gnu.org/licenses/}. The GPL covers the Web2c
-executables, including @code{tex}, because the Free Software
+distribution must also be able to get the sources, as explained by the
+terms of the GPL (@url{https://gnu.org/licenses/}). The GPL covers the
+Web2c executables, including @code{tex}, because the Free Software
 Foundation sponsored the initial development of the Kpathsea library
 that Web2c uses.  The basic source files from Stanford, however, have
 their own copyright terms or are in the public domain, and are not
@@ -316,6 +315,12 @@ Print the version number to standard output, then exit successfully.
 common:
 
 @table @samp
+@item -cnf-line=@var{str}
+@opindex -cnf-line
+Parse @var{str} as if it were a line in the @file{texmf.cnf}
+configuration file, overriding all other settings.  @xref{Path
+searching options,,,kpathsea,Kpathsea}.
+
 @item -file-line-error
 @opindex -file-line-error
 @itemx -no-file-line-error
@@ -438,8 +443,9 @@ This is the recommended method for portability reasons.
 @cindex 8 bit clean
 @flindex 8 bit clean output, specifying
 This option specifies that by default all characters should be
-considered printable.  If @samp{-translate-file} was given as well, then the
-TCX file may mark characters as non-printable.
+considered printable.  If @samp{-translate-file} was given as well,
+then the TCX file may mark characters as non-printable.  This is a
+no-op in engines natively supporting Unicode.
 
 @end table
 
@@ -903,7 +909,7 @@ with the primitive operation.)
 
 As (allowed) extensions to standard @TeX{}, Web2c also supports
 specifying the filename in double quotes (@code{"some name"}) and in
-braces (@code{@{"some name"@}}), which is convenient for filenames
+braces (@code{@{some name@}}), which is convenient for filenames
 containing spaces or other special characters, as described in the
 sections below.
 
@@ -916,10 +922,10 @@ filename; there is no way to read files whose names contain a @code{"}.
 
 @cindex portable filenames
 However, for maximal portability of your document across systems, use
-only the characters @samp{a}--@samp{z}, @samp{0}--@samp{9}, and
-@samp{.}.  Do not use anything but simple filenames, since directory
-separators vary among systems; instead, add the necessary directories
-to the appropriate search path.
+only the characters @samp{a}--@samp{z}, @samp{0}--@samp{9}, and at
+most one @samp{.}.  Do not use anything but simple filenames, since
+directory separators vary among systems; instead, add the necessary
+directories to the appropriate search path.
 
 @menu
 * Quotes: \input quoted filename.   \input "some name"
@@ -1059,7 +1065,7 @@ otherwise, are available.
 * Languages and hyphenation::   TeX supports many human languages.
 * Shell escapes::               Running subprograms from TeX.
 * IPC and TeX::                 DVI output to a socket.
-* TeX extensions::              Changes to the TeX language.
+* TeX extensions::              Additional engines with additional features.
 @end menu
 
 
@@ -1135,7 +1141,7 @@ a security hole vulnerable to Trojan horse attack: an unwitting user could
 run a @TeX{} program that overwrites, say, @file{~/.rhosts}.  (MetaPost has
 a @code{write} primitive with similar implications).  To alleviate this and
 similar problems the functions @code{kpathsea_out_name_ok} and
-@code{kpathsea_in_name_ok} from the Kpathse library (@pxref{Calling
+@code{kpathsea_in_name_ok} from the Kpathsea library (@pxref{Calling
 sequence,,, kpathsea, Kpathsea}) are used to determine if a given filename
 is acceptable to be opened for output or input, depending on the setting of
 the configuration variables @code{openout_any} and @code{openin_any}:
@@ -1174,7 +1180,8 @@ These options are common to @TeX{}, Metafont, and MetaPost.
 @cindex Unicode input
 @cindex UTF-8 input
 Enable enc@TeX{} extensions, such as @code{\mubyte}.  This can be used
-to support Unicode UTF-8 input encoding.  See
+to support the Unicode UTF-8 input encoding, although using an engine
+with native Unicode support is more common nowadays.
 @url{http://www.olsak.net/enctex.html}.
 
 @item -ipc
@@ -1329,25 +1336,24 @@ current at the time of release.  You can change which formats are
 automatically built by setting the @code{fmts} Make variable; by default,
 only the @samp{plain} and @samp{latex} formats are made.
 
-You can get the latest versions of most of these formats from the CTAN
-archives in subdirectories of @file{@var{CTAN:}/macros} (for CTAN info,
-@pxref{unixtex.ftp,,, kpathsea, Kpathsea}).  The archive
-@url{ftp://ftp.tug.org/tex/lib.tar.gz} (also available from CTAN)
-contains most of these formats (although perhaps not the absolute latest
-version), among other things.
+Nowadays, the formats are generally installed and updated as part of a
+larger @TeX{} distribution, such as @TeX{} Live
+(@url{https://tug.org/texlive}).
 
 @table @t
 @item latex
 @cindex @LaTeX{}
-The most widely used format.  The current release is named `@LaTeX{}
-2e'; new versions are released approximately every six months, with
-patches issued as needed.  The old release was called `@LaTeX{} 2.09',
-and is no longer maintained or supported.  @LaTeX{} attempts to provide
-generic markup instructions, such as ``emphasize'', instead of specific
-typesetting instructions, such as ``use the 10@dmn{pt} Computer Modern
-italic font''.  The @LaTeX{} home page: @url{http://www.latex-project.org}.
+The most widely used format.  The current release is named
+`@LaTeX{}2e'; new versions are released approximately every six
+months, with patches issued as needed.  The old release was called
+`@LaTeX{} 2.09', and is no longer maintained or supported.  @LaTeX{}
+attempts to provide generic markup instructions, such as
+``emphasize'', instead of specific typesetting instructions, such as
+``use the 10@dmn{pt} Computer Modern italic font''.  The @LaTeX{} home
+page: @url{https://www.latex-project.org}.
 
 @item context
+@cindex Con@TeX{}t
 Con@TeX{}t is an independent macro package which has a basic document
 structuring approach similar to @LaTeX{}.  It also supports creating
 interactive PDF files and has integrated MetaPost support, among many
@@ -1360,10 +1366,10 @@ other interesting features.  The Con@TeX{}t home page:
 @cindex Mathematical Reviews
 The official typesetting system of the American Mathematical Society.
 Like @LaTeX{}, it encourages generic markup commands.  The AMS also
-provides many @LaTeX{} package for authors who prefer @LaTeX{}.  Taken
+provides many @LaTeX{} packages for authors who prefer @LaTeX{}.  Taken
 together, they are used to produce nearly all AMS publications, e.g.,
 @cite{Mathematical Reviews}.  The AMS@TeX{} home page:
-@url{http://www.ams.org/tex}.
+@url{https://www.ams.org/tex}.
 
 @item texinfo
 @cindex Texinfo
@@ -1373,7 +1379,7 @@ The documentation system developed and maintained by the Free Software
 Foundation for their software manuals.  It can be automatically
 converted into plain text, a machine-readable on-line format called
 `info', HTML, etc.  The Texinfo home page:
-@url{http://www.gnu.org/software/texinfo}.
+@url{https://www.gnu.org/software/texinfo}.
 
 @item eplain
 @cindex Eplain
@@ -1382,14 +1388,16 @@ The ``expanded plain'' format provides various common features (e.g.,
 symbolic cross-referencing, tables of contents, indexing, citations
 using Bib@TeX{}), for those authors who prefer to handle their own
 high-level formatting.  The Eplain home page:
-@url{http://www.tug.org/eplain}.
+@url{https://tug.org/eplain}.
 
 @item slitex
 @cindex Sli@TeX{}
 @cindex slides, producing
+@flindex beamer@r{, package}
 An obsolete @LaTeX{} 2.09 format for making slides.  It is replaced by
-the @samp{slides} document class, along with the @samp{beamer},
-@samp{texpower}, and other packages.
+the @samp{slides} document class, although the @samp{beamer} package
+is the most commonly method for making slides nowadays. The Beamer
+page on CTAN: @url{https://ctan.org/pkg/beamer}.
 
 @end table
 
@@ -1727,7 +1735,7 @@ written to the file @var{output}.
 @c @cindex dictionary file
 @c @findex \lefthyphemmin
 @c @findex \righthyphenmin
-@c The first line contains the values of @code{}\lefthyphenmin} and
+@c The first line contains the values of @code{\lefthyphenmin} and
 @c @code{\righthyphenmin} in columns 1--2 and 3--4. Columns 5, 6, and 7 may
 @c optionally contain replacements for the default characters @samp{.},
 @c @samp{-}, and @samp{*} respectively used in the word lists.
@@ -1741,7 +1749,7 @@ written to the file @var{output}.
 
 In addition, Patgen prompts interactively for other values.
 
-For more information, see @cite{Word hy-phen-a-tion by com-puter} by
+For more information, see @cite{Word hy-phen-a-tion by com-put-er} by
 Frank Liang (@pxref{References}), and also the @file{patgen.web} source file.
 
 The only options are @samp{-help} and @samp{-version} (@pxref{Common
@@ -1875,7 +1883,7 @@ debugging.
 
 
 @node TeX extensions
-@section @TeX{} extensions
+@section Extended @TeX{} engines
 
 @cindex extensions to @TeX{}
 @cindex @TeX{}, extensions to
@@ -1904,24 +1912,33 @@ More info: @url{https://ctan.org/pkg/aleph}, @url{https://ctan.org/pkg/omega}.
 @cindex PDF
 @cindex micro-typography
 @cindex hypertext
+@pindex etex @r{is pdf@TeX{}}
 Can produce PDF as well as DVI files.  It also incorporates the
 e-@TeX{} extensions, new primitives for hypertext and
-micro-typography, reading/writing from pipes, and much more.  Home
-page: @url{http://pdftex.org}.
+micro-typography, reading/writing from pipes, and much more.  In
+@TeX{} Live, the command @command{etex} invokes pdf@TeX{} to make all
+these additions available with DVI output. Home page:
+@url{http://pdftex.org}.
 
 @item Lua@TeX{}
 @cindex Lua@TeX{}
 @cindex Lua
+@cindex UTF-8 input, native
+@cindex OpenType support
+@cindex TrueType support
+@cindex system fonts, using
 Embeds the Lua programming language (@url{http://lua.org}) and opens
-up the @TeX{} typesetting engine to control from Lua.  Also supports
-Unicode input and OpenType- and system fonts. Home page:
-@url{http://luatex.org}.
+up the @TeX{} typesetting engine to control from Lua, starting from
+the pdf@TeX{} capabilities as a base.  Also natively supports UTF-8
+input, the OpenType and TrueType font formats, and use of system
+fonts. Home page: @url{http://luatex.org}.
 
 @item Xe@TeX{}
 @cindex Xe@TeX{}
-@cindex Unicode
-Combines support for Unicode input and OpenType- and system fonts
-with the capabilities of pdf@TeX{}.
+@cindex Unicode input, native
+Combines support for Unicode input, the OpenType and TrueType font
+formats, and use of system fonts with the capabilities of pdf@TeX{},
+with the exception of the font expansion part of micro-typography.
 Home page: @url{https://tug.org/xetex}.
 
 @item p@TeX{}
@@ -1932,6 +1949,15 @@ With additional support for Japanese; p@TeX{} was the original engine,
 and up@TeX{} has native Unicode support and thus is more useful for
 Chinese and Korean. More info: @url{https://ctan.org/pkg/ptex},
 @url{https://ctan.org/pkg/uptex}.
+
+@item ep@TeX{}
+@itemx eup@TeX{}
+@cindex ep@TeX{}
+@cindex eup@TeX{}
+Further extends p@TeX{} and up@TeX{} with the e-@TeX{} extensions.
+More info: @url{https://ctan.org/pkg/eptex},
+@url{https://ctan.org/pkg/euptex}.
+
 @end table
 
 
@@ -2576,29 +2602,23 @@ supported) and a number of other subsidiary programs, described below.
 @pindex mpost
 @cindex MetaPost invocation
 
-@flindex mpman.ps
+@flindex mpman.pdf
 MetaPost (installed as @code{mpost}) reads a series of pictures
 specified in the MetaPost programming language, and outputs
 corresponding PostScript code.  This section merely describes the
 options available in the Web2c implementation.  For a complete
 description of the MetaPost language, see AT&T technical report
 CSTR-162, generally available in @file{@var{texmf}/doc/metapost/},
-where @var{texmf} is the root of @TeX{} directory structure.  See
-also:
-@itemize @bullet
-@item @url{http://cm.bell-labs.com/who/hobby/MetaPost.html} (the
-      MetaPost author's home page);
-@item @url{http://tug.org/metapost} (papers, packages, and
-      related information).
-@end itemize
+where @var{texmf} is the root of @TeX{} directory structure.
+The MetaPost home page: @url{https://tug.org/metapost}.
 
-@flindex mpgraph.ps
+@flindex mpgraph.pdf
 Also, a standard MetaPost package for drawing graphs is documented in
 AT&T technical report CSTR-164, available as the file @file{mpgraph.ps},
 generally stored alongside @file{mpman.ps}.
 
-MetaPost processes its command line and determines its memory dump (mem)
-file in a way exactly analogous to Metafont and @TeX{} (@pxref{tex
+MetaPost processes its command line and determines its memory dump
+(mem) file in a way analogous to Metafont and @TeX{} (@pxref{tex
 invocation,,@code{tex} invocation}, and @pxref{Memory dumps}).
 Synopses:
 
@@ -2659,7 +2679,7 @@ simply passes the @var{tex-input} through to
 must start with a @code{verbatimtex} block that gives the necessary
 @code{\documentclass} (or @code{\documentstyle})
 @code{\begin@{document@}} command.  You will also need to set the
-enviroment variable @code{TEX} to @samp{latex}.
+environment variable @code{TEX} to @samp{latex}.
 
 @var{tex-input} need not be specifically @TeX{} input; it could also be
 Troff.  In that case, you will need the @samp{-m pictures} Troff macro
@@ -2701,7 +2721,7 @@ need to be downloaded (@pxref{psfonts.map,,, dvips, Dvips}).
 
 @cindex PDF, and @code{.mps} files
 @cindex @code{.mps} files and PDF
-It is posible for pdf@TeX{} to read MetaPost output directly; this is
+It is possible for pdf@TeX{} to read MetaPost output directly; this is
 in contrast to general EPSF files, which have to be converted for use
 with PDF output.  The easiest way is to name the MetaPost output files
 with the @code{.mps} extension.  Then the @LaTeX{}
@@ -3060,7 +3080,7 @@ used 7, but this proved too restrictive for use by Web2c.
 @cindex identifier case
 These options specify the case of identifiers in the output of tangle.
 If @samp{-uppercase} (@samp{-lowercase}) is specified, tangle will
-convert all identfiers to uppercase (lowercase).  The default is
+convert all identifiers to uppercase (lowercase).  The default is
 @samp{-mixedcase}, which specifies that the case will not be changed.
 
 @item -underline
@@ -3458,8 +3478,8 @@ mentioned below are in the source files that read them;
 @cindex font file formats
 @cindex file formats for fonts
 
-(For another perspective on this, @pxref{Font concepts,,, dvips,
-Dvips}).
+For another perspective on this, @pxref{Font concepts,,, dvips,
+Dvips}.
 
 Font files come in several varieties, with suffixes like:
 @example
@@ -3769,7 +3789,7 @@ Show the characters' bitmaps using asterisks and spaces.
 Translate all commands in the GF file.
 @end table
 
-As an example of the output, here is the (abrdiged) translation of the
+As an example of the output, here is the (abridged) translation of the
 letter `K' in @samp{cmr10}, as rendered at 600@dmn{dpi} with the mode
 @samp{ljfour} from @file{modes.mf} (available from
 @url{ftp://ftp.tug.org/tex/modes.mf}), with both @samp{-mnemonics} and
@@ -4239,15 +4259,7 @@ distribution.  Alternatively, @code{ps2pk}, from
 @cindex PFA and PFB conversion
 @cindex PostScript Type 1 font conversion
 PostScript Type 1 font format conversion (i.e., between PFA and PFB
-formats): @url{http://www.lcdf.org/type}.
-
-@item
-@cindex scanned images of fonts
-@cindex typeface specimen sheets
-@pindex fontutils
-Scanned image conversion: the (aging) GNU font utilities convert type
-specimen images to Metafont, PostScript, etc.:
-@url{http://www.gnu.org/software/fontutils/}.
+formats): @url{https://www.lcdf.org/type}.
 
 @item
 @pindex autotrace
@@ -4262,7 +4274,7 @@ the two programs @code{mftrace}
 @item
 @cindex virtual font creation
 @pindex fontinst@r{, for creating virtual fonts}
-Virtual font creation: @file{@var{CTAN:}/fonts/utilities/fontinst}.
+Virtual font creation: @url{https://ctan.org/pkg/fontinst}.
 @end itemize
 
 
@@ -4285,7 +4297,7 @@ nature of a development request rather than a legal requirement.
 
 ML@TeX{}, pdf@TeX{}, Lua@TeX{}, Xe@TeX{}, and all the other derived
 engines have used various license terms for their additions to the
-base code, often the GPL (see @url{https://www.gnu.org/licenses/#GPL}
+base code, often the GPL (see @url{https://www.gnu.org/licenses/#GPL})
 or (for example) the file @file{web2c/pdftexdir/COPYINGv2}. They also
 mostly make use of additional libraries with their own (compatible)
 terms. Please see each program's sources.
@@ -4312,11 +4324,12 @@ Kpathsea: @xref{Top, Introduction,, kpathsea, Kpathsea}.
 Dvips and Afm2tfm: @xref{Top, Introduction,, dvips, Dvips}.
 
 @item 
-The @TeX{} Users Group: @url{http://www.tug.org}.  For an introduction
-to the @TeX{} system, see @url{http://tug.org/begin.html}.
+The @TeX{} Users Group: @url{https://tug.org}.  For an introduction
+to the @TeX{} system, see @url{https://tug.org/begin.html}.
 
 @item
-TUGboat: @url{http://tug.org/TUGboat}.
+TUGboat, the principal journal for the @TeX{} world:
+@url{https://tug.org/TUGboat}.
 
 @item
 @TeX{} and computer typesetting in general:@*

@@ -2732,12 +2732,7 @@ program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 if test x"${MISSING+set}" != xset; then
-  case $am_aux_dir in
-  *\ * | *\	*)
-    MISSING="\${SHELL} \"$am_aux_dir/missing\"" ;;
-  *)
-    MISSING="\${SHELL} $am_aux_dir/missing" ;;
-  esac
+  MISSING="\${SHELL} '$am_aux_dir/missing'"
 fi
 # Use eval to expand $SHELL
 if eval "$MISSING --is-lightweight"; then
@@ -13471,7 +13466,7 @@ ac_config_headers="$ac_config_headers config.h"
 
 
 
-$as_echo "#define TL_VERSION \"TeX Live 2021/dev\"" >>confdefs.h
+$as_echo "#define TL_VERSION \"TeX Live 2022/dev\"" >>confdefs.h
 
 
 # We don't use libpathsea, so add '-DNO_DEBUG' not to overload fopen.

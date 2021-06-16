@@ -1,3 +1,59 @@
+2021-06-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.57  Beta version.
+	* configure.ac: Bump version.
+	* main.c, styfile.c:
+	Accept multiple numbers of style files by option '-s'.
+	* main.c, sort.c, styfile.c, fwrite.c, {,ex}kana.h, {,ex}var.h:
+	Add a keyword "kana_head" to style file.
+	Treat "Circled Katakana" as kana.
+	* tests/upmendex.test, tests/uni[12].ist,
+	tests/rangetwo.{idx,ind,ist}:
+	Add new tests.
+	* upmendex.ja.txt:
+	Update document.
+	Ref. https://github.com/texjporg/tex-jp-build/issues/116
+
+2021-05-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.56  Beta version.
+	* configure.ac: Bump version.
+	* styfile.c:
+	Fix a bug of reading keywords "setpage_prefix", "setpage_suffix"
+	in style file.
+	More strictly check string length.
+
+2021-05-09  Karl Berry  <karl@freefriends.org>
+
+	* mendex.h (page.attr): use int, not char, since we do signed
+	comparison and aarch64 apparently treats char as unsigned.
+	(index.words): use unsigned char for consistency.
+	
+	Same fixes as for mendex; see mendexk/ChangeLog.
+	Report from Johannes Hielscher,
+	  https://tug.org/pipermail/tlbuild/2021q1/004873.html
+	and follow-up:
+	  https://tug.org/pipermail/tlbuild/2021q2/004911.html
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2021-03-21  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.55  Beta version.
+	* configure.ac: Bump version.
+	* fread.c: Fix a bug about page_precedence in style.
+	Thanks to Suzana Sagadin for the report.
+	* tests/pprec[012].ist, tests/pprecA.idx, tests/pprecA-[012].ind,
+	tests/upmendex.test, Makefile.am:
+	Add new tests.
+
+2021-02-17  Karl Berry  <karl@freefriends.org>
+
+	* COPYRIGHT,
+	* main.c: copyright 2021.
+
 2020-05-01  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* main.c, version.h, Makefile.{am.in}: Add bug report addresses

@@ -1,3 +1,17 @@
+2021-03-04  Karl Berry  <karl@freefriends.org>
+
+	* dvi2tty-src/dvi2tty.1: Fixes from Bjarni Ingi Gislason (and
+	further tweaks by me), bugs.debian.org/958728.
+
+2020-12-13  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvistuff.c: Avoid compiler warnings.
+
+2020-12-11  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvistuff.c: Allow output of Unicode strings on Windows console.
+	It works with "-Eu -q" option. (Windows only)
+
 2017-03-27  Karl Berry  <karl@freefriends.org>
 
 	* Makefile.am (AM_TESTS_ENVIRONMENT): use instead of TESTS_ENVIRONMENT.

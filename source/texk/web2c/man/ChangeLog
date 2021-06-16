@@ -1,3 +1,35 @@
+2021-06-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man: CWEB 4.4 release.
+
+2021-04-13  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man: CWEB 4.3 release.
+
+2021-03-07  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man: Document 'ctwill-twinx' a bit more.
+
+2021-03-04  Karl Berry  <karl@freefriends.org>
+
+	* gftodvi.man: font and spacing fixes from Debian.
+	Add tex-k as bug reporting address.
+
+2021-02-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man: CWEB 4.2 release.
+
+2021-02-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man: CWEB 4.1 release.
+
+2020-09-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man: Make manpages compatible with 'whatis'.
+
 2020-06-14  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill.man: Mention new macros 'pdfctwimac.tex'.

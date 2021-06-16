@@ -9,7 +9,7 @@
 
 #include "kp.h"
 
-char *styfile,*idxfile[256],*indfile,*dicfile,*logfile;
+char *styfile[64],*idxfile[256],*indfile,*dicfile,*logfile;
 
 /* default paths */
 #ifndef DEFAULT_INDEXSTYLES
@@ -22,7 +22,7 @@ KpathseaSupportInfo kp_ist,kp_dict;
 
 int main(int argc, char **argv)
 {
-	int i,j,cc=0,startpagenum=-1,ecount=0,chkopt=1;
+	int i,j,k,cc=0,startpagenum=-1,ecount=0,chkopt=1;
 	const char *envbuff;
 	char *p;
 
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 
 /*   check options   */
 
-	for (i=1,j=0;i<argc && j<256;i++) {
+	for (i=1,j=k=0;i<argc && j<256;i++) {
 		if ((argv[i][0]=='-')&&(strlen(argv[i])>=2)&&chkopt) {
 			switch (argv[i][1]) {
 			case 'c':
@@ -141,12 +141,17 @@ int main(int argc, char **argv)
 				break;
 
 			case 's':
+				if (k==64) {
+					fprintf (stderr, "Too many style files.\n");
+					exit(255);
+				}
 				if ((argv[i][2]=='\0')&&(i+1<argc)) {
-					styfile=xstrdup(argv[++i]);
+					styfile[k]=xstrdup(argv[++i]);
 				}
 				else {
-					styfile=xstrdup(&argv[i][2]);
+					styfile[k]=xstrdup(&argv[i][2]);
 				}
+				k++;
 				break;
 
 			case 'v':
@@ -188,7 +193,7 @@ int main(int argc, char **argv)
 
 			default:
 				fprintf(stderr,"mendex - Japanese index processor, %s (%s) (%s).\n",VERSION, get_enc_string(), TL_VERSION);
-				fprintf(stderr," Copyright 2009 ASCII MEDIA WORKS, 2017-2020 Japanese TeX Development Community\n");
+				fprintf(stderr," Copyright 2009 ASCII MEDIA WORKS, 2017-2021 Japanese TeX Development Community\n");
 				fprintf(stderr,"usage:\n");
 				fprintf(stderr,"%% mendex [-ilqrcgfEJSU] [-s sty] [-d dic] [-o ind] [-t log] [-p no] [-I enc] [--] [idx0 idx1 ...]\n");
 				fprintf(stderr,"options:\n");
@@ -228,10 +233,10 @@ int main(int argc, char **argv)
 
 	if (idxcount==0) idxcount=fsti=1;
 
-	if (styfile==NULL) {
+	if (styfile[0]==NULL) {
 		envbuff=kpse_var_value("INDEXDEFAULTSTYLE");
 		if (envbuff!=NULL) {
-			styfile=xstrdup(envbuff);
+			styfile[0]=xstrdup(envbuff);
 		}
 	}
 
@@ -265,8 +270,6 @@ int main(int argc, char **argv)
 		logfile=xstrdup("stderr");
 	}
 
-	if (styfile!=NULL) styread(styfile);
-
 	if (strcmp(argv[0],"makeindex")==0) {
 		verb_printf(efp,"This is Not `MAKEINDEX\', But `MENDEX\' %s (%s) (%s).\n",
 			    VERSION, get_enc_string(), TL_VERSION);
@@ -279,6 +282,10 @@ int main(int argc, char **argv)
 /*   init kanatable   */
 
 	initkanatable();
+
+	for (k=0;styfile[k]!=NULL;k++) {
+		styread(styfile[k]);
+	}
 
 /*   read dictionary   */
 

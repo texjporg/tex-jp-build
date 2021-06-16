@@ -45,16 +45,18 @@
 @z
 
 @x [1] Define my_name
-@d banner=='This is TANGLE, Version 4.5'
+@d banner=='This is TANGLE, Version 4.6'
 @y
 @d my_name=='tangle'
-@d banner=='This is TANGLE, Version 4.5'
+@d banner=='This is TANGLE, Version 4.6'
 @z
 
 @x [2] Eliminate the |end_of_TANGLE| label.
-@d end_of_TANGLE = 9999 {go here to wrap it up}
+calls the `|jump_out|' procedure, which goes to the label |end_of_TANGLE|.
 
+@d end_of_TANGLE = 9999 {go here to wrap it up}
 @y
+calls the `|jump_out|' procedure.
 @z
 @x
 label end_of_TANGLE; {go here to finish}
@@ -83,7 +85,7 @@ procedure initialize;
 @x
 @!max_bytes=45000; {|1/ww| times the number of bytes in identifiers,
   strings, and module names; must be less than 65536}
-@!max_toks=50000; {|1/zz| times the number of bytes in compressed \PASCAL\ code;
+@!max_toks=65000; {|1/zz| times the number of bytes in compressed \PASCAL\ code;
   must be less than 65536}
 @!max_names=4000; {number of identifiers, strings, module names;
   must be less than 10240}
@@ -193,6 +195,16 @@ rewrite (Pascal_file, pascal_name);
 @z
 
 @x [34] Fix `jump_out'.
+and jumps out of the program. This is the only non-local |goto| statement
+in \.{TANGLE}. It is used when no recovery from a particular error has
+been provided.
+
+Some \PASCAL\ compilers do not implement non-local |goto| statements.
+@^system dependencies@>
+In such cases the code that appears at label |end_of_TANGLE| should be
+copied into the |jump_out| procedure, followed by a call to a system procedure
+that terminates the program.
+
 @d fatal_error(#)==begin new_line; print(#); error; mark_fatal; jump_out;
   end
 
@@ -201,9 +213,11 @@ procedure jump_out;
 begin goto end_of_TANGLE;
 end;
 @y
+and jumps out of the program.
+
 @d jump_out==uexit(1)
 @d fatal_error(#)==begin new_line; write(stderr, #);
-     error; mark_fatal; uexit(1);
+     error; mark_fatal; jump_out;
   end
 @z
 
@@ -537,15 +551,15 @@ equiv[p]:=accumulator+@'10000000000; {name |p| now is defined to equal |accumula
 @z
 
 @x [173] Add parametric2 macros (macros that use [] to delimit arguments).
-  else @<If the next text is `|(#)==|', call |define_macro|
+  else @<If the next text is `\.{(\#)==}', call |define_macro|
     and |goto continue|@>;
 @y
-  else @<If the next text is `|(#)==|' or |[#]==|, call |define_macro|
+  else @<If the next text is `\.{(\#)==}' or `\.{[\#]==}', call |define_macro|
     and |goto continue|@>;
 @z
 
 @x [174] Add parametric2 macros (macros that use [] to delimit arguments).
-@ @<If the next text is `|(#)==|'...@>=
+@ @<If the next text is `\.{(\#)==}'...@>=
 if next_control="(" then
   begin next_control:=get_next;
   if next_control="#" then
@@ -564,7 +578,7 @@ if next_control="(" then
     end;
   end;
 @y
-@ @<If the next text is `|(#)==|'...@>=
+@ @<If the next text is `\.{(\#)==}'...@>=
 if next_control="(" then
   begin next_control:=get_next;
   if next_control="#" then

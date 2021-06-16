@@ -61,7 +61,9 @@
 % (2018-04-14) HK  pTeX p3.8.1 Bug fix for discontinuous KINSOKU table.
 % (2019-02-03) HK  pTeX p3.8.2 Change \inhibitglue, add \disinhibitglue.
 % (2019-10-14) HY  pTeX p3.8.3 Allow getting \kansujichar.
-%
+% (2021-02-18) HK  pTeX p3.9.0. Add \ifjfont and \iftfont (in 2020-02-06, by HY),
+%                  Bug fix for getting \kansujichar,
+%                  based on TeX 3.141592653
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -75,11 +77,11 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=3
-@d pTeX_minor_version=8
+@d pTeX_minor_version=9
 @d pTeX_revision==".90"
-@d pTeX_version_string=='-p3.8.90' {current \pTeX\ version}
+@d pTeX_version_string=='-p3.9.90' {current \pTeX\ version}
 @#
-@d pTeX_banner=='This is pTeX, Version 3.14159265',pTeX_version_string
+@d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
   {printed when \pTeX\ starts}
 @#
@@ -869,7 +871,7 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
 @d hskip=26 {horizontal glue ( \.{\\hskip}, \.{\\hfil}, etc.~)}
 @d vskip=27 {vertical glue ( \.{\\vskip}, \.{\\vfil}, etc.~)}
 @d mskip=28 {math glue ( \.{\\mskip} )}
-@d kern=29 {fixed space ( \.{\\kern})}
+@d kern=29 {fixed space ( \.{\\kern} )}
 @d mkern=30 {math kern ( \.{\\mkern} )}
 @d leader_ship=31 {use a box ( \.{\\shipout}, \.{\\leaders}, etc.~)}
 @d halign=32 {horizontal table alignment ( \.{\\halign} )}
@@ -880,7 +882,7 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
 @d hskip=remove_item+1 {horizontal glue ( \.{\\hskip}, \.{\\hfil}, etc.~)}
 @d vskip=hskip+1 {vertical glue ( \.{\\vskip}, \.{\\vfil}, etc.~)}
 @d mskip=vskip+1 {math glue ( \.{\\mskip} )}
-@d kern=mskip+1 {fixed space ( \.{\\kern})}
+@d kern=mskip+1 {fixed space ( \.{\\kern} )}
 @d mkern=kern+1 {math kern ( \.{\\mkern} )}
 @d leader_ship=mkern+1 {use a box ( \.{\\shipout}, \.{\\leaders}, etc.~)}
 @d halign=leader_ship+1 {horizontal table alignment ( \.{\\halign} )}
@@ -1346,15 +1348,6 @@ if n<math_code_base then
 @d holding_inserts_code=53 {do not remove insertion nodes from \.{\\box255}}
 @d error_context_lines_code=54 {maximum intermediate line pairs shown}
 @d tex_int_pars=55 {total number of \TeX's integer parameters}
-@#
-@d web2c_int_base=tex_int_pars {base for web2c's integer parameters}
-@d char_sub_def_min_code=web2c_int_base {smallest value in the charsubdef list}
-@d char_sub_def_max_code=web2c_int_base+1 {largest value in the charsubdef list}
-@d tracing_char_sub_def_code=web2c_int_base+2 {traces changes to a charsubdef def}
-@d web2c_int_pars=web2c_int_base+3 {total number of web2c's integer parameters}
-@#
-@d int_pars=web2c_int_pars {total number of integer parameters}
-@d count_base=int_base+int_pars {256 user \.{\\count} registers}
 @y
 @d cur_fam_code=44 {current family}
 @d cur_jfam_code=45 {current kanji family}
@@ -1373,11 +1366,7 @@ if n<math_code_base then
 @d text_baseline_shift_factor_code=57
 @d script_baseline_shift_factor_code=58
 @d scriptscript_baseline_shift_factor_code=59
-@d char_sub_def_min_code=60 {smallest value in the charsubdef list}
-@d char_sub_def_max_code=61 {largest value in the charsubdef list}
-@d tracing_char_sub_def_code=62 {traces changes to a charsubdef def}
-@d int_pars=63 {total number of integer parameters}
-@d count_base=int_base+int_pars {256 user \.{\\count} registers}
+@d tex_int_pars=60 {total number of \TeX's integer parameters}
 @z
 
 @x [17.236] l.5167 - pTeX: cur_jfam, |jchr_widow_penalty|
@@ -3553,10 +3542,20 @@ endcases;
 @z
 
 @x [33.647] l.13515 - pTeX: cur_kanji_skip, cur_xkanji_skip, last_disp
-@< Glob...@>=
+@ If the global variable |adjust_tail| is non-null, the |hpack| routine
+also removes all occurrences of |ins_node|, |mark_node|, and |adjust_node|
+items and appends the resulting material onto the list that ends at
+location |adjust_tail|.
+
+@<Glob...@>=
 @!adjust_tail:pointer; {tail of adjustment list}
 @y
-@< Glob...@>=
+@ If the global variable |adjust_tail| is non-null, the |hpack| routine
+also removes all occurrences of |ins_node|, |mark_node|, and |adjust_node|
+items and appends the resulting material onto the list that ends at
+location |adjust_tail|.
+
+@<Glob...@>=
 @!adjust_tail:pointer; {tail of adjustment list}
 @!last_disp:scaled; {displacement at end of list}
 @!cur_kanji_skip:pointer;
@@ -3950,7 +3949,7 @@ else  begin if (qo(cur_c)>=font_bc[cur_f])and(qo(cur_c)<=font_ec[cur_f]) then
   else cur_i:=null_character;
   if not(char_exists(cur_i)) then
     begin char_warning(cur_f,qo(cur_c));
-    math_type(a):=empty;
+    math_type(a):=empty; cur_i:=null_character;
     end;
   end;
 @y
@@ -3961,7 +3960,7 @@ else  begin if font_dir[cur_f]<>dir_default then
   else cur_i:=null_character;
   if not(char_exists(cur_i)) then
     begin char_warning(cur_f,qo(cur_c));
-    math_type(a):=empty;
+    math_type(a):=empty; cur_i:=null_character;
     end;
   end;
 @z
@@ -4730,7 +4729,7 @@ loop@+  begin if is_char_node(s) then
       end else c:=qo(character(s));
     end
   else if type(s)=disp_node then goto continue
-  else if (type(s)=penalty_node)and(not subtype(s)=normal) then goto continue
+  else if (type(s)=penalty_node)and(subtype(s)<>normal) then goto continue
 @z
 
 @x [40.899] l.18248 - pTeX: disp_node
@@ -6304,13 +6303,12 @@ def_code: begin
     print_int(n);
     if m=0 then
       begin help1("I'm going to use 0 instead of that illegal code value.");@/
-      error;
+      error; cur_val:=0;
       end
     else
       begin help1("I'm going to use 16 instead of that illegal code value.");@/
-      error;
+      error; cur_val:=16;
       end;
-    cur_val:=m;
   end;
   if p<math_code_base then define(p,data,cur_val)
   else if p<del_code_base then define(p,data,hi(cur_val))
@@ -6383,18 +6381,18 @@ if (t<cs_token_flag+single_base)and(not check_kanji(t)) then
 @z
 
 @x [49.1291] l.24467 - pTeX: show_mode
-@d show_lists=3 { \.{\\showlists} }
+@d show_lists_code=3 { \.{\\showlists} }
 @y
-@d show_lists=3 { \.{\\showlists} }
+@d show_lists_code=3 { \.{\\showlists} }
 @d show_mode=4 { \.{\\showmode} }
 @z
 
 @x [49.1291] l.24476 - pTeX: show_mode
-primitive("showlists",xray,show_lists);
-@!@:show_lists_}{\.{\\showlists} primitive@>
+primitive("showlists",xray,show_lists_code);
+@!@:show_lists_code_}{\.{\\showlists} primitive@>
 @y
-primitive("showlists",xray,show_lists);
-@!@:show_lists_}{\.{\\showlists} primitive@>
+primitive("showlists",xray,show_lists_code);
+@!@:show_lists_code_}{\.{\\showlists} primitive@>
 primitive("showmode",xray,show_mode);
 @!@:show_mode_}{\.{\\showmode} primitive@>
 @z

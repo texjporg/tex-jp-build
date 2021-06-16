@@ -28,7 +28,7 @@ cd source && mkdir -p Work && cd Work
   --enable-euptex \
   --enable-pmp \
   --enable-upmp \
-  --disable-web-progs \
+  --enable-web-progs \
   --disable-tex \
   --disable-mf \
   --disable-mflua \
@@ -36,8 +36,9 @@ cd source && mkdir -p Work && cd Work
   --disable-mp \
   --disable-pdftex \
   --disable-luatex \
-  --disable-luatex53 \
   --disable-luajittex \
+  --disable-luahbtex \
+  --disable-luajithbtex \
   --disable-xetex \
   --disable-aleph \
   --without-mf-x-toolkit \

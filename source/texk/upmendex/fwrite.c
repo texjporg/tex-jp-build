@@ -154,11 +154,12 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 	char lbuff[BUFFERLEN],obuff[BUFFERLEN];
 	UChar datama[256],initial[INITIALLENGTH],initial_prev[INITIALLENGTH];
 	int chset,chset_prev;
-	FILE *fp;
+	FILE *fp=NULL;
 	UErrorCode perr;
 
-	if (filename && kpse_out_name_ok(filename)) fp=fopen(filename,"wb");
-	else {
+	if (filename && kpse_out_name_ok(filename))
+		fp=fopen(filename,"wb");
+	if (fp == NULL) {
 		fp=stdout;
 #ifdef WIN32
 		setmode(fileno(fp), _O_BINARY);
@@ -402,7 +403,7 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 	}
 	fputs(postamble,fp);
 
-	if (filename) fclose(fp);
+	if (fp!=stdout) fclose(fp);
 }
 
 /*   write page block   */
@@ -665,23 +666,27 @@ static void index_normalize(UChar *istr, UChar *ini, int *chset)
 		ini[0]=kanatable[ch-KATATOP];
 		return;
 	}
-	if (is_extkana(ch)) {
+	if (is_extkana(ch)) {      /* ㇰㇱㇲㇳㇴ .. ㇻㇼㇽㇾㇿ */
 		ini[0]=extkanatable[ch-EXKANATOP];
 		return;
 	}
-	else if (ch==0x309F) { ini[0]=0x30E8; return; }  /* HIRAGANA YORI -> ヨ */
-	else if (ch==0x30FF) { ini[0]=0x30B3; return; }  /* KATAKANA KOTO -> コ */
+	if (is_circkana(ch)) {     /* ㋐㋑㋒㋓㋔ .. ㋻㋼㋽㋾ */
+		ini[0]=circkanatable[ch-CRKANATOP];
+		return;
+	}
+	else if (ch==0x309F) { ini[0]=0x3088; return; }  /* HIRAGANA YORI -> よ */
+	else if (ch==0x30FF) { ini[0]=0x3053; return; }  /* KATAKANA KOTO -> こ */
 	else if (is_jpn_kana(istr)==2) {
 		c32=U16_GET_SUPPLEMENTARY(istr[0],istr[1]);
 		switch (c32) {
 			case 0x1B150: case 0x1B164:
-				ini[0]=0x30F0; break;  /* ヰ */
+				ini[0]=0x3090; break;  /* ゐ */
 			case 0x1B151: case 0x1B165:
-				ini[0]=0x30F1; break;  /* ヱ */
+				ini[0]=0x3091; break;  /* ゑ */
 			case 0x1B152: case 0x1B166:
-				ini[0]=0x30F2; break;  /* ヲ */
+				ini[0]=0x3092; break;  /* を */
 			case 0x1B167: default:
-				ini[0]=0x30F3; break;  /* ン */
+				ini[0]=0x3093; break;  /* ん */
 		}
 		return;
 	}

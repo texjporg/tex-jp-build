@@ -3,9 +3,9 @@
 % Load plain if necessary, i.e., if running under initex.
 \expandafter\ifx\csname fmtname\endcsname\relax\input plain\fi
 %
-\def\texinfoversion{2020-05-22.11}
+\def\texinfoversion{2021-02-20.11}
 %
-% Copyright 1985, 1986, 1988, 1990-2020 Free Software Foundation, Inc.
+% Copyright 1985, 1986, 1988, 1990-2021 Free Software Foundation, Inc.
 %
 % This texinfo.tex file is free software: you can redistribute it and/or
 % modify it under the terms of the GNU General Public License as
@@ -572,10 +572,9 @@
   \fi
 }
 
-% @end foo executes the definition of \Efoo.
-% But first, it executes a specialized version of \checkenv
-%
-\parseargdef\end{%
+
+% @end foo calls \checkenv and executes the definition of \Efoo.
+\parseargdef\end{
   \if 1\csname iscond.#1\endcsname
   \else
     % The general wording of \badenverr may not be ideal.
@@ -2673,8 +2672,6 @@ end
 \definetextfontsizexi
 
 
-\message{markup,}
-
 % Check if we are currently using a typewriter font.  Since all the
 % Computer Modern typewriter fonts have zero interword stretch (and
 % shrink), and it is reasonable to expect all typewriter fonts to have
@@ -2682,67 +2679,13 @@ end
 %
 \def\ifmonospace{\ifdim\fontdimen3\font=0pt }
 
-% Markup style infrastructure.  \defmarkupstylesetup\INITMACRO will
-% define and register \INITMACRO to be called on markup style changes.
-% \INITMACRO can check \currentmarkupstyle for the innermost
-% style.
-
-\let\currentmarkupstyle\empty
-
-\def\setupmarkupstyle#1{%
-  \def\currentmarkupstyle{#1}%
-  \markupstylesetup
-}
-
-\let\markupstylesetup\empty
-
-\def\defmarkupstylesetup#1{%
-  \expandafter\def\expandafter\markupstylesetup
-    \expandafter{\markupstylesetup #1}%
-  \def#1%
-}
-
-% Markup style setup for left and right quotes.
-\defmarkupstylesetup\markupsetuplq{%
-  \expandafter\let\expandafter \temp
-    \csname markupsetuplq\currentmarkupstyle\endcsname
-  \ifx\temp\relax \markupsetuplqdefault \else \temp \fi
-}
-
-\defmarkupstylesetup\markupsetuprq{%
-  \expandafter\let\expandafter \temp
-    \csname markupsetuprq\currentmarkupstyle\endcsname
-  \ifx\temp\relax \markupsetuprqdefault \else \temp \fi
-}
-
 {
 \catcode`\'=\active
 \catcode`\`=\active
 
-\gdef\markupsetuplqdefault{\let`\lq}
-\gdef\markupsetuprqdefault{\let'\rq}
-
-\gdef\markupsetcodequoteleft{\let`\codequoteleft}
-\gdef\markupsetcodequoteright{\let'\codequoteright}
+\gdef\setcodequotes{\let`\codequoteleft \let'\codequoteright}
+\gdef\setregularquotes{\let`\lq \let'\rq}
 }
-
-\let\markupsetuplqcode \markupsetcodequoteleft
-\let\markupsetuprqcode \markupsetcodequoteright
-%
-\let\markupsetuplqexample \markupsetcodequoteleft
-\let\markupsetuprqexample \markupsetcodequoteright
-%
-\let\markupsetuplqkbd     \markupsetcodequoteleft
-\let\markupsetuprqkbd     \markupsetcodequoteright
-%
-\let\markupsetuplqsamp \markupsetcodequoteleft
-\let\markupsetuprqsamp \markupsetcodequoteright
-%
-\let\markupsetuplqverb \markupsetcodequoteleft
-\let\markupsetuprqverb \markupsetcodequoteright
-%
-\let\markupsetuplqverbatim \markupsetcodequoteleft
-\let\markupsetuprqverbatim \markupsetcodequoteright
 
 % Allow an option to not use regular directed right quote/apostrophe
 % (char 0x27), but instead the undirected quote from cmtt (char 0x0d).
@@ -2906,7 +2849,7 @@ end
 }
 
 % @samp.
-\def\samp#1{{\setupmarkupstyle{samp}\lq\tclose{#1}\rq\null}}
+\def\samp#1{{\setcodequotes\lq\tclose{#1}\rq\null}}
 
 % @indicateurl is \samp, that is, with quotes.
 \let\indicateurl=\samp
@@ -2949,8 +2892,7 @@ end
   \global\let'=\rq \global\let`=\lq  % default definitions
   %
   \global\def\code{\begingroup
-    \setupmarkupstyle{code}%
-    % The following should really be moved into \setupmarkupstyle handlers.
+    \setcodequotes
     \catcode\dashChar=\active  \catcode\underChar=\active
     \ifallowcodebreaks
      \let-\codedash
@@ -3038,10 +2980,18 @@ end
 % arg (if given), and not the url (which is then just the link target).
 \newif\ifurefurlonlylink
 
+% The default \pretolerance setting stops the penalty inserted in
+% \urefallowbreak being a discouragement to line breaking.  Set it to
+% a negative value for this paragraph only.  Hopefully this does not
+% conflict with redefinitions of \par done elsewhere.
+\def\nopretolerance{%
+\pretolerance=-1
+\def\par{\endgraf\pretolerance=100 \let\par\endgraf}%
+}
+
 % The main macro is \urefbreak, which allows breaking at expected
-% places within the url.  (There used to be another version, which
-% didn't support automatic breaking.)
-\def\urefbreak{\begingroup \urefcatcodes \dourefbreak}
+% places within the url.
+\def\urefbreak{\nopretolerance \begingroup \urefcatcodes \dourefbreak}
 \let\uref=\urefbreak
 %
 \def\dourefbreak#1{\urefbreakfinish #1,,,\finish}
@@ -3096,7 +3046,7 @@ end
   \urefcatcodes
   %
   \global\def\urefcode{\begingroup
-    \setupmarkupstyle{code}%
+    \setcodequotes
     \urefcatcodes
     \let&\urefcodeamp
     \let.\urefcodedot
@@ -3152,14 +3102,14 @@ end
 
 % Allow a ragged right output to aid breaking long URL's.  There can
 % be a break at the \allowbreak with no extra glue (if the existing stretch in
-% the line is sufficient), a break at the \penalty100 with extra glue added
+% the line is sufficient), a break at the \penalty with extra glue added
 % at the end of the line, or no break at all here.
 %   Changing the value of the penalty and/or the amount of stretch affects how
 % preferable one choice is over the other.
 \def\urefallowbreak{%
-  \allowbreak
+  \penalty0\relax
   \hskip 0pt plus 2 em\relax
-  \penalty300
+  \penalty1000\relax
   \hskip 0pt plus -2 em\relax
 }
 
@@ -3217,8 +3167,8 @@ end
 \def\kbdsub#1#2#3\par{%
   \def\one{#1}\def\three{#3}\def\threex{??}%
   \ifx\one\xkey\ifx\threex\three \key{#2}%
-  \else{\tclose{\kbdfont\setupmarkupstyle{kbd}\look}}\fi
-  \else{\tclose{\kbdfont\setupmarkupstyle{kbd}\look}}\fi
+  \else{\tclose{\kbdfont\setcodequotes\look}}\fi
+  \else{\tclose{\kbdfont\setcodequotes\look}}\fi
 }
 
 % definition of @key that produces a lozenge.  Doesn't adjust to text size.
@@ -3235,7 +3185,7 @@ end
 % monospace, don't change it; that way, we respect @kbdinputstyle.  But
 % if it isn't monospace, then use \tt.
 %
-\def\key#1{{\setupmarkupstyle{key}%
+\def\key#1{{\setregularquotes
   \nohyphenation
   \ifmonospace\else\tt\fi
   #1}\null}
@@ -3355,6 +3305,29 @@ end
 %
 \def\sup{\ifmmode \expandafter\ptexsp \else \expandafter\finishsup\fi}
 \def\finishsup#1{$\ptexsp{\hbox{\switchtolllsize #1}}$}%
+
+% provide this command from LaTeX as it is very common
+\def\frac#1#2{{{#1}\over{#2}}}
+
+% @displaymath.
+% \globaldefs is needed to recognize the end lines in \tex and
+% \end tex.  Set \thisenv as @end displaymath is seen before @end tex.
+{\obeylines
+\globaldefs=1
+\envdef\displaymath{%
+\tex%
+\def\thisenv{\displaymath}%
+\begingroup\let\end\displaymathend%
+$$%
+}
+
+\def\displaymathend{$$\endgroup\end}%
+
+\def\Edisplaymath{%
+\def\thisenv{\tex}%
+\end tex
+}}
+
 
 % @inlinefmt{FMTNAME,PROCESSED-TEXT} and @inlineraw{FMTNAME,RAW-TEXT}.
 % Ignore unless FMTNAME == tex; then it is like @iftex and @tex,
@@ -4922,7 +4895,7 @@ end
 
 % like the previous two, but they put @code around the argument.
 \def\docodeindex#1{\edef\indexname{#1}\parsearg\docodeindexxxx}
-\def\docodeindexxxx #1{\doind{\indexname}{\code{#1}}}
+\def\docodeindexxxx #1{\docind{\indexname}{#1}}
 
 
 % Used for the aux, toc and index files to prevent expansion of Texinfo
@@ -5294,6 +5267,20 @@ end
   \fi
 }
 
+% Same as \doind, but for code indices
+\def\docind#1#2{%
+  \iflinks
+  {%
+    %
+    \requireopenindexfile{#1}%
+    \edef\writeto{\csname#1indfile\endcsname}%
+    %
+    \def\indextext{#2}%
+    \safewhatsit\docindwrite
+  }%
+  \fi
+}
+
 % Check if an index file has been opened, and if not, open it.
 \def\requireopenindexfile#1{%
 \ifnum\csname #1indfile\endcsname=0
@@ -5360,6 +5347,9 @@ end
     % trim spaces.
     \edef\trimmed{\segment}%
     \edef\trimmed{\expandafter\eatspaces\expandafter{\trimmed}}%
+    \ifincodeindex
+      \edef\trimmed{\noexpand\code{\trimmed}}%
+    \fi
     %
     \xdef\bracedtext{\bracedtext{\trimmed}}%
     %
@@ -5425,7 +5415,12 @@ end
 
 % Write the entry in \indextext to the index file.
 %
-\def\doindwrite{%
+
+\newif\ifincodeindex
+\def\doindwrite{\incodeindexfalse\doindwritex}
+\def\docindwrite{\incodeindextrue\doindwritex}
+
+\def\doindwritex{%
   \maybemarginindex
   %
   \atdummies
@@ -5645,7 +5640,11 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \else
     \begindoublecolumns
     \catcode`\\=0\relax
-    \catcode`\@=12\relax
+    %
+    % Make @ an escape character to give macros a chance to work.  This
+    % should work because we (hopefully) don't otherwise use @ in index files.
+    %\catcode`\@=12\relax
+    \catcode`\@=0\relax
     \input \jobname.\indexname s
     \enddoublecolumns
   \fi
@@ -7091,7 +7090,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 % But \@ or @@ will get a plain @ character.
 
 \envdef\tex{%
-  \setupmarkupstyle{tex}%
+  \setregularquotes
   \catcode `\\=0 \catcode `\{=1 \catcode `\}=2
   \catcode `\$=3 \catcode `\&=4 \catcode `\#=6
   \catcode `\^=7 \catcode `\_=8 \catcode `\~=\active \let~=\tie
@@ -7317,7 +7316,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 % If you want all examples etc. small: @set dispenvsize small.
 % If you want even small examples the full size: @set dispenvsize nosmall.
 % This affects the following displayed environments:
-%    @example, @display, @format, @lisp
+%    @example, @display, @format, @lisp, @verbatim
 %
 \def\smallword{small}
 \def\nosmallword{nosmall}
@@ -7363,9 +7362,9 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 %
 \maketwodispenvdef{lisp}{example}{%
   \nonfillstart
-  \tt\setupmarkupstyle{example}%
+  \tt\setcodequotes
   \let\kbdfont = \kbdexamplefont % Allow @kbd to do something special.
-  \gobble % eat return
+  \parsearg\gobble
 }
 % @display/@smalldisplay: same as @lisp except keep current font.
 %
@@ -7523,7 +7522,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 \def\setupverb{%
   \tt  % easiest (and conventionally used) font for verbatim
   \def\par{\leavevmode\endgraf}%
-  \setupmarkupstyle{verb}%
+  \setcodequotes
   \tabeightspaces
   % Respect line breaks,
   % print special symbols as themselves, and
@@ -7562,9 +7561,9 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \let\nonarrowing = t%
   \nonfillstart
   \tt % easiest (and conventionally used) font for verbatim
-  \def\par{\egroup\box\verbbox\endgraf\starttabbox}%
+  \def\par{\egroup\leavevmode\box\verbbox\endgraf\starttabbox}%
   \tabexpand
-  \setupmarkupstyle{verbatim}%
+  \setcodequotes
   % Respect line breaks,
   % print special symbols as themselves, and
   % make each space count.
@@ -7613,7 +7612,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 \endgroup
 %
 \envdef\verbatim{%
-    \setupverbatim\doverbatim
+    \setnormaldispenv\setupverbatim\doverbatim
 }
 \let\Everbatim = \afterenvbreak
 
@@ -7983,7 +7982,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   % leave the code in, but it's strange for @var to lead to typewriter.
   % Nowadays we recommend @code, since the difference between a ttsl hyphen
   % and a tt hyphen is pretty tiny.  @code also disables ?` !`.
-  \def\var##1{{\setupmarkupstyle{var}\ttslanted{##1}}}%
+  \def\var##1{{\setregularquotes\ttslanted{##1}}}%
   #1%
   \sl\hyphenchar\font=45
 }
@@ -8092,11 +8091,18 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   }
 \fi
 
+\let\E=\expandafter
+
 % Used at the time of macro expansion.
 % Argument is macro body with arguments substituted
 \def\scanmacro#1{%
   \newlinechar`\^^M
-  \def\xeatspaces{\eatspaces}%
+  % expand the expansion of \eatleadingcr twice to maybe remove a leading
+  % newline (and \else and \fi tokens), then call \eatspaces on the result.
+  \def\xeatspaces##1{%
+    \E\E\E\E\E\E\E\eatspaces\E\E\E\E\E\E\E{\eatleadingcr##1%
+  }}%
+  \def\xempty##1{}%
   %
   % Process the macro body under the current catcode regime.
   \scantokens{#1@comment}%
@@ -8148,6 +8154,11 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 \def\unbrace#1{#1}
 \unbrace{\gdef\trim@@@ #1 } #2@{#1}
 }
+
+{\catcode`\^^M=\other%
+\gdef\eatleadingcr#1{\if\noexpand#1\noexpand^^M\else\E#1\fi}}%
+% Warning: this won't work for a delimited argument
+% or for an empty argument
 
 % Trim a single trailing ^^M off a string.
 {\catcode`\^^M=\other \catcode`\Q=3%
@@ -8315,6 +8326,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \let\hash\relax
   % \hash is redefined to `#' later to get it into definitions
   \let\xeatspaces\relax
+  \let\xempty\relax
   \parsemargdefxxx#1,;,%
   \ifnum\paramno<10\relax\else
     \paramno0\relax
@@ -8326,9 +8338,11 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \else \let\next=\parsemargdefxxx
     \advance\paramno by 1
     \expandafter\edef\csname macarg.\eatspaces{#1}\endcsname
-        {\xeatspaces{\hash\the\paramno}}%
+        {\xeatspaces{\hash\the\paramno\noexpand\xempty{}}}%
     \edef\paramlist{\paramlist\hash\the\paramno,}%
   \fi\next}
+% the \xempty{} is to give \eatleadingcr an argument in the case of an
+% empty macro argument.
 
 % \parsemacbody, \parsermacbody
 %
@@ -8917,7 +8931,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
       \else
         \ifhavexrefs
           % We (should) know the real title if we have the xref values.
-          \def\printedrefname{\refx{#1-title}{}}%
+          \def\printedrefname{\refx{#1-title}}%
         \else
           % Otherwise just copy the Info node name.
           \def\printedrefname{\ignorespaces #1}%
@@ -9011,7 +9025,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
     % If the user specified the print name (third arg) to the ref,
     % print it instead of our usual "Figure 1.2".
     \ifdim\wd\printedrefnamebox = 0pt
-      \refx{#1-snt}{}%
+      \refx{#1-snt}%
     \else
       \printedrefname
     \fi
@@ -9046,28 +9060,30 @@ might help (with 'rm \jobname.?? \jobname.??s')%
     \else
       % Reference within this manual.
       %
-      % Only output a following space if the -snt ref is nonempty; for
-      % @unnumbered and @anchor, it won't be.
-      \setbox2 = \hbox{\ignorespaces \refx{#1-snt}{}}%
+      % Only output a following space if the -snt ref is nonempty, as the ref
+      % will be empty for @unnumbered and @anchor.
+      \setbox2 = \hbox{\ignorespaces \refx{#1-snt}}%
       \ifdim \wd2 > 0pt \refx{#1-snt}\space\fi
       %
       % output the `[mynode]' via the macro below so it can be overridden.
       \xrefprintnodename\printedrefname
       %
-      % But we always want a comma and a space:
-      ,\space
-      %
-      % output the `page 3'.
-      \turnoffactive \putwordpage\tie\refx{#1-pg}{}%
-      % Add a , if xref followed by a space
-      \if\space\noexpand\tokenafterxref ,%
-      \else\ifx\	\tokenafterxref ,% @TAB
-      \else\ifx\*\tokenafterxref ,%   @*
-      \else\ifx\ \tokenafterxref ,%   @SPACE
-      \else\ifx\
-                \tokenafterxref ,%    @NL
-      \else\ifx\tie\tokenafterxref ,% @tie
-      \fi\fi\fi\fi\fi\fi
+      \expandafter\ifx\csname SETtxiomitxrefpg\endcsname\relax
+        % But we always want a comma and a space:
+        ,\space
+        %
+        % output the `page 3'.
+        \turnoffactive \putwordpage\tie\refx{#1-pg}%
+        % Add a , if xref followed by a space
+        \if\space\noexpand\tokenafterxref ,%
+        \else\ifx\	\tokenafterxref ,% @TAB
+        \else\ifx\*\tokenafterxref ,%   @*
+        \else\ifx\ \tokenafterxref ,%   @SPACE
+        \else\ifx\
+                  \tokenafterxref ,%    @NL
+        \else\ifx\tie\tokenafterxref ,% @tie
+        \fi\fi\fi\fi\fi\fi
+      \fi
     \fi\fi
   \fi
   \endlink
@@ -9134,9 +9150,8 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \fi\fi\fi
 }
 
-% \refx{NAME}{SUFFIX} - reference a cross-reference string named NAME.  SUFFIX
-% is output afterwards if non-empty.
-\def\refx#1#2{%
+% \refx{NAME} - reference a cross-reference string named NAME.
+\def\refx#1{%
   \requireauxfile
   {%
     \indexnofonts
@@ -9163,7 +9178,6 @@ might help (with 'rm \jobname.?? \jobname.??s')%
     % It's defined, so just use it.
     \thisrefX
   \fi
-  #2% Output the suffix in any case.
 }
 
 % This is the macro invoked by entries in the aux file.  Define a control
@@ -9273,10 +9287,10 @@ might help (with 'rm \jobname.?? \jobname.??s')%
   \catcode`\[=\other
   \catcode`\]=\other
   \catcode`\"=\other
-  \catcode`\_=\other
-  \catcode`\|=\other
-  \catcode`\<=\other
-  \catcode`\>=\other
+  \catcode`\_=\active
+  \catcode`\|=\active
+  \catcode`\<=\active
+  \catcode`\>=\active
   \catcode`\$=\other
   \catcode`\#=\other
   \catcode`\&=\other
@@ -9497,7 +9511,7 @@ might help (with 'rm \jobname.?? \jobname.??s')%
 \def\imagexxx#1,#2,#3,#4,#5,#6\finish{\begingroup
   \catcode`\^^M = 5     % in case we're inside an example
   \normalturnoffactive  % allow _ et al. in names
-  \def\xprocessmacroarg{\eatspaces}% in case we are being used via a macro
+  \makevalueexpandable
   % If the image is by itself, center it.
   \ifvmode
     \imagevmodetrue
@@ -11433,6 +11447,18 @@ directory should work if nowhere else does.}
   \globaldefs = 0
 }}
 
+\def\bsixpaper{{\globaldefs = 1
+  \afourpaper
+  \internalpagesizes{140mm}{100mm}%
+                    {-6.35mm}{-12.7mm}%
+                    {\bindingoffset}{14pt}%
+                    {176mm}{125mm}%
+  \let\SETdispenvsize=\smallword
+  \lispnarrowing = 0.2in
+  \globaldefs = 0
+}}
+
+
 % @pagesizes TEXTHEIGHT[,TEXTWIDTH]
 % Perhaps we should allow setting the margins, \topskip, \parskip,
 % and/or leading, also. Or perhaps we should compute them somehow.
@@ -11446,12 +11472,12 @@ directory should work if nowhere else does.}
   \setleading{\textleading}%
   %
   \dimen0 = #1\relax
-  \advance\dimen0 by \voffset
-  \advance\dimen0 by 1in % reference point for DVI is 1 inch from top of page
+  \advance\dimen0 by 2.5in % default 1in margin above heading line
+                           % and 1.5in to include heading, footing and
+                           % bottom margin
   %
   \dimen2 = \hsize
-  \advance\dimen2 by \normaloffset
-  \advance\dimen2 by 1in % reference point is 1 inch from left edge of page
+  \advance\dimen2 by 2in % default to 1 inch margin on each side
   %
   \internalpagesizes{#1}{\hsize}%
                     {\voffset}{\normaloffset}%
@@ -11538,7 +11564,7 @@ directory should work if nowhere else does.}
   \let> = \activegtr
   \let~ = \activetilde
   \let^ = \activehat
-  \markupsetuplqdefault \markupsetuprqdefault
+  \setregularquotes
   \let\b = \strong
   \let\i = \smartitalic
   % in principle, all other definitions in \tex have to be undone too.
@@ -11597,8 +11623,7 @@ directory should work if nowhere else does.}
    @let|=@normalverticalbar
    @let~=@normaltilde
    @let\=@ttbackslash
-   @markupsetuplqdefault
-   @markupsetuprqdefault
+   @setregularquotes
    @unsepspaces
  }
 }
@@ -11691,8 +11716,7 @@ directory should work if nowhere else does.}
 @c Do this last of all since we use ` in the previous @catcode assignments.
 @catcode`@'=@active
 @catcode`@`=@active
-@markupsetuplqdefault
-@markupsetuprqdefault
+@setregularquotes
 
 @c Local variables:
 @c eval: (add-hook 'before-save-hook 'time-stamp)
