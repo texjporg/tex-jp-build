@@ -877,8 +877,7 @@ begin str_toks:=str_toks_cat(b,0); end;
 @d pdf_convert_codes        = pdf_first_expand_code+8 {end of \pdfTeX-like command codes}
 @d Uchar_convert_code       = pdf_convert_codes   {command code for \.{\\Uchar}}
 @d Ucharcat_convert_code    = pdf_convert_codes+1 {command code for \.{\\Ucharcat}}
-@d toucs_convert_code       = pdf_convert_codes+2 {command code for \.{\\toucs}}
-@d eptex_convert_codes      = pdf_convert_codes+3 {end of \epTeX's command codes}
+@d eptex_convert_codes      = pdf_convert_codes+2 {end of \epTeX's command codes}
 @d job_name_code=eptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -907,7 +906,6 @@ primitive("jobname",convert,job_name_code);@/
   normal_deviate_code:    print_esc("pdfnormaldeviate");
   Uchar_convert_code:     print_esc("Uchar");
   Ucharcat_convert_code:  print_esc("Ucharcat");
-  toucs_convert_code:     print_esc("toucs");
 @z
 
 @x
@@ -1124,7 +1122,6 @@ Ucharcat_convert_code:
     end else cat:=cur_val;
     cur_val:=i;
     end;
-toucs_convert_code:      scan_char_num;
 @z
 
 @x
@@ -1138,8 +1135,6 @@ Uchar_convert_code:
 if is_char_ascii(cur_val) then print_char(cur_val) else print_kanji(cur_val);
 Ucharcat_convert_code:
 if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
-toucs_convert_code:
-if is_char_ascii(cur_val) then print_int(cur_val) else print_int(toUCS(cur_val));
 @z
 
 @x e-pTeX: if primitives - leave room for \ifincsname
@@ -1387,8 +1382,6 @@ primitive("Uchar",convert,Uchar_convert_code);@/
 @!@:Uchar_}{\.{\\Uchar} primitive@>
 primitive("Ucharcat",convert,Ucharcat_convert_code);@/
 @!@:Ucharcat_}{\.{\\Ucharcat} primitive@>
-primitive("toucs",convert,toucs_convert_code);@/
-@!@:toucs_}{\.{\\toucs} primitive@>
 @z
 
 @x

@@ -77,9 +77,9 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=3
-@d pTeX_minor_version=9
+@d pTeX_minor_version=10
 @d pTeX_revision==".0"
-@d pTeX_version_string=='-p3.9.0' {current \pTeX\ version}
+@d pTeX_version_string=='-p3.10.0' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -2354,8 +2354,10 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d sjis_code=7 {command code for \.{\\sjis}}
 @d jis_code=8 {command code for \.{\\jis}}
 @d kuten_code=9 {command code for \.{\\kuten}}
-@d ptex_revision_code=10 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=11 {end of \pTeX's command codes}
+@d ucs_code=10 {command code for \.{\\ucs}}
+@d toucs_code=11 {command code for \.{\\ucs}}
+@d ptex_revision_code=12 {command code for \.{\\ptexrevision}}
+@d ptex_convert_codes=13 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -2375,6 +2377,10 @@ primitive("jis",convert,jis_code);
 @!@:jis_}{\.{\\jis} primitive@>
 primitive("kuten",convert,kuten_code);
 @!@:kuten_}{\.{\\kuten} primitive@>
+primitive("ucs",convert,ucs_code);
+@!@:ucs_}{\.{\\ucs} primitive@>
+primitive("toucs",convert,toucs_code);
+@!@:toucs_}{\.{\\toucs} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
@@ -2388,6 +2394,8 @@ primitive("ptexrevision",convert,ptex_revision_code);
   sjis_code:print_esc("sjis");
   jis_code:print_esc("jis");
   kuten_code:print_esc("kuten");
+  ucs_code:print_esc("ucs");
+  toucs_code:print_esc("ucs");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
@@ -2412,7 +2420,7 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 KANJI(cx):=0;
 case c of
 number_code,roman_numeral_code,
-kansuji_code,euc_code,sjis_code,jis_code,kuten_code: scan_int;
+kansuji_code,euc_code,sjis_code,jis_code,kuten_code,ucs_code,toucs_code: scan_int;
 ptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
@@ -2438,6 +2446,8 @@ jis_code:   print_int(fromJIS(cur_val));
 euc_code:   print_int(fromEUC(cur_val));
 sjis_code:  print_int(fromSJIS(cur_val));
 kuten_code: print_int(fromKUTEN(cur_val));
+ucs_code:   print_int(fromUCS(cur_val));
+toucs_code: print_int(toUCS(cur_val));
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
