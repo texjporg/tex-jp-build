@@ -2396,7 +2396,7 @@ primitive("ptexrevision",convert,ptex_revision_code);
   jis_code:print_esc("jis");
   kuten_code:print_esc("kuten");
   ucs_code:print_esc("ucs");
-  toucs_code:print_esc("ucs");
+  toucs_code:print_esc("toucs");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
