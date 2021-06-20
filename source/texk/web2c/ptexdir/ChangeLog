@@ -1,3 +1,9 @@
+2021-06-20  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Added \ucs (from upTeX) and \toucs.
+	* ptex.defines: Add fromUCS() and toUCS().
+	* ptex_version.h: pTeX version p3.10.0.
+
 2021-03-23  Karl Berry  <karl@tug.org>
 
 	* TL'21.

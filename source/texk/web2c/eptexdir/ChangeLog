@@ -1,3 +1,9 @@
+2021-06-20  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* eptex.defines: Add fromUCS() and toUCS().
+	* eptex.ech, eptex_version.h: e-pTeX version 210619
+	(adapted to pTeX p3.10.0).
+
 2021-03-23  Karl Berry  <karl@tug.org>
 
 	* TL'21.

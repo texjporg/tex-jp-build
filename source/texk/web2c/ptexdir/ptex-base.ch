@@ -64,6 +64,7 @@
 % (2021-02-18) HK  pTeX p3.9.0. Add \ifjfont and \iftfont (in 2020-02-06, by HY),
 %                  Bug fix for getting \kansujichar,
 %                  based on TeX 3.141592653
+% (2021-06-20) HK  pTeX p3.10.0. Add \ucs and \toucs.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -2446,8 +2447,10 @@ jis_code:   print_int(fromJIS(cur_val));
 euc_code:   print_int(fromEUC(cur_val));
 sjis_code:  print_int(fromSJIS(cur_val));
 kuten_code: print_int(fromKUTEN(cur_val));
-ucs_code:   print_int(fromUCS(cur_val));
-toucs_code: print_int(toUCS(cur_val));
+ucs_code:   if is_char_ascii(cur_val) then print_int(cur_val)
+  else print_int(fromUCS(cur_val));
+toucs_code: if is_char_ascii(cur_val) then print_int(cur_val)
+  else print_int(toUCS(cur_val));
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
