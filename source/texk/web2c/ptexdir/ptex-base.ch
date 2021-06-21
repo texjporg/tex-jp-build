@@ -2356,7 +2356,7 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d jis_code=8 {command code for \.{\\jis}}
 @d kuten_code=9 {command code for \.{\\kuten}}
 @d ucs_code=10 {command code for \.{\\ucs}}
-@d toucs_code=11 {command code for \.{\\ucs}}
+@d toucs_code=11 {command code for \.{\\toucs}}
 @d ptex_revision_code=12 {command code for \.{\\ptexrevision}}
 @d ptex_convert_codes=13 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
