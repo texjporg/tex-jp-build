@@ -26,6 +26,7 @@
 
 static int default_kanji_enc;
 static boolean UPTEX_enabled;
+static boolean ptex_mode = false;
 static boolean prior_file_enc = false;
 
 #define ESC '\033'
@@ -143,6 +144,13 @@ static int get_terminal_enc(void)
         else terminal_enc = get_file_enc();
     }
     return terminal_enc;
+}
+
+/* enable ptex mode (use flag 0x100 for Japanese char) */
+void ptenc_ptex_mode (const boolean enable)
+{
+   fprintf(stderr, "ptenc_ptex_mode is called! (%d)\n", enable);
+   ptex_mode = enable;
 }
 
 /* enable/disable UPTEX */
@@ -507,40 +515,43 @@ int putc2(int c, FILE *fp)
     } else
         output_enc = get_file_enc();
 #endif
-    if (c<256) {
+    if (ptex_mode && (c<256)) {
         if (num[fd] < 0 && output_enc == ENC_JIS) {
             put_multibyte(KANJI_OUT, fp);
         }
         ret = putc(c, fp);
         num[fd] = 0;
-    } else if (num[fd] > 0) {        /* multi-byte char */
-        if (is_internalUPTEX() && iskanji1(c-256)) { /* error */
-            ret = flush(store[fd], num[fd], fp);
+    } else {
+        c &= 0xFF;
+        if (num[fd] > 0) {        /* multi-byte char */
+            if (is_internalUPTEX() && iskanji1(c)) { /* error */
+                ret = flush(store[fd], num[fd], fp);
+                num[fd] = 0;
+            }
+            store[fd][num[fd]] = c;
+            num[fd]++;
+            if (multistrlen(store[fd], num[fd], 0) == num[fd]) {
+                long i = fromBUFF(store[fd], num[fd], 0);
+                ret = put_multibyte(toENC(i, output_enc), fp);
+                num[fd] = -1;
+            } else if ((is_internalUPTEX() && num[fd] == 4) ||
+                (!is_internalUPTEX() && num[fd] == 2)) { /* error */
+                ret = flush(store[fd], num[fd], fp);
+                num[fd] = -1;
+            }
+        } else if (iskanji1(c)) { /* first multi-byte char */
+            if (num[fd] == 0 && output_enc == ENC_JIS) {
+                ret = put_multibyte(KANJI_IN, fp);
+            }
+            store[fd][0] = c;
+            num[fd] = 1;
+        } else {                  /* ASCII */
+            if (num[fd] < 0 && output_enc == ENC_JIS) {
+                put_multibyte(KANJI_OUT, fp);
+            }
+            ret = putc(c, fp);
             num[fd] = 0;
         }
-        store[fd][num[fd]] = c-256;
-        num[fd]++;
-        if (multistrlen(store[fd], num[fd], 0) == num[fd]) {
-            long i = fromBUFF(store[fd], num[fd], 0);
-            ret = put_multibyte(toENC(i, output_enc), fp);
-            num[fd] = -1;
-        } else if ((is_internalUPTEX() && num[fd] == 4) ||
-                   (!is_internalUPTEX() && num[fd] == 2)) { /* error */
-            ret = flush(store[fd], num[fd], fp);
-            num[fd] = -1;
-        }
-    } else if (iskanji1(c-256)) { /* first multi-byte char */
-        if (num[fd] == 0 && output_enc == ENC_JIS) {
-            ret = put_multibyte(KANJI_IN, fp);
-        }
-        store[fd][0] = c-256;
-        num[fd] = 1;
-    } else {                  /* ASCII */
-        if (num[fd] < 0 && output_enc == ENC_JIS) {
-            put_multibyte(KANJI_OUT, fp);
-        }
-        ret = putc(c-256, fp);
-        num[fd] = 0;
     }
     return ret;
 }

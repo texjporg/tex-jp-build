@@ -20,15 +20,15 @@
 @x procedure out_kanji
   if text_ptr>=line_length-3 then flush_text;
   c:=toBUFF(fromDVI(c));
-  incr(text_ptr); text_buf[text_ptr]:= 256+Hi(c);
-  incr(text_ptr); text_buf[text_ptr]:= 256+Lo(c);
+  incr(text_ptr); text_buf[text_ptr]:= Hi(c);
+  incr(text_ptr); text_buf[text_ptr]:= Lo(c);
 @y
   if text_ptr>=line_length-5 then flush_text;
   c:=toBUFF(fromDVI(c));
-  if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=256+BYTE1(c); end;
-  if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=256+BYTE2(c); end;
-  if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=256+BYTE3(c); end;
-                            incr(text_ptr); text_buf[text_ptr]:=256+BYTE4(c);
+  if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
+  if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
+  if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
+                            incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
 @z
 
 @x

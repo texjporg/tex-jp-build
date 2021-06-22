@@ -20,22 +20,9 @@
 @z
 
 @x
-@!ASCII_code=0..255; {a subrange of the integers}
-@y
-@!ASCII_code=0..255; {a subrange of the integers}
-@!ext_ASCII_code=0..32768; { only use 0--511 }
-@z
-
-@x
-@!xchr: array [0..255] of text_char;
-@y
-@!xchr: array [0..511] of ext_ASCII_code;
-@z
-
-@x
 for i:=@'177 to 255 do xchr[i]:='?';
 @y
-for i:=@'177 to 511 do xchr[i]:=i;
+for i:=@'177 to 255 do xchr[i]:=i;
 @z
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,12 +147,6 @@ for k:=1 to nt do
 @z
 
 @x
-@!text_buf:array[1..line_length] of ASCII_code; {saved characters}
-@y
-@!text_buf:array[1..line_length] of ext_ASCII_code; {saved characters}
-@z
-
-@x
 @p procedure out_text(c:ASCII_code);
 begin if text_ptr=line_length-2 then flush_text;
 incr(text_ptr); text_buf[text_ptr]:=c;
@@ -181,8 +162,8 @@ end;
 begin
   if text_ptr>=line_length-3 then flush_text;
   c:=toBUFF(fromDVI(c));
-  incr(text_ptr); text_buf[text_ptr]:= 256+Hi(c);
-  incr(text_ptr); text_buf[text_ptr]:= 256+Lo(c);
+  incr(text_ptr); text_buf[text_ptr]:= Hi(c);
+  incr(text_ptr); text_buf[text_ptr]:= Lo(c);
 end;
 
 @ output hexdecimal / octal character code.

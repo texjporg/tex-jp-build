@@ -534,24 +534,24 @@ static void mpx_print_kanji_char (MPX mpx,integer c)
 #ifdef UPMP
   if (BYTE1(c)!=0) pflag = 1;
   if (pflag) {
-    putc2(0x100+BYTE1(c), mpx->mpxfile);
+    putc2(BYTE1(c), mpx->mpxfile);
     mpx->print_col++;
   }
   if (BYTE2(c)!=0) pflag = 1;
   if (pflag) {
-    putc2(0x100+BYTE2(c), mpx->mpxfile);
+    putc2(BYTE2(c), mpx->mpxfile);
     mpx->print_col++;
   }
   if (BYTE3(c)!=0) pflag = 1;
   if (pflag) {
-    putc2(0x100+BYTE3(c), mpx->mpxfile);
+    putc2(BYTE3(c), mpx->mpxfile);
     mpx->print_col++;
   }
-  putc2(0x100+BYTE4(c), mpx->mpxfile);
+  putc2(BYTE4(c), mpx->mpxfile);
 #else
-  putc2(0x100+Hi(c), mpx->mpxfile);
+  putc2(Hi(c), mpx->mpxfile);
   mpx->print_col++;
-  putc2(0x100+Lo(c), mpx->mpxfile);
+  putc2(Lo(c), mpx->mpxfile);
 #endif
   mpx->print_col++;
 }
