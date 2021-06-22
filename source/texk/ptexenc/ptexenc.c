@@ -1051,16 +1051,16 @@ unsigned char *ptenc_from_internal_enc_string_to_utf8(const unsigned char *is)
             continue;
         case 2:
             i2 = is[++i];
-	    if (i2 == '\0') {
-	      write_hex(i1); continue;
-	    } else {
+            if (i2 == '\0') {
+              write_hex(i1); continue;
+            } else {
               u = JIStoUCS2(toJIS(HILO(i1,i2)));
-	      if (u==0) {
-	        write_hex(i1); write_hex(i2); continue;
-	      }
-	    }
+              if (u==0) {
+                write_hex(i1); write_hex(i2); continue;
+              }
+            }
             break;
-        default: /* reachable only if internal code is uptex*/
+        default: /* reachable only if internal code is uptex */
             u = U_REPLACEMENT_CHARACTER;
             break;
         }

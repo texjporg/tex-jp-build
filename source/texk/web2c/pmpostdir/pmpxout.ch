@@ -496,9 +496,7 @@ static integer mpx_lookup_ctype (MPX mpx,integer f, integer c)
 @ All Kanji characters are supposed to be printable here,
 so that the state always results in normal at the end of the procedure.
 Kanji characters need to be converted into output Kanji encoding
-from DVI(JIS). For conversion, the first argument of |putc2| need to be
-greater than 255.
-
+from DVI(JIS).
 
 @<Declare subroutines for printing strings@>=
 static void mpx_print_kanji_char (MPX mpx,integer c)
