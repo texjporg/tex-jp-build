@@ -4185,10 +4185,10 @@ first_use:=true; chain:=false;
 delete_glue_ref(cur_kanji_skip); delete_glue_ref(cur_xkanji_skip);
 cur_kanji_skip:=space_ptr(head); cur_xkanji_skip:=xspace_ptr(head);
 add_glue_ref(cur_kanji_skip); add_glue_ref(cur_xkanji_skip);
-link(temp_head):=link(head);
 if not is_char_node(tail)and(type(tail)=disp_node) then
   begin free_node(tail,small_node_size); tail:=prev_node; link(tail):=null
   end;
+link(temp_head):=link(head);
 if is_char_node(tail) then tail_append(new_penalty(inf_penalty))
 else if type(tail)<>glue_node then tail_append(new_penalty(inf_penalty))
 @z
