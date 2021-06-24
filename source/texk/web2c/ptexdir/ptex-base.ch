@@ -5275,6 +5275,8 @@ mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
   else line_break(widow_penalty);
 @y
   begin if head=tail then pop_nest {null paragraphs are ignored}
+  else if (link(head)=tail)and(not is_char_node(tail)and(type(tail)=disp_node)) then pop_nest
+    { |disp_node|-only paragraphs are also ignored }
   else begin adjust_hlist(head,true); line_break(widow_penalty)
        end;
 @z
