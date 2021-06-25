@@ -5,6 +5,18 @@
 #include <ptexenc/c-auto.h>
 #include <ptexenc/kanjicnv.h>
 
+boolean isJISkanji1(int c)
+{
+    c &= 0xff;
+    return (0x21 <= c && c <= 0x7e);
+}
+
+boolean isJISkanji2(int c)
+{
+    c &= 0xff;
+    return (0x21 <= c && c <= 0x7e);
+}
+
 boolean isEUCkanji1(int c)
 {
     c &= 0xff;
@@ -32,11 +44,15 @@ boolean isSJISkanji2(int c)
 /* EUC <=> JIS X 0208 code conversion */
 int EUCtoJIS(int kcode)
 {
+    if (!isEUCkanji1(HI(kcode))) return -1;
+    if (!isEUCkanji2(LO(kcode))) return -1;
     return (kcode & 0x7f7f);
 }
 
 int JIStoEUC(int kcode)
 {
+    if (!isJISkanji1(HI(kcode)) return -1;
+    if (!isJISkanji2(LO(kcode)) return -1;
     return (kcode | 0x8080);
 }
 
@@ -45,8 +61,8 @@ int SJIStoJIS(int kcode)
 {
     int byte1, byte2;
 
-    byte1 = HI(kcode);
-    byte2 = LO(kcode);
+    byte1 = HI(kcode); if (!isSJISkanji1(byte1)) return -1;
+    byte2 = LO(kcode); if (!isSJISkanji2(byte2)) return -1;
     byte1 -= ( byte1>=0xa0 ) ? 0xc1 : 0x81;
     kcode = ((byte1<<1) + 0x21)<<8;
     if ( byte2 >= 0x9f ) {
@@ -63,8 +79,8 @@ int JIStoSJIS(int kcode)
     int high, low;
     int nh,   nl;
 
-    high = HI(kcode);
-    low  = LO(kcode);
+    high = HI(kcode); if (!isJISkanji1(high)) return -1;
+    low  = LO(kcode); if (!isJISkanji2(low)) return -1;
     nh = ((high-0x21)>>1) + 0x81;
     if (nh > 0x9f) nh += 0x40;
     if (high & 1) {
@@ -75,7 +91,7 @@ int JIStoSJIS(int kcode)
     if (isSJISkanji1(nh) && isSJISkanji2(nl)) {
         return HILO(nh, nl);
     } else {
-        return 0x813f;
+        return -1;
     }
 }
 
@@ -94,8 +110,8 @@ int EUCtoSJIS(int kcode)
 int KUTENtoJIS(int kcode)
 {
     /* in case of undefined in kuten code table */
-    if (HI(kcode) == 0 || HI(kcode) > 95) return -1;
-    if (LO(kcode) == 0 || LO(kcode) > 95) return -1;
+    if (HI(kcode) == 0 || HI(kcode) >= 95) return -1;
+    if (LO(kcode) == 0 || LO(kcode) >= 95) return -1;
 
     return kcode + 0x2020;
 }

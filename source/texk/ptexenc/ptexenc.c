@@ -382,7 +382,7 @@ long fromUCS(long kcode)
 {
     if (is_internalUPTEX()) return UCStoUPTEX(kcode);
     kcode = UCS2toJIS(kcode);
-    if (kcode == 0) return 0;
+    if (kcode == 0) return -1;
     return fromJIS(kcode);
 }
 
