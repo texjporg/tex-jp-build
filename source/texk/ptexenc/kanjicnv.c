@@ -51,8 +51,8 @@ int EUCtoJIS(int kcode)
 
 int JIStoEUC(int kcode)
 {
-    if (!isJISkanji1(HI(kcode)) return -1;
-    if (!isJISkanji2(LO(kcode)) return -1;
+    if (!isJISkanji1(HI(kcode))) return -1;
+    if (!isJISkanji2(LO(kcode))) return -1;
     return (kcode | 0x8080);
 }
 
