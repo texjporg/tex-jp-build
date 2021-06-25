@@ -2447,9 +2447,7 @@ jis_code:   print_int(fromJIS(cur_val));
 euc_code:   print_int(fromEUC(cur_val));
 sjis_code:  print_int(fromSJIS(cur_val));
 kuten_code: print_int(fromKUTEN(cur_val));
-ucs_code:   if cur_val=0 then print_int(0)
-  { |fromUCS(0)| returns A2AF in EUC, which does not exist }
-  else print_int(fromUCS(cur_val));
+ucs_code:   print_int(fromUCS(cur_val));
 toucs_code: print_int(toUCS(cur_val));
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
