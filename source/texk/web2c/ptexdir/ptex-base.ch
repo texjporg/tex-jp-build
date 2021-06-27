@@ -2443,11 +2443,16 @@ string_code:if cur_cs<>0 then sprint_cs(cur_cs)
 case c of
 number_code: print_int(cur_val);
 roman_numeral_code: print_roman_int(cur_val);
-jis_code:   print_int(fromJIS(cur_val));
-euc_code:   print_int(fromEUC(cur_val));
-sjis_code:  print_int(fromSJIS(cur_val));
-kuten_code: print_int(fromKUTEN(cur_val));
-ucs_code:   print_int(fromUCS(cur_val));
+jis_code:   begin cur_val:=fromJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+euc_code:   begin cur_val:=fromEUC(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+sjis_code:  begin cur_val:=fromSJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+kuten_code: begin cur_val:=fromKUTEN(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+ucs_code:   begin cur_val:=fromUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 toucs_code: print_int(toUCS(cur_val));
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);

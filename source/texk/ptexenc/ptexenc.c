@@ -382,7 +382,7 @@ long fromUCS(long kcode)
 {
     if (is_internalUPTEX()) return UCStoUPTEX(kcode);
     kcode = UCS2toJIS(kcode);
-    if (kcode == 0) return -1;
+    if (kcode == 0) return 0;
     return fromJIS(kcode);
 }
 
@@ -673,8 +673,8 @@ static void get_utf8(int i, FILE *fp)
         break;
     }
 
-    j = (u != 0) ? toBUFF(fromUCS(u)) : -1;
-    if (j == -1) { /* can't represent (typically umlaut o in EUC) */
+    j = (u != 0) ? toBUFF(fromUCS(u)) : 0;
+    if (j == 0) { /* can't represent (typically umlaut o in EUC) */
         write_hex(i);
         if (i2 != EOF) write_hex(i2);
         if (i3 != EOF) write_hex(i3);
