@@ -329,6 +329,17 @@ else
   wterm(')');
 @z
 
+@x pTeX: print_hex for "Invalid KANJI code" or "Invalid KANSUJI char" errors
+@ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
+@y
+@ Hexadecimal printing.
+
+@p procedure print_hex_safe(@!n:integer);
+begin if n<0 then print_int(n) else print_hex(n); end;
+
+@ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
+@z
+
 @x
 @d max_halfword==@"FFFFFFF {largest allowable value in a |halfword|}
 @y
@@ -6481,7 +6492,7 @@ set_kansuji_char:
 begin p:=cur_chr; scan_int; n:=cur_val; scan_optional_equals; scan_int;
 if not is_char_kanji(cur_val) then
   begin print_err("Invalid KANSUJI char (");
-  print_hex(cur_val); print_char(")");
+  print_hex_safe(cur_val); print_char(")");
 @.Invalid KANSUJI char@>
   help1("I'm skipping this control sequences.");@/
   error; return;
@@ -6643,7 +6654,7 @@ if is_char_kanji(n) then
   define(inhibit_xsp_code_base+j,cur_val,n);
   end
 else
-  begin print_err("Invalid KANJI code ("); print_hex(n); print_char(")");
+  begin print_err("Invalid KANJI code ("); print_hex_safe(n); print_char(")");
 @.Invalid KANJI code@>
   help1("I'm skipping this control sequences.");@/
   error; return;
@@ -6735,7 +6746,7 @@ else
   if p=pre_break_penalty_code then print("pre")
   else if p=post_break_penalty_code then print("post")
   else print_char("?");
-  print("breakpenalty ("); print_hex(n); print_char(")");
+  print("breakpenalty ("); print_hex_safe(n); print_char(")");
 @.Invalid KANJI code@>
   help1("I'm skipping this control sequences.");@/
   error; return;
