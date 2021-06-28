@@ -334,8 +334,7 @@ else
 @y
 @ Hexadecimal printing.
 
-@p procedure print_hex_safe(@!n:integer);
-begin if n<0 then print_int(n) else print_hex(n); end;
+@d print_hex_safe(#)==if #<0 then print_int(#) else print_hex(#)
 
 @ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
 @z
@@ -7412,7 +7411,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin { print("IF");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
@@ -7460,7 +7459,7 @@ if inhibit_glue_flag<>true then
   end;
 end
 else
-  begin { print("IT");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   end;
 skip_loop: do_nothing;
