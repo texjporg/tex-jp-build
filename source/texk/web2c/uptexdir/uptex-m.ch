@@ -673,9 +673,14 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 @x
 ucs_code:   begin cur_val:=fromUCS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+toucs_code: begin cur_val:=toUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 @y
 ucs_code:   if (isinternalUPTEX) then print_int(fromUCS(cur_val))
   else begin cur_val:=fromUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+toucs_code: if (isinternalUPTEX) then print_int(toUCS(cur_val))
+  else begin cur_val:=toUCS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 @z
 

@@ -2463,7 +2463,8 @@ kuten_code: begin cur_val:=fromKUTEN(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 ucs_code:   begin cur_val:=fromUCS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
-toucs_code: print_int(toUCS(cur_val));
+toucs_code: begin cur_val:=toUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
