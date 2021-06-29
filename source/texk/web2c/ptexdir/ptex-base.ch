@@ -64,7 +64,8 @@
 % (2021-02-18) HK  pTeX p3.9.0 Add \ifjfont and \iftfont (in 2020-02-06, by HY),
 %                  Bug fix for getting \kansujichar (in 2020-02-09 = TL20),
 %                  based on TeX 3.141592653 (for TL21).
-% (2021-06-25) HY  pTeX p3.9.1 Various fixes
+% (2021-06-25) HY  pTeX p3.9.1 Various fixes.
+% (2021-06-20) HK  pTeX p3.10.0 Add \ucs and \toucs.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -78,9 +79,9 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=3
-@d pTeX_minor_version=9
-@d pTeX_revision==".1"
-@d pTeX_version_string=='-p3.9.1' {current \pTeX\ version}
+@d pTeX_minor_version=10
+@d pTeX_revision==".0"
+@d pTeX_version_string=='-p3.10.0' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -334,8 +335,7 @@ else
 @y
 @ Hexadecimal printing.
 
-@p procedure print_hex_safe(@!n:integer);
-begin if n<0 then print_int(n) else print_hex(n); end;
+@d print_hex_safe(#)==if #<0 then print_int(#) else print_hex(#)
 
 @ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
 @z
@@ -2386,8 +2386,10 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d sjis_code=7 {command code for \.{\\sjis}}
 @d jis_code=8 {command code for \.{\\jis}}
 @d kuten_code=9 {command code for \.{\\kuten}}
-@d ptex_revision_code=10 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=11 {end of \pTeX's command codes}
+@d ucs_code=10 {command code for \.{\\ucs}}
+@d toucs_code=11 {command code for \.{\\toucs}}
+@d ptex_revision_code=12 {command code for \.{\\ptexrevision}}
+@d ptex_convert_codes=13 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -2407,6 +2409,10 @@ primitive("jis",convert,jis_code);
 @!@:jis_}{\.{\\jis} primitive@>
 primitive("kuten",convert,kuten_code);
 @!@:kuten_}{\.{\\kuten} primitive@>
+primitive("ucs",convert,ucs_code);
+@!@:ucs_}{\.{\\ucs} primitive@>
+primitive("toucs",convert,toucs_code);
+@!@:toucs_}{\.{\\toucs} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
@@ -2420,6 +2426,8 @@ primitive("ptexrevision",convert,ptex_revision_code);
   sjis_code:print_esc("sjis");
   jis_code:print_esc("jis");
   kuten_code:print_esc("kuten");
+  ucs_code:print_esc("ucs");
+  toucs_code:print_esc("toucs");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
@@ -2444,7 +2452,7 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 KANJI(cx):=0;
 case c of
 number_code,roman_numeral_code,
-kansuji_code,euc_code,sjis_code,jis_code,kuten_code: scan_int;
+kansuji_code,euc_code,sjis_code,jis_code,kuten_code,ucs_code,toucs_code: scan_int;
 ptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
@@ -2466,10 +2474,18 @@ string_code:if cur_cs<>0 then sprint_cs(cur_cs)
 case c of
 number_code: print_int(cur_val);
 roman_numeral_code: print_roman_int(cur_val);
-jis_code:   print_int(fromJIS(cur_val));
-euc_code:   print_int(fromEUC(cur_val));
-sjis_code:  print_int(fromSJIS(cur_val));
-kuten_code: print_int(fromKUTEN(cur_val));
+jis_code:   begin cur_val:=fromJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+euc_code:   begin cur_val:=fromEUC(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+sjis_code:  begin cur_val:=fromSJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+kuten_code: begin cur_val:=fromKUTEN(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+ucs_code:   begin cur_val:=fromUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+toucs_code: begin cur_val:=toUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
@@ -7433,7 +7449,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin { print("IF");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
@@ -7481,7 +7497,7 @@ if inhibit_glue_flag<>true then
   end;
 end
 else
-  begin { print("IT");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   end;
 skip_loop: do_nothing;
