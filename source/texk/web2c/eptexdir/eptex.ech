@@ -243,10 +243,10 @@ end
         { non-math nodes }
       else begin
         cur_val:=type(tx);
-	if cur_val<unset_node+4 then cur_val:=cur_val-unset_node
+	if cur_val<unset_node+4 then cur_val:=cur_val-unset_node-1
 	  { |style_noad|, |choice_noad|, |ord_noad| }
-        else if cur_val=unset_node+4 then cur_val:=cur_val-unset_node+subtype(tx)
-	else cur_val:=cur_val-unset_node+2;
+        else if cur_val=unset_node+4 then cur_val:=cur_val-unset_node-1+subtype(tx)
+	else cur_val:=cur_val-unset_node+1;
       end;
     last_node_char_code: ignore_font_kerning;
 @z
