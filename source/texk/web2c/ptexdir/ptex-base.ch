@@ -61,9 +61,11 @@
 % (2018-04-14) HK  pTeX p3.8.1 Bug fix for discontinuous KINSOKU table.
 % (2019-02-03) HK  pTeX p3.8.2 Change \inhibitglue, add \disinhibitglue.
 % (2019-10-14) HY  pTeX p3.8.3 Allow getting \kansujichar.
-% (2021-02-18) HK  pTeX p3.9.0. Add \ifjfont and \iftfont (in 2020-02-06, by HY),
-%                  Bug fix for getting \kansujichar,
-%                  based on TeX 3.141592653
+% (2021-02-18) HK  pTeX p3.9.0 Add \ifjfont and \iftfont (in 2020-02-06, by HY),
+%                  Bug fix for getting \kansujichar (in 2020-02-09 = TL20),
+%                  based on TeX 3.141592653 (for TL21).
+% (2021-06-25) HY  pTeX p3.9.1 Various fixes.
+% (2021-06-20) HK  pTeX p3.10.0 Add \ucs and \toucs.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -77,9 +79,9 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=3
-@d pTeX_minor_version=9
+@d pTeX_minor_version=10
 @d pTeX_revision==".0"
-@d pTeX_version_string=='-p3.9.0' {current \pTeX\ version}
+@d pTeX_version_string=='-p3.10.0' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -326,6 +328,16 @@ else
   wterm(' (');
   wterm(conststringcast(get_enc_string));
   wterm(')');
+@z
+
+@x pTeX: print_hex for "Invalid KANJI code" or "Invalid KANSUJI char" errors
+@ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
+@y
+@ Hexadecimal printing.
+
+@d print_hex_safe(#)==if #<0 then print_int(#) else print_hex(#)
+
+@ Old versions of \TeX\ needed a procedure called |print_ASCII| whose function
 @z
 
 @x
@@ -1249,10 +1261,27 @@ if n<math_code_base then
     begin print_esc("xspcode"); print_int(n-auto_xsp_code_base);
     end
   else if n<kinsoku_base then
-    begin print("(inhibitxspcode table) "); print_int(n-inhibit_xsp_code_base);
+    begin print("inhibitxspcode table "); print_int(n-inhibit_xsp_code_base);
+      print(", type=");
+      case eq_type(n) of
+        0: print("both");   { |inhibit_both| }
+        1: print("before"); { |inhibit_previous| }
+        2: print("after");  { |inhibit_after| }
+        3: print("none");   { |inhibit_none| }
+        4: print("unused"); { |inhibit_unused| }
+      end; {there are no other cases}
+      print(", code");
     end
   else if n<kansuji_base then
-    begin print("(kinsoku table) "); print_int(n-kinsoku_base);
+    begin print("kinsoku table "); print_int(n-kinsoku_base);
+      print(", type=");
+      case eq_type(n) of
+        0: print("no");
+        1: print("pre");    { |pre_break_penalty_code| }
+        2: print("post");   { |post_break_penalty_code| }
+        3: print("unused"); { |kinsoku_unused_code| }
+      end; {there are no other cases}
+      print(", code");
     end
   else if n<lc_code_base then
     begin print_esc("kansujichar"); print_int(n-kansuji_base);
@@ -1412,7 +1441,10 @@ end;
 tats
 @y
 else if n<kinsoku_penalty_base then @<Show equivalent |n|, in region 6@>
-else if n<=eqtb_size then print("kinsoku")
+else if n<=eqtb_size then begin
+  print("kinsoku table "); print_int(n-kinsoku_penalty_base);
+  print(", penalty="); print_int(eqtb[n].int);
+  end
 else print_char("?"); {this can't happen either}
 end;
 tats
@@ -2354,8 +2386,10 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d sjis_code=7 {command code for \.{\\sjis}}
 @d jis_code=8 {command code for \.{\\jis}}
 @d kuten_code=9 {command code for \.{\\kuten}}
-@d ptex_revision_code=10 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=11 {end of \pTeX's command codes}
+@d ucs_code=10 {command code for \.{\\ucs}}
+@d toucs_code=11 {command code for \.{\\toucs}}
+@d ptex_revision_code=12 {command code for \.{\\ptexrevision}}
+@d ptex_convert_codes=13 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -2375,6 +2409,10 @@ primitive("jis",convert,jis_code);
 @!@:jis_}{\.{\\jis} primitive@>
 primitive("kuten",convert,kuten_code);
 @!@:kuten_}{\.{\\kuten} primitive@>
+primitive("ucs",convert,ucs_code);
+@!@:ucs_}{\.{\\ucs} primitive@>
+primitive("toucs",convert,toucs_code);
+@!@:toucs_}{\.{\\toucs} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
@@ -2388,6 +2426,8 @@ primitive("ptexrevision",convert,ptex_revision_code);
   sjis_code:print_esc("sjis");
   jis_code:print_esc("jis");
   kuten_code:print_esc("kuten");
+  ucs_code:print_esc("ucs");
+  toucs_code:print_esc("toucs");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
@@ -2412,7 +2452,7 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 KANJI(cx):=0;
 case c of
 number_code,roman_numeral_code,
-kansuji_code,euc_code,sjis_code,jis_code,kuten_code: scan_int;
+kansuji_code,euc_code,sjis_code,jis_code,kuten_code,ucs_code,toucs_code: scan_int;
 ptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
@@ -2434,10 +2474,18 @@ string_code:if cur_cs<>0 then sprint_cs(cur_cs)
 case c of
 number_code: print_int(cur_val);
 roman_numeral_code: print_roman_int(cur_val);
-jis_code:   print_int(fromJIS(cur_val));
-euc_code:   print_int(fromEUC(cur_val));
-sjis_code:  print_int(fromSJIS(cur_val));
-kuten_code: print_int(fromKUTEN(cur_val));
+jis_code:   begin cur_val:=fromJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+euc_code:   begin cur_val:=fromEUC(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+sjis_code:  begin cur_val:=fromSJIS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+kuten_code: begin cur_val:=fromKUTEN(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+ucs_code:   begin cur_val:=fromUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+toucs_code: begin cur_val:=toUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
@@ -2542,7 +2590,7 @@ else begin
   end
 @z
 
-@x [28.502] l.10138 - pTeX: ifx : Test character : KANJI character
+@x [28.502] l.10138 - pTeX: if[cat] : Test character : KANJI character
 if (cur_cmd>active_char)or(cur_chr>255) then {not a character}
   begin m:=relax; n:=256;
   end
@@ -2554,7 +2602,7 @@ if (cur_cmd>active_char)or(cur_chr>255) then
   end;
 @y
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
-  begin n:=cur_chr; m:=kcat_code(kcatcodekey(n));
+  begin m:=cur_cmd; n:=cur_chr;
   end
 else if (cur_cmd>active_char)or(cur_chr>255) then
   begin m:=relax; n:=max_cjk_val;
@@ -2563,8 +2611,8 @@ else  begin m:=cur_cmd; n:=cur_chr;
   end;
 get_x_token_or_active_char;
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr));
-  end
+  begin cur_cmd:=cur_cmd;
+  end {dummy}
 else if (cur_cmd>active_char)or(cur_chr>255) then
   begin cur_cmd:=relax; cur_chr:=max_cjk_val;
   end;
@@ -4185,10 +4233,10 @@ first_use:=true; chain:=false;
 delete_glue_ref(cur_kanji_skip); delete_glue_ref(cur_xkanji_skip);
 cur_kanji_skip:=space_ptr(head); cur_xkanji_skip:=xspace_ptr(head);
 add_glue_ref(cur_kanji_skip); add_glue_ref(cur_xkanji_skip);
-link(temp_head):=link(head);
 if not is_char_node(tail)and(type(tail)=disp_node) then
   begin free_node(tail,small_node_size); tail:=prev_node; link(tail):=null
   end;
+link(temp_head):=link(head);
 if is_char_node(tail) then tail_append(new_penalty(inf_penalty))
 else if type(tail)<>glue_node then tail_append(new_penalty(inf_penalty))
 @z
@@ -5274,7 +5322,10 @@ mode:=hmode; space_factor:=1000; set_cur_lang; clang:=cur_lang;
   begin if head=tail then pop_nest {null paragraphs are ignored}
   else line_break(widow_penalty);
 @y
-  begin if head=tail then pop_nest {null paragraphs are ignored}
+  begin if (link(head)=tail)and(not is_char_node(tail)and(type(tail)=disp_node)) then
+    begin free_node(tail,small_node_size); tail:=head; link(head):=null; end;
+    { |disp_node|-only paragraphs are ignored }
+  if head=tail then pop_nest {null paragraphs are ignored}
   else begin adjust_hlist(head,true); line_break(widow_penalty)
        end;
 @z
@@ -5733,6 +5784,11 @@ direction:=-abs(direction);
 @x [48.1145] l.22435 - pTeX: Call adjust_hlist at begin of display
 else  begin line_break(display_widow_penalty);@/
 @y
+else if (link(head)=tail)and(not is_char_node(tail)and(type(tail)=disp_node)) then
+  begin free_node(tail,small_node_size); tail:=head; link(head):=null;
+  pop_nest; w:=-max_dimen;
+  end
+  { |disp_node|-only paragraphs are ignored }
 else  begin adjust_hlist(head,true); line_break(display_widow_penalty);@/
 @z
 
@@ -6453,7 +6509,7 @@ set_kansuji_char:
 begin p:=cur_chr; scan_int; n:=cur_val; scan_optional_equals; scan_int;
 if not is_char_kanji(cur_val) then
   begin print_err("Invalid KANSUJI char (");
-  print_hex(cur_val); print_char(")");
+  print_hex_safe(cur_val); print_char(")");
 @.Invalid KANSUJI char@>
   help1("I'm skipping this control sequences.");@/
   error; return;
@@ -6575,19 +6631,23 @@ assign_inhibit_xsp_code: print_esc("inhibitxspcode");
 @ @<Declare procedures needed in |scan_something_internal|@>=
 function get_inhibit_pos(c:KANJI_code; n:small_number):pointer;
 label done, done1;
-var p,s:pointer;
-begin s:=calc_pos(c); p:=s;
+var p,pp,s:pointer;
+begin s:=calc_pos(c); p:=s; pp:=no_entry;
 if n=new_pos then
   begin repeat
-  if (inhibit_xsp_type(p)=inhibit_unused)or(inhibit_xsp_code(p)=0)
-    or(inhibit_xsp_code(p)=c) then goto done;
+  if inhibit_xsp_code(p)=c then goto done;  { found, update there }
+  if inhibit_xsp_code(p)=0 then             { no further scan needed }
+    begin if pp<>no_entry then p:=pp; goto done; end;
+  if inhibit_xsp_type(p)=inhibit_unused then
+    if pp=no_entry then pp:=p; { save the nearest unused hash }
   incr(p); if p>255 then p:=0;
-  until s=p; p:=no_entry;
+  until s=p;
+  p:=pp;
   end
 else
   begin repeat
-  if inhibit_xsp_code(p)=0 then goto done1
-  else if (inhibit_xsp_type(p)<>inhibit_unused)and(inhibit_xsp_code(p)=c) then goto done;
+  if inhibit_xsp_code(p)=0 then goto done1;
+  if inhibit_xsp_code(p)=c then goto done;
   incr(p); if p>255 then p:=0;
   until s=p;
 done1: p:=no_entry;
@@ -6611,7 +6671,7 @@ if is_char_kanji(n) then
   define(inhibit_xsp_code_base+j,cur_val,n);
   end
 else
-  begin print_err("Invalid KANJI code ("); print_hex(n); print_char(")");
+  begin print_err("Invalid KANJI code ("); print_hex_safe(n); print_char(")");
 @.Invalid KANJI code@>
   help1("I'm skipping this control sequences.");@/
   error; return;
@@ -6622,6 +6682,7 @@ end;
 begin scan_int; q:=get_inhibit_pos(tokanji(cur_val),cur_pos);
 cur_val_level:=int_val; cur_val:=inhibit_none;
 if q<>no_entry then cur_val:=inhibit_xsp_type(q);
+if cur_val>inhibit_none then cur_val:=inhibit_none;
 end
 
 @ The \.{\\prebreakpenalty} is used to specified amount of penalties inserted
@@ -6647,8 +6708,8 @@ assign_kinsoku: case chr_code of
 @ @<Declare procedures needed in |scan_something_internal|@>=
 function get_kinsoku_pos(c:KANJI_code; n:small_number):pointer;
 label done, done1;
-var p,s:pointer;
-begin s:=calc_pos(c); p:=s;
+var p,pp,s:pointer;
+begin s:=calc_pos(c); p:=s; pp:=no_entry;
 @!debug
 print_ln; print("c:="); print_int(c); print(", p:="); print_int(s);
 if p+kinsoku_base<0 then
@@ -6657,16 +6718,19 @@ if p+kinsoku_base<0 then
 gubed
 if n=new_pos then
   begin repeat
-  if (kinsoku_type(p)=0)or(kinsoku_type(p)=kinsoku_unused_code)
-    or(kinsoku_code(p)=c) then goto done;
+  if kinsoku_code(p)=c then goto done;  { found, update there }
+  if kinsoku_type(p)=0 then             { no further scan needed }
+    begin if pp<>no_entry then p:=pp; goto done; end;
+  if kinsoku_type(p)=kinsoku_unused_code then
+    if pp=no_entry then pp:=p; { save the nearest unused hash }
   incr(p); if p>255 then p:=0;
   until s=p;
-  p:=no_entry;
+  p:=pp;
   end
 else
   begin repeat
-  if kinsoku_type(p)=0 then goto done1
-  else if (kinsoku_type(p)<>kinsoku_unused_code)and(kinsoku_code(p)=c) then goto done;
+  if kinsoku_type(p)=0 then goto done1;
+  if kinsoku_code(p)=c then goto done;
   incr(p); if p>255 then p:=0;
   until s=p;
 done1: p:=no_entry;
@@ -6699,7 +6763,7 @@ else
   if p=pre_break_penalty_code then print("pre")
   else if p=post_break_penalty_code then print("post")
   else print_char("?");
-  print("breakpenalty ("); print_hex(n); print_char(")");
+  print("breakpenalty ("); print_hex_safe(n); print_char(")");
 @.Invalid KANJI code@>
   help1("I'm skipping this control sequences.");@/
   error; return;
@@ -7386,7 +7450,7 @@ end;
 @ @<Look ahead for glue or kerning@>=
 cur_q:=tail;
 if inhibit_glue_flag<>true then
-  begin { print("IF");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   if (tail=link(head))and(not is_char_node(tail))and(type(tail)=disp_node) then
     goto skip_loop
@@ -7434,7 +7498,7 @@ if inhibit_glue_flag<>true then
   end;
 end
 else
-  begin { print("IT");print_int(cur_l); }
+  begin
   if cur_l<qi(0) then cur_l:=qi(0) else inhibit_glue_flag:=false;
   end;
 skip_loop: do_nothing;

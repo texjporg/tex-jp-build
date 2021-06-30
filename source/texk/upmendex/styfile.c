@@ -47,8 +47,9 @@ void styread(const char *filename)
 		fp=NULL;
 	if (fp==NULL) {
 		fprintf(stderr,"%s does not exist.\n",filename);
-		exit(0);
+		exit(255);
 	}
+	verb_printf(efp,"Scanning style file %s.",filename);
 
 	for (i=0;;i++) {
 		if (fgets(buff,4095,fp)==NULL) break;
@@ -64,6 +65,8 @@ void styread(const char *filename)
 		if (getparachar(buff,"escape",&escape)) continue;
 		if (getparam(buff,"preamble",preamble)) continue;
 		if (getparam(buff,"postamble",postamble)) continue;
+		if (getparam(buff,"setpage_prefix",setpage_prefix)) continue;
+		if (getparam(buff,"setpage_suffix",setpage_suffix)) continue;
 		if (getparam(buff,"group_skip",group_skip)) continue;
 		if (getparam(buff,"lethead_prefix",lethead_prefix)) continue;
 		if (getparam(buff,"heading_prefix",lethead_prefix)) continue;
@@ -90,7 +93,6 @@ void styread(const char *filename)
 		}
 		if (getparam(buff,"item_0",item_0)) continue;
 		if (getparam(buff,"item_1",item_1)) continue;
-		if (getparam(buff,"item_2",item_2)) continue;
 		if (getparam(buff,"item_2",item_2)) continue;
 		if (getparam(buff,"item_01",item_01)) continue;
 		if (getparam(buff,"item_x1",item_x1)) continue;
@@ -130,8 +132,8 @@ void styread(const char *filename)
 			letter_head=atoi(&buff[cc]);
 			continue;
 		}
-		if (getparam(buff,"atama",tmp)) {
-			multibyte_to_widechar(atama,STYBUFSIZE,tmp);
+		if (getparam(buff,"kana_head",tmp)) {
+			multibyte_to_widechar(kana_head,STYBUFSIZE,tmp);
 			continue;
 		}
 		if (getparam(buff,"tumunja",tmp)) {
@@ -156,6 +158,8 @@ void styread(const char *filename)
 		if (getparam(buff,"icu_attributes", icu_attr_str   )) continue;
 	}
 	fclose(fp);
+
+	verb_printf(efp,"...done.\n");
 }
 
 /*   analize string parameter of style file   */
@@ -164,6 +168,10 @@ static void convline(char *buff1, int start, char *buff2)
 	int i,j,cc;
 
 	for (i=start,j=cc=0;;i++) {
+		if (j==STYBUFSIZE-1) {
+			buff2[j]='\0';
+			break;
+		}
 		if (buff1[i]=='\"') {
 			if (cc==0) {
 				cc=1;
@@ -190,6 +198,10 @@ static void convline(char *buff1, int start, char *buff2)
 				if (len<0) {
 					verb_printf(efp,"\nWarning: Illegal input of lead byte 0x%x in UTF-8.", (unsigned char)buff1[i]);
 					continue;
+				}
+				else if (j+len>STYBUFSIZE-1) {
+					buff2[j]='\0';
+					break;
 				}
 				while(len--) {
 					buff2[j++]=buff1[i++];

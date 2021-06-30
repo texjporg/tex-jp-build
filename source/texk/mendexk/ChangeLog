@@ -1,3 +1,33 @@
+2021-06-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* fwrite.c: Avoid segmentation fault for unwritable fopen.
+	Recognize symhead_{positive,negative} for non-default
+	character_order. 
+	* pageread.c, styfile.c: Exit code 255 for non-existent
+	style/log file.
+	* version.h: Date [13-Jun-2021], but still Version 3.5 (bugfix
+	only).
+
+2021-06-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* configure.ac, version.h:
+	Version 3.5 [6-Jun-2021].
+	* main.c, styfile.c:
+	Accept multiple numbers of style files by option '-s'.
+	* tests/mendex.test, tests/uni[12].ist:
+	Add a new test.
+	* mendex.1{,ja}, mendex.ja.txt:
+	Update documents.
+
+2021-05-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* main.c, configure.ac, version.h:
+	Version 3.4 [19-May-2021].
+	* styfile.c, var.h, exvar.h:
+	Fix a bug of reading keywords "setpage_prefix", "setpage_suffix"
+	in style file.
+	More strictly check string length.
+
 2021-05-09  Karl Berry  <karl@freefriends.org>
 
 	* mendex.h (page.attr): use int, not char, since we do signed

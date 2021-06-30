@@ -1,3 +1,49 @@
+2021-06-19  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac: pthread doc update; also needed in bibtexu (q.v.).
+
+2021-06-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* configure.ac: variadic checks before AC_PROG_CXX, to avoid error
+	of C++ compiler detection in some environments.
+	Report from Vadim Kantorov,
+	https://github.com/t-tk/upmendex-package/issues/1
+	
+	* main.c: Add ICU version to banner.
+
+2021-06-13  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	Same fixes as for mendex.
+	* fwrite.c:
+	Avoid segmentation fault for unwritable fopen.
+	* pageread.c, styfile.c: Exit code 255 for non-existent
+	style/log file.
+
+2021-06-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.57  Beta version.
+	* configure.ac: Bump version.
+	* main.c, styfile.c:
+	Accept multiple numbers of style files by option '-s'.
+	* main.c, sort.c, styfile.c, fwrite.c, {,ex}kana.h, {,ex}var.h:
+	Add a keyword "kana_head" to style file.
+	Treat "Circled Katakana" as kana.
+	* tests/upmendex.test, tests/uni[12].ist,
+	tests/rangetwo.{idx,ind,ist}:
+	Add new tests.
+	* upmendex.ja.txt:
+	Update document.
+	Ref. https://github.com/texjporg/tex-jp-build/issues/116
+
+2021-05-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.56  Beta version.
+	* configure.ac: Bump version.
+	* styfile.c:
+	Fix a bug of reading keywords "setpage_prefix", "setpage_suffix"
+	in style file.
+	More strictly check string length.
+
 2021-05-09  Karl Berry  <karl@freefriends.org>
 
 	* mendex.h (page.attr): use int, not char, since we do signed
