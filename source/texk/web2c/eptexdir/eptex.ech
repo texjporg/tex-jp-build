@@ -3,9 +3,15 @@
 
 %% new primitives by e-pTeX
 %%
+%% \epTeXversion
+%% \epTeXinputencoding <euc|sjis|jis|utf8>
+%%
+%% \currentspacingmode: 1 iff auto_spacing
+%% \currentxspacingmode: 1 iff auto_xspacing
 %% \lastnodechar: the (internal) character code of the last node
 %%   -1: non-character or null
 %% \lastnodesubtype: the (internal) subtype of the last node
+%%   note: returns a value from the type if the node is s math noad.
 %%   -1: null
 %%   fallback to 0 if not explicitly set
 %% \readpapersizespecial
