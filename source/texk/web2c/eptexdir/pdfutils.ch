@@ -1364,7 +1364,7 @@ init_span(cur_align);
   adjust_hlist(head,false);
 @z
 
-% [37] \vadjust pre + pTeX
+% [37] \vadjust pre
 @x
   cur_tail:=adjust_tail; adjust_tail:=null;
 @y
@@ -1503,7 +1503,7 @@ save_ptr := save_ptr + 2;
   d:=split_max_depth; f:=floating_penalty; unsave; save_ptr := save_ptr - 2;
 @z
 
-% [47] \vadjust pre
+% [47] \vadjust pre + pTeX
 @x
       r:=get_node(small_node_size); type(r):=adjust_node;@/
       subtype(r):=0; {the |subtype| is not used}
