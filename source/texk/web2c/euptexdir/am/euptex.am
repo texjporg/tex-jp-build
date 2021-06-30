@@ -69,7 +69,6 @@ euptex_ch_srcs = \
 	eptexdir/fam256.ch \
 	euptexdir/pdfstrcmp-eup-pre.ch \
 	eptexdir/pdfutils.ch \
-	eptexdir/vadjust_pre.ch \
 	euptexdir/pdfstrcmp-eup-post.ch \
 	eptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
