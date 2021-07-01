@@ -2,6 +2,7 @@
 
 	* eptex.ech: Revise \lastnodesubtype to show math "noad" types,
 	  because \lastnodetype returns 15 for all math "noads".
+	* pdfutils.ch: Add \vadjust pre (by Hironobu Yamashita).
 	* eptex.ech, eptex_version.h: e-pTeX version 210701.
 	* tests/lastnodesubtype_math.tex: Added.
 
