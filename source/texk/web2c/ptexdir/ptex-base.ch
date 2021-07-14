@@ -1729,11 +1729,11 @@ if j>0 then for i:=start to j-1 do
 @y
 if j>0 then begin
   i:=start;
-  if loc<=j-1 then begin
+  if (loc<=j-1)and(start<=loc) then begin
     for i:=start to loc-1 do
       if buffer2[i]>0 then
         print_char(@"100*buffer2[i]+buffer[i]) else print(buffer[i]);
-    set_trick_count; print_unread_buffer_with_ptenc(loc,j);
+        set_trick_count; print_unread_buffer_with_ptenc(loc,j);
 	end
   else
     for i:=start to j-1 do
