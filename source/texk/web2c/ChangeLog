@@ -1,3 +1,20 @@
+2021-07-25  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* tex.ch:
+	set limit before "cannot \read from terminal" error etc.
+
+2021-07-22  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (50.1308): when fmt loading fails because the string
+	checksums are different, say that explicitly, not just
+	"different executable".
+
+2021-07-19  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* tex.ch (term_input, @<Input for \.{\\read} from the terminal@>):
+	initialize limit to avoid printing some garbage.
+	https://tug.org/pipermail/tex-k/2021-July/003630.html
+
 2021-07-14  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctangleboot.cin,
