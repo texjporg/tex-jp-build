@@ -280,7 +280,18 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 				}
 			}
 			else {
-				if (lethead_flag!=0 && symbol_flag) {
+				if (lethead_flag!=0 && symbol_flag==2 && chset==CH_NUMERIC) {
+					if (strlen(numeric)) {
+						fprintf(fp,"%s%s%s",lethead_prefix,numeric,lethead_suffix);
+					}
+					else if (lethead_flag>0) {
+						fprintf(fp,"%s%s%s",lethead_prefix,numhead_positive,lethead_suffix);
+					}
+					else if (lethead_flag<0) {
+						fprintf(fp,"%s%s%s",lethead_prefix,numhead_negative,lethead_suffix);
+					}
+				}
+				if (lethead_flag!=0 && (symbol_flag==1 || (symbol_flag==2 && chset!=CH_NUMERIC))) {
 					if (strlen(symbol)) {
 						fprintf(fp,"%s%s%s",lethead_prefix,symbol,lethead_suffix);
 					}
@@ -398,9 +409,22 @@ void indwrite(char *filename, struct index *ind, int pagenum)
 				}
 			}
 			else {
-				if (CH_LATIN<=chset_prev&&chset_prev<=CH_THAI){
-					fputs(group_skip,fp);
-					if (lethead_flag!=0 && symbol_flag) {
+				if (chset_prev!=chset) {
+					if ((CH_LATIN<=chset_prev&&chset_prev<=CH_THAI) || symbol_flag==2)
+						fputs(group_skip,fp);
+					if (lethead_flag!=0 && symbol_flag==2 && chset==CH_NUMERIC) {
+						if (strlen(numeric)) {
+							fprintf(fp,"%s%s%s",lethead_prefix,numeric,lethead_suffix);
+						}
+						else if (lethead_flag>0) {
+							fprintf(fp,"%s%s%s",lethead_prefix,numhead_positive,lethead_suffix);
+						}
+						else if (lethead_flag<0) {
+							fprintf(fp,"%s%s%s",lethead_prefix,numhead_negative,lethead_suffix);
+						}
+					}
+					if (lethead_flag!=0 && (symbol_flag==1 && (CH_LATIN<=chset_prev&&chset_prev<=CH_THAI) ||
+								symbol_flag==2 && chset!=CH_NUMERIC) ) {
 						if (strlen(symbol)) {
 							fprintf(fp,"%s%s%s",lethead_prefix,symbol,lethead_suffix);
 						}

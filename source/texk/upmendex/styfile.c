@@ -118,6 +118,7 @@ void styread(const char *filename)
 			continue;
 		}
 		if (getparam(buff,"symbol",symbol)) continue;
+		if (getparam(buff,"numeric",numeric)) continue;
 		cc=scompare(buff,"symbol_flag");
 		if (cc!= -1) {
 			symbol_flag=atoi(&buff[cc]);
