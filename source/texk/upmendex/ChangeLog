@@ -4,6 +4,8 @@
 	Strict check for "icu_attributes" in style file.
 	* sort.c:
 	Strict check for "character_order" in style file.
+	* fwrite.c:
+	Fix a bug when "symbol_flag" is 0.
 	* tests/upmendex.test, tests/attr1.{ist,ind},
 	tests/locale1.ind, tests/rule.{idx,ind}:
 	Add a new test and update conventional tests.
