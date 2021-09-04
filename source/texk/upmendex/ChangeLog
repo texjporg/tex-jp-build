@@ -1,3 +1,37 @@
+2021-09-04  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.59  Beta version.
+	* configure.ac: Bump version.
+	* fwrite.c, styfile.c, {,ex}var.h:
+	Support output order of symbols and numbers separately
+	when "symbol_flag" is 2 in style file.
+	* sort.c:
+	Accept combination of "icu_locale" and "icu_rules" in style file.
+	If simultaneously specified, collation rules specified by "icu_rules" are
+	added on collation rules specified by "icu_locale".
+	* tests/upmendex.test, tests/rule.{idx,ind}, tests/locale2.ist,
+	tests/{locale1,attri1,locale2-rule}.ind:
+	Add a new test and update conventional tests.
+
+2021-08-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Strict check for "icu_attributes" in style file.
+	* sort.c:
+	Strict check for "character_order" in style file.
+	* fwrite.c:
+	Fix a bug when "symbol_flag" is 0.
+	* tests/upmendex.test, tests/attr1.{ist,ind},
+	tests/locale1.ind, tests/rule.{idx,ind}:
+	Add a new test and update conventional tests.
+
+2021-08-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Add a alias "headings_flag" of the keyword "heading_flag"
+	in style file for compatibility with makeindex.
+	Warn if specifier in style file is unknown.
+
 2021-08-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* sort.c:

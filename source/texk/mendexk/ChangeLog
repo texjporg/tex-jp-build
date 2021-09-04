@@ -1,3 +1,27 @@
+2021-09-04  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* configure.ac, version.h:
+	Version 3.6 [6-Jun-2021].
+	* styfile.c, sort.c, fwrite.c, mendex.h, {,ex}var.h:
+	Support output order of symbols and numbers separately
+	when "symbol_flag" is 2 in style file.
+
+2021-08-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* sort.c:
+	Strict check for "character_order" in style file.
+	* fwrite.c:
+	Fix a bug when "symbol_flag" is 0.
+	* version.h: Date [29-Aug-2021]
+
+2021-08-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Add a alias "headings_flag" of the keyword "heading_flag"
+	in style file for compatibility with makeindex.
+	Warn if specifier in style file is unknown.
+	* version.h: Date [28-Aug-2021]
+
 2021-06-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* fwrite.c: Avoid segmentation fault for unwritable fopen.
