@@ -2,7 +2,7 @@
 
 	* configure.ac, version.h:
 	Version 3.6 [6-Jun-2021].
-	* styfile.c, sort.c, fwrite.c, styfile.c, mendex.h, {,ex}var.h:
+	* styfile.c, sort.c, fwrite.c, mendex.h, {,ex}var.h:
 	Support output order of symbols and numbers separately
 	when "symbol_flag" is 2 in style file.
 
