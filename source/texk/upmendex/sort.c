@@ -528,26 +528,40 @@ int is_comb_diacritical_mark(UChar *c)
 
 int chkcontinue(struct page *p, int num)
 {
-	int i,j,cc=0,num1,num2;
+	int i,j,cc=0,num1,num2,k1,k2,pclen;
 	char buff[16];
 
+	pclen=strlen(page_compositor);
 	for (i=0;i<3;i++) {
 		if ((p[num].attr[i]<0)&&(p[num+1].attr[i]<0)) return 1;
 		else if (p[num].attr[i]!=p[num+1].attr[i]) return 0;
 
+		k1=k2=0;
 		for (j=cc;j<strlen(p[num].page);j++) {
-			if (strncmp(&p[num].page[j],page_compositor,strlen(page_compositor))==0) break;
+			if (strncmp(&p[num].page[j],page_compositor,pclen)==0) {
+				k1=j;
+				break;
+			}
 		}
 		strncpy(buff,&p[num].page[cc],j);
 		buff[j]='\0';
 		num1=pnumconv(buff,p[num].attr[i]);
 
 		for (j=cc;j<strlen(p[num+1].page);j++) {
-			if (strncmp(&p[num+1].page[j],page_compositor,strlen(page_compositor))==0) break;
+			if (strncmp(&p[num+1].page[j],page_compositor,pclen)==0) {
+				k2=j;
+				break;
+			}
 		}
 		strncpy(buff,&p[num+1].page[cc],j);
 		buff[j]='\0';
 		num2=pnumconv(buff,p[num+1].attr[i]);
+		if (k1>0 || k2>0) {
+			if (k1!=k2) return 0;
+			if (strncmp(&p[num].page[cc],&p[num+1].page[cc],k1)!=0) return 0;
+			cc=j+pclen;
+			continue;
+		}
 
 		if (num1==num2 || num1+1==num2) {
 			if (i==2) return 1;
@@ -556,7 +570,7 @@ int chkcontinue(struct page *p, int num)
 		}
 		else if (num1!=num2) return 0;
 
-		cc=j+strlen(page_compositor);
+		cc=j+pclen;
 	}
 
 	return 1;

@@ -146,6 +146,22 @@ void verb_printf(FILE *fp, const char *format, ...)
     if (fp!=stderr) fputs(print_buff, fp);
 }
 
+static int pnumconv2(struct page *p)
+{
+	int j,k,cc,pclen;
+
+	pclen=strlen(page_compositor);
+	for (j=k=cc=0;j<strlen(p->page);j++) {
+		if (strncmp(p->page+j,page_compositor,pclen)==0) {
+			j+=pclen;
+			k=j;
+			cc++;
+			continue;
+		}
+	}
+	return pnumconv(p->page+k,p->attr[cc]);
+}
+
 
 /*   write ind file   */
 void indwrite(char *filename, struct index *ind, int pagenum)
@@ -507,7 +523,7 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 	for(j=0;j<ind[num].num;j++) {
 		cc=range_check(ind[num],j,lbuff);
 		if (cc>j) {
-			if (pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0])==pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])) {
+			if (pnumconv2(&ind[num].p[j])==pnumconv2(&ind[num].p[cc])) {
 				j=cc-1;
 				continue;
 			}
@@ -518,15 +534,15 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 			if (strlen(ind[num].p[j].enc)>0) {
 				SPRINTF(buff,"%s%s%s",encap_prefix,ind[num].p[j].enc,encap_infix);
 			}
-			if (strlen(suffix_3p)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))==2) {
+			if (strlen(suffix_3p)>0 && (pnumconv2(&ind[num].p[cc])-pnumconv2(&ind[num].p[j]))==2) {
 				SAPPENDF(buff,"%s",ind[num].p[j].page);
 				SAPPENDF(buff,"%s",suffix_3p);
 			}
-			else if (strlen(suffix_mp)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))>=2) {
+			else if (strlen(suffix_mp)>0 && (pnumconv2(&ind[num].p[cc])-pnumconv2(&ind[num].p[j]))>=2) {
 				SAPPENDF(buff,"%s",ind[num].p[j].page);
 				SAPPENDF(buff,"%s",suffix_mp);
 			}
-			else if (strlen(suffix_2p)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))==1) {
+			else if (strlen(suffix_2p)>0 && (pnumconv2(&ind[num].p[cc])-pnumconv2(&ind[num].p[j]))==1) {
 				SAPPENDF(buff,"%s",ind[num].p[j].page);
 				SAPPENDF(buff,"%s",suffix_2p);
 			}
@@ -691,8 +707,8 @@ static int range_check(struct index ind, int count, char *lbuff)
 			break;
 		}
 	}
-	cc1=pnumconv(ind.p[i-1].page,ind.p[i-1].attr[0]);
-	cc2=pnumconv(ind.p[count].page,ind.p[count].attr[0]);
+	cc1=pnumconv2(&ind.p[i-1]);
+	cc2=pnumconv2(&ind.p[count]);
 	if (cc1>=cc2+2 || (cc1>=cc2+1 && strlen(suffix_2p)) || force) {
 		return i-1;
 	}
