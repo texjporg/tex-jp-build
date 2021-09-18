@@ -504,15 +504,30 @@ static void chkpageattr(struct page *p)
 			p->attr[cc]=pattr[cc];
 			cc++;
 			i+=pclen-1;
+			if (cc>=PAGE_COMPOSIT_DEPTH) {
+				if (pclen>0)
+					verb_printf(efp, "\nToo many fields of page number \"%s\".\n", p->page);
+				else
+					verb_printf(efp, "\nIllegular page_comositor specification.\n");
+				exit(253);
+			}
 		}
 		else {
 			cnt=0;
-ATTRLOOP:
 			if (!((*page0>='0' && *page0<='9') || (*page0>='A' && *page0<='Z') || (*page0>='a' && *page0<='z'))) {
 				p->attr[cc]= -1;
 				if (cc<2) p->attr[++cc]= -1;
 				return;
 			}
+			pcpos=strstr(page0,page_compositor);
+			j=pcpos ? pcpos-page0 : strlen(page0);
+			if (j>15) {
+				verb_printf(efp, "\nToo long page number string \"%s\".\n", page0);
+				exit(253);
+			}
+			strncpy(buff,page0,j);
+			buff[j]='\0';
+ATTRLOOP:
 			cnt++;
 			if (cnt>pplen) {
 				verb_printf(efp, "\nFailed to find page type for page \"%s\" in page_precedence specification (%s).\n",
@@ -520,18 +535,10 @@ ATTRLOOP:
 				exit(253);
 			}
 
-			pcpos=strstr(page0,page_compositor);
-			if (pcpos) {
-				j=pcpos-page0;
-				strncpy(buff,page0,j);
-				buff[j]='\0';
-			} else {
-				strcpy(buff,page0);
-			}
 			switch(page_precedence[pattr[cc]]) {
 			case 'r':
 				if (strchr("ivxlcdm",*page0)==NULL ||
-				    (strchr("lcdm",*page0) && strchr(page_precedence,'a') && strlen(buff)==1))  {
+				    (strchr("lcdm",*page0) && strchr(page_precedence,'a') && strlen(buff)==1 && pcpos))  {
 					/* heuristic detection as alphabet since L=50, C=100, D=100, M=1000 are quite large */
 					if (pattr[cc]<pplen-1)
 						pattr[cc]++;
@@ -542,7 +549,7 @@ ATTRLOOP:
 				break;
 			case 'R':
 				if (strchr("IVXLCDM",*page0)==NULL ||
-				    (strchr("LCDM",*page0) && strchr(page_precedence,'A') && strlen(buff)==1))  {
+				    (strchr("LCDM",*page0) && strchr(page_precedence,'A') && strlen(buff)==1 && pcpos))  {
 					/* heuristic detection as alphabet since L=50, C=100, D=100, M=1000 are quite large */
 					if (pattr[cc]<pplen-1)
 						pattr[cc]++;
