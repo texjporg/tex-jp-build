@@ -62,6 +62,8 @@ static int wcomp(const void *p, const void *q)
 {
 	int i, j, prechar = 0;
 	const struct index *index1 = p, *index2 = q;
+	char ch1, ch2;
+	char *str1, *str2;
 
 	scount++;
 
@@ -73,49 +75,54 @@ static int wcomp(const void *p, const void *q)
 
 		for(i=0;;i++) {
 
+			str1=&((*index1).dic[j][i]);
+			str2=&((*index2).dic[j][i]);
+			ch1=(*index1).dic[j][i];
+			ch2=(*index2).dic[j][i];
+
 /*   even   */
-			if (((*index1).dic[j][i]=='\0')&&((*index2).dic[j][i]=='\0')) break;
+			if ((ch1=='\0')&&(ch2=='\0')) break;
 
 /*   index1 is shorter   */
-			if ((*index1).dic[j][i]=='\0') return -1;
+			if (ch1=='\0') return -1;
 
 /*   index2 is shorter   */
-			if ((*index2).dic[j][i]=='\0') return 1;
+			if (ch2=='\0') return 1;
 
 /*   priority   */
 			if ((priority!=0)&&(i>0)) {
 				if (prechar==0) {
-					if ((japanese(&(*index1).dic[j][i]))
-						&&(!japanese(&(*index2).dic[j][i])))
+					if ((japanese(str1))
+						&&(!japanese(str2)))
 						return -1;
 
-					if ((japanese(&(*index2).dic[j][i]))
-						&&(!japanese(&(*index1).dic[j][i])))
+					if ((japanese(str2))
+						&&(!japanese(str1)))
 						return 1;
 				}
 				else {
-					if ((japanese(&(*index1).dic[j][i]))
-						&&(!japanese(&(*index2).dic[j][i])))
+					if ((japanese(str1))
+						&&(!japanese(str2)))
 						return 1;
 
-					if ((japanese(&(*index2).dic[j][i]))
-						&&(!japanese(&(*index1).dic[j][i])))
+					if ((japanese(str2))
+						&&(!japanese(str1)))
 						return -1;
 				}
 			}
 
 /*   compare group   */
-			if (ordering(&(*index1).dic[j][i])<ordering(&(*index2).dic[j][i]))
+			if (ordering(str1)<ordering(str2))
 				return -1;
 
-			if (ordering(&(*index1).dic[j][i])>ordering(&(*index2).dic[j][i]))
+			if (ordering(str1)>ordering(str2))
 				return 1;
 
 /*   symbol pattern   */
-			if ((!numeric(&(*index1).dic[j][i]))&&(numeric(&(*index2).dic[j][i])))
+			if ((!numeric(str1))&&(numeric(str2)))
 				return -1;
 
-			if ((!numeric(&(*index2).dic[j][i]))&&(numeric(&(*index1).dic[j][i])))
+			if ((!numeric(str2))&&(numeric(str1)))
 				return 1;
 
 /*   simple compare   */
