@@ -14,7 +14,7 @@ int line_length=0;
 
 static void printpage(struct index *ind, FILE *fp, int num, char *lbuff);
 static int range_check(struct index ind, int count, char *lbuff);
-static void linecheck(char *lbuff, char *tmpbuff);
+static void linecheck(char *lbuff, char *tmpbuff, int force);
 static void crcheck(char *lbuff, FILE *fp);
 
 /* All buffers have size BUFFERLEN.  */
@@ -397,14 +397,14 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 			if (strlen(ind[num].p[j].enc)>0) {
 				SAPPENDF(tmpbuff,"%s",encap_suffix);
 			}
-			linecheck(lbuff,tmpbuff);
+			linecheck(lbuff,tmpbuff, FALSE);
 			j=cc;
 			if (j==ind[num].num) {
 				goto PRINT;
 			}
 			else {
 				SAPPENDF(tmpbuff,"%s",delim_n);
-				linecheck(lbuff,tmpbuff);
+				linecheck(lbuff,tmpbuff, TRUE);
 			}
 		}
 		else if (strlen(ind[num].p[j].enc)>0) {
@@ -425,19 +425,19 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 				SAPPENDF(tmpbuff,"%s",ind[num].p[j].page);
 				SAPPENDF(tmpbuff,"%s",encap_suffix);
 				SAPPENDF(tmpbuff,"%s",delim_n);
-				linecheck(lbuff,tmpbuff);
+				linecheck(lbuff,tmpbuff, FALSE);
 			}
 			else {
 				SAPPENDF(tmpbuff,"%s",ind[num].p[j].page);
 				SAPPENDF(tmpbuff,"%s",delim_n);
-				linecheck(lbuff,tmpbuff);
+				linecheck(lbuff,tmpbuff, FALSE);
 			}
 		}
 		else {
 /* no encap */
 			SAPPENDF(tmpbuff,"%s",ind[num].p[j].page);
 			SAPPENDF(tmpbuff,"%s",delim_n);
-			linecheck(lbuff,tmpbuff);
+			linecheck(lbuff,tmpbuff, FALSE);
 		}
 	}
 
@@ -469,7 +469,7 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 	else {
 		SAPPENDF(tmpbuff,"%s",ind[num].p[j].page);
 	}
-	linecheck(lbuff,tmpbuff);
+	linecheck(lbuff,tmpbuff, FALSE);
 
 PRINT:
 	fputs(lbuff,fp);
@@ -513,7 +513,7 @@ static int range_check(struct index ind, int count, char *lbuff)
 					if (strlen(ind.p[j].enc)>0) {
 						SPRINTF(tmpbuff,"%s%s%s%s%s%s",encap_prefix,ind.p[j].enc,encap_infix
 						                              ,ind.p[j].page,encap_suffix,delim_n);
-						linecheck(lbuff,tmpbuff);
+						linecheck(lbuff,tmpbuff, FALSE);
 					}
 				}
 			}
@@ -551,9 +551,9 @@ static int range_check(struct index ind, int count, char *lbuff)
 }
 
 /*   check line length   */
-static void linecheck(char *lbuff, char *tmpbuff)
+static void linecheck(char *lbuff, char *tmpbuff, int force)
 {
-	if (line_length+strlen(tmpbuff)>line_max) {
+	if (line_length+strlen(tmpbuff)>line_max && !force) {
 		SAPPENDF(lbuff,"\n");
 		SAPPENDF(lbuff,"%s",indent_space);
 		SAPPENDF(lbuff,"%s",tmpbuff);
