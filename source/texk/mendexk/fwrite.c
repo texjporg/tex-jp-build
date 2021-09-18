@@ -115,6 +115,22 @@ void verb_printf(FILE *fp, const char *format, ...)
     if (fp!=stderr) fputs(print_buff, fp);
 }
 
+static int pnumconv2(struct page *p)
+{
+	int j,k,cc,pclen;
+
+	pclen=strlen(page_compositor);
+	for (j=k=cc=0;j<strlen(p->page);j++) {
+		if (strncmp(p->page+j,page_compositor,pclen)==0) {
+			j+=pclen;
+			k=j;
+			cc++;
+			continue;
+		}
+	}
+	return pnumconv(p->page+k,p->attr[cc]);
+}
+
 
 /*   write ind file   */
 void indwrite(char *filename, struct index *ind, int pagenum)
@@ -348,10 +364,8 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 	for(j=0;j<ind[num].num;j++) {
 		cc=range_check(ind[num],j,lbuff);
 		if (cc>j) {
-			int epage = pnumconv(ind[num].p[cc].page,
-    		       	                     ind[num].p[cc].attr[0]);
-			int bpage = pnumconv(ind[num].p[j].page,
-			                     ind[num].p[j].attr[0]);
+			int epage = pnumconv2(&ind[num].p[cc]);
+			int bpage = pnumconv2(&ind[num].p[j]);
 			if (epage==bpage) {
 				j=cc-1;
 				continue;
@@ -365,13 +379,13 @@ static void printpage(struct index *ind, FILE *fp, int num, char *lbuff)
 			}
 			/* print beginning of range */
 			SAPPENDF(buff,"%s",ind[num].p[j].page);
-			if (strlen(suffix_3p)>0 && (epage-bpage)==2) {
+			if (strlen(suffix_3p)>0 && epage-bpage==2) {
 				SAPPENDF(buff,"%s",suffix_3p);
 			}
-			else if (strlen(suffix_mp)>0 && (epage-bpage)>=2) {
+			else if (strlen(suffix_mp)>0 && epage-bpage>=2) {
 				SAPPENDF(buff,"%s",suffix_mp);
 			}
-			else if (strlen(suffix_2p)>0 && (epage-bpage)==1) {
+			else if (strlen(suffix_2p)>0 && epage-bpage==1) {
 				SAPPENDF(buff,"%s",suffix_2p);
 			}
 			else {
@@ -528,8 +542,8 @@ static int range_check(struct index ind, int count, char *lbuff)
 			break;
 		}
 	}
-	cc1=pnumconv(ind.p[i-1].page,ind.p[i-1].attr[0]);
-	cc2=pnumconv(ind.p[count].page,ind.p[count].attr[0]);
+	cc1=pnumconv2(&ind.p[i-1]);
+	cc2=pnumconv2(&ind.p[count]);
 	if (cc1>=cc2+2 || (cc1>=cc2+1 && strlen(suffix_2p)) || force) {
 		return i-1;
 	}
