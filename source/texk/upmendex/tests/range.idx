@@ -19,12 +19,12 @@
 \indexentry{entryC}{2}
 \indexentry{entryC}{3}
 \indexentry{entryC}{4}
-\indexentry{entryC}{iii}
-\indexentry{entryC}{iv}
-\indexentry{entryC}{v}
-\indexentry{entryC}{vi}
+\indexentry{entryC|bold}{iii}
+\indexentry{entryC|bold}{iv}
+\indexentry{entryC|bold}{v}
+\indexentry{entryC|bold}{vi}
 \indexentry{entryC}{IX}
-\indexentry{entryC}{X}
+\indexentry{entryC|bold}{X}
 \indexentry{entryC}{XI}
 \indexentry{entryC}{XII}
 
@@ -97,9 +97,10 @@
 
 \indexentry{entryC1|(}{1}
 \indexentry{entryC1|)}{4}
-\indexentry{entryC1|(}{iii}
+\indexentry{entryC1|(bold}{iii}
 \indexentry{entryC1|)}{vi}
 \indexentry{entryC1|(}{IX}
+\indexentry{entryC1|bold}{X}
 \indexentry{entryC1|)}{XII}
 
 \indexentry{entryD1|(}{c-1}
@@ -121,4 +122,5 @@
 \indexentry{entryF1|(}{V-LIII}
 \indexentry{entryF1|)}{V-LVI}
 \indexentry{entryF1|(}{D-DI}
+\indexentry{entryF1|bold}{D-DII}
 \indexentry{entryF1|)}{D-DIV}
