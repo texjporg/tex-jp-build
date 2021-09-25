@@ -1,3 +1,64 @@
+2021-09-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fread.c:
+	Modify heuristic detection of page number types.
+	* tests/upmendex.test, tests/range.idx, tests/range[123].ind,
+	tests/pprecB.idx, tests/pprec[34].ist, tests/pprecB-[034].ind:
+	Update tests.
+
+2021-09-18  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fread.c, fwrite.c, sort.c, mendex.h, {,ex}var.h:
+	Extend levels of page numbers from 3 to 10
+	for compatibility with makeindex.
+	Fix a bug of page ranges with multi-level page numbers.
+	* fread.c:
+	Strict check for "page_precedence" and "page_compositor" in style file.
+	* fwrite.c:
+	Do not break lines before "delim_n".
+	* tests/upmendex.test, tests/range.idx, tests/range[123].{ist,ind},
+	removed tests/rangetwo.*:
+	Update tests.
+
+2021-09-05  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fwrite.c:
+	Support I-Y ordering in Lithuanian.
+
+2021-09-04  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 0.59  Beta version.
+	* configure.ac: Bump version.
+	* fwrite.c, styfile.c, {,ex}var.h:
+	Support output order of symbols and numbers separately
+	when "symbol_flag" is 2 in style file.
+	* sort.c:
+	Accept combination of "icu_locale" and "icu_rules" in style file.
+	If simultaneously specified, collation rules specified by "icu_rules" are
+	added on collation rules specified by "icu_locale".
+	* tests/upmendex.test, tests/rule.{idx,ind}, tests/locale2.ist,
+	tests/{locale1,attri1,locale2-rule}.ind:
+	Add a new test and update conventional tests.
+
+2021-08-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Strict check for "icu_attributes" in style file.
+	* sort.c:
+	Strict check for "character_order" in style file.
+	* fwrite.c:
+	Fix a bug when "symbol_flag" is 0.
+	* tests/upmendex.test, tests/attr1.{ist,ind},
+	tests/locale1.ind, tests/rule.{idx,ind}:
+	Add a new test and update conventional tests.
+
+2021-08-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Add a alias "headings_flag" of the keyword "heading_flag"
+	in style file for compatibility with makeindex.
+	Warn if specifier in style file is unknown.
+
 2021-08-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* sort.c:

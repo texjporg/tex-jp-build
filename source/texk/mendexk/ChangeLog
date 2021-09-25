@@ -1,3 +1,51 @@
+2021-09-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fread.c:
+	Modify heuristic detection of page number types.
+	* tests/mendex.test, tests/range.idx, tests/range[123].ind,
+	tests/pprecB.idx, tests/pprec[34].ist, tests/pprecB-[034].ind:
+	Update tests.
+	* version.h: Date [19-Sep-2021]
+
+2021-09-18  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fread.c, fwrite.c, sort.c, mendex.h, {,ex}var.h:
+	Extend levels of page numbers from 3 to 10
+	for compatibility with makeindex.
+	Fix a bug of page ranges with multi-level page numbers.
+	* fread.c:
+	Strict check for "page_precedence" and "page_compositor" in style file.
+	* fwrite.c:
+	Do not break lines before "delim_n".
+	* tests/mendex.test, tests/range.idx, tests/range[123].{ist,ind},
+	removed tests/rangetwo.*:
+	Update tests.
+	* version.h: Date [18-Sep-2021]
+
+2021-09-04  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* configure.ac, version.h:
+	Version 3.6 [4-Sep-2021].
+	* styfile.c, sort.c, fwrite.c, mendex.h, {,ex}var.h:
+	Support output order of symbols and numbers separately
+	when "symbol_flag" is 2 in style file.
+
+2021-08-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* sort.c:
+	Strict check for "character_order" in style file.
+	* fwrite.c:
+	Fix a bug when "symbol_flag" is 0.
+	* version.h: Date [29-Aug-2021]
+
+2021-08-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* styfile.c:
+	Add a alias "headings_flag" of the keyword "heading_flag"
+	in style file for compatibility with makeindex.
+	Warn if specifier in style file is unknown.
+	* version.h: Date [28-Aug-2021]
+
 2021-06-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* fwrite.c: Avoid segmentation fault for unwritable fopen.

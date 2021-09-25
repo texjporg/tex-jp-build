@@ -2,7 +2,7 @@ extern FILE *efp;
 
 extern int lines,idxcount,acc,reject;
 extern int prange,fsti,lorder,bcomp,force,fpage,gflg,verb,debug;
-extern int warn,scount,pattr[3];
+extern int warn,scount,pattr[];
 
 extern struct index *ind;
 
@@ -26,7 +26,7 @@ extern int line_max;
 extern char indent_space[];
 extern int indent_length;
 extern int priority;
-extern char symbol[];
+extern char symhead[],numhead[];
 extern char symhead_positive[],symhead_negative[];
 extern char numhead_positive[],numhead_negative[];
 extern int symbol_flag;
