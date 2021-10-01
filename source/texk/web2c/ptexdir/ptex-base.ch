@@ -376,6 +376,40 @@ else begin j:=str_start[s];
     end;
   end;
 end;
+
+procedure slow_print_filename(@!s:integer);
+  {prints string |s| which represents filename, without code conversion}
+var i,j,l:pool_pointer; p:integer;
+begin if (s>=str_ptr) or (s<256) then print(s)
+else begin i:=str_start[s]; l:=str_start[s+1];
+  while i<l do begin
+    p:=multistrlenfilename(str_pool, l, i);
+    if p<>1 then
+      begin for j:=i to i+p-1 do print_char(so(str_pool[j]));
+      i:=i+p; end
+    else begin print(so(str_pool[i])); incr(i); end;
+    end;
+  end;
+end;
+
+procedure print_quoted(@!s:integer);
+  {prints string |s| which represents filename, 
+  omitting quotes and with code covversion}
+var i,l:pool_pointer; j,p:integer;
+begin if s<>0 then begin
+  i:=str_start[s]; l:=str_start[s+1];
+  while i<l do begin
+    p:=multistrlenshort(str_pool, l, i);
+    if p<>1 then begin
+      for j:=i to i+p-1 do print_char(@"100+so(str_pool[j]));
+      i:=i+p; end
+    else begin
+      if so(str_pool[i])<>"""" then print(so(str_pool[i]));
+      incr(i); end;
+    end;
+  end;
+end;
+
 @z
 
 @x [5.61] l.1656 - pTeX:
@@ -2808,7 +2842,7 @@ else  begin str_room(1); append_char(c); {contribute |c| to the current string}
 end;
 @z
 
-@x [29.518] - print_quoted in pTeX: file name is always printed with code conversion
+@x [29.518] - print_quoted in pTeX is already defined
 @d print_quoted(#) == {print string |#|, omitting quotes}
 if #<>0 then
   for j:=str_start[#] to str_start[#+1]-1 do
@@ -2816,14 +2850,6 @@ if #<>0 then
       print(so(str_pool[j]))
 
 @y
-@d print_quoted(#) == {print string |#|, omitting quotes}
-if #<>0 then
-  for j:=str_start[#] to str_start[#+1]-1 do
-    if so(str_pool[j])<>"""" then
-      begin 
-      if so(str_pool[j])>=@"100 then print_char(so(str_pool[j]))
-      else print(so(str_pool[j])); end
-
 @z
 
 @x
@@ -2831,7 +2857,7 @@ if #<>0 then
   if k<=file_name_size then name_of_file[k]:=xchr[c];
   end end
 @y
-@d append_to_name(#)==begin if (#)>=@"100 then c:=(#)-256 else c:=#;
+@d append_to_name(#)==begin if (#)>=@"100 then c:=(#)-@"100 else c:=#;
   { Since the type of |c| is |ASCII_code|, above if-statement might not be needed }
   if not (c="""") then begin incr(k);
   if k<=file_name_size then name_of_file[k]:=xchr[c];
@@ -2899,6 +2925,14 @@ else
   wlog(' (');
   wlog(conststringcast(get_enc_string));
   wlog(')');
+@z
+
+@x [29.???] pTeX - start_input
+print_char("("); incr(open_parens);
+slow_print(full_source_filename_stack[in_open]); update_terminal;
+@y
+print_char("("); incr(open_parens);
+slow_print_filename(full_source_filename_stack[in_open]); update_terminal;
 @z
 
 @x [30.560] l.10968 - pTeX:
@@ -7824,7 +7858,7 @@ are part of Japaense characters when the procedure is called.
 @<Basic printing...@>=
 procedure print_unread_buffer_with_ptenc(@!f, @!l: integer);
 { print |buffer[f..l-1]| with code conversion }
-var @!i,@!j,@!p: integer;
+var @!i,@!j: pool_pointer; @!p: integer;
 begin
   i:=f;
   while i<l do begin

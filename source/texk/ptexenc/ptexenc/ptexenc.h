@@ -65,6 +65,9 @@ extern PTENCDLL long fromBUFF(unsigned char *s, int len, int pos);
 extern PTENCDLL long fromBUFFshort(unsigned short *s, int len, int pos);
 extern PTENCDLL long toBUFF(long inter);
 
+/* for outputting filename (*s) to the terminal */
+extern PTENCDLL int multistrlenfilename(unsigned short *s, int len, int pos);
+
 /* internal (EUC/SJIS/UPTEX) from/to DVI (JIS/UCS) code conversion */
 extern PTENCDLL long toDVI (long kcode);
 extern PTENCDLL long fromDVI (long kcode);

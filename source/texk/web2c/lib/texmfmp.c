@@ -3040,7 +3040,7 @@ maketexstring(const_string s)
   }
 #else /* ! XeTeX */
   while (len-- > 0)
-    strpool[poolptr++] = *s++;
+    strpool[poolptr++] = 0xFF&(*s++);
 #endif /* ! XeTeX */
 
   return makestring();
@@ -3058,9 +3058,19 @@ makefullnamestring(void)
 strnumber
 getjobname(strnumber name)
 {
-    strnumber ret = name;
+    strnumber ret = name; int i, l, p;
     if (c_job_name != NULL)
       ret = maketexstring(c_job_name);
+#ifdef IS_pTeX
+    i = strstart[ret]; l = strstart[ret+1];
+    while (i<l)
+     {
+        p = multistrlenshort(strpool, l, i);
+        if (p>1) 
+             for (int j=i+p; i<j; i++) strpool[i] = (0xFF&strpool[i])+0x100;
+        else i++;
+     }
+#endif /* IS_pTeX */
     return ret;
 }
 #endif

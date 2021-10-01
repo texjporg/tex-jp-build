@@ -281,6 +281,24 @@ int multistrlen ## SUFF(TYPE *s, int len, int pos) \
 DEFINE_MULTISTRLEN(,unsigned char);
 DEFINE_MULTISTRLEN(short,unsigned short);
 
+/* for outputting filename (*s) to the terminal */
+int multistrlenfilename(unsigned short *s, int len, int pos)
+{
+    s += pos; len -= pos;
+    if (terminal_enc == ENC_UTF8) {
+        int ret = UTF8Slengthshort(s, len);
+        if (ret < 0) return 1;
+        return ret;
+    }
+    if (len < 2) return 1;
+    if (terminal_enc == ENC_SJIS) {
+        if (isSJISkanji1(s[0]) && isSJISkanji2(s[1])) return 2;
+    } else { /* EUC */
+        if (isEUCkanji1(s[0])  && isEUCkanji2(s[1]))  return 2;
+    }
+    return 1;
+}
+
 /* with not so strict range check */
 int multibytelen (int first_byte)
 {
