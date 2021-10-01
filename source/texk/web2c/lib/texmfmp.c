@@ -3061,7 +3061,7 @@ getjobname(strnumber name)
     strnumber ret = name; int i, l, p;
     if (c_job_name != NULL)
       ret = maketexstring(c_job_name);
-#ifdef IS_pTeX
+#if IS_pTeX
     i = strstart[ret]; l = strstart[ret+1];
     while (i<l)
      {
