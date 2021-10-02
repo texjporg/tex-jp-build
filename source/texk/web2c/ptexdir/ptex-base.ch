@@ -383,11 +383,11 @@ var i,j,l:pool_pointer; p:integer;
 begin if (s>=str_ptr) or (s<256) then print(s)
 else begin i:=str_start[s]; l:=str_start[s+1];
   while i<l do begin
-    p:=multistrlenfilename(str_pool, l, i);
+    p:=multistrlenshort(str_pool, l, i);
     if p<>1 then
-      begin for j:=i to i+p-1 do print_char(so(str_pool[j]));
+      begin for j:=i to i+p-1 do print_char(@"100+(so(str_pool[j]) mod @"100));
       i:=i+p; end
-    else begin print(so(str_pool[i])); incr(i); end;
+    else begin print(so(str_pool[i]) mod @"100); incr(i); end;
     end;
   end;
 end;
@@ -401,10 +401,10 @@ begin if s<>0 then begin
   while i<l do begin
     p:=multistrlenshort(str_pool, l, i);
     if p<>1 then begin
-      for j:=i to i+p-1 do print_char(@"100+so(str_pool[j]));
+      for j:=i to i+p-1 do print_char(@"100+(so(str_pool[j]) mod @"100));
       i:=i+p; end
     else begin
-      if so(str_pool[i])<>"""" then print(so(str_pool[i]));
+      if so(str_pool[i])<>"""" then print(so(str_pool[i]) mod @"100);
       incr(i); end;
     end;
   end;

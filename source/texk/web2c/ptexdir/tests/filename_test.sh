@@ -24,17 +24,22 @@ cat <<'EOF' > filename_日本語.tex
 EOF
 
 ln -s filename_日本語.tex "filename_日本a.tex"
-eptex "\input {filename_日本a}"
-euptex "\input {filename_日本a}"
+eptex -synctex=1 "\input {filename_日本a}"
+ls *.synctex.gz; rm *.synctex.gz
+euptex -synctex=1 "\input {filename_日本a}"
+ls *.synctex.gz; rm *.synctex.gz
 ls "filename_日本a".*
 rm "filename_日本a".*
 ln -s filename_日本語.tex filename_日本ßſa.tex
-euptex filename_日本ßſa
+euptex -synctex=1 filename_日本ßſa
+ls *.synctex.gz; rm *.synctex.gz
 ls filename_日本ßſa.*
 rm filename_日本ßſa.*
 
-eptex "-jobname=漢ßſa" filename_日本語
+eptex -synctex=1 "-jobname=漢ßſa" filename_日本語
+ls *.synctex.gz; rm *.synctex.gz
 ls 漢*; rm 漢*
-euptex "-jobname=漢ßſa" filename_日本語
+euptex -synctex=1 "-jobname=漢ßſa" filename_日本語
+ls *.synctex.gz; rm *.synctex.gz
 ls 漢*; rm 漢*
 rm filename_日本語.tex
