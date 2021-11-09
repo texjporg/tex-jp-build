@@ -1,3 +1,20 @@
+2021-11-03  Karl Berry  <karl@freefriends.org>
+
+	* am/texmf.am (install-mf-links) [WIN32]: install via libtool,
+	the same change as made for dvipdfmx.
+	https://tug.org/pipermail/dvipdfmx/2021-October/000301.html
+
+2021-10-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: CWEB 4.6 pre-release RC2.
+
+2021-09-21  Karl Berry  <karl@freefriends.org>
+
+	* ac/web2c.ac (kpse_tex_progs): include hitex, disabled by default.
+	* Makefile.am: include hitexdir/am/hitex.am.
+	* hitexdir: new directory.
+
 2021-09-16  Andreas Scherer  <https://ascherer.github.io>
 
 	* Makefile.in,
