@@ -432,8 +432,8 @@ int is_latin(UChar *c)
 	else if ((*c>=0xFF21)&&(*c<=0xFF3A)) return 1; /* Fullwidth Latin Capital Letter */
 	else if ((*c>=0xFF41)&&(*c<=0xFF5A)) return 1; /* Fullwidth Latin Small Letter */
 		/* Property of followings is "Common, So (other symbol)", but seem to be treated as Latin by ICU collator */
-	else if ((*c>=0x24B6)&&(*c<=0x24CF)) return 1; /* CIRCLED LATIN CAPITAL LETTER */
-	else if ((*c>=0x24D0)&&(*c<=0x24E9)) return 1; /* CIRCLED LATIN SMALL LETTER */
+	else if ((*c>=0x24B6)                          /* CIRCLED LATIN CAPITAL LETTER */
+	                     &&(*c<=0x24E9)) return 1; /* CIRCLED LATIN SMALL LETTER */
 
 	if (is_surrogate_pair(c)) {
 		c32=U16_GET_SUPPLEMENTARY(*c,*(c+1));
@@ -509,11 +509,11 @@ int is_hanzi(UChar *c)
 {
 	UChar32 c32;
 
-	if      ((*c>=0x2E80)&&(*c<=0x2EFF)) return 1; /* CJK Radicals Supplement */
-	else if ((*c>=0x2F00)&&(*c<=0x2FDF)) return 1; /* Kangxi Radicals */
+	if      ((*c>=0x2E80)                          /* CJK Radicals Supplement */
+	                     &&(*c<=0x2FDF)) return 1; /* Kangxi Radicals */
 	else if ((*c>=0x31C0)&&(*c<=0x31EF)) return 1; /* CJK Strokes */
-	else if ((*c>=0x3300)&&(*c<=0x33FF)) return 1; /* CJK Compatibility */
-	else if ((*c>=0x3400)&&(*c<=0x4DBF)) return 1; /* CJK Unified Ideographs Extension A */
+	else if ((*c>=0x3300)                          /* CJK Compatibility */
+	                     &&(*c<=0x4DBF)) return 1; /* CJK Unified Ideographs Extension A */
 	else if ((*c>=0x4E00)&&(*c<=0x9FFF)) return 1; /* CJK Unified Ideographs */
 	else if ((*c>=0xF900)&&(*c<=0xFAFF)) return 1; /* CJK Compatibility Ideographs */
 
@@ -554,8 +554,8 @@ int is_greek(UChar *c)
 
 int is_devanagari(UChar *c)
 {
-	if      ((*c>=0x0964)&&(*c<=0x0965)) return 0; /* Generic punctuation for scripts of India */
-	else if ((*c>=0x0966)&&(*c<=0x096F)) return 0; /* Devanagari Digit */
+	if      ((*c>=0x0964)                          /* Generic punctuation for scripts of India */
+	                     &&(*c<=0x096F)) return 0; /* Devanagari Digit */
 	else if ((*c>=0x0900)&&(*c<=0x097F)) return 1; /* Devanagari */
 	else if ((*c>=0xA8E0)&&(*c<=0xA8FF)) return 1; /* Devanagari Extended */
 	else return 0;
@@ -571,9 +571,9 @@ int is_thai(UChar *c)
 
 int is_arabic(UChar *c)
 {
-	if      ((*c>=0x0600)&&(*c<=0x0604)) return 0; /* ARABIC NUMBER SIGN..ARABIC SIGN SAMVAT */
-	else if ((*c==0x0605))               return 0; /* ARABIC NUMBER MARK ABOVE */
-	else if ((*c>=0x0606)&&(*c<=0x0608)) return 0; /* ARABIC-INDIC CUBE ROOT..ARABIC RAY */
+	if      ((*c>=0x0600)                          /* ARABIC NUMBER SIGN..ARABIC SIGN SAMVAT */
+	                                               /* ARABIC NUMBER MARK ABOVE */
+	                     &&(*c<=0x0608)) return 0; /* ARABIC-INDIC CUBE ROOT..ARABIC RAY */
 	else if ((*c==0x060B))               return 0; /* AFGHANI SIGN */
 	else if ((*c==0x060C))               return 0; /* ARABIC COMMA */
 	else if ((*c>=0x060E)&&(*c<=0x060F)) return 0; /* ARABIC POETIC VERSE SIGN..ARABIC SIGN MISRA */
