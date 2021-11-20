@@ -46,4 +46,4 @@ babafou = Marc Baudoin <babafou@babafou.eu.org>
 pathe = Patrick Bideault <pathe@UNKNOWN>
 hironobu = Hironobu Yamashita <h.y.acetaminophen@gmail.com>
 ascherer = Andreas Scherer <andreas_tex@freenet.de>
-mruckert = Martin Ruckert <mruckert@dummy>
+mruckert = Martin Ruckert <martin.ruckert@hm.edu>
