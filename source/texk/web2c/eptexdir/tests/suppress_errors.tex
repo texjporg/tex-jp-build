@@ -1,0 +1,29 @@
+
+\scrollmode
+\def\E#1{}
+\E{a
+
+b}
+\E{c\par d}
+\outer\def\F{hoge}
+\message{\F}
+$ x+1 =
+
+a $
+
+
+\message{===============}
+\suppresslongerror=1
+\suppressoutererror=1
+\suppressmathparerror=1
+
+\E{a
+
+b}
+\E{c\par d}
+\message{\F}
+$ y+2 =
+
+b $
+\bye
+
