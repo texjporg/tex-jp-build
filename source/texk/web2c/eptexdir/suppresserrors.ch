@@ -14,7 +14,7 @@
 @d suppress_long_error_code=etex_int_base+10
 @d suppress_outer_error_code=etex_int_base+11
 @d suppress_mathpar_error_code=etex_int_base+12
-@d eTeX_state_code=etex_int_base+15 {\eTeX\ state variables}
+@d eTeX_state_code=etex_int_base+13 {\eTeX\ state variables}
 @z
 
 @x
@@ -26,7 +26,7 @@
 @d suppress_mathpar_error==int_par(suppress_mathpar_error_code)
 @z
 
-@x
+@x {Perhaps this change hunk is not needed}
 @p procedure check_outer_validity;
 var p:pointer; {points to inserted token list}
 @!q:pointer; {auxiliary pointer}
@@ -113,6 +113,7 @@ begin get_x_token;
 begin repeat get_x_token;
 until (suppress_mathpar_error=0)or(cur_cmd<>par_end);
 @z
+
 @x
 primitive("readpapersizespecial",assign_int,int_base+read_papersize_special_code);@/
 @!@:read_papersize_special_}{\.{\\readpapersizespecial} primitive@>
@@ -127,3 +128,11 @@ primitive("suppressmathparerror",assign_int,int_base+suppress_mathpar_error_code
 @!@:suppress_mathpar_error_}{\.{\\suppressmathparerror} primitive@>
 @z
 
+@x
+read_papersize_special_code:print_esc("readpapersizespecial");
+@y
+read_papersize_special_code:print_esc("readpapersizespecial");
+suppress_long_error_code: print_esc("suppresslongerror");
+suppress_outer_error_code: print_esc("suppressoutererror");
+suppress_mathpar_error_code: print_esc("suppressmathparerror");
+@z
