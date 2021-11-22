@@ -1,29 +1,47 @@
-
-\scrollmode
+\batchmode
+\output{\deadcycles0\setbox0\box255}
 \def\E#1{}
+\message{*** \string\par\ in non-\string\long\ cmd.}
 \E{a
 
 b}
 \E{c\par d}
 \outer\def\F{hoge}
+\message{*** \string\outer\ cmd in \string\message.}
 \message{\F}
+\message{*** \string\par\ in math mode.}
 $ x+1 =
 
-a $
+a\par b$
 
+$$\eqno{a}\par$$
+
+\message{*** \string\pdfprimitive\ and non-primitive.}
+\ifdefined\primitive
+  \primitive\batchmode
+  \primitive\hoge
+\else
+  \pdfprimitive\batchmode
+  \pdfprimitive\hoge
+\fi
 
 \message{===============}
 \suppresslongerror=1
 \suppressoutererror=1
 \suppressmathparerror=1
 
+\message{*** \string\par\ in non-\string\long\ cmd.}
 \E{a
 
 b}
 \E{c\par d}
+\message{*** \string\outer\ cmd in \string\message.}
 \message{\F}
-$ y+2 =
+\message{*** \string\par\ in math mode.}
+$ x+1 =
 
-b $
+a\par b$
+
+$$\eqno{a}\par$$
 \bye
 

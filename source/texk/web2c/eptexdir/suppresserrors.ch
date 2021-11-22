@@ -1,18 +1,19 @@
 %% suppresserrors.ch: support ``suppressing errors'' primitives in LuaTeX
 %%
-%% % \suppressfontnotfounderror -> we have an error from mktextfm etc. anyway
-%% \suppresslongerror .
+%% \suppresslongerror    done
+%% \suppressoutererror   done
+%% \suppressmathparerror done
+%% The followings are not implemented to e-(u)pTeX:
 %% % \suppressifcsnameerror 
-%% \suppressoutererror .
-%% \suppressmathparerror wip
-%% % \suppressprimitiveerror -> e-pTeX does not produce error in \pdfprimitive
+%% % \suppressfontnotfounderror -> we have an error from mktextfm etc. anyway
+%% % \suppressprimitiveerror -> e-(u)pTeX does not produce errors in \pdfprimitive
 
 @x
 @d eTeX_state_code=etex_int_base+10 {\eTeX\ state variables}
 @y
-@d suppress_long_error_code=etex_int_base+11
-@d suppress_outer_error_code=etex_int_base+13
-@d suppress_mathpar_error_code=etex_int_base+14
+@d suppress_long_error_code=etex_int_base+10
+@d suppress_outer_error_code=etex_int_base+11
+@d suppress_mathpar_error_code=etex_int_base+12
 @d eTeX_state_code=etex_int_base+15 {\eTeX\ state variables}
 @z
 
@@ -104,6 +105,14 @@ mmode+endv, mmode+stop, mmode+vskip, mmode+un_vbox,
 mmode+valign, mmode+hrule
 @z
 
+@x after_math
+@<Check that another \.\$ follows@>=
+begin get_x_token;
+@y
+@<Check that another \.\$ follows@>=
+begin repeat get_x_token;
+until (suppress_mathpar_error=0)or(cur_cmd<>par_end);
+@z
 @x
 primitive("readpapersizespecial",assign_int,int_base+read_papersize_special_code);@/
 @!@:read_papersize_special_}{\.{\\readpapersizespecial} primitive@>
