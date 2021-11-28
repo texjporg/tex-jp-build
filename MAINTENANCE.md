@@ -2,7 +2,7 @@
 
 ## メンテナンスの基本方針
 
-[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらの[gitHub](https://github.com/texjporg/tex-jp-build.git)のmasterと同期させる。
+[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらの[gitHub](https://github.com/texjporg/tex-jp-build.git)の`master`と同期させる。
 
 ## リポジトリの構成
 
@@ -14,7 +14,7 @@
 4. その他          : 開発用
 
 
-`texlive-gitsvn` と `texlive-trunk` は内容が完全に一致するがコミットハッシュが異なっている状態を維持する。
+`texlive-gitsvn` と `texlive-trunk` は内容が完全に一致するがコミットハッシュが異なっている状態を維持する。両者はコミットツリー上常に並列であり交差することはない。
 `texlive-gitsvn` と `texlive-trunk` を別のブランチで運用している理由は以下。
 
 * `git svn`で生成される`texlive-gitsvn`におけるコミットハッシュが `texlive-trunk` と合わなくても問題にならない。
@@ -59,7 +59,7 @@ git svn fetch
 ```
 
 `usermap_texlive_svn.txt` に記載されていない新しいコミッターの方が入った場合、ここでwaringが出るので `usermap_texlive_svn.txt` を編集してから上記をやり直す。
-編集した場合はmasterブランチの中にある `workXXX/Build/usermap_texlive_svn.txt` も更新すべし。
+編集した場合は`master`ブランチの中にある `workXXX/Build/usermap_texlive_svn.txt` も更新すべし。
 
 ```
 git log remotes/git-svn
