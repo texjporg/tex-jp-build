@@ -2,15 +2,15 @@
 
 ## メンテナンスの基本方針
 
-[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらの[gitHub](git@github.com:texjporg/tex-jp-build.git)のmasterと同期させる。
+[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらの[gitHub](https://github.com/texjporg/tex-jp-build.git)のmasterと同期させる。
 
 ## リポジトリの構成
 
 ローカルに作成する作業用リポジトリのブランチは以下のように構成する。
 
-1. texlive-gitsvn : TeX Live svn側と直接 `git svn` で追従する。ローカルで使用し[gitHub](git@github.com:texjporg/tex-jp-build.git)には公開しない。
-2. texlive-trunk  : `texlive-gitsvn` と内容をcherry pickで完全に同期させる。[gitHub](git@github.com:texjporg/tex-jp-build.git)にも公開する。
-3. master         : texjporg側のmasterブランチ。`texlive-trunk`と同期させつつ、`README.md`など独自の内容を含む。[gitHub](git@github.com:texjporg/tex-jp-build.git)に公開する。
+1. texlive-gitsvn : TeX Live svn側と直接 `git svn` で追従する。ローカルで使用し[gitHub](https://github.com/texjporg/tex-jp-build.git)には公開しない。
+2. texlive-trunk  : `texlive-gitsvn` と内容をcherry pickで完全に同期させる。[gitHub](https://github.com/texjporg/tex-jp-build.git)にも公開する。
+3. master         : texjporg側のmasterブランチ。`texlive-trunk`と同期させつつ、`README.md`など独自の内容を含む。[gitHub](https://github.com/texjporg/tex-jp-build.git)に公開する。
 4. その他          : 開発用
 
 
