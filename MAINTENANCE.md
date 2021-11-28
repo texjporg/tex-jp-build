@@ -24,10 +24,10 @@
 
 ### リポジトリの作成手順
 
-#### ブランチ`texlive-gitsvn`の作成
-
 最初に一度実行する必要がある。
 また、`git svn`で同期する構成物を変更する場合、`git svn clone`の`--ignore-paths`を更新してやり直す必要がある。
+
+#### ブランチ`texlive-gitsvn`の作成
 
 ```
 mkdir workXXX
