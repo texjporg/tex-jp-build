@@ -92,7 +92,7 @@ git merge texlive-trunk --no-commit
 git commit
 ```
 
-コミットログに TeX Live svn の最終のリビジョンを ` r61xxx` のように追記している。必須ではないと思うが履歴を見るときに役立つことを期待。
+ここでコミットログに TeX Live svn の最終のリビジョンを ` r61xxx` のように追記する。必須ではないと思うが履歴を見るときに役立つことを期待。
 
 ```
 git diff texlive-gitsvn
