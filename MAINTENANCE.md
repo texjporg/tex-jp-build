@@ -2,27 +2,27 @@
 
 ## メンテナンスの基本方針
 
-[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらのgitHubのmasterと同期させる。
+[TeX Live and Subversion](http://www.tug.org/texlive/svn/)のsubversionリポジトリのサブセットをgit svnで作成、追従しこちらの[gitHub](git@github.com:texjporg/tex-jp-build.git)のmasterと同期させる。
 
 ## リポジトリの構成
 
-ブランチは以下のようになっている。
+ローカルに作成する作業用リポジトリのブランチは以下のように構成する。
 
-1. texlive-gitsvn : TeX Live svn側と直接 `git svn` で追従する。ローカルで使用しgitHubには公開しない。
-2. texlive-trunk  : `texlive-gitsvn` と内容をcherry pickで完全に同期させる。gitHubにも公開する。
-3. master         : texjporg側のmasterブランチ。`texlive-trunk`と同期させつつ、`README.md`など独自の内容を含む。gitHubに公開する。
+1. texlive-gitsvn : TeX Live svn側と直接 `git svn` で追従する。ローカルで使用し[gitHub](git@github.com:texjporg/tex-jp-build.git)には公開しない。
+2. texlive-trunk  : `texlive-gitsvn` と内容をcherry pickで完全に同期させる。[gitHub](git@github.com:texjporg/tex-jp-build.git)にも公開する。
+3. master         : texjporg側のmasterブランチ。`texlive-trunk`と同期させつつ、`README.md`など独自の内容を含む。[gitHub](git@github.com:texjporg/tex-jp-build.git)に公開する。
 4. その他          : 開発用
 
 
-`texlive-gitsvn` と `texlive-trunk`は内容が完全に一致するがコミットハッシュが異なっている状態を維持する。
+`texlive-gitsvn` と `texlive-trunk` は内容が完全に一致するがコミットハッシュが異なっている状態を維持する。
 `texlive-gitsvn` と `texlive-trunk` を別のブランチで運用している理由は以下。
 
-* `git svn`で生成されるコミットハッシュが `texlive-trunk` と合わなくても問題にならない。
-* `git svn`で同期する構成物を変更したくなったときにやりやすい。
+* `git svn`で生成される`texlive-gitsvn`におけるコミットハッシュが `texlive-trunk` と合わなくても問題にならない。
+* `git svn`で同期する構成物を変更したくなったときに対応しやすい。
 
 ## リポジトリの運用
 
-### リポジトリの作成手順
+### ローカルの作業用リポジトリの作成手順
 
 最初に一度実行する必要がある。
 また、`git svn`で同期する構成物を変更する場合、`git svn clone`の`--ignore-paths`を更新してやり直す必要がある。
@@ -70,7 +70,7 @@ git log remotes/git-svn --oneline
 例えば `ffb1af1b4..d39202e05` だったとする。
 
 ```
-cd ../Build/
+cd workXXX/Build/
 git checkout texlive-trunk
 git cherry-pick ffb1af1b4..d39202e05 --allow-empty
 git diff texlive-gitsvn
@@ -108,6 +108,6 @@ git push origin texlive-trunk
 ## 註
 
 ここで記載した手順は必須でも絶対でもなく、現状こうしているというやり方をメモしたものです。
-もっといいやり方やあれば教えてください。
+もっといいやり方や提案等あれば教えてください。
 
 以上。
