@@ -1,3 +1,25 @@
+2021-11-26  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.ch,
+	* cweave.w: Reshuffle code in CWEAVE.
+
+2021-11-22  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile,
+	* comm-w2c.h,
+	* common.h: Copyright text in common interface.
+
+2021-11-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.ch,
+	* po/cweb-tl.pot,
+	* po/de/cweb-tl.po: More generic point of interest.
+
+2021-11-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangle.w,
+	* cweave.w: Consistently refer to the COMMON module.
+
 2021-10-31  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctproofmac.tex,

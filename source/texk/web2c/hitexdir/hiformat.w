@@ -47,9 +47,9 @@
 
 
 \def\setrevision$#1: #2 ${\gdef\lastrevision{#2}}
-\setrevision$Revision: 2515 $
+\setrevision$Revision: 2571 $
 \def\setdate$#1(#2) ${\gdef\lastdate{#2}}
-\setdate$Date: 2021-09-23 17:59:58 +0200 (Thu, 23 Sep 2021) $
+\setdate$Date: 2021-11-22 17:37:05 +0100 (Mon, 22 Nov 2021) $
 
 \null
 
@@ -719,7 +719,7 @@ HGETTAG(a);@/@t{}@>
 @<read and check the end byte |z|@>=
 HGETTAG(z);@+
 if (a!=z)
-  QUIT(@["Tag mismatch [%s,%d]!=[%s,%d] at 0x%x to 0x%tx\n"@],@|
+  QUIT(@["Tag mismatch [%s,%d]!=[%s,%d] at 0x%x to " SIZE_F "\n"@],@|
     NAME(a),INFO(a),NAME(z),INFO(z),@|node_pos, hpos-hstart-1);
 @
 
@@ -938,7 +938,7 @@ Last not least, we add rules for signed\index{signed integer} integers.
 @
 
 @<parsing rules@>=
-integer: SIGNED @+| UNSIGNED { RNG("number",$1,0,INT32_MAX);};
+integer: SIGNED @+| UNSIGNED { RNG("number",$1,0,0x7FFFFFFF);};
 @
 
 To preserve the ``signedness'' of an integer also for positive signed integers
@@ -1227,7 +1227,7 @@ void hwrite_charcode(uint32_t c)
 \getcode
 @<shared get functions@>=
 #define @[HGET_UTF8C(X)@]  (X)=HGET8;@+ if ((X&0xC0)!=0x80) \
-  QUIT(@["UTF8 continuation byte expected at 0x%tx got 0x%02X\n"@],hpos-hstart-1,X)@;
+  QUIT(@["UTF8 continuation byte expected at " SIZE_F " got 0x%02X\n"@],hpos-hstart-1,X)@;
 
 uint32_t hget_utf8(void)
 { uint8_t a;
@@ -2824,7 +2824,7 @@ void hget_size_boundary(info_t info)
 { uint32_t n;
   if (info<2) return;
   n=HGET8;
-  if (n-1!=0x100-info) QUIT(@["Size boundary byte 0x%x with info value %d at 0x%tx"@],
+  if (n-1!=0x100-info) QUIT(@["Size boundary byte 0x%x with info value %d at " SIZE_F@],
                             n, info,hpos-hstart-1);
 }
 
@@ -2861,7 +2861,7 @@ void hget_list(list_t *l)
     hpos=hpos+(L).s; hget_size_boundary(I);\
     { uint32_t s=hget_list_size(I); \
       if (s!=(L).s) \
-      QUIT(@["List sizes at 0x%x and 0x%tx do not match 0x%x != 0x%x"@],node_pos+1,hpos-hstart-I-1,(L).s,s);}
+      QUIT(@["List sizes at 0x%x and " SIZE_F " do not match 0x%x != 0x%x"@],node_pos+1,hpos-hstart-I-1,(L).s,s);}
 @
 
 \putcode
@@ -3403,9 +3403,11 @@ appendix~\secref{fastforward}.
 \subsection{Boxes}\label{boxnodes}
 The central structuring elements of \TeX\ are boxes\index{box}.
 Boxes have a height |h|, a depth |d|, and a width |w|. 
-The shift amount |a| shifts the contents of the box, the glue ratio\index{glue ratio} |r| is a factor
-applied to the glue inside the box, the glue order |o| is its order of stretchability\index{stretchability},
-and the glue sign |s| is $-1$ for shrinking\index{shrinkability}, 0 for rigid, and $+1$ for stretching.
+The shift amount |a| shifts the contents of the box, 
+the glue ratio\index{glue ratio} |r| is a factor applied to the glue inside the box,
+the glue order |o| is its order of stretchability\index{stretchability},
+and the glue sign |s| is $-1$ for shrinking\index{shrinkability},
+0 for rigid, and $+1$ for stretching.
 Most importantly, a box contains a list |l| of content nodes inside the box.
 
 
@@ -5788,7 +5790,7 @@ content_node: stream_def_node @+ | stream_ins_node;
 { xdimen_t x;
   uint16_t f,r;
   uint8_t n;
-  DBG(DBGDEF,"Defining normal stream %d at 0x%tx\n",*(hpos-1),hpos-hstart-2);
+  DBG(DBGDEF,"Defining normal stream %d at " SIZE_F "\n",*(hpos-1),hpos-hstart-2);
   hget_xdimen_node(&x); @+hwrite_xdimen_node(&x); 
   HGET16(f); @+RNG("magnification factor",f,0,1000);@+ hwritef(" %d",f);
   n=HGET8; if (n==255) hwritef(" *"); else { REF_RNG(stream_kind,n);@+hwrite_ref(n);@+}
@@ -5804,7 +5806,7 @@ static bool hget_stream_def(void)
   else
   { ref_t df;
     @<read the start byte |a|@>@;
-    DBG(DBGDEF,"Defining stream %d at 0x%tx\n",*hpos,hpos-hstart-1);
+    DBG(DBGDEF,"Defining stream %d at " SIZE_F "\n",*hpos,hpos-hstart-1);
     DEF(df,stream_kind,HGET8);
     hwrite_start();@+hwritef("stream");@+@+hwrite_ref(df.n);
     if (df.n>0) 
@@ -6165,12 +6167,12 @@ void hput_range(uint8_t pg, bool on)
 { if (((next_range-1)/2)>max_ref[range_kind])
     QUIT("Page range %d > %d",(next_range-1)/2,max_ref[range_kind]);
   if (on && page_on[pg]!=0)
-    QUIT(@["Template %d is switched on at 0x%x and 0x%tx"@],@|
+    QUIT(@["Template %d is switched on at 0x%x and " SIZE_F@],@|
            pg, range_pos[page_on[pg]].pos, hpos-hstart);
   else if (!on && page_on[pg]==0)
-    QUIT(@["Template %d is switched off at 0x%tx but was not on"@],@|
+    QUIT(@["Template %d is switched off at " SIZE_F " but was not on"@],@|
            pg, hpos-hstart);
-  DBG(DBGRANGE,@["Range *%d %s at 0x%tx\n"@],pg,on?"on":"off",hpos-hstart);
+  DBG(DBGRANGE,@["Range *%d %s at " SIZE_F "\n"@],pg,on?"on":"off",hpos-hstart);
   range_pos[next_range].pg=pg;
   range_pos[next_range].pos=hpos-hstart;
   range_pos[next_range].on=on;
@@ -6365,15 +6367,15 @@ void hput_hint(char * str)
 { size_t s;
   DBG(DBGBASIC,"Writing hint output %s\n",str); 
   s=hput_banner("hint",str);
-  DBG(DBGDIR,@["Root entry at 0x%tx\n"@],s);
+  DBG(DBGDIR,@["Root entry at " SIZE_F "\n"@],s);
   s+=hput_root();
-  DBG(DBGDIR,@["Directory section at 0x%tx\n"@],s);
+  DBG(DBGDIR,@["Directory section at " SIZE_F "\n"@],s);
   s+=hput_section(0);
-  DBG(DBGDIR,@["Definition section at 0x%tx\n"@],s);
+  DBG(DBGDIR,@["Definition section at " SIZE_F "\n"@],s);
   s+=hput_section(1);
-  DBG(DBGDIR,@["Content section at 0x%tx\n"@],s);
+  DBG(DBGDIR,@["Content section at " SIZE_F "\n"@],s);
   s+=hput_section(2);
-  DBG(DBGDIR,@["Auxiliary sections at 0x%tx\n"@],s);
+  DBG(DBGDIR,@["Auxiliary sections at " SIZE_F "\n"@],s);
   hput_optional_sections();
 }
 @
@@ -6396,7 +6398,7 @@ and advance the stream position accordingly.\label{HPUT}\label{HGET}
 
 \getcode
 @<shared get macros@>=
-#define HGET_ERROR @/ QUIT(@["HGET overrun in section %d at 0x%tx\n"@],@|section_no,hpos-hstart)
+#define HGET_ERROR @/ QUIT(@["HGET overrun in section %d at " SIZE_F "\n"@],@|section_no,hpos-hstart)
 #define @[HEND@]   @[((hpos<=hend)?0:(HGET_ERROR,0))@]
 
 #define @[HGET8@]      ((hpos<hend)?*(hpos++):(HGET_ERROR,0))
@@ -6410,7 +6412,7 @@ and advance the stream position accordingly.\label{HPUT}\label{HGET}
 @<put functions@>=
 void hput_error(void)
 {@+if (hpos<hend) return;
- QUIT(@["HPUT overrun section %d pos=0x%tx\n"@],@|section_no,hpos-hstart);
+ QUIT(@["HPUT overrun section %d pos=" SIZE_F "\n"@],@|section_no,hpos-hstart);
 }
 @
 
@@ -6708,8 +6710,8 @@ void  hput_increase_buffer(uint32_t n)
    bsize=dir[section_no].bsize*buffer_factor+0.5;
    if (bsize<pos+n) bsize=pos+n;
    if (bsize>=HINT_NO_POS) bsize=HINT_NO_POS;
-   if (bsize<pos+n)  QUIT(@["Unable to increase buffer size 0x%tx by 0x%x byte"@],@|hpos-hstart,n);
-   DBG(DBGBUFFER,@["Reallocating output buffer "@|" for section %d from 0x%x to 0x%tx byte\n"@],
+   if (bsize<pos+n)  QUIT(@["Unable to increase buffer size " SIZE_F " by 0x%x byte"@],@|hpos-hstart,n);
+   DBG(DBGBUFFER,@["Reallocating output buffer "@|" for section %d from 0x%x to " SIZE_F " byte\n"@],
        section_no,dir[section_no].bsize,bsize);
    REALLOCATE(dir[section_no].buffer,bsize,uint8_t);
    dir[section_no].bsize=(uint32_t)bsize;
@@ -6722,7 +6724,7 @@ static size_t hput_data(uint16_t n, uint8_t *buffer, uint32_t size)
 { size_t s;
   s=fwrite(buffer,1,size,hout);
   if (s!=size)
-    QUIT(@["short write 0x%tx < %d in section %d"@],s,size,n);
+    QUIT(@["short write " SIZE_F " < %d in section %d"@],s,size,n);
   return s;
 }
 
@@ -6834,13 +6836,13 @@ void hset_entry(entry_t *e, uint16_t i, uint32_t size, uint32_t xsize, @|char *f
 @
 
 
-Writing the auxiliary files depends on the {\tt -f} and the {\tt -g}
-option.
+Writing the auxiliary files depends on the {\tt -a}, {\tt -g} and {\tt -f}
+options.
 
 @<without {\tt -f} skip writing an existing file@>=
-    if ( !option_force && access(file_name,F_OK)==0)
+    if ( !option_force && access(aux_name,F_OK)==0)
     { MESSAGE("File '%s' exists.\n"@| "To rewrite the file use the -f option.\n",
-              file_name);
+              aux_name);
       continue;
     }
 @
@@ -6864,63 +6866,77 @@ If the \HINT\ file is {\tt shrink}ed on one system and
 {\tt stretch}ed on another system, this is usually not the desired behavior.
 Without the {\tt -g} option,\label{absrel} the files will be written in two local directories.
 The names of these directories are derived from the output file name,
-replacing the extension ``{\tt .HINT}'' with ``{\tt .abs}'' if the original
+replacing the extension ``{\tt .hint}'' with ``{\tt .abs}'' if the original
 filename contained an absolute path, and  replacing it with ``{\tt .rel}''
 if the original filename contained a relative path. Inside these directories,
 the path as given in the filename is retained.
 When {\tt shrink}ing a \HINT\ file without the {\tt -g} option,
 the original filenames can be reconstructed.
 
-@<without {\tt -g} compute a local |file_name|@>=
-if (!option_global)
-{ int path_length=(int)strlen(file_name);
-  @<determine whether |file_name| is absolute or relative@>@;
-  if (file_name_length<stem_length+ext_length+path_length)
-  { file_name_length=stem_length+ext_length+path_length;
-    REALLOCATE(stem_name, file_name_length+1,char);
-  }
-  strcpy(stem_name+stem_length,aux_ext[name_type]);
-  strcpy(stem_name+stem_length+ext_length,file_name);
-  DBG(DBGDIR,"Replacing auxiliary file name:\n\t%s\n->\t%s\n",file_name,stem_name);
-  file_name=stem_name;
+@<compute a local |aux_name|@>=
+{ char *path=dir[i].file_name;
+  int path_length=(int)strlen(path);
+  int aux_length;
+  @<determine whether |path| is absolute or relative@>@;
+  aux_length=stem_length+ext_length+path_length;
+  ALLOCATE(aux_name,aux_length+1,char);
+  strcpy(aux_name,stem_name);
+  strcpy(aux_name+stem_length,aux_ext[name_type]);
+  strcpy(aux_name+stem_length+ext_length,path);
+  @<replace links to the parent directory@>@; 
+  DBG(DBGDIR,"Replacing auxiliary file name:\n\t%s\n->\t%s\n",path,aux_name);
 }
 @
 
-@<determine whether |file_name| is absolute or relative@>=
+@<determine whether |path| is absolute or relative@>=
   enum {absolute=0, relative=1} name_type;
   char *aux_ext[2]={".abs/",".rel/"};
   int ext_length=5;
-  if (file_name[0]=='/')
-  {  name_type=absolute;
-    file_name++; path_length--;
-  }
-  else if (path_length>3 && isalpha(file_name[0]) &&
-           file_name[1]==':' && file_name[2]=='/')
+  if (path[0]=='/')
   { name_type=absolute;
-    file_name[1]='_';
+    path++; path_length--;
+  }
+  else if (path_length>3 && isalpha(path[0]) &&
+           path[1]==':' && path[2]=='/')
+  { name_type=absolute;
+    path[1]='_';
   }      
   else
     name_type=relative;
 @
+
+When the {\tt -g}  is not given, auxiliar files are written into
+special subdirectories. To prevent them from escaping into the global
+file system, we replace links to the parent direcory ``{\tt ../}'' by 
+``{\tt \_\,\_/}''.
+
+@<replace links to the parent directory@>=
+{ int k;
+  for (k=0; k<aux_length-3;k++) 
+    if (aux_name[k]=='.'&& aux_name[k+1]=='.'&& aux_name[k+2]=='/')
+    { aux_name[k]=aux_name[k+1]='_';k=k+2;}
+}
+@
+
 It remains to create the directories along the path we might have constructed.
-@<make sure the path in |file_name| exists@>=
+@<make sure the path in |aux_name| exists@>=
 { char *path_end;
-  path_end=file_name+1;
+  path_end=aux_name+1;
   while (*path_end!=0)
   { if(*path_end=='/')
     { struct stat s;
      *path_end=0;   
-      if (stat(file_name,&s)==-1)
+      if (stat(aux_name,&s)==-1)
       {
 #ifdef WIN32
-      if (mkdir(file_name)!=0)
+      if (mkdir(aux_name)!=0)
 #else
-      @t\2\kern-1em@>if (mkdir(file_name,0777)!=0)
+      @t\2\kern-1em@>if (mkdir(aux_name,0777)!=0)
 #endif
-           QUIT("Unable to create directory %s",file_name);
-         DBG(DBGDIR,"Creating directory %s\n",file_name);
+           QUIT("Unable to create directory %s",aux_name);
+         DBG(DBGDIR,"Creating directory %s\n",aux_name);
       } else if (!(S_IFDIR&s.st_mode))
-        QUIT("Unable to create directory %s, file exists",file_name);
+        QUIT("Unable to create directory %s, file exists",aux_name);
       *path_end='/';
     }
     path_end++;
@@ -6939,28 +6955,30 @@ extern int stem_length;
 void hget_section(uint16_t n);
 void hwrite_aux_files(void)
 { int i;
+  if (!option_aux) return;
   DBG(DBGBASIC|DBGDIR,"Writing %d aux files\n",max_section_no-2);
   for (i=3;i<=max_section_no;i++)
   { FILE *f;
-    char * file_name=dir[i].file_name;
-    int file_name_length=0;
-
-    
-    @<without {\tt -g} compute a local |file_name|@>@;
+    char *aux_name=NULL;
+    if (option_global)
+      aux_name=strdup(dir[i].file_name);
+    else
+      @<compute a local |aux_name|@>@; 
     @<without {\tt -f} skip writing an existing file@>@;
-    @<make sure the path in |file_name| exists@>@;
+    @<make sure the path in |aux_name| exists@>@;
 
-    f=fopen(file_name,"wb");
+    f=fopen(aux_name,"wb");
     if (f==NULL) 
-      QUIT("Unable to open file '%s' for writing",file_name);
+      QUIT("Unable to open file '%s' for writing",aux_name);
     else
     { size_t s;
       hget_section(i);
-      DBG(DBGDIR,"Writing file %s\n",file_name);
+      DBG(DBGDIR,"Writing file %s\n",aux_name);
       s=fwrite(hstart,1,dir[i].size,f);
-      if (s!=dir[i].size) QUIT("writing file %s",file_name);
+      if (s!=dir[i].size) QUIT("writing file %s",aux_name);
       fclose(f);
     }
+    free(aux_name);
   }
 }
 @
@@ -7059,11 +7077,12 @@ it starts with the maximum section number instead of the section number zero,
 and we set its position to the position of the
 entry for section 1 (which might already be compressed).
 The name of the directory section must be the empty string.
+
 \gdef\subcodetitle{Directory Section}%
 \getcode
 @<get file functions@>=
 static void hget_root(entry_t *root)
-{ DBG(DBGDIR,"Root entry at 0x%tx\n",hpos-hstart);
+{ DBG(DBGDIR,"Root entry at " SIZE_F "\n",hpos-hstart);
   hget_entry(root); 
   root->pos=hpos-hstart;
   max_section_no=root->section_no;
@@ -7097,28 +7116,6 @@ void hclear_dir(void)
 
 @
 
-When the \.{shrink} program writes the directory section in the short format,
-it needs to know the sizes of all the  sections---including the optional sections.
-These sizes are not provided in the long format because it is safer and more 
-convenient to let the machine figure out the file sizes\index{file size}. 
-
-@<set the file sizes for optional sections@>=
-{ int i; 
-  for (i=3;i<=max_section_no;i++)
-    { struct stat s;
-      char *file_name=dir[i].file_name;
-      int file_name_length=0;
-      @<without {\tt -g} compute a local |file_name|@>@;     
-      if (stat(file_name,&s)!=0)
-        QUIT("Unable to obtain file size for '%s'",dir[i].file_name);
-      dir[i].size=s.st_size;
-      dir[i].xsize=0;
-    }
-}
-@
-
-The computation of the sizes of the mandatory sections will be 
-explained later.
 Armed with these preparations, we can put the directory into the \HINT\ file.
 
 \gdef\subcodetitle{Directory Section}%
@@ -7168,14 +7165,16 @@ static size_t hput_root(void)
   dir[0].section_no=max_section_no;
   hput_entry(&dir[0]);
   s=hput_data(0, hstart,hpos-hstart);
-  DBG(DBGDIR,@["Writing root size=0x%tx\n"@],s);
+  DBG(DBGDIR,@["Writing root size=" SIZE_F "\n"@],s);
   return s;
 }
 
 extern int option_compress;
+static char **aux_names;
 void hput_directory(void)
 { int i;
-  @<set the file sizes for optional sections@>@;
+  @<update the file sizes of optional sections@>@;
+
   if (option_compress) { hcompress(1); @+hcompress(2); @+}
   hput_directory_start();
   for (i=1; i<=max_section_no; i++)
@@ -7189,15 +7188,67 @@ void hput_directory(void)
 
 @
 
+Now let us look at the optional sections described in the directory entries 3 and above
+Where these files are found depends on the {\tt -g} and {\tt -a} options.
 
-To conclude this section, here is the function that  adds the files that
-are described in the directory entries 3 and above to a \HINT\ file in short format.
-Where these files are found depends on the {\tt -g} option.
-With that option given, the file names of the directory entries are used unchanged.
-Without that option, the files are found in the {|hin_name|\tt .abs} and  {|hin_name|\tt .rel}
-directories, as described in section~\secref{absrel}.
+With the {\tt -g} option given, only the file names as given in the directory entries are used.
+With the {\tt -a} option given, the file names are translated to filenames in the {|hin_name|\tt .abs} and  {|hin_name|\tt .rel} directories, as described in section~\secref{absrel}.
+If neither the {\tt -a} nor the {\tt -g} option is given, {\tt shrink} first trys the translated
+filename and then the global filename before it gives up.
+
+When the \.{shrink} program writes the directory section in the short format,
+it needs to know the sizes of all the  sections---including the optional sections.
+These sizes are not provided in the long format because it is safer and more 
+convenient to let the machine figure out the file sizes\index{file size}.
+But before we can determine the size, we need to determine the file.
+
+@<update the file sizes of optional sections@>=
+{ int i;
+  ALLOCATE(aux_names,max_section_no+1,char *); 
+  for (i=3;i<=max_section_no;i++)
+  { struct stat s; 
+
+    if (!option_global)
+    { char * aux_name=NULL;
+      @<compute a local |aux_name|@>@;
+      if (stat(aux_name,&s)==0)
+        aux_names[i]=aux_name;
+      else 
+      { if (option_aux) QUIT("Unable to find file '%s'",aux_name); 
+        free(aux_name);
+      } 
+    }
+    if ((aux_names[i]==NULL && !option_aux) || option_global)
+    { if (stat(dir[i].file_name,&s)!=0)
+        QUIT("Unable to find file '%s'",dir[i].file_name); 
+    }
+    dir[i].size=s.st_size;
+    dir[i].xsize=0;
+    DBG(DBGDIR,"section %i: found file %s size %u\n",i,aux_names[i]?aux_names[i]:dir[i].file_name, dir[i].size);
+  }
+}
+@
+
+@<rewrite the file names of optional sections@>=
+{ int i;
+  for (i=3;i<=max_section_no;i++)
+    if (aux_names[i]!=NULL)
+    { free(dir[i].file_name);
+      dir[i].file_name=aux_names[i];
+      aux_names[i]=NULL;
+    }
+} 
+@
+
+
+The computation of the sizes of the mandatory sections will be 
+explained later.
+
 
 \gdef\subcodetitle{Optional Sections}%
+To conclude this section, here is the function that  adds the files that
+are described in the directory entries 3 and above to a \HINT\ file in short format.
+
 \putcode
 @<put functions@>=
 static void hput_optional_sections(void)
@@ -7207,11 +7258,9 @@ static void hput_optional_sections(void)
    { FILE *f;
      size_t fsize;
      char *file_name=dir[i].file_name;
-     int file_name_length=0;
-     DBG(DBGDIR,"file %d: %s\n",dir[i].section_no,file_name);
+     DBG(DBGDIR,"adding file %d: %s\n",dir[i].section_no,file_name);
      if (dir[i].xsize!=0) @/
        DBG(DBGDIR,"Compressing of auxiliary files currently not supported");
-     @<without {\tt -g} compute a local |file_name|@>@;
      f=fopen(file_name,"rb");
      if (f==NULL) QUIT("Unable to read section %d, file %s",
        dir[i].section_no,file_name);
@@ -7226,7 +7275,7 @@ static void hput_optional_sections(void)
      }
      fclose(f);
      if (fsize!=dir[i].size) 
-       QUIT(@["File size 0x%tx does not match directory size %u"@],@|fsize,dir[i].size);
+       QUIT(@["File size " SIZE_F " does not match section[0] size %u"@],@|fsize,dir[i].size);
    }
 }
 @
@@ -8516,37 +8565,48 @@ parameters and options\index{option}\index{debugging}.
 It tells us what to expect in the rest of this section.
 {\def\SP{\hskip .5em}
 @<explain usage@>=
-  fprintf(stderr,
-  "Usage: %s [options] filename%s\n",prog_name, in_ext);@/
-  fprintf(stderr,
+  fprintf(stdout,
+  "Usage: %s [OPTION]... FILENAME%s\n",prog_name, in_ext);@/
+  fprintf(stdout,DESCRIPTION);
+  fprintf(stdout,
   "Options:\n"@/
   "\t --help \t display this message\n"@/
   "\t --version\t display the HINT version\n"@/
-  "\t -o file\t specify an output file name\n"@/
-  "\t -g     \t assume global names for auxiliary files\n"@/
   "\t -l     \t redirect stderr to a log file\n"@/
+#if defined (STRETCH) || defined (SHRINK)
+  "\t -o file\t specify an output file name\n"@/
+#endif
+#if defined (STRETCH)
+  "\t -a     \t write auxiliary files\n"@/
+  "\t -g     \t do not use localized names (implies -a)\n"@/
+  "\t -f     \t force overwriting existing auxiliary files\n"@/
   "\t -u     \t enable writing utf8 character codes\n"@/
   "\t -x     \t enable writing hexadecimal character codes\n"@/
-  "\t -c     \t enable compression of section 1 and 2\n");@/
+#elif defined (SHRINK)
+  "\t -a     \t use only localized names\n"@/
+  "\t -g     \t do not use localized names\n"@/
+  "\t -c     \t enable compression\n"@/
+#endif
+);
 #ifdef DEBUG
-fprintf(stderr,"\t -d XXXX \t set debug flag to hexadecimal value XXXX.\n"
+fprintf(stdout,"\t -d XXXX \t set debug flag to hexadecimal value XXXX.\n"
                "\t\t\t OR together these values:\n");@/
-fprintf(stderr,"\t\t\t XX=%03X   basic debugging\n", DBGBASIC);@/
-fprintf(stderr,"\t\t\t XX=%03X   tag debugging\n", DBGTAGS);@/
-fprintf(stderr,"\t\t\t XX=%03X   node debugging\n",DBGNODE);@/
-fprintf(stderr,"\t\t\t XX=%03X   definition debugging\n", DBGDEF);@/
-fprintf(stderr,"\t\t\t XX=%03X   directory debugging\n", DBGDIR);@/
-fprintf(stderr,"\t\t\t XX=%03X   range debugging\n",DBGRANGE);@/
-fprintf(stderr,"\t\t\t XX=%03X   float debugging\n", DBGFLOAT);@/
-fprintf(stderr,"\t\t\t XX=%03X   compression debugging\n", DBGCOMPRESS);@/
-fprintf(stderr,"\t\t\t XX=%03X   buffer debugging\n", DBGBUFFER);@/
-fprintf(stderr,"\t\t\t XX=%03X   flex debugging\n", DBGFLEX);@/
-fprintf(stderr,"\t\t\t XX=%03X   bison debugging\n", DBGBISON);@/
-fprintf(stderr,"\t\t\t XX=%03X   TeX debugging\n", DBGTEX);@/
-fprintf(stderr,"\t\t\t XX=%03X   Page debugging\n", DBGPAGE);@/
-fprintf(stderr,"\t\t\t XX=%03X   Font debugging\n", DBGFONT);@/
-fprintf(stderr,"\t\t\t XX=%03X   Render debugging\n", DBGRENDER);@/
-fprintf(stderr,"\t\t\t XX=%03X   Label debugging\n", DBGLABEL);@/
+fprintf(stdout,"\t\t\t XX=%03X   basic debugging\n", DBGBASIC);@/
+fprintf(stdout,"\t\t\t XX=%03X   tag debugging\n", DBGTAGS);@/
+fprintf(stdout,"\t\t\t XX=%03X   node debugging\n",DBGNODE);@/
+fprintf(stdout,"\t\t\t XX=%03X   definition debugging\n", DBGDEF);@/
+fprintf(stdout,"\t\t\t XX=%03X   directory debugging\n", DBGDIR);@/
+fprintf(stdout,"\t\t\t XX=%03X   range debugging\n",DBGRANGE);@/
+fprintf(stdout,"\t\t\t XX=%03X   float debugging\n", DBGFLOAT);@/
+fprintf(stdout,"\t\t\t XX=%03X   compression debugging\n", DBGCOMPRESS);@/
+fprintf(stdout,"\t\t\t XX=%03X   buffer debugging\n", DBGBUFFER);@/
+fprintf(stdout,"\t\t\t XX=%03X   flex debugging\n", DBGFLEX);@/
+fprintf(stdout,"\t\t\t XX=%03X   bison debugging\n", DBGBISON);@/
+fprintf(stdout,"\t\t\t XX=%03X   TeX debugging\n", DBGTEX);@/
+fprintf(stdout,"\t\t\t XX=%03X   Page debugging\n", DBGPAGE);@/
+fprintf(stdout,"\t\t\t XX=%03X   Font debugging\n", DBGFONT);@/
+fprintf(stdout,"\t\t\t XX=%03X   Render debugging\n", DBGRENDER);@/
+fprintf(stdout,"\t\t\t XX=%03X   Label debugging\n", DBGLABEL);@/
 #endif
 @
 }
@@ -8580,6 +8640,7 @@ int option_utf8=false;
 int option_hex=false;
 int option_force=false;
 int option_global=false;
+int option_aux=false;
 int option_compress=false;
 char *stem_name=NULL;
 int stem_length=0;
@@ -8588,7 +8649,7 @@ The variable |stem_name| contains the name of the input file
 not including the extension. The space allocated for it
 is large enough to append an extension with up to five characters.
 It can be used with the extension {\tt .log} for the log file,
-with {\tt .HINT} or {\tt .hnt} for the output file,
+with {\tt .hint} or {\tt .hnt} for the output file,
 and with {\tt .abs} or {\tt .rel} when writing or reading the auxiliary sections.
 The {\tt stretch} program will overwrite the |stem_name|
 using the name of the output file if it is set with the {\tt -o}
@@ -8600,9 +8661,11 @@ Next are the variables that are local in the |main| program.
 char *prog_name;
 char *in_ext;
 char *out_ext;
+int option_log=false;
+#ifndef SKIP
 char *file_name=NULL;
 int file_name_length=0;
-int option_log=false;
+#endif
 @ 
 
 Processing the command line looks for options and then sets the
@@ -8613,7 +8676,12 @@ are supported in addition to the short options.
 @<process the command line@>=
   debugflags=DBGBASIC;
   prog_name=argv[0];
-  if (argc < 2) goto explain_usage;
+  if (argc < 2) 
+  { fprintf(stderr,
+    "%s: no input file given\n"
+    "Try '%s --help' for more information\n",prog_name, prog_name);
+    exit(1);
+  }
   argv++; /* skip the program name */
   while (*argv!=NULL)
   { if ((*argv)[0]=='-')
@@ -8624,21 +8692,42 @@ are supported in addition to the short options.
           { fprintf(stderr,"%s version %d.%d\n",prog_name, HINT_VERSION, HINT_SUB_VERSION);
             exit(0);
           }
-        default: goto explain_usage; 
+          else if (strcmp(*argv,"--help")==0) 
+          { @<explain usage@>@;
+  fprintf(stdout,"\nFor further information and reporting bugs see https://hint.userweb.mwn.de/\n");
+            exit(0);
+          } 
+        case 'l': option_log=true; @+break;
+#if defined (STRETCH) || defined (SHRINK)
         case 'o': argv++;
           file_name_length=(int)strlen(*argv);
           ALLOCATE(file_name,file_name_length+6,char); /*plus extension*/
           strcpy(file_name,*argv);@+  break; 
-        case 'l': option_log=true; @+break;
+        case 'g': option_global=option_aux=true; @+break;
+        case 'a': option_aux=true; @+break;
+#endif
+#if defined (STRETCH)
         case 'u': option_utf8=true;@+break;
         case 'x': option_hex=true;@+break;
         case 'f': option_force=true; @+break;
-        case 'g': option_global=true; @+break;
+#elif defined (SHRINK)
         case 'c': option_compress=true; @+break;
+#endif
         case 'd': @/
-          argv++; if (*argv==NULL) goto explain_usage;
+          argv++; if (*argv==NULL)
+          { fprintf(stderr,
+             "%s: option -d expects an argument\n"
+             "Try '%s --help' for more information\n",prog_name, prog_name);
+             exit(1);
+           }
           debugflags=strtol(*argv,NULL,16);
           break;
+        default:
+        { fprintf(stderr,
+            "%s: unrecognized option '%s'\n"
+            "Try '%s --help' for more information\n",prog_name,*argv,prog_name);
+            exit(1);
+        }  
       }
     }
     else /* the input file name */
@@ -8655,11 +8744,21 @@ are supported in addition to the short options.
       ALLOCATE(stem_name,stem_length+6,char);
       strncpy(stem_name,hin_name,stem_length);
       stem_name[stem_length]=0;
-      if (*(argv+1)!=NULL) goto explain_usage;
+      if (*(argv+1)!=NULL) 
+      { fprintf(stderr,
+        "%s: extra argument after input file name:  '%s'\n"
+        "Try '%s --help' for more information\n",prog_name,*(argv+1),prog_name);
+        exit(1);
+      }
     }
     argv++;
   }
-  if (hin_name==NULL) goto explain_usage;
+  if (hin_name==NULL) 
+  { fprintf(stderr,
+      "%s: missing input file name\n"
+      "Try '%s --help' for more information\n",prog_name,prog_name);
+      exit(1);
+  }
 @
 
 After the command line has been processed, three file streams need to be opened:
@@ -8717,7 +8816,10 @@ Once we have established logging, we can try to open the other files.
     strcpy(file_name,stem_name);@+
     strcpy(file_name+stem_length,out_ext);
   }
-  @<make sure the path in |file_name| exists@>@;
+  { char *aux_name=file_name;
+    @<make sure the path in |aux_name| exists@>@;
+    aux_name=NULL;
+  }
   hout=fopen(file_name,"wb");
   if (hout==NULL) QUIT("Unable to open output file %s",file_name);
 @
@@ -8752,7 +8854,7 @@ There is no good program without good error handling\index{error message}\index{
 To print messages\index{message} or indicate errors, I define the following macros:
 \index{MESSAGE+\.{MESSAGE}}\index{QUIT+\.{QUIT}}
 
-@(error.h@>=
+@(hierror.h@>=
 #ifndef _ERROR_H
 #define _ERROR_H
 #include <stdlib.h>
@@ -8772,25 +8874,22 @@ For portability, we first define the output specifier for expressions of type |s
 \index{DBG+\.{DBG}}\index{SIZE F+\.{SIZE\_F}}\index{DBGTAG+\.{DBGTAG}}
 \index{RNG+\.{RNG}}\index{TAGERR+\.{TAGERR}}
 @<debug macros@>=
-#if 0 
-/* use 0x percent tx instead */
 #ifdef WIN32
 #define SIZE_F "0x%x"
 #else
 #define SIZE_F "0x%zx"
-#endif
 #endif
 #ifdef DEBUG
 #define @[DBG(FLAGS,...)@] ((debugflags & (FLAGS))?LOG(__VA_ARGS__):0)
 #else
 #define @[DBG(FLAGS,...)@] 0
 #endif
-#define @[DBGTAG(A,P)@] @[DBG(DBGTAGS,@["tag [%s,%d] at 0x%tx\n"@],@|NAME(A),INFO(A),(P)-hstart)@]
+#define @[DBGTAG(A,P)@] @[DBG(DBGTAGS,@["tag [%s,%d] at " SIZE_F "\n"@],@|NAME(A),INFO(A),(P)-hstart)@]
 
 #define @[RNG(S,N,A,Z)@] @/\
   if ((int)(N)<(int)(A)||(int)(N)>(int)(Z)) QUIT(S@, " %d out of range [%d - %d]",N,A,Z)
 
-#define @[TAGERR(A)@] @[QUIT(@["Unknown tag [%s,%d] at 0x%tx\n"@],NAME(A),INFO(A),hpos-hstart)@]
+#define @[TAGERR(A)@] @[QUIT(@["Unknown tag [%s,%d] at " SIZE_F "\n"@],NAME(A),INFO(A),hpos-hstart)@]
 @
 
 The \.{bison} generated parser will need a function |yyerror| for
@@ -8865,7 +8964,7 @@ void hff_hpos(void)
 @
 
 
-We will put the |hnode_size| variable into the {\tt hformat.c} file
+We will put the |hnode_size| variable into the {\tt tables.c} file
 using the following function. We add some comments and
 split negative values into their components, to make the result more
 readable.
@@ -9275,7 +9374,7 @@ The code to skip the end\index{end byte} byte |z| and to check the start\index{s
 
 @<skip and check the start byte |a|@>=
   HTEGTAG(a);
-  if (a!=z) QUIT(@["Tag mismatch [%s,%d]!=[%s,%d] at 0x%tx to 0x%x\n"@],@|NAME(a),INFO(a),NAME(z),INFO(z),@|
+  if (a!=z) QUIT(@["Tag mismatch [%s,%d]!=[%s,%d] at " SIZE_F " to 0x%x\n"@],@|NAME(a),INFO(a),NAME(z),INFO(z),@|
     hpos-hstart,node_pos-1);
 @
 
@@ -9727,7 +9826,7 @@ void hteg_size_boundary(info_t info)
 { uint32_t n;
   if (info<2) return;
   n=HTEG8;
-  if (n-1!=0x100-info) QUIT(@["List size boundary byte 0x%x does not match info value %d at 0x%tx"@],
+  if (n-1!=0x100-info) QUIT(@["List size boundary byte 0x%x does not match info value %d at " SIZE_F@],
                             n, info,hpos-hstart);
 }
 
@@ -9755,7 +9854,7 @@ void hteg_list(list_t *l)
     l->p=hpos-hstart;
     hteg_size_boundary(INFO(z));
     s=hteg_list_size(INFO(z));
-    if (s!=l->s) QUIT(@["List sizes at 0x%tx and 0x%x do not match 0x%x != 0x%x"@],
+    if (s!=l->s) QUIT(@["List sizes at " SIZE_F " and 0x%x do not match 0x%x != 0x%x"@],
                         hpos-hstart,node_pos-1,s,l->s);
     @<skip and check the start byte |a|@>@;
   }
@@ -9851,7 +9950,7 @@ To define basic types in a portable way, we create an include file.
 The macro |_MSC_VER| (Microsoft Visual C Version)\index{Microsoft Visual C}
 is defined only if using the respective compiler.
 \index{false+\\{false}}\index{true+\\{true}}\index{bool+\&{bool}}
-@(basetypes.h@>=
+@(hibasetypes.h@>=
 #ifndef __BASETYPES_H__
 #define __BASETYPES_H__
 #include <stdlib.h>
@@ -9873,7 +9972,6 @@ is defined only if using the respective compiler.
 #define false (!true)
 #define __SIZEOF_FLOAT__ 4
 #define __SIZEOF_DOUBLE__ 8
-#define INT32_MAX              (2147483647)
 #define PRIx64 "I64x"
 #pragma  @[warning( disable : @[4244@]@t @> @[4996@]@t @> @[4127@])@]
 #else 
@@ -9898,11 +9996,11 @@ typedef double float64_t;
 
 
 
-\subsection{{\tt hformat.h}}\index{hformat.h+{\tt hformat.h}}
-The \.{hformat.h} file contains definitions of types, macros, variables and functions
+\subsection{{\tt format.h}}\index{format.h+{\tt format.h}}
+The \.{format.h} file contains definitions of types, macros, variables and functions
 that are needed in other compilation units.
 
-@(hformat.h@>=
+@(hiformat.h@>=
 #ifndef _HFORMAT_H_
 #define _HFORMAT_H_
 @<debug macros@>@;
@@ -9926,15 +10024,15 @@ extern signed char hnode_size[0x100];
 
 #endif
 @
-\subsection{{\tt hformat.c}}\index{hformat.c+{\tt hformat.c}}\index{mkhformat.c+{\tt mkhformat.c}}
-For maximum flexibility and efficiency, the file {\tt hformat.c}
+\subsection{{\tt tables.c}}\index{tables.c+{\tt tables.c}}\index{mktables.c+{\tt mktables.c}}
+For maximum flexibility and efficiency, the file {\tt tables.c}
 is generated by a \CEE\ program.
-Here is the |main| program of {\tt mkhformat}:
+Here is the |main| program of {\tt mktables}:
 
-@(mkhformat.c@>=
+@(himktables.c@>=
 #include <stdio.h>
-#include "basetypes.h"
-#include "hformat.h"
+#include "hibasetypes.h"
+#include "hiformat.h"
 @<skip macros@>@;
 
 int max_fixed[32], max_default[32];
@@ -9952,8 +10050,8 @@ int main(void)
   int i;
   
   
-  printf("#include \"basetypes.h\"\n"@/
-         "#include \"hformat.h\"\n\n");@/
+  printf("#include \"hibasetypes.h\"\n"@/
+         "#include \"hiformat.h\"\n\n");@/
 
   @<print |content_name| and |definition_name|@>@;
 
@@ -10001,11 +10099,11 @@ The following code prints the arrays containing the default values.
 @
 
 
-\subsection{{\tt hget.h}}\index{hget.h+{\tt hget.h}}
-The \.{hget.h} file contains function prototypes for all the functions
+\subsection{{\tt get.h}}\index{get.h+{\tt get.h}}
+The \.{get.h} file contains function prototypes for all the functions
 that read the short format.
 
-@(hget.h@>=
+@(higet.h@>=
 @<hint types@>@;
 @<directory entry type@>@;
 @<shared get macros@>@;
@@ -10049,9 +10147,9 @@ extern uint8_t hff_tag;
 
 
 
-\subsection{{\tt hget.c}}\index{hget.c+{\tt hget.c}}
-@(hget.c@>=
-#include "basetypes.h"
+\subsection{{\tt get.c}}\index{get.c+{\tt get.c}}
+@(higet.c@>=
+#include "hibasetypes.h"
 #include <string.h>
 #include <math.h>
 #include <zlib.h>
@@ -10059,9 +10157,9 @@ extern uint8_t hff_tag;
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "error.h"
-#include "hformat.h"
-#include "hget.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "higet.h"
 
 @<common variables@>@;
 
@@ -10074,12 +10172,12 @@ extern uint8_t hff_tag;
 @<shared skip functions@>@;
 @
 
-\subsection{{\tt hput.h}}\index{hput.h+{\tt hput.h}}
-The \.{hput.h} file contains function prototypes for all the functions
+\subsection{{\tt put.h}}\index{put.h+{\tt put.h}}
+The \.{put.h} file contains function prototypes for all the functions
 that write the short format.
 
 
-@(hput.h@>=
+@(hiput.h@>=
 @<put macros@>@;
 @<hint macros@>@;
 @<hint types@>@;
@@ -10148,18 +10246,18 @@ extern int hcompress_depth(int n, int c);
 @
 
 
-\subsection{{\tt hput.c}}\label{writeshort}\index{hput.c+{\tt hput.c}}
+\subsection{{\tt put.c}}\label{writeshort}\index{put.c+{\tt put.c}}
 \noindent
-@(hput.c@>=
-#include "basetypes.h"
+@(hiput.c@>=
+#include "hibasetypes.h"
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <zlib.h>
-#include "error.h"
-#include "hformat.h"
-#include "hput.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "hiput.h"
 
 @<common variables@>@;
 @<shared put variables@>@;
@@ -10168,18 +10266,18 @@ extern int hcompress_depth(int n, int c);
 @<put functions@>@;
 @
 
-\subsection{{\tt shrink.l}}\index{shrink.l+{\tt shrink.l}}\index{scanning}
-The definitions for lex are collected in the file {\tt shrink.l}
+\subsection{{\tt lexer.l}}\index{lexer.l+{\tt lexer.l}}\index{scanning}
+The definitions for lex are collected in the file {\tt lexer.l}
 
-@(shrink.l@>=
+@(hilexer.l@>=
 %{
-#include "basetypes.h"
-#include "error.h"
-#include "hformat.h"
-#include "hput.h"
+#include "hibasetypes.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "hiput.h"
 
 @<enable bison debugging@>@;
-#include "hishrink-parser.h"
+#include "hiparser.h"
 
 @<scanning macros@>@;@+
 @<scanning functions@>@;
@@ -10206,20 +10304,20 @@ int yywrap (void )@+{ return 1;@+}
 
 
 
-\subsection{{\tt shrink.y}}\index{shrink.y+{\tt shrink.y}}\index{parsing}
+\subsection{{\tt parser.y}}\index{parser.y+{\tt parser.y}}\index{parsing}
 
-The grammar rules for bison are collected in the file  {\tt shrink.y}.
+The grammar rules for bison are collected in the file  {\tt parser.y}.
 % for the option %token-table use the command line parameter -k
 
 
-@(shrink.y@>=
+@(hiparser.y@>=
 %{
-#include "basetypes.h"
+#include "hibasetypes.h"
 #include <string.h>
 #include <math.h>
-#include "error.h"
-#include "hformat.h"
-#include "hput.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "hiput.h"
 extern char **hfont_name; /* in common variables */
 
 @<definition checks@>@;
@@ -10261,7 +10359,7 @@ extern int yylex(void);
 \.{shrink} is a \CEE\ program translating a \HINT\ file in long format into a \HINT\ file in short format.
 
 @(hishrink.c@>=
-#include "basetypes.h"
+#include "hibasetypes.h"
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -10271,10 +10369,10 @@ extern int yylex(void);
 #endif
 #include <zlib.h>
 
-#include "error.h"
-#include "hformat.h"
-#include "hput.h"
-#include "hishrink-parser.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "hiput.h"
+#include "hiparser.h"
 
 extern void yyset_debug(int lex_debug);
 extern int yylineno;
@@ -10290,9 +10388,12 @@ extern int yyparse(void);
 @<function to write the banner@>@;
 @<put functions@>@;
 
+#define SHRINK
+#define DESCRIPTION "\nShrinking converts a 'long' ASCII HINT file into a`short' binary HINT file .\n"
+
 int main(int argc, char *argv[])
 { @<local variables in |main|@>@;
-   in_ext=".HINT";
+   in_ext=".hint";
    out_ext=".hnt";
   @<process the command line@>@;
 
@@ -10314,16 +10415,13 @@ int main(int argc, char *argv[])
   yyparse();
 
   hput_directory();
-
-  hput_hint("shrink");
+  @<rewrite the file names of optional sections@>@;
+  hput_hint("created by shrink");
   
   @<close the output file@>@;
   @<close the input file@>@;
   @<close the log file@>@;
   return 0;
-explain_usage:
-  @<explain usage@>@;
-  return 1;
 }
 @
 
@@ -10334,7 +10432,7 @@ explain_usage:
 format into a \HINT\ file in long format.
 
 @(histretch.c@>=
-#include "basetypes.h"
+#include "hibasetypes.h"
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
@@ -10345,9 +10443,9 @@ format into a \HINT\ file in long format.
 #include <direct.h>
 #endif
 #include <fcntl.h>
-#include "error.h"
-#include "hformat.h"
-#include "hget.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "higet.h"
 
 @<get macros@>@;
 @<write macros@>@;
@@ -10365,11 +10463,14 @@ format into a \HINT\ file in long format.
 @<shared get functions@>@;
 @<get functions@>@;
 
+#define STRETCH
+#define DESCRIPTION "\nStretching converts a `short' binary HINT file into a 'long' ASCII HINT file.\n"
+
 int main(int argc, char *argv[])
 { @<local variables in |main|@>@;
 
   in_ext=".hnt";
-  out_ext=".HINT";
+  out_ext=".hint";
   @<process the command line@>@;
   @<open the log file@>@;
   @<open the output file@>@;
@@ -10379,7 +10480,7 @@ int main(int argc, char *argv[])
   hend=hstart+hin_size;
   hget_banner();
   if (!hcheck_banner("hint")) QUIT("Invalid banner");
-  hput_banner("HINT","stretch");
+  hput_banner("HINT","created by stretch");
   hget_directory();
   hwrite_directory();
   hget_definition_section();
@@ -10390,16 +10491,14 @@ int main(int argc, char *argv[])
   DBG(DBGBASIC,"End of Program\n");
   @<close the log file@>@;
   return 0;
-explain_usage:
-  @<explain usage@>@;
-  return 1;}
+}
 @
 
 In the above program, the get functions call the write functions
 and the write functions call some get functions. This requires
 function declarations to satisfy the define before use requirement
 of \CEE. Some of the necessary function declarations are already
-contained in {\tt hget.h}. The remaining declarations are these:
+contained in {\tt get.h}. The remaining declarations are these:
 
 @<get function declarations@>=
 extern void hget_xdimen_node(xdimen_t *x);
@@ -10420,15 +10519,15 @@ extern int hget_txt(void);
 \.{skip} is a \CEE\ program reading the content section of a \HINT\ file in short format 
 backwards.
 
-@(skip.c@>=
-#include "basetypes.h"
+@(hiskip.c@>=
+#include "hibasetypes.h"
 #include <string.h>
 #include <zlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "error.h"
-#include "hformat.h"
+#include "hierror.h"
+#include "hiformat.h"
 @<hint types@>@;
 
 @<common variables@>@;
@@ -10444,6 +10543,9 @@ backwards.
 @<skip function declarations@>@;
 @<shared skip functions@>@;
 @<skip functions@>@;
+
+#define SKIP
+#define DESCRIPTION "\n This program tests parsing a binary HINT file in reverse direction.\n"
 
 int main(int argc, char *argv[])
 { @<local variables in |main|@>@;
@@ -10477,9 +10579,6 @@ int main(int argc, char *argv[])
   hget_unmap();
   @<close the log file@>@;
   return 0;
-explain_usage:
-  @<explain usage@>@;
-  return 1;
 }
 @
 

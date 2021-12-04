@@ -1,6 +1,6 @@
-#line 2 "shrink.lex.c"
+#line 2 "lexer.c"
 
-#line 4 "shrink.lex.c"
+#line 4 "lexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -848,25 +848,25 @@ static yyconst flex_int16_t yy_rule_linenum[126] =
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "shrink.l"
-/*509:*/
-#line 3 "shrink.l"
-	#line 10175 "format.w"
+#line 1 "lexer.l"
+/*511:*/
+#line 3 "lexer.l"
+	#line 10273 "format.w"
 	
-#include "basetypes.h"
-#include "error.h"
-#include "hformat.h"
-#include "hput.h"
+#include "hibasetypes.h"
+#include "hierror.h"
+#include "hiformat.h"
+#include "hiput.h"
 
-	/*423:*/
+	/*425:*/
 #ifdef DEBUG
 #define  YYDEBUG 1
 extern int yydebug;
 #else
 #define YYDEBUG 0
 #endif
-	/*:423*/
-#include "hishrink-parser.h"
+	/*:425*/
+#include "hiparser.h"
 
 	/*22:*/
 #define SCAN_UDEC(S) yylval.u= strtoul(S,NULL,10)
@@ -987,7 +987,7 @@ float64_t xtof(char*x)
 	}
 	/*:61*/
 int yywrap(void){
-	#line 10186 "format.w"
+	#line 10284 "format.w"
 	return 1;}
 #ifdef _MSC_VER
 #pragma  warning( disable : 4267)
@@ -1005,14 +1005,14 @@ int yywrap(void){
 /*:45*/	/*149:*/
 
 /*:149*/
-#line 1009 "shrink.lex.c"
+#line 1009 "lexer.c"
 
 #define INITIAL 0
 #define STR 1
 #define TXT 2
 
 #ifndef YY_NO_UNISTD_H
-/* Special case for "unistd.h", since it is non-ANSI. We include it way
+/* Special case for "hiunistd.h", since it is non-ANSI. We include it way
  * down here because we want the user's section 1 to have been scanned first.
  * The user has a chance to override it with an option.
  */
@@ -1255,11 +1255,11 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 167 "shrink.l"
+#line 167 "lexer.l"
 
 
 	/*3:*/
-#line 1263 "shrink.lex.c"
+#line 1263 "lexer.c"
 
 	if ( !(yy_init) )
 		{
@@ -1381,686 +1381,686 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 170 "shrink.l"
+#line 170 "lexer.l"
 SCAN_START;return START;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 171 "shrink.l"
+#line 171 "lexer.l"
 SCAN_END;return END;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 172 "shrink.l"
+#line 172 "lexer.l"
 return GLYPH;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 173 "shrink.l"
+#line 173 "lexer.l"
 SCAN_UDEC(yytext);return UNSIGNED;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 174 "shrink.l"
+#line 174 "lexer.l"
 SCAN_UDEC(yytext+1);return REFERENCE;
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 175 "shrink.l"
+#line 175 "lexer.l"
 ;
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 176 "shrink.l"
+#line 176 "lexer.l"
 ;
 	YY_BREAK
 /*:3*/	/*24:*/
 case 8:
 YY_RULE_SETUP
-#line 178 "shrink.l"
+#line 178 "lexer.l"
 SCAN_HEX(yytext+2);return UNSIGNED;
 	YY_BREAK
 /*:24*/	/*27:*/
 case 9:
 YY_RULE_SETUP
-#line 180 "shrink.l"
+#line 180 "lexer.l"
 SCAN_DEC(yytext);return SIGNED;
 	YY_BREAK
 /*:27*/	/*34:*/
 case 10:
 YY_RULE_SETUP
-#line 182 "shrink.l"
+#line 182 "lexer.l"
 STR_START;BEGIN(STR);
 	YY_BREAK
 
 case 11:
 YY_RULE_SETUP
-#line 184 "shrink.l"
+#line 184 "lexer.l"
 STR_END;SCAN_STR;BEGIN(INITIAL);return STRING;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 185 "shrink.l"
+#line 185 "lexer.l"
 STR_ADD('\'');
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 186 "shrink.l"
+#line 186 "lexer.l"
 STR_ADD(yytext[0]);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 187 "shrink.l"
+#line 187 "lexer.l"
 RNG("String character",yytext[0],0x20,0x7E);
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 188 "shrink.l"
+#line 188 "lexer.l"
 QUIT("Unterminated String in line %d",yylineno);
 	YY_BREAK
 
 /*:34*/	/*48:*/
 case 16:
 YY_RULE_SETUP
-#line 193 "shrink.l"
+#line 193 "lexer.l"
 STR_START;STR_PUT('\'');BEGIN(STR);
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 194 "shrink.l"
+#line 194 "lexer.l"
 SCAN_UTF8_1(yytext+1);return CHARCODE;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 195 "shrink.l"
+#line 195 "lexer.l"
 STR_START;STR_PUT(yytext[1]);STR_PUT('\'');BEGIN(STR);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 196 "shrink.l"
+#line 196 "lexer.l"
 STR_START;STR_PUT('\'');STR_PUT('\'');BEGIN(STR);
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 197 "shrink.l"
+#line 197 "lexer.l"
 SCAN_UTF8_1(yytext+1);return CHARCODE;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 198 "shrink.l"
+#line 198 "lexer.l"
 SCAN_UTF8_2(yytext+1);return CHARCODE;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 199 "shrink.l"
+#line 199 "lexer.l"
 SCAN_UTF8_3(yytext+1);return CHARCODE;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 200 "shrink.l"
+#line 200 "lexer.l"
 SCAN_UTF8_4(yytext+1);return CHARCODE;
 	YY_BREAK
 /*:48*/	/*55:*/
 case 24:
 YY_RULE_SETUP
-#line 202 "shrink.l"
+#line 202 "lexer.l"
 SCAN_DECFLOAT;return FPNUM;
 	YY_BREAK
 /*:55*/	/*59:*/
 case 25:
 YY_RULE_SETUP
-#line 204 "shrink.l"
+#line 204 "lexer.l"
 SCAN_HEXFLOAT;return FPNUM;
 	YY_BREAK
 /*:59*/	/*80:*/
 case 26:
 YY_RULE_SETUP
-#line 206 "shrink.l"
+#line 206 "lexer.l"
 return DIMEN;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 207 "shrink.l"
+#line 207 "lexer.l"
 return PT;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 208 "shrink.l"
+#line 208 "lexer.l"
 return MM;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 209 "shrink.l"
+#line 209 "lexer.l"
 return INCH;
 	YY_BREAK
 /*:80*/	/*88:*/
 case 30:
 YY_RULE_SETUP
-#line 211 "shrink.l"
+#line 211 "lexer.l"
 return XDIMEN;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 212 "shrink.l"
+#line 212 "lexer.l"
 return H;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 213 "shrink.l"
+#line 213 "lexer.l"
 return V;
 	YY_BREAK
 /*:88*/	/*99:*/
 case 33:
 YY_RULE_SETUP
-#line 215 "shrink.l"
+#line 215 "lexer.l"
 return FIL;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 216 "shrink.l"
+#line 216 "lexer.l"
 return FILL;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 217 "shrink.l"
+#line 217 "lexer.l"
 return FILLL;
 	YY_BREAK
 /*:99*/	/*103:*/
 case 36:
 YY_RULE_SETUP
-#line 219 "shrink.l"
+#line 219 "lexer.l"
 return PENALTY;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 220 "shrink.l"
+#line 220 "lexer.l"
 return INTEGER;
 	YY_BREAK
 /*:103*/	/*109:*/
 case 38:
 YY_RULE_SETUP
-#line 222 "shrink.l"
+#line 222 "lexer.l"
 return LANGUAGE;
 	YY_BREAK
 /*:109*/	/*115:*/
 case 39:
 YY_RULE_SETUP
-#line 224 "shrink.l"
+#line 224 "lexer.l"
 return RULE;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 225 "shrink.l"
+#line 225 "lexer.l"
 return RUNNING;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 226 "shrink.l"
+#line 226 "lexer.l"
 return RUNNING;
 	YY_BREAK
 /*:115*/	/*124:*/
 case 42:
 YY_RULE_SETUP
-#line 228 "shrink.l"
+#line 228 "lexer.l"
 return KERN;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 229 "shrink.l"
+#line 229 "lexer.l"
 return EXPLICIT;
 	YY_BREAK
 /*:124*/	/*133:*/
 case 44:
 YY_RULE_SETUP
-#line 231 "shrink.l"
+#line 231 "lexer.l"
 return GLUE;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 232 "shrink.l"
+#line 232 "lexer.l"
 return PLUS;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 233 "shrink.l"
+#line 233 "lexer.l"
 return MINUS;
 	YY_BREAK
 /*:133*/	/*151:*/
 case 47:
 YY_RULE_SETUP
-#line 235 "shrink.l"
+#line 235 "lexer.l"
 SCAN_TXT_START;return TXT_START;
 	YY_BREAK
 
 case 48:
 YY_RULE_SETUP
-#line 238 "shrink.l"
+#line 238 "lexer.l"
 SCAN_TXT_END;return TXT_END;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 240 "shrink.l"
+#line 240 "lexer.l"
 SCAN_START;return START;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 241 "shrink.l"
+#line 241 "lexer.l"
 QUIT("> not allowed in text mode");
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 243 "shrink.l"
+#line 243 "lexer.l"
 yylval.u= '\\';return TXT_CC;
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 244 "shrink.l"
+#line 244 "lexer.l"
 yylval.u= '"';return TXT_CC;
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 245 "shrink.l"
+#line 245 "lexer.l"
 yylval.u= '<';return TXT_CC;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 246 "shrink.l"
+#line 246 "lexer.l"
 yylval.u= '>';return TXT_CC;
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 247 "shrink.l"
+#line 247 "lexer.l"
 yylval.u= ' ';return TXT_CC;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 248 "shrink.l"
+#line 248 "lexer.l"
 yylval.u= '-';return TXT_CC;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 249 "shrink.l"
+#line 249 "lexer.l"
 return TXT_IGNORE;
 	YY_BREAK
 case 58:
 /* rule 58 can match eol */
 YY_RULE_SETUP
-#line 251 "shrink.l"
+#line 251 "lexer.l"
 return TXT_FONT_GLUE;
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 252 "shrink.l"
+#line 252 "lexer.l"
 ;
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 254 "shrink.l"
+#line 254 "lexer.l"
 yylval.u= yytext[1]-'0';return TXT_FONT;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 256 "shrink.l"
+#line 256 "lexer.l"
 SCAN_REF(font_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 257 "shrink.l"
+#line 257 "lexer.l"
 SCAN_REF(penalty_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 258 "shrink.l"
+#line 258 "lexer.l"
 SCAN_REF(kern_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 259 "shrink.l"
+#line 259 "lexer.l"
 SCAN_REF(ligature_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 260 "shrink.l"
+#line 260 "lexer.l"
 SCAN_REF(disc_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 261 "shrink.l"
+#line 261 "lexer.l"
 SCAN_REF(glue_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 262 "shrink.l"
+#line 262 "lexer.l"
 SCAN_REF(language_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 263 "shrink.l"
+#line 263 "lexer.l"
 SCAN_REF(rule_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 264 "shrink.l"
+#line 264 "lexer.l"
 SCAN_REF(image_kind);return TXT_GLOBAL;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 267 "shrink.l"
+#line 267 "lexer.l"
 SCAN_UDEC(yytext+2);return TXT_CC;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 269 "shrink.l"
+#line 269 "lexer.l"
 yylval.u= yytext[1]-'a';return TXT_LOCAL;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 270 "shrink.l"
+#line 270 "lexer.l"
 return TXT_FONT_GLUE;
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 271 "shrink.l"
+#line 271 "lexer.l"
 return TXT_FONT_HYPHEN;
 	YY_BREAK
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 273 "shrink.l"
+#line 273 "lexer.l"
 SCAN_UTF8_1(yytext);return TXT_CC;
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 274 "shrink.l"
+#line 274 "lexer.l"
 SCAN_UTF8_2(yytext);return TXT_CC;
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 275 "shrink.l"
+#line 275 "lexer.l"
 SCAN_UTF8_3(yytext);return TXT_CC;
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 276 "shrink.l"
+#line 276 "lexer.l"
 SCAN_UTF8_4(yytext);return TXT_CC;
 	YY_BREAK
 
 /*:151*/	/*162:*/
 case 78:
 YY_RULE_SETUP
-#line 279 "shrink.l"
+#line 279 "lexer.l"
 return HBOX;
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 280 "shrink.l"
+#line 280 "lexer.l"
 return VBOX;
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 281 "shrink.l"
+#line 281 "lexer.l"
 return SHIFTED;
 	YY_BREAK
 /*:162*/	/*170:*/
 case 81:
 YY_RULE_SETUP
-#line 283 "shrink.l"
+#line 283 "lexer.l"
 return HPACK;
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 284 "shrink.l"
+#line 284 "lexer.l"
 return HSET;
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 285 "shrink.l"
+#line 285 "lexer.l"
 return VPACK;
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 286 "shrink.l"
+#line 286 "lexer.l"
 return VSET;
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 287 "shrink.l"
+#line 287 "lexer.l"
 return ADD;
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 288 "shrink.l"
+#line 288 "lexer.l"
 return TO;
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 289 "shrink.l"
+#line 289 "lexer.l"
 return DEPTH;
 	YY_BREAK
 /*:170*/	/*175:*/
 case 88:
 YY_RULE_SETUP
-#line 291 "shrink.l"
+#line 291 "lexer.l"
 return LEADERS;
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 292 "shrink.l"
+#line 292 "lexer.l"
 return ALIGN;
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 293 "shrink.l"
+#line 293 "lexer.l"
 return CENTER;
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 294 "shrink.l"
+#line 294 "lexer.l"
 return EXPAND;
 	YY_BREAK
 /*:175*/	/*182:*/
 case 92:
 YY_RULE_SETUP
-#line 296 "shrink.l"
+#line 296 "lexer.l"
 return BASELINE;
 	YY_BREAK
 /*:182*/	/*189:*/
 case 93:
 YY_RULE_SETUP
-#line 298 "shrink.l"
+#line 298 "lexer.l"
 return LIGATURE;
 	YY_BREAK
 /*:189*/	/*197:*/
 case 94:
 YY_RULE_SETUP
-#line 300 "shrink.l"
+#line 300 "lexer.l"
 return DISC;
 	YY_BREAK
 /*:197*/	/*205:*/
 case 95:
 YY_RULE_SETUP
-#line 302 "shrink.l"
+#line 302 "lexer.l"
 return PAR;
 	YY_BREAK
 /*:205*/	/*210:*/
 case 96:
 YY_RULE_SETUP
-#line 304 "shrink.l"
+#line 304 "lexer.l"
 return MATH;
 	YY_BREAK
 /*:210*/	/*215:*/
 case 97:
 YY_RULE_SETUP
-#line 306 "shrink.l"
+#line 306 "lexer.l"
 return ON;
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 307 "shrink.l"
+#line 307 "lexer.l"
 return OFF;
 	YY_BREAK
 /*:215*/	/*219:*/
 case 99:
 YY_RULE_SETUP
-#line 309 "shrink.l"
+#line 309 "lexer.l"
 return ADJUST;
 	YY_BREAK
 /*:219*/	/*223:*/
 case 100:
 YY_RULE_SETUP
-#line 311 "shrink.l"
+#line 311 "lexer.l"
 return TABLE;
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 312 "shrink.l"
+#line 312 "lexer.l"
 return ITEM;
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 313 "shrink.l"
+#line 313 "lexer.l"
 return ITEM;
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 314 "shrink.l"
+#line 314 "lexer.l"
 return ITEM;
 	YY_BREAK
 /*:223*/	/*230:*/
 case 104:
 YY_RULE_SETUP
-#line 316 "shrink.l"
+#line 316 "lexer.l"
 return IMAGE;
 	YY_BREAK
 /*:230*/	/*247:*/
 case 105:
 YY_RULE_SETUP
-#line 318 "shrink.l"
+#line 318 "lexer.l"
 return LABEL;
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 319 "shrink.l"
+#line 319 "lexer.l"
 return BOT;
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 320 "shrink.l"
+#line 320 "lexer.l"
 return MID;
 	YY_BREAK
 /*:247*/	/*261:*/
 case 108:
 YY_RULE_SETUP
-#line 322 "shrink.l"
+#line 322 "lexer.l"
 return LINK;
 	YY_BREAK
 /*:261*/	/*271:*/
 case 109:
 YY_RULE_SETUP
-#line 324 "shrink.l"
+#line 324 "lexer.l"
 return OUTLINE;
 	YY_BREAK
 /*:271*/	/*278:*/
 case 110:
 YY_RULE_SETUP
-#line 326 "shrink.l"
+#line 326 "lexer.l"
 if(section_no==1)return STREAMDEF;else return STREAM;
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 327 "shrink.l"
+#line 327 "lexer.l"
 return FIRST;
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 328 "shrink.l"
+#line 328 "lexer.l"
 return LAST;
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 329 "shrink.l"
+#line 329 "lexer.l"
 return TOP;
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 330 "shrink.l"
+#line 330 "lexer.l"
 return NOREFERENCE;
 	YY_BREAK
 /*:278*/	/*288:*/
 case 115:
 YY_RULE_SETUP
-#line 332 "shrink.l"
+#line 332 "lexer.l"
 return PAGE;
 	YY_BREAK
 /*:288*/	/*296:*/
 case 116:
 YY_RULE_SETUP
-#line 334 "shrink.l"
+#line 334 "lexer.l"
 return RANGE;
 	YY_BREAK
 /*:296*/	/*323:*/
 case 117:
 YY_RULE_SETUP
-#line 336 "shrink.l"
+#line 336 "lexer.l"
 return DIRECTORY;
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 337 "shrink.l"
+#line 337 "lexer.l"
 return SECTION;
 	YY_BREAK
-/*:323*/	/*342:*/
+/*:323*/	/*344:*/
 case 119:
 YY_RULE_SETUP
-#line 339 "shrink.l"
+#line 339 "lexer.l"
 return DEFINITIONS;
 	YY_BREAK
-/*:342*/	/*350:*/
+/*:344*/	/*352:*/
 case 120:
 YY_RULE_SETUP
-#line 341 "shrink.l"
+#line 341 "lexer.l"
 return MAX;
 	YY_BREAK
-/*:350*/	/*365:*/
+/*:352*/	/*367:*/
 case 121:
 YY_RULE_SETUP
-#line 343 "shrink.l"
+#line 343 "lexer.l"
 return PARAM;
 	YY_BREAK
-/*:365*/	/*374:*/
+/*:367*/	/*376:*/
 case 122:
 YY_RULE_SETUP
-#line 345 "shrink.l"
+#line 345 "lexer.l"
 return FONT;
 	YY_BREAK
-/*:374*/	/*402:*/
+/*:376*/	/*404:*/
 case 123:
 YY_RULE_SETUP
-#line 347 "shrink.l"
+#line 347 "lexer.l"
 return CONTENT;
 	YY_BREAK
-/*:402*/
+/*:404*/
 case 124:
 YY_RULE_SETUP
-#line 349 "shrink.l"
+#line 349 "lexer.l"
 QUIT("Unexpected keyword '%s' in line %d",yytext,yylineno);
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 350 "shrink.l"
+#line 350 "lexer.l"
 QUIT("Unexpected character '%c' (0x%02X) in line %d",yytext[0]>' '?yytext[0]:' ',yytext[0],yylineno);
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 352 "shrink.l"
+#line 352 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 2064 "shrink.lex.c"
+#line 2064 "lexer.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(STR):
 case YY_STATE_EOF(TXT):
@@ -3199,8 +3199,8 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 352 "shrink.l"
+#line 352 "lexer.l"
 
 
-	/*:509*/
+	/*:511*/
 
