@@ -1,15 +1,28 @@
 \batchmode
+\long\def\typeout#1{\immediate\write-1{#1}}
+\def\ { }%
 \output{\deadcycles0\setbox0\box255}
 \def\E#1{}
-\message{*** \string\par\ in non-\string\long\ cmd.}
+\typeout{*** \string\par\ in non-\string\long\ cmd.}
 \E{a
 
 b}
 \E{c\par d}
+
 \outer\def\F{hoge}
-\message{*** \string\outer\ cmd in \string\message.}
+\typeout{*** \string\outer\ cmd in \string\message\ and \string\write.}
+\immediate\write-1{\F}
 \message{\F}
-\message{*** \string\par\ in math mode.}
+
+\typeout{*** \string\outer\ cmd in conditionals.}
+\iftrue a\F 
+\else b\F
+\fi
+
+\typeout{*** \string\outer\ cmd in alignment preambles.}
+\halign{#\F&#\cr a&d\cr}
+
+\typeout{*** \string\par\ in math mode.}
 $ x+1 =
 
 a\par b$
@@ -18,7 +31,7 @@ $$\eqno{a}\par$$
 
 $$ aaa\par$$
 
-\message{*** \string\pdfprimitive\ and non-primitive.}
+\typeout{*** \string\pdfprimitive\ and non-primitive.}
 \ifdefined\primitive
   \primitive\batchmode
   \primitive\hoge
@@ -27,19 +40,30 @@ $$ aaa\par$$
   \pdfprimitive\hoge
 \fi
 
-\message{===============}
+\typeout{===============}
 \suppresslongerror=1
 \suppressoutererror=1
 \suppressmathparerror=1
 
-\message{*** \string\par\ in non-\string\long\ cmd.}
+\typeout{*** \string\par\ in non-\string\long\ cmd.}
 \E{a
 
 b}
 \E{c\par d}
-\message{*** \string\outer\ cmd in \string\message.}
+
+\typeout{*** \string\outer\ cmd in \string\message\ and \string\write.}
+\immediate\write-1{\F}
 \message{\F}
-\message{*** \string\par\ in math mode.}
+
+\typeout{*** \string\outer\ cmd in conditionals.}
+\iftrue a\F 
+\else b\F
+\fi
+
+\typeout{*** \string\outer\ cmd in alignment preambles.}
+\halign{#\F&#\cr a&d\cr}
+
+\typeout{*** \string\par\ in math mode.}
 $ x+1 =
 
 a\par b$
