@@ -62,7 +62,7 @@ hitex-tangle: ctangle$(EXEEXT) hitexdir/hitex.w tangle-sh
 
 # Generating hitables.c using himktables.
 hitables.c: himktables
-	./himktables > $@ || { rm -f hitables.c; exit 1; }
+	./himktables$(EXEEXT) > $@ || { rm -f hitables.c; exit 1; }
 
 # hitex
 nodist_hitex_SOURCES = hitables.c hiput.c $(hitex_c)
@@ -80,10 +80,11 @@ nodist_hishrink_SOURCES = hitables.c \
   hitexdir/hiparser.c hitexdir/hiparser.h \
   hishrink.c
 
-# This is our attempt to ensure that bison gets run before anything else,
-# when needed.
+# hitex and hishrink both need (at least) some of the sources generated
+# from hiformat.w.
 #
-$(hishrink_OBJECTS): $(srcdir)/hitexdir/hiparser.h
+$(hitex_OBJECTS): $(hiformat_c_h_l_y)
+$(hishrink_OBJECTS): $(hiformat_c_h_l_y)
 #
 # By the way, the $(BUILT_SOURCES) suggestion in the Automake manual for
 # this does not work for us, because we want to be able to invoke
