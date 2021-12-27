@@ -81,7 +81,7 @@ Section 6.
 @x
 @ Code related to input routines:
 @y
-@r @ Code related to input routines:
+@ Code related to input routines:
 @-c@>
 @z
 
@@ -552,9 +552,9 @@ Section 106.
 Section 108.
 
 @x
-@d print_cat(c) fputs(cat_name[c],stdout)
+@d print_cat(c) fputs(cat_name[c],stdout) /* symbolic printout of a category */
 @y
-@d print_cat(c) fputs(cat_name[c],stdout)
+@d print_cat(c) fputs(cat_name[c],stdout) /* symbolic printout of a category */
 @-c@>
 @z
 
