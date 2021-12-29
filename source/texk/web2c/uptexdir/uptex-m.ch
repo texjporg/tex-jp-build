@@ -353,7 +353,7 @@ kanji,kana,other_kchar,hangul: begin print("kanji character ");
 
 @x
   if (first_count>0)and(trick_buf2[(first_count-1)mod error_line]=1) then
-      incr(first_count);
+    incr(first_count);
 @y
   kcp:=trick_buf2[(first_count-1)mod error_line];
   if (first_count>0)and(kcp>0) then
@@ -621,7 +621,7 @@ begin str_room(1);
 p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
   begin t:=so(str_pool[k]);
-  if t>=@"100 then 
+  if t>=@"100 then
     begin t:=fromBUFFshort(str_pool, pool_ptr, k); incr(k);
     end
   else if t=" " then t:=space_token
@@ -744,7 +744,7 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 @z
 
 @x
-	jc:=toDVI(KANJI(info(p)));
+    jc:=toDVI(KANJI(info(p)));
     dvi_out(set2); dvi_out(Hi(jc)); dvi_out(Lo(jc));
 @y
     jc:=toDVI(KANJI(info(p)) mod max_cjk_val);
