@@ -1770,7 +1770,7 @@ if j>0 then begin
       if buffer2[i]>0 then
         print_char(@"100*buffer2[i]+buffer[i]) else print(buffer[i]);
         set_trick_count; print_unread_buffer_with_ptenc(loc,j);
-	end
+    end
   else
     for i:=start to j-1 do
       if buffer2[i]>0 then
@@ -6748,9 +6748,9 @@ for k:=256 to 511 do xchr[k]:=k;
 @y
   for i:=str_start[s] to str_start[s+1]-1 do
     if str_pool[i]>=@"100 then
-	  begin str_room(1); append_char(str_pool[i]);
-	  end
-	else
+      begin str_room(1); append_char(str_pool[i]);
+      end
+    else
       dummy := more_name(str_pool[i]); {add each read character to the current file name}
 @z
 
@@ -7865,7 +7865,7 @@ begin
     p:=multistrlen(ustringcast(buffer), l, i);
     if p<>1 then
       begin for j:=i to i+p-1 do
-	    print_char(@"100+buffer[j]);
+        print_char(@"100+buffer[j]);
       i:=i+p; end
     else begin print(buffer[i]); incr(i); end;
   end;

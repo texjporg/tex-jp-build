@@ -77,8 +77,8 @@ if j=1 then
       begin buffer[m]:=BYTE1(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
     if BYTE2(toBUFF(info(p) mod max_cjk_val))<>0 then 
       begin buffer[m]:=BYTE2(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
-    if BYTE3(toBUFF(info(p) mod max_cjk_val))<>0 then begin 
-      buffer[m]:=BYTE3(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
+    if BYTE3(toBUFF(info(p) mod max_cjk_val))<>0 then
+      begin buffer[m]:=BYTE3(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
     buffer[m]:=BYTE4(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m);
     p:=link(p);
     end
