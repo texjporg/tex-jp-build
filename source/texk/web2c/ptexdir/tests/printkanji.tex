@@ -1,6 +1,6 @@
 %\scrollmode
 \tracingstats=1000
-\noautoxspacing\scrollmode
+\noautoxspacing
 \newlinechar=`\^^J
 \font\x=ec-lmtt10 \x
 \immediate\openout1=\jobname.out
@@ -93,7 +93,7 @@ A: \A
     \expandafter\string\csname \the\toks0\endcsname => \csname \the\toks0\endcsname.
   }%
 }
-\ifx\ucs\undefined
+\ifnum\euc"A4A2="A4A2\relax
   \TEST{あ}{^^a4^^a2}
 \else
   \TEST{あ}{^^e3^^81^^82}

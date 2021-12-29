@@ -394,7 +394,7 @@ end;
 
 procedure print_quoted(@!s:integer);
   {prints string |s| which represents filename, 
-  omitting quotes and with code covversion}
+   omitting quotes and with code conversion}
 var i,l:pool_pointer; j,p:integer;
 begin if s<>0 then begin
   i:=str_start[s]; l:=str_start[s+1];

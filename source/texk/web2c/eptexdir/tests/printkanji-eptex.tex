@@ -19,6 +19,13 @@
 \repeat
 
 %========
+\head{detokenize}
+\def\A{^^c5^^bf ſ 顛 }
+
+\detokenize\expandafter{\meaning\A}
+\MSG{\detokenize\expandafter{\meaning\A}}
+
+%========
 \head{scantokens}
 \def\c{捉^^c2^^aaª}
 
