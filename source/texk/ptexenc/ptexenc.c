@@ -977,6 +977,8 @@ int nkf_close(FILE *fp) {
 }
 
 #define break_if_bad_utf8_second(k) if ((k<0x80)||(k>0xBF)) { i--; k='\0'; break; }
+#define write_hex_if_not_ascii(c) \
+   if ((c>=0x20)&&(c<=0x7E)) buffer[last++]=c; else write_hex(c);
 unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
 {
     int i;
@@ -1027,10 +1029,10 @@ unsigned char *ptenc_from_utf8_string_to_internal_enc(const unsigned char *is)
         j = (u != 0) ? toBUFF(fromUCS(u)) : 0;
         if (j == 0) { /* can't represent in EUC/SJIS */
             if (last+16>=len) buffer = buf = xrealloc(buffer, len=last+64);
-            write_hex(i1);
-            if (i2 != '\0') write_hex(i2);
-            if (i3 != '\0') write_hex(i3);
-            if (i4 != '\0') write_hex(i4);
+            write_hex_if_not_ascii(i1);
+            if (i2 != '\0') write_hex_if_not_ascii(i2);
+            if (i3 != '\0') write_hex_if_not_ascii(i3);
+            if (i4 != '\0') write_hex_if_not_ascii(i4);
         } else {
             write_multibyte(j);
         }
@@ -1057,7 +1059,7 @@ unsigned char *ptenc_from_internal_enc_string_to_utf8(const unsigned char *is)
     last_bak = last;
 
     len = strlen(is)+1;
-    buffer = buf = xmalloc(len*1.5);
+    buffer = buf = xmalloc(len*4);
     first = last = 0;
 
     for (i=0; i<strlen(is); i++) {
@@ -1067,14 +1069,14 @@ unsigned char *ptenc_from_internal_enc_string_to_utf8(const unsigned char *is)
             buffer[last++] = i1; /* ASCII */
             if (i1 == '\0') goto end;
             continue;
-        case 2:
+        case 2: /* i1: not ASCII */
             i2 = is[++i];
             if (i2 == '\0') {
               write_hex(i1); continue;
             } else {
               u = JIStoUCS2(toJIS(HILO(i1,i2)));
               if (u==0) {
-                write_hex(i1); write_hex(i2); continue;
+                write_hex(i1); write_hex_if_not_ascii(i2); continue;
               }
             }
             break;
