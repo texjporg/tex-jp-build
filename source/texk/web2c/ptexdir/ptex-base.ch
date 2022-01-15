@@ -6673,6 +6673,13 @@ inhibit_glue_flag:=false;
 end
 @z
 
+@x
+@!d:integer; {number of characters in incomplete current string}
+@y
+@!k:integer; {loop indices}
+@!d:integer; {number of characters in incomplete current string}
+@z
+
 @x [53.????] ignore "flag bit" in str_pool for system(3)
       runsystem_ret := runsystem(conststringcast(addressof(
                                               str_pool[str_start[str_ptr]])));
