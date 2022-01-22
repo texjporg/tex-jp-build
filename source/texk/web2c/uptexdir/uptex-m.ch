@@ -44,6 +44,7 @@
 % (2019-05-06) TTK  upTeX u1.25
 % (2020-02-22) TTK  upTeX u1.26
 % (2020-10-25) TTK  upTeX u1.27
+% (2022-01-23) TTK  upTeX u1.28
 
 @x upTeX: banner
   {printed when \pTeX\ starts}
@@ -51,8 +52,8 @@
   {printed when \pTeX\ starts}
 @#
 @d upTeX_version=1
-@d upTeX_revision==".27"
-@d upTeX_version_string=='-u1.27' {current u\pTeX\ version}
+@d upTeX_revision==".28"
+@d upTeX_version_string=='-u1.28' {current u\pTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
