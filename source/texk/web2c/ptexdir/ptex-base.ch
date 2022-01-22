@@ -67,6 +67,10 @@
 %                  based on TeX 3.141592653 (for TL21).
 % (2021-06-25) HY  pTeX p3.9.1 Various fixes.
 % (2021-06-20) HK  pTeX p3.10.0 Add \ucs and \toucs.
+% (2022-01-22) HK  pTeX p4.0.0 Distinguish 8-bit characters and Japanese characters
+%                  for better support of LaTeX3 (expl3).
+%                  Requires ptexenc version 1.4.0.
+%                  More details in TUGboat 41(2):329--334, 2020.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -79,10 +83,10 @@
 @d banner==TeX_banner
 @d banner_k==TeX_banner_k
 @y
-@d pTeX_version=3
-@d pTeX_minor_version=10
-@d pTeX_revision==".90"
-@d pTeX_version_string=='-p3.10.90' {current \pTeX\ version}
+@d pTeX_version=4
+@d pTeX_minor_version=0
+@d pTeX_revision==".0"
+@d pTeX_version_string=='-p4.0.0' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -617,7 +621,7 @@ end;
 @d rule_node=3 {|type| of rule nodes}
 @z
 
-@x [10.140] l.3083 - pTeX: renumber ins_node, add ins_dirh field
+@x [10.140] l.3083 - pTeX: renumber ins_node, add ins_dir field
 @d ins_node=3 {|type| of insertion nodes}
 @d ins_node_size=5 {number of words to allocate for an insertion}
 @d float_cost(#)==mem[#+1].int {the |floating_penalty| to be used}
@@ -1150,7 +1154,7 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
 @d prev_disp==cur_list.pdisp_field {displacemant at |prev_node|}
 @d last_jchr==cur_list.last_jchr_field {final jchar node on current list}
 @d disp_called==cur_list.disp_called_field {is a |disp_node| present in the current list?}
-@d inhibit_glue_flag==cur_list.inhibit_glue_flag_field {is \.{inhibitglue} is specified at the current list?}
+@d inhibit_glue_flag==cur_list.inhibit_glue_flag_field {is \.{\\inhibitglue} specified at the current list?}
 @z
 
 @x [16.214] l.4464 - pTeX: prev_append: disp_node
@@ -1624,7 +1628,7 @@ def_tfont: print_esc("tfont");
   token that stands for a control sequence; is a multiple of~256, less~1}
 @y
 @d cs_token_flag==@"FFFF {amount added to the |eqtb| location in a
-token that stands for a control sequence; is a multiple of~256, less~1}
+  token that stands for a control sequence; is a multiple of~256, less~1}
 @z
 
 @x [20.293] l.6496 - pTeX: show_token_list
@@ -2110,7 +2114,7 @@ else  begin {we are done with this token list}
   end
 @z
 
-@x ptex - firm_up_the_line
+@x [24] pTeX: firm_up_the_line
   if start<limit then for k:=start to limit-1 do print(buffer[k]);
   first:=limit; prompt_input("=>"); {wait for user response}
 @.=>@>
@@ -2126,8 +2130,6 @@ else  begin {we are done with this token list}
     begin for k:=first to last-1 do {move line down in buffer}
       begin buffer[k+start-first]:=buffer[k]; buffer2[k+start-first]:=buffer2[k]; end;
 @z
-
-
 
 @x [24.365] l.7935 - pTeX: get_token
 @p procedure get_token; {sets |cur_cmd|, |cur_chr|, |cur_tok|}
@@ -2524,7 +2526,7 @@ if scan_keyword("em") then v:=(@<The em width for |cur_font|@>)
 else if scan_keyword("ex") then v:=(@<The x-height for |cur_font|@>)
 @.ex@>
 else if scan_keyword("zw") then @<The KANJI width for |cur_jfont|@>
-@.ze@>
+@.zw@>
 else if scan_keyword("zh") then @<The KANJI height for |cur_jfont|@>
 @.zh@>
 else goto not_found;
@@ -4572,7 +4574,7 @@ else  case type(s) of
   disp_node: do_nothing;
 @z
 
-@x [38.856] l.17467 - pTeX: print symbolic feasibe node
+@x [38.856] l.17467 - pTeX: print symbolic feasible node
 if cur_p=null then print_esc("par")
 else if type(cur_p)<>glue_node then
   begin if type(cur_p)=penalty_node then print_esc("penalty")
@@ -6673,14 +6675,14 @@ inhibit_glue_flag:=false;
 end
 @z
 
-@x
+@x [53.????] \write18{foo} (write_out in tex.ch)
 @!d:integer; {number of characters in incomplete current string}
 @y
 @!k:integer; {loop indices}
 @!d:integer; {number of characters in incomplete current string}
 @z
 
-@x
+@x [53.????] \write18{foo} (write_out in tex.ch)
   for d:=0 to cur_length-1 do
     begin {|print| gives up if passed |str_ptr|, so do it by hand.}
     print(so(str_pool[str_start[str_ptr]+d])); {N.B.: not |print_char|}

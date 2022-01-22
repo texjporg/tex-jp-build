@@ -29,7 +29,6 @@ last_node_type:=-1; last_node_subtype:=-1;
     buffer[first+j]:=Lo(so(str_pool[k+j])); buffer2[first+j]:=Hi(so(str_pool[k+j])); end;
 @z
 
-
 @x
 @d eTeX_int=badness_code+1 {first of \eTeX\ codes for integers}
 @y

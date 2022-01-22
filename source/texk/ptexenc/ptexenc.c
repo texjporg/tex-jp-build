@@ -149,7 +149,7 @@ static int get_terminal_enc(void)
 /* enable ptex mode (use flag 0x100 for Japanese char) */
 void ptenc_ptex_mode (const boolean enable)
 {
-   fprintf(stderr, "ptenc_ptex_mode is called! (%d)\n", enable);
+   //fprintf(stderr, "ptenc_ptex_mode is called! (%d)\n", enable);
    ptex_mode = enable;
 }
 

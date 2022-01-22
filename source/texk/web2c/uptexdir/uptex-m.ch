@@ -297,7 +297,7 @@ kchar_num: print_esc("kchar");
 
 @x
 @d cs_token_flag==@"FFFF {amount added to the |eqtb| location in a
-token that stands for a control sequence; is a multiple of~256, less~1}
+  token that stands for a control sequence; is a multiple of~256, less~1}
 @d left_brace_token=@'0400 {$2^8\cdot|left_brace|$}
 @d left_brace_limit=@'1000 {$2^8\cdot(|left_brace|+1)$}
 @d right_brace_token=@'1000 {$2^8\cdot|right_brace|$}
