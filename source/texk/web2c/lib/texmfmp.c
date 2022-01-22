@@ -596,7 +596,14 @@ runsystem (const char *cmd)
   int allow = 0;
   char *safecmd = NULL;
   char *cmdname = NULL;
+#if IS_pTeX && !defined(WIN32)
+  char *cmd2;
+#endif
   int status = 0;
+#if IS_pTeX && !defined(WIN32)
+  cmd2 = (char *)ptenc_from_internal_enc_string_to_utf8((unsigned char *)cmd);
+  if (!cmd2) cmd2=cmd;
+#endif
 
   if (shellenabledp <= 0) {
     return 0;
@@ -606,10 +613,18 @@ runsystem (const char *cmd)
   if (restrictedshell == 0)
     allow = 1;
   else
+#if IS_pTeX && !defined(WIN32)
+    allow = shell_cmd_is_allowed (cmd2, &safecmd, &cmdname);
+#else
     allow = shell_cmd_is_allowed (cmd, &safecmd, &cmdname);
+#endif
 
   if (allow == 1)
+#if IS_pTeX && !defined(WIN32)
+    status = system (cmd2);
+#else
     status = system (cmd);
+#endif
   else if (allow == 2) {
 /*
   command including a character '|' is not allowed in
@@ -627,6 +642,9 @@ runsystem (const char *cmd)
   if (status != 0)
     fprintf(stderr,"system returned with code %d\n", status); 
 
+#if IS_pTeX && !defined(WIN32)
+  if (cmd!=cmd2) free(cmd2);
+#endif
   if (safecmd)
     free (safecmd);
   if (cmdname)
