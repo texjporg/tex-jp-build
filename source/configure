@@ -1670,7 +1670,7 @@ Optional Features:
   --disable-euptex          do not compile and install e-upTeX
   --disable-euptex-synctex    build e-upTeX without SyncTeX support
   --disable-aleph           do not compile and install Aleph
-  --enable-hitex            compile and install HiTeX
+  --disable-hitex           do not compile and install HiTeX
   --disable-pdftex          do not compile and install pdfTeX
   --disable-pdftex-synctex    build pdfTeX without SyncTeX support
   --disable-luatex          do not compile and install LuaTeX
@@ -5499,7 +5499,7 @@ case $enable_hitex in #(
   yes | no) :
      ;; #(
   *) :
-    enable_hitex=no ;;
+    enable_hitex=yes ;;
 esac
 
 test "x$enable_web2c:$enable_hitex" = xyes:yes && {
@@ -26338,11 +26338,11 @@ msg_compiling="$msg_compiling
 test "x$srcdir" = x. || msg_compiling="$msg_compiling
       from sources in $kpse_src"
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result:
-** Configuration summary for $PACKAGE_STRING (2022/dev$with_banner_add):
+** Configuration summary for $PACKAGE_STRING (2022$with_banner_add):
 
    $msg_compiling" >&5
 printf "%s\n" "
-** Configuration summary for $PACKAGE_STRING (2022/dev$with_banner_add):
+** Configuration summary for $PACKAGE_STRING (2022$with_banner_add):
 
    $msg_compiling" >&6; }
 case $kpse_src$kpse_bld in
