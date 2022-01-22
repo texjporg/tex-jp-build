@@ -6680,6 +6680,20 @@ end
 @!d:integer; {number of characters in incomplete current string}
 @z
 
+@x
+  for d:=0 to cur_length-1 do
+    begin {|print| gives up if passed |str_ptr|, so do it by hand.}
+    print(so(str_pool[str_start[str_ptr]+d])); {N.B.: not |print_char|}
+    end;
+@y
+  for d:=0 to cur_length-1 do
+    begin {|print| gives up if passed |str_ptr|, so do it by hand.}
+    if so(str_pool[str_start[str_ptr]+d])>=@"100 then
+    print_char(so(str_pool[str_start[str_ptr]+d]))
+    else print(so(str_pool[str_start[str_ptr]+d])); {N.B.: not |print_char|}
+    end;
+@z
+
 @x [53.????] ignore "flag bit" in str_pool for system(3)
       runsystem_ret := runsystem(conststringcast(addressof(
                                               str_pool[str_start[str_ptr]])));
