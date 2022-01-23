@@ -17,7 +17,7 @@
 % hangul=19 {hangul codes}
 
 % separate in blocks
-\write16{À::\the\kcatcode"00C0}% U+00C0 "Latin-1 Letters" in Latin-1 Supplement
+\write16{0x00C0::\the\kcatcode"00C0}% U+00C0 "Latin-1 Letters" in Latin-1 Supplement
 \write16{§::\the\kcatcode"00A7}% U+00A7 Latin-1 Supplement
 \write16{！::\the\kcatcode"FF01}% U+FF01 Halfwidth and Fullwidth Forms
 \write16{０::\the\kcatcode"FF10}% U+FF10 "Fullwidth ASCII variants" in Halfwidth and Fullwidth Forms
@@ -25,9 +25,9 @@
 
 % not_cjk=15 {is not cjk characters}
 \write16{A::\the\kcatcode"0041}% U+0041 Basic Latin
-\write16{Ā::\the\kcatcode"0100}% U+0100 Latin Extended-A
-\write16{ƀ::\the\kcatcode"0180}% U+0180 Latin Extended-B
-\write16{Ḁ::\the\kcatcode"1E00}% U+1E00 Latin Extended Additional
+\write16{0x0100::\the\kcatcode"0100}% U+0100 Latin Extended-A
+\write16{0x0180::\the\kcatcode"0180}% U+0180 Latin Extended-B
+\write16{0x1E00::\the\kcatcode"1E00}% U+1E00 Latin Extended Additional
 
 % kanji=16 {kanji}
 \write16{⺀::\the\kcatcode"2E80}% U+2E80 CJK Radicals Supplement
