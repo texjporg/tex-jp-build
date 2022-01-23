@@ -13,19 +13,19 @@
 %
 
 @x
-@d default_banner "This is MetaPost, Version 2.01" /* printed when \MP\ starts */
+@d default_banner "This is MetaPost, Version 2.02" /* printed when \MP\ starts */
 @y
 @z
 
 @x
-#define metapost_version "2.01"
+#define metapost_version "2.02"
 @y
 #ifdef UPMP
 #define P_UP "up"
-#define metapost_version "2.01-0.04-u1.27"
+#define metapost_version "2.02-0.04-u1.27"
 #else
 #define P_UP "p"
-#define metapost_version "2.01-0.04"
+#define metapost_version "2.02-0.04"
 #endif
 #define default_banner "This is " P_UP "MetaPost, Version " metapost_version /* printed when \MP\ starts */
 @z
@@ -100,7 +100,7 @@ static boolean mp_input_ln (MP mp, void *f) {
 @y
 static boolean mp_input_ln (MP mp, void *f ) {
   int i = EOF;
-  mp->last = input_line2((FILE *)f, mp->buffer, mp->first, mp->buf_size, &i);
+  mp->last = input_line2((FILE *)f, mp->buffer, NULL, mp->first, mp->buf_size, &i);
   if (i == EOF && errno != EINTR && mp->last == mp->first)
     return false;
   if (i != EOF && i != '\n' && i != '\r') {
