@@ -1,3 +1,14 @@
+2022-01-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptexenc.c, ptexenc/ptexenc.h, unicode.c, ptexenc/unicode.h:
+	Distinguish 8-bit characters and Japanese characters by using
+	flag 0x100 for Japanese char.
+	* version.ac: Bump to 1.4.0.
+
+2022-01-18  Karl Berry  <karl@tug.org>
+
+	* version.ac: remove /dev, for TL22.
+
 2021-06-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
 	* kanjicnv.c, ptexenc/kanjicnv.h: Always return 0 for
@@ -11,7 +22,7 @@
 
 2021-04-17  Karl Berry  <karl@tug.org>
 
-	* version.ac: now 1.3.11/dev since TL'21 is released.
+	* version.ac: now 1.3.11/dev since TL21 is released.
 
 2021-03-23  Karl Berry  <karl@tug.org>
 
