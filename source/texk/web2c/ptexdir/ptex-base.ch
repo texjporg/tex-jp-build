@@ -6123,16 +6123,14 @@ mmode+char_num: begin scan_char_num; cur_chr:=cur_val;
 @y
 mmode+letter,mmode+other_char,mmode+char_given:
   if is_char_ascii(cur_chr) then
-    if cur_chr<128 then set_math_char(ho(math_code(cur_chr)))
-    else set_math_char(cur_chr)
+    set_math_char(ho(math_code(cur_chr)))
   else set_math_kchar(cur_chr);
 mmode+kanji,mmode+kana,mmode+other_kchar: begin
     cx:=cur_chr; set_math_kchar(KANJI(cx));
   end;
 mmode+char_num: begin scan_char_num; cur_chr:=cur_val;
   if is_char_ascii(cur_chr) then
-    if cur_chr<128 then set_math_char(ho(math_code(cur_chr)))
-    else set_math_char(cur_chr)
+    set_math_char(ho(math_code(cur_chr)))
   else set_math_kchar(cur_chr);
   end;
 @z
