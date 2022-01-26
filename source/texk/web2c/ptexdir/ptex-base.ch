@@ -6732,7 +6732,7 @@ end
       name_of_file := xmalloc(cur_length*4+1);
       k := 0;
       for d:=0 to cur_length-1 do
-        append_to_name(str_pool[str_start[str_ptr]+d]);
+        append_to_name_char(str_pool[str_start[str_ptr]+d]);
       name_of_file[k+1] := 0;
       runsystem_ret := runsystem(conststringcast(name_of_file+1));
 @z

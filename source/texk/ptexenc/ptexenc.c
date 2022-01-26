@@ -224,7 +224,11 @@ boolean is_internalUPTEX(void)
 
 boolean is_terminalUTF8(void)
 {
-    return (terminal_enc == ENC_UTF8);
+#ifdef WIN32
+    return false;
+#else
+    get_terminal_enc(); return (terminal_enc == ENC_UTF8);
+#endif
 }
 
 
