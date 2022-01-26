@@ -116,10 +116,10 @@ var m:halfword; {|chr_code| part of the operand token}
 @d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
 @z
 
-@x e-pTeX: \current(x)spacingmode
+@x e-pTeX: \current(x)spacingmode, \fontchartype
 @d eTeX_dim=eTeX_int+8 {first of \eTeX\ codes for dimensions}
 @y
-@d eTeX_dim=eTeX_int+10 {first of \eTeX\ codes for dimensions}
+@d eTeX_dim=eTeX_int+11 {first of \eTeX\ codes for dimensions}
 @z
 
 @x
@@ -749,6 +749,32 @@ current_xspacing_mode_code: print_esc("currentxspacingmode");
 @ @<Cases for fetching an integer value@>=
 current_spacing_mode_code: cur_val:=auto_spacing;
 current_xspacing_mode_code: cur_val:=auto_xspacing;
+
+@ The \.{\\fontchartype} command returns a |char_type| of
+given Japanese font and character code.
+
+@d font_char_type_code=eTeX_int+10 {code for \.{\\fontchartype}}
+
+@<Generate all \eTeX...@>=
+primitive("fontchartype",last_item,font_char_type_code);
+@!@:font_char_type_code_}{\.{\\fontchartype} primitive@>
+
+@ @<Cases of |last_item| for |print_cmd_chr|@>=
+font_char_type_code: print_esc("fontchartype");
+
+@ @<Cases for fetching an integer value@>=
+font_char_type_code: begin scan_font_ident; q:=cur_val; scan_char_num;
+  if font_dir[q]<>dir_default then {Japanese font}
+    if is_char_kanji(cur_val) then {Japanese Character}
+      cur_val:=get_jfm_pos(KANJI(cur_val),q)
+    else cur_val:=-1
+  else
+    begin print_err("Not a Japanese font");
+    help1("Non-Japanese font has no character type.");
+    error;
+    cur_val:=-1;
+    end
+  end;
 
 @* \[56] System-dependent changes.
 @z

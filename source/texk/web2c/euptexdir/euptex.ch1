@@ -13,9 +13,9 @@
 @z
 
 @x e-upTeX: \currentcjktoken
-@d eTeX_dim=eTeX_int+10 {first of \eTeX\ codes for dimensions}
-@y
 @d eTeX_dim=eTeX_int+11 {first of \eTeX\ codes for dimensions}
+@y
+@d eTeX_dim=eTeX_int+12 {first of \eTeX\ codes for dimensions}
 @z
 
 @x
@@ -93,7 +93,7 @@ if j=1 then
 @ The \.{\\currentcjktoken} command returns the current \upTeX's
 status of \.{\\(disable|enable|force)cjktoken}.
 
-@d current_cjk_token_code=eTeX_int+10 {code for \.{\\currentcjktoken}}
+@d current_cjk_token_code=eTeX_int+11 {code for \.{\\currentcjktoken}}
 
 @<Generate all \eTeX...@>=
 primitive("currentcjktoken",last_item,current_cjk_token_code);
