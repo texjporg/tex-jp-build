@@ -2123,7 +2123,7 @@ else  begin {we are done with this token list}
       buffer[k+start-first]:=buffer[k];
 @y
   if start<limit then for k:=start to limit-1 do
-    if buffer2[k]>=@"100 then print_char(buffer[k]) else print(buffer[k]);
+    if buffer2[k]>0 then print_char(buffer[k]) else print(buffer[k]);
   first:=limit; prompt_input("=>"); {wait for user response}
 @.=>@>
   if last>first then
