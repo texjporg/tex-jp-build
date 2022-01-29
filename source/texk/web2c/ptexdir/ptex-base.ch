@@ -6072,7 +6072,7 @@ begin KANJI(cx):=0;
 restart: @<Get the next non-blank non-relax...@>;
 reswitch:case cur_cmd of
 letter,other_char,char_given:
-  if (is_char_ascii(cur_chr) or (cur_chr=max_cjk_val)) then begin
+  if is_char_ascii(cur_chr) then begin
     c:=ho(math_code(cur_chr));
     if c=@'100000 then
       begin @<Treat |cur_chr| as an active character@>;
