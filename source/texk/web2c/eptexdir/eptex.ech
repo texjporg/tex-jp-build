@@ -212,16 +212,6 @@ else if (type(tx)=kern_node) and (subtype(tx)=normal) then
   if ((type(r)=penalty_node) and (subtype(r)=kinsoku_pena)) then tx:=last_jchr else tx:=r;
   end;
 end
-
-@d ignore_ligature==
-if not is_char_node(tx) then
-  begin if type(tx)=ligature_node then
-    begin r:=lig_ptr(tx);
-    while link(r)<>null do r:=link(r);
-    cur_val:=qo(character(r));
-    end
-  end
-else find_last_char;
 @z
 
 @x
@@ -281,7 +271,15 @@ else find_last_char;
         else cur_val:=cur_val-unset_node+1;
       end;
     last_node_char_code: begin
-      ignore_font_kerning; ignore_ligature;
+      ignore_font_kerning;
+      if not is_char_node(tx)and(type(tx)=ligature_node) then
+        {decompose a ligature to original characters}
+        begin r:=lig_ptr(tx);
+        while link(r)<>null do r:=link(r);
+        cur_val:=qo(character(r));
+        end
+      else
+        find_last_char;
       end;
     last_node_font_code: begin
       ignore_font_kerning;
