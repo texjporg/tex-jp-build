@@ -955,10 +955,10 @@ else if cur_cmd=kchar_num then
 
 @x
 letter,other_char,char_given:
-  if (is_char_ascii(cur_chr) or (cur_chr=256)) then begin
+  if is_char_ascii(cur_chr) then begin
 @y
 letter,other_char,char_given:
-  if (cur_chr>=0)and(cur_chr<=256) then begin
+  if check_echar_range(cur_chr) then begin
 @z
 
 @x
