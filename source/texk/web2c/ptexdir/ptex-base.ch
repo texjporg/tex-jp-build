@@ -2866,14 +2866,19 @@ if #<>0 then
 @d append_to_name_hex(#)==if (#)<10 then append_to_name_char((#)+"0") else append_to_name_char((#)-10+"a")
 
 @d append_to_name(#)==begin
-  c:=#;
-  if (c>=@"80) and (not isinternalUPTEX) and isterminalUTF8 then begin
-    append_to_name_char("^");
-    append_to_name_char("^");
-    append_to_name_hex(c div 16);
-    append_to_name_hex(c mod 16);
-  end else if not (c="""") then
+  if (#)>=@"100 then begin
+    c:=(#)-@"100;
     append_to_name_char(c);
+  end else begin
+    c:=#;
+    if (c>=@"80) and (not isinternalUPTEX) and isterminalUTF8 then begin
+      append_to_name_char("^");
+      append_to_name_char("^");
+      append_to_name_hex(c div 16);
+      append_to_name_hex(c mod 16);
+    end else if not (c="""") then
+      append_to_name_char(c);
+  end
 end
 @z
 
