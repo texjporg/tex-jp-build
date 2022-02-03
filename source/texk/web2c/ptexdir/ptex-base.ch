@@ -2854,7 +2854,7 @@ if #<>0 then
 @y
 @z
 
-@x
+@x [29.519]
 @d append_to_name(#)==begin c:=#; if not (c="""") then begin incr(k);
   if k<=file_name_size then name_of_file[k]:=xchr[c];
   end end
@@ -2863,9 +2863,12 @@ if #<>0 then
   if k<=file_name_size then name_of_file[k]:=xchr[#];
   end
 
-@d append_to_name_hex(#)==if (#)<10 then append_to_name_char((#)+"0") else append_to_name_char((#)-10+"a")
+@d append_to_name_hex(#)==if (#)<10 then append_to_name_char((#)+"0")
+  else append_to_name_char((#)-10+"a")
 
-@d append_to_name(#)==begin
+@d append_to_name(#)==begin c:=#; if not (c="""") then append_to_name_char(c); end
+
+@d append_to_name_str_pool(#)==begin
   if (#)>=@"100 then begin
     c:=(#)-@"100;
     append_to_name_char(c);
@@ -2886,6 +2889,16 @@ end
 name_of_file:= xmalloc_array (ASCII_code, length(a)+length(n)+length(e)+1);
 @y
 name_of_file:= xmalloc_array (ASCII_code, (length(a)+length(n)+length(e))*4+1);
+@z
+
+@x [29.519] pack_file_name
+for j:=str_start[a] to str_start[a+1]-1 do append_to_name(so(str_pool[j]));
+for j:=str_start[n] to str_start[n+1]-1 do append_to_name(so(str_pool[j]));
+for j:=str_start[e] to str_start[e+1]-1 do append_to_name(so(str_pool[j]));
+@y
+for j:=str_start[a] to str_start[a+1]-1 do append_to_name_str_pool(so(str_pool[j]));
+for j:=str_start[n] to str_start[n+1]-1 do append_to_name_str_pool(so(str_pool[j]));
+for j:=str_start[e] to str_start[e+1]-1 do append_to_name_str_pool(so(str_pool[j]));
 @z
 
 @x l.10444
@@ -6730,7 +6743,7 @@ end
       name_of_file := xmalloc(cur_length*4+1);
       k := 0;
       for d:=0 to cur_length-1 do
-        append_to_name_char(str_pool[str_start[str_ptr]+d]);
+        append_to_name_char(str_pool[str_start[str_ptr]+d]); {do not remove quote}
       name_of_file[k+1] := 0;
       runsystem_ret := runsystem(conststringcast(name_of_file+1));
 @z
