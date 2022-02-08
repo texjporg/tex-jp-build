@@ -233,6 +233,25 @@ init_kanji;
 parse_arguments;
 @z
 
+% pBibTeX: do not break at |white_space| after Japanese characters
+@x "Break that line"
+while ((lex_class[out_buf[out_buf_ptr]] <> white_space) and
+                                        (out_buf_ptr >= min_print_line)) do
+    decr(out_buf_ptr);
+@y
+while (((lex_class[out_buf[out_buf_ptr]] <> white_space) or
+       (out_buf[out_buf_ptr-1] > 127)) and (out_buf_ptr >= min_print_line)) do
+    decr(out_buf_ptr);
+@z
+@x "Break that unbreakably long line"
+    if (lex_class[out_buf[out_buf_ptr]] <> white_space) then
+        incr(out_buf_ptr)
+@y
+    if (lex_class[out_buf[out_buf_ptr]] <> white_space) or
+      (out_buf[out_buf_ptr-1] > 127) then
+        incr(out_buf_ptr)
+@z
+
 @x Changes for JBibTeX by Shouichi Matsui [332]
 @!b_write : hash_loc;           {\.{write\$}}
 @!b_default : hash_loc;         {either \.{skip\$} or \.{default.type}}
