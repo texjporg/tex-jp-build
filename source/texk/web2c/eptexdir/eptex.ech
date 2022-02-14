@@ -277,7 +277,8 @@ end
         begin r:=lig_ptr(tx);
         while link(r)<>null do r:=link(r);
         cur_val:=qo(character(r));
-        end;
+        end
+      else find_last_char;
       end;
     last_node_font_code: begin
       ignore_font_kerning;
