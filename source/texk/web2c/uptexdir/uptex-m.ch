@@ -444,7 +444,6 @@ else  begin k:=loc; cur_chr:=buffer[k]; incr(k);
   else cat:=cat_code(cur_chr);
 start_cs:
   if cat=letter then state:=skip_blanks
-  else if (cat=kanji)or(cat=kana) then state:=skip_blanks_kanji
 @y
 else  begin k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
@@ -461,7 +460,6 @@ else  begin k:=loc;
   end;
 start_cs:
   if (cat=letter)or(cat=hangul) then state:=skip_blanks
-  else if (cat=kanji)or(cat=kana) then state:=skip_blanks_kanji
 @z
 
 @x
@@ -483,7 +481,9 @@ begin repeat cur_chr:=buffer[k]; incr(k);
     for l:=k-1 to k-2+multistrlen(ustringcast(buffer), limit+1, k-1) do
       buffer2[l]:=1;
     incr(k);
-    if (cat=kanji)or(cat=kana) then state:=skip_blanks_kanji;
+    if (cat=kanji)or(cat=kana) then
+      begin if (ptex_lineend mod 2)=0 then state:=skip_blanks_kanji
+      else state:=skip_blanks end;
     end
   else cat:=cat_code(cur_chr);
 @y
@@ -495,7 +495,9 @@ begin repeat
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
     k:=k+multistrlen(ustringcast(buffer), limit+1, k);
-    if (cat=kanji)or(cat=kana) then state:=skip_blanks_kanji
+    if (cat=kanji)or(cat=kana) then
+      begin if (ptex_lineend mod 2)=0 then state:=skip_blanks_kanji
+      else state:=skip_blanks end
     else if cat=hangul then state:=skip_blanks;
     end
   else begin {not multi-byte char}
