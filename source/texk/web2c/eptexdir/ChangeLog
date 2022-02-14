@@ -8,8 +8,7 @@
 
 2022-01-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
-	* eptex.ech: Add \lastnodefont, and revise \lastnodechar to
-	  recognize the last character of a ligature.
+	* eptex.ech: Add \lastnodefont.
 
 2022-01-26  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
