@@ -272,22 +272,23 @@ end
       end;
     last_node_char_code: begin
       ignore_font_kerning;
-      if not is_char_node(tx)and(type(tx)=ligature_node) then
+      if is_char_node(tx) then
+        find_last_char
+      else if type(tx)=ligature_node then
         {decompose a ligature to original characters}
         begin r:=lig_ptr(tx);
         while link(r)<>null do r:=link(r);
         cur_val:=qo(character(r));
         end
-      else find_last_char;
+      {else: already -1}
       end;
     last_node_font_code: begin
       ignore_font_kerning;
       if is_char_node(tx) then
         cur_val:=font(tx)+font_id_base
-      else if not is_char_node(tx)and(type(tx)=ligature_node) then
+      else if type(tx)=ligature_node then
         cur_val:=font(lig_char(tx))+font_id_base
-      else
-        cur_val:=null_font+font_id_base;
+      {else: already nullfont}
       end;
 @z
 
