@@ -277,16 +277,16 @@ end
         begin r:=lig_ptr(tx);
         while link(r)<>null do r:=link(r);
         cur_val:=qo(character(r));
-        end
-      else
-        find_last_char;
+        end;
       end;
     last_node_font_code: begin
       ignore_font_kerning;
-      if not is_char_node(tx)and(type(tx)=ligature_node) then
+      if is_char_node(tx) then
+        cur_val:=font(tx)+font_id_base
+      else if not is_char_node(tx)and(type(tx)=ligature_node) then
         cur_val:=font(lig_char(tx))+font_id_base
       else
-        cur_val:=font(tx)+font_id_base;
+        cur_val:=null_font+font_id_base;
       end;
 @z
 
