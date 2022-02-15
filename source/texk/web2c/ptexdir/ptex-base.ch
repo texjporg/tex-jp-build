@@ -1482,7 +1482,7 @@ primitive("scriptbaselineshiftfactor",assign_int,int_base+script_baseline_shift_
 primitive("scriptscriptbaselineshiftfactor",assign_int,int_base+scriptscript_baseline_shift_factor_code);@/
 @!@:scriptscript_baseline_shift_factor}{\.{\\scriptscriptbaselineshiftfactor} primitive@>
 primitive("ptexlineendmode",assign_int,int_base+ptex_lineend_code);@/
-@!@:ptex_lineend_mode_}{\.{\\pTeXlineendmode} primitive@>
+@!@:ptex_lineend_mode_}{\.{\\ptexlineendmode} primitive@>
 @z
 
 @x [17.247] l.5490 - pTeX: kinsoku, t_baseline_shift, y_baseline_shift
@@ -1710,7 +1710,7 @@ be |skip_blanks|.
 If \.{\\ptexlineendmode} is odd, the |state| become |skip_blanks_kanji|
 after a control word which ends with a Japanese character. This is
 similar to |skip_blanks|, but the |state| will be |mid_kanji| after
-|skip_blanks_kanji+left_brace| and |skip_blanks_kanji+right_brace|, 
+|skip_blanks_kanji+left_brace| and |skip_blanks_kanji+right_brace|,
 instead of |mid_line|.
 @z
 
@@ -1914,7 +1914,7 @@ skip_blanks+car_ret,skip_blanks_kanji+car_ret,any_state_plus(comment):
 new_line+car_ret:@<Finish line, emit a \.{\\par}@>;
 mid_line+left_brace: incr(align_state);
 mid_kanji+left_brace: begin incr(align_state);
-  if (ptex_lineend div 4) mod 2=1 then state:=mid_line;
+  if ((ptex_lineend div 4) mod 2)=1 then state:=mid_line;
   end;
 skip_blanks+left_brace,new_line+left_brace: begin
   state:=mid_line; incr(align_state);
@@ -1924,7 +1924,7 @@ skip_blanks_kanji+left_brace: begin
   end;
 mid_line+right_brace: decr(align_state);
 mid_kanji+right_brace: begin decr(align_state);
-  if (ptex_lineend div 4) mod 2=1 then state:=mid_line;
+  if ((ptex_lineend div 4) mod 2)=1 then state:=mid_line;
   end;
 skip_blanks+right_brace,new_line+right_brace: begin
   state:=mid_line; decr(align_state);
@@ -1984,7 +1984,7 @@ start_cs:
     else state:=skip_blanks end
   else if cat=spacer then state:=skip_blanks
   else if cat=other_kchar then
-    begin if ((ptex_lineend div 2)mod 2)=0 then state:=mid_kanji
+    begin if ((ptex_lineend div 2) mod 2)=0 then state:=mid_kanji
     else state:=mid_line end
   else state:=mid_line;
   if cat=other_kchar then
@@ -2099,7 +2099,7 @@ begin repeat cur_chr:=buffer[k]; incr(k);
         end;
       end;
     end;
-    if cat=letter then state:=skip_blanks;
+  if cat=letter then state:=skip_blanks;
 until not((cat=letter)or(cat=kanji)or(cat=kana))or(k>limit);
 {@@<If an expanded...@@>;}
 if not((cat=letter)or(cat=kanji)or(cat=kana)) then decr(k);
