@@ -502,7 +502,7 @@ begin repeat
     end
   else begin {not multi-byte char}
     cur_chr:=buffer[k];
-    cat:=cat_code(cur_chr); if cat=letter then state:=skip_blanks;
+    cat:=cat_code(cur_chr);
     incr(k);
   end;
 @z
