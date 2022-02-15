@@ -20,6 +20,7 @@
 	   - p4.0.0 or later : default 0.
 	   - p3.8.2-3.10.0   : similar to 1.
 	   - p3.8.1 or older : similar to 3.
+	  More info: https://github.com/texjporg/tex-jp-build/issues/87
 
 2022-02-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
 
