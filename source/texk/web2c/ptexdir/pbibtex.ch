@@ -469,7 +469,17 @@ begin
 procedure x_substring;
 label exit;
 var tps,tpe:pool_pointer; {temporary pointer}
+@!pop_lit2_saved: integer;
 begin
+@z
+
+@x
+@<Form the appropriate substring@>=
+begin
+@y
+@<Form the appropriate substring@>=
+begin
+pop_lit2_saved := pop_lit2; {save before negate}
 @z
 
 @x Changes for JBibTeX by Shouichi Matsui [438]
@@ -498,6 +508,11 @@ while tpe < str_start[pop_lit3+1] do begin
         tps := tpe;
     if sp_end<=tpe then break;
 end;
+if (pop_lit2_saved > 1) and (tps = str_start[pop_lit3])
+    then tps := tps + 2;
+if (pop_lit2_saved < -1) and (tpe = str_start[pop_lit3+1])
+    then tpe := tpe - 2;
+if tps > tpe then tpe := tps;
 sp_ptr := tps;
 sp_end := tpe;
 

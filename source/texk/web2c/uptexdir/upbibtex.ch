@@ -232,6 +232,12 @@ var i:0..last_text_char;    {this is the first one declared}
 @z
 
 @x
+@!pop_lit2_saved: integer;
+@y
+@!pop_lit2_saved,@!mbl_tpe: integer;
+@z
+
+@x
 { 2 bytes Kanji code break check }
 tps:=str_start[pop_lit3];
 tpe:=tps;
@@ -250,21 +256,34 @@ while tpe < str_start[pop_lit3+1] do begin
         tps := tpe;
     if sp_end<=tpe then break;
 end;
+if (pop_lit2_saved > 1) and (tps = str_start[pop_lit3])
+    then tps := tps + 2;
+if (pop_lit2_saved < -1) and (tpe = str_start[pop_lit3+1])
+    then tpe := tpe - 2;
+if tps > tpe then tpe := tps;
 sp_ptr := tps;
 sp_end := tpe;
 @y
 { |2..4| bytes Kanji code break check }
 tps:=str_start[pop_lit3];
 tpe:=tps;
+mbl_tpe:=0;
 while tpe < str_start[pop_lit3+1] do begin
-    if multibytelen(str_pool[tpe])<0
+    if multibytelen(str_pool[tpe])<0 {just in case}
         or (str_start[pop_lit3+1] < tpe+multibytelen(str_pool[tpe])) then
         break;
-    tpe := tpe + multibytelen(str_pool[tpe]);
+    mbl_tpe := multibytelen(str_pool[tpe]);
+    tpe := tpe + mbl_tpe;
     if tpe<=sp_ptr then
         tps := tpe;
     if sp_end<=tpe then break;
 end;
+if (pop_lit2_saved > 1) and (tps = str_start[pop_lit3]) then
+    if multibytelen(str_pool[tps])>=0 then {just in case}
+        tps := tps + multibytelen(str_pool[tps]);
+if (pop_lit2_saved < -1) and (tpe = str_start[pop_lit3+1]) then
+    tpe := tpe - mbl_tpe;
+if tps > tpe then tpe := tps;
 sp_ptr := tps;
 sp_end := tpe;
 @z
