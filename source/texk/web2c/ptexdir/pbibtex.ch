@@ -25,8 +25,11 @@
 % 2010          Version 0.99d of BibTeX for TeX Live
 %
 % 2022-02-08    Version 0.34 by H. Yamashita
-%               Do not break at white space after Japanese, to preserve spacing
-%               within BIB entry spacing to BBL for subsequent pTeX line-end operations
+%   * Avoid breaking BBL lines at white space after a Japanese character, to
+%     preserve spacing within BIB entry for subsequent pTeX line-end operations.
+% 2022-02-20    Still version 0.34 by H. Yamashita (-> TL'22 version)
+%   * Improve substring$ to truncate at least one character when trying to
+%     start counting from the middle byte of the first or last Japanese character.
 
 @x [0] only print chnages
 \def\title{\BibTeX\ }
@@ -240,7 +243,7 @@ init_kanji;
 parse_arguments;
 @z
 
-% pBibTeX: do not break at |white_space| after Japanese characters
+% pBibTeX: do not break at |white_space| after Japanese characters (2022-02-08 j0.34)
 @x "Break that line"
 while ((lex_class[out_buf[out_buf_ptr]] <> white_space) and
                                         (out_buf_ptr >= min_print_line)) do
@@ -482,7 +485,7 @@ begin
 pop_lit2_saved := pop_lit2; {save before negate}
 @z
 
-@x Changes for JBibTeX by Shouichi Matsui [438]
+@x Changes for JBibTeX by Shouichi Matsui [438] + fix (2022-02-20 j0.34)
 str_room(sp_end - sp_ptr);
 while (sp_ptr < sp_end) do                      {shift the substring}
     begin
@@ -509,9 +512,9 @@ while tpe < str_start[pop_lit3+1] do begin
     if sp_end<=tpe then break;
 end;
 if (pop_lit2_saved > 1) and (tps = str_start[pop_lit3])
-    then tps := tps + 2;
+    then tps := tps + 2; {truncate at least one}
 if (pop_lit2_saved < -1) and (tpe = str_start[pop_lit3+1])
-    then tpe := tpe - 2;
+    then tpe := tpe - 2; {truncate at least one}
 if tps > tpe then tpe := tps;
 sp_ptr := tps;
 sp_end := tpe;
