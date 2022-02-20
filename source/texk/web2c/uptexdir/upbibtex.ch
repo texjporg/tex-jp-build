@@ -234,27 +234,24 @@ var i:0..last_text_char;    {this is the first one declared}
 @x
 { 2 bytes Kanji code break check }
 tps:=str_start[pop_lit3];
-while (tps < sp_ptr) do begin
-    if str_pool[tps] > 127
-    then tps := tps + 2
-    else incr(tps);
-end;
 tpe:=tps;
-while (tpe < sp_end) do begin
-    if str_pool[tpe] > 127
-    then tpe := tpe+2
-    else incr(tpe);
+while tpe < str_start[pop_lit3+1] do begin
+    if str_pool[tpe] > 127 then begin
+        if str_start[pop_lit3+1] < tpe+2 then
+            break;
+        tpe := tpe + 2;
+        end
+    else begin
+        if str_start[pop_lit3+1] < tpe+1 then
+            break;
+        tpe := tpe + 1;
+        end;
+    if tpe<=sp_ptr then
+        tps := tpe;
+    if sp_end<=tpe then break;
 end;
-if tps<>sp_ptr then begin
-    if tps>str_start[pop_lit3]
-    then decr(sp_ptr)
-    else incr(sp_ptr);
-end;
-if tpe<>sp_end then begin
-    if tpe<str_start[pop_lit3+1]
-    then incr(sp_end)
-    else decr(sp_end);
-end;
+sp_ptr := tps;
+sp_end := tpe;
 @y
 { |2..4| bytes Kanji code break check }
 tps:=str_start[pop_lit3];
