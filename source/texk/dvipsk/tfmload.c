@@ -33,6 +33,8 @@ void
 tfmopen(register fontdesctype *fd)
 {
    register char *n;
+   FILE *ofmfile = NULL;
+   int id;
 #ifdef KPATHSEA
    kpse_file_format_type d;
 #else
@@ -57,7 +59,10 @@ tfmopen(register fontdesctype *fd)
       sprintf(name, "%s.ofm", n);
 #endif
       if ((tfmfile=search(d, name, READBIN))!=NULL)
-         return;
+         if (noptex)
+            return;
+         else
+            ofmfile = tfmfile;
    }
 #ifdef KPATHSEA
    d = tfmpath;
@@ -71,8 +76,21 @@ tfmopen(register fontdesctype *fd)
 #else
    sprintf(name, "%s.tfm", n);
 #endif
-   if ((tfmfile=search(d, name, READBIN))!=NULL)
+   if ((tfmfile=search(d, name, READBIN))!=NULL) {
+      if (!noptex) {
+         id = tfm16();
+         rewind(tfmfile);
+         if (id == 9 || id == 11)   /* if pTeX, prefer JFM than OFM */
+            ;
+         else if (ofmfile)          /*          prefer OFM than TFM */
+            tfmfile = ofmfile;
+      }
       return;
+   }
+   if (ofmfile) {
+      tfmfile = ofmfile;
+      return;
+   }
    sprintf(errbuf, "Can't open font metric file %.500s%.500s",
           fd->area, name);
    error(errbuf);
