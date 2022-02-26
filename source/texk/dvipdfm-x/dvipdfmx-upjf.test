@@ -26,6 +26,8 @@ echo "*** dvipdfmx: test for upjf_full.pdf" && echo \
 echo "*** dvipdfmx: test for upjf_omit.pdf" && echo \
 	&& cp $srcdir/tests/upjf_omit.vf ./upjf.vf \
 	&& cp $srcdir/tests/upjv_omit.vf ./upjv.vf \
+	&& cp $srcdir/tests/upjf-g00.ofm ./upjf-g.ofm \
+	&& cp $srcdir/tests/upjv-g00.ofm ./upjv-g.ofm \
 	&& ./xdvipdfmx --dvipdfmx -vv -f upjf.map -o upjf.pdf $srcdir/tests/upjf.dvi \
 	&& mv ./upjf.pdf ./upjf_omit.pdf \
 	&& echo && echo "dvipdfmx-upjf-vf_omit tests OK" && echo \
