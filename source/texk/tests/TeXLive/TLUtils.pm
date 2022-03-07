@@ -1,4 +1,3 @@
-# $Id: TLUtils.pm 61960 2022-02-09 21:43:08Z karl $
 # TeXLive::TLUtils.pm - the inevitable utilities for TeX Live.
 # Copyright 2007-2022 Norbert Preining, Reinhard Kotucha
 # This file is licensed under the GNU General Public License version 2
@@ -8,7 +7,7 @@ use strict; use warnings;
 
 package TeXLive::TLUtils;
 
-my $svnrev = '$Revision: 61960 $';
+my $svnrev = '$Revision: 62431 $';
 my $_modulerevision = ($svnrev =~ m/: ([0-9]+) /) ? $1 : "unknown";
 sub module_revision { return $_modulerevision; }
 
@@ -40,8 +39,9 @@ C<TeXLive::TLUtils> - TeX Live infrastructure miscellany
   TeXLive::TLUtils::xchdir($dir);
   TeXLive::TLUtils::wsystem($msg,@args);
   TeXLive::TLUtils::xsystem(@args);
-  TeXLive::TLUtils::run_cmd($cmd);
+  TeXLive::TLUtils::run_cmd($cmd [, @envvars ]);
   TeXLive::TLUtils::system_pipe($prog, $infile, $outfile, $removeIn, @args);
+  TeXLive::TLUtils::diskfree($path);
 
 =head2 File utilities
 
@@ -73,7 +73,7 @@ C<TeXLive::TLUtils> - TeX Live infrastructure miscellany
   TeXLive::TLUtils::create_language_def($tlpdb,$dest,$localconf);
   TeXLive::TLUtils::create_language_lua($tlpdb,$dest,$localconf);
   TeXLive::TLUtils::time_estimate($totalsize, $donesize, $starttime)
-  TeXLive::TLUtils::install_packages($from_tlpdb,$media,$to_tlpdb,$what,$opt_src, $opt_doc)>);
+  TeXLive::TLUtils::install_packages($from_tlpdb,$media,$to_tlpdb,$what,$opt_src, $opt_doc, $retry, $continue);
   TeXLive::TLUtils::do_postaction($how, $tlpobj, $do_fileassocs, $do_menu, $do_desktop, $do_script);
   TeXLive::TLUtils::announce_execute_actions($how, @executes, $what);
   TeXLive::TLUtils::add_symlinks($root, $arch, $sys_bin, $sys_man, $sys_info);
@@ -232,6 +232,7 @@ BEGIN {
     &xsystem
     &run_cmd
     &system_pipe
+    &diskfree
     &announce_execute_actions
     &add_symlinks
     &remove_symlinks
@@ -258,7 +259,7 @@ BEGIN {
   @EXPORT = qw(setup_programs download_file process_logging_options
                tldie tlwarn info log debug ddebug dddebug debug
                debug_hash_str debug_hash
-               win32 xchdir xsystem run_cmd system_pipe sort_archs);
+               win32 xchdir xsystem run_cmd system_pipe diskfree sort_archs);
 }
 
 use Cwd;
@@ -502,7 +503,7 @@ sub platform_desc {
     'amd64-midnightbsd'=> 'MidnightBSD on x86_64',
     'amd64-netbsd'     => 'NetBSD on x86_64',
     'armel-linux'      => 'GNU/Linux on ARM',
-    'armhf-linux'      => 'GNU/Linux on ARMv6/RPi',
+    'armhf-linux'      => 'GNU/Linux on RPi(32-bit) and ARMv7',
     'hppa-hpux'        => 'HP-UX',
     'i386-cygwin'      => 'Cygwin on Intel x86',
     'i386-darwin'      => 'MacOSX legacy (10.5-10.6) on Intel x86',
@@ -731,16 +732,35 @@ sub xsystem {
   return $retval;
 }
 
-=item C<run_cmd($cmd)>
+=item C<run_cmd($cmd, @envvars)>
 
 Run shell command C<$cmd> and captures its output. Returns a list with CMD's
 output as the first element and the return value (exit code) as second.
+
+The C<@envvars> - if given - are variable name / value pairs set for the call
+and reset to their original value (or unset if not defined initially).
 
 =cut
 
 sub run_cmd {
   my $cmd = shift;
+  my %envvars = @_;
+  my %envvarsSetState;
+  my %envvarsValue;
+  for my $k (keys %envvars) {
+    $envvarsSetState{$k} = exists $ENV{$k};
+    $envvarsValue{$k} = $ENV{$k};
+    $ENV{$k} = $envvars{$k};
+  }
   my $output = `$cmd`;
+  for my $k (keys %envvars) {
+    if ($envvarsSetState{$k}) {
+      $ENV{$k} = $envvarsValue{$k};
+    } else {
+      delete $ENV{$k};
+    }
+  }
+
   $output = "" if ! defined ($output);  # don't return undef
 
   my $retval = $?;
@@ -779,6 +799,51 @@ sub system_pipe {
       unlink($infile);
     }
     return 1;
+  }
+}
+
+=item C<diskfree($path)>
+
+If a POSIX compliant C<df> program is found, returns the number of
+Mb free at C<$path>, otherwise C<-1>. If C<$path> is not existent, go
+back up to two levels and check if any of the parents exists, and use
+the existing one for computing the disk space.
+
+=cut
+
+sub diskfree {
+  my $td = shift;
+  return (-1) if (! $::progs{"df"});
+  # drop final /
+  $td =~ s!/$!!;
+  if (! -e $td) {
+    my $ptd = dirname($td);
+    if (-e $ptd) {
+      $td = $ptd;
+    } else {
+      my $pptd = dirname($ptd);
+      if (-e $pptd) {
+        $td = $pptd;
+      }
+    }
+  }
+  $td .= "/" if ($td !~ m!/$!);
+  return (-1) if (! -e $td);
+  debug("Checking for free diskspace in $td\n");
+  my ($output, $retval) = run_cmd("df -P \"$td\"", POSIXLY_CORRECT => 1);
+  if ($retval == 0) {
+    # Output format should be this:
+    # Filesystem      512-blocks       Used  Available Capacity Mounted on
+    # /dev/sdb3       6099908248 3590818104 2406881416      60% /home
+    my ($h,$l) = split(/\n/, $output);
+    my ($fs, $nrb, $used, $avail, @rest) = split(' ', $l);
+    debug("disk space: used=$used (512-block), avail=$avail (512-block)\n");
+    # $avail is in 512 blocks, so we need to device by 2 * 1024 to obtain Mb
+    # require that at least 100M remain free
+    return (int($avail / 2024));
+  } else {
+    # error in running df -P out of whatever reason
+    return (-1);
   }
 }
 
@@ -1579,7 +1644,7 @@ sub time_estimate {
 }
 
 
-=item C<install_packages($from_tlpdb, $media, $to_tlpdb, $what, $opt_src, $opt_doc)>
+=item C<install_packages($from_tlpdb, $media, $to_tlpdb, $what, $opt_src, $opt_doc, $retry, $continue)>
 
 Installs the list of packages found in C<@$what> (a ref to a list) into
 the TLPDB given by C<$to_tlpdb>. Information on files are taken from
@@ -1588,12 +1653,17 @@ the TLPDB C<$from_tlpdb>.
 C<$opt_src> and C<$opt_doc> specify whether srcfiles and docfiles should be
 installed (currently implemented only for installation from uncompressed media).
 
+If C<$retry> is trueish, retry failed packages a second time.
+
+If C<$continue> is trueish, installation failure of non-critical packages
+will be ignored.
+
 Returns 1 on success and 0 on error.
 
 =cut
 
 sub install_packages {
-  my ($fromtlpdb,$media,$totlpdb,$what,$opt_src,$opt_doc) = @_;
+  my ($fromtlpdb,$media,$totlpdb,$what,$opt_src,$opt_doc, $opt_retry, $opt_continue) = @_;
   my $container_src_split = $fromtlpdb->config_src_container;
   my $container_doc_split = $fromtlpdb->config_doc_container;
   my $root = $fromtlpdb->root;
@@ -1651,7 +1721,7 @@ sub install_packages {
     # (and not installing from disk).
     if (!$fromtlpdb->install_package($package, $totlpdb)) {
       tlwarn("TLUtils::install_packages: Failed to install $package\n");
-      if ($media eq "NET") {
+      if ($opt_retry) {
         tlwarn("                           $package will be retried later.\n");
         push @packs_again, $package;
       } else {
@@ -1670,7 +1740,12 @@ sub install_packages {
     info("$infostr\n");
     # return false if download failed again
     if (!$fromtlpdb->install_package($package, $totlpdb)) {
-      return 0;
+      if ($opt_continue) {
+        push @::installation_failed_packages, $package;
+        tlwarn("Failed to install $package, but continue anyway!\n");
+      } else {
+        return 0;
+      }
     }
     $donesize += $tlpsizes{$package};
   }
@@ -2606,6 +2681,8 @@ sub setup_programs {
     # tar needs to be provided by the system, we not even check!
     $::progs{'tar'} = "tar";
 
+    setup_one("unix", "df", undef, "-P .", 0);
+
     if (!defined($platform) || ($platform eq "")) {
       # we assume that we run from uncompressed media, so we can call
       # platform() and thus also the config.guess script but we have to
@@ -2783,6 +2860,10 @@ sub setup_windows_tl_one {
 #   . if the copy is -x and executable, use it
 sub setup_unix_tl_one {
   my ($p, $def, $arg) = @_;
+  if (!$def) {
+    debug("(unix) no default program for $p, no setup done\n");
+    return(1);
+  }
   our $tmp;
   debug("(unix) trying to set up $p, default $def, arg $arg\n");
   if (-r $def) {
@@ -4080,7 +4161,7 @@ END_NO_SSL
 # 
 sub query_ctan_mirror_curl {
   my $max_trial = 3;
-  my $warg = (win32() ? "-w %{url_effective} " : "-w '%{url_effective}' ");
+  my $warg = (win32() ? '-w "%{url_effective}" ' : "-w '%{url_effective}' ");
   for (my $i = 1; $i <= $max_trial; $i++) {
     # -L -> follow redirects
     # -s -> silent
