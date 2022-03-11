@@ -1073,6 +1073,7 @@ void dokanji(long ch)
 void dochar(unsigned char ch)
 {
     char flag;
+    errorexit(bdfnt);
     flag = fnt->flags;
 
     if (nttj && fnt->fontnum)
