@@ -386,6 +386,10 @@ void walkpages(void)
     pagecounter = 0L;
     while ((opcode = skipnops()) != POST) {
 
+        if (opcode >= FNT_DEF1 && opcode <= FNT_DEF4) { /* dviasm places FNTDEF before BOP */
+            fontdef(opcode - FNT_DEF1 + 1);
+            continue;
+        }
         if (opcode != BOP)              /* should be at start of page now    */
             errorexit(nobop);
 
