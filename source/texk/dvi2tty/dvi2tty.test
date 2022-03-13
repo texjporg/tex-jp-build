@@ -46,5 +46,8 @@ rc=0
 
 ./dvi2tty -Eu -a $test_src/table.dvi >tableEua.out && diff $srcdir/tableEua.tty tableEua.out || rc=9
 
+## DVI produced by dviasm
+./dvi2tty $test_src/table-dviasm.dvi >table-dviasm.out && diff $srcdir/table.tty table-dviasm.out || rc=10
+
 exit $rc
 
