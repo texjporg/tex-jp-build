@@ -633,10 +633,14 @@ ofm_get_sizes (FILE *ofm_file, off_t ofm_file_size, struct tfm_font *tfm)
   tfm->nfonparm = get_positive_quad(ofm_file, "OFM", "nfonparm");
   tfm->fontdir  = get_positive_quad(ofm_file, "OFM", "fontdir");
   if (tfm->fontdir) {
+#ifndef WITHOUT_ASCII_PTEX
     if (dvi_ptex_with_vert && tfm->fontdir==FONT_DIR_RT && tfm->level==1 && tfm->ec>=0x2E00) {
       /* interpret FONTDIR RT as pTeX vertical writing */
-      WARN("I will interpret a font direction as pTeX vertical writing.");
-    } else {
+      if (dpx_conf.verbose_level > 0)
+        WARN("I will interpret a font direction as pTeX vertical writing.");
+    } else
+#endif /* !WITHOUT_ASCII_PTEX */
+    {
       WARN("I may be interpreting a font direction incorrectly.");
     }
   }
