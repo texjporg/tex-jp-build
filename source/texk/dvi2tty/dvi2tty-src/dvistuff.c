@@ -361,7 +361,7 @@ void preamble(void)
 {
 
     mseek(DVIfile, 0L, absolute);       /* read the dvifile from the start   */
-    if ((opcode = skipnops()) != PRE)
+    if ((opcode = (int) num(1)) != PRE)
         errorexit(nopre);
     opcode = (int) get1();        /* check id in preamble, ignore rest of it */
     if (opcode != VERSIONID)
@@ -386,10 +386,6 @@ void walkpages(void)
     pagecounter = 0L;
     while ((opcode = skipnops()) != POST) {
 
-        if (opcode >= FNT_DEF1 && opcode <= FNT_DEF4) { /* dviasm places FNTDEF before BOP */
-            fontdef(opcode - FNT_DEF1 + 1);
-            continue;
-        }
         if (opcode != BOP)              /* should be at start of page now    */
             errorexit(nobop);
 
@@ -885,8 +881,15 @@ int skipnops(void)
 {
     register int opcode;
 
-    while ((opcode = (int) num(1)) == NOP);
-
+    while (opcode = (int) num(1)) {
+        if (opcode >= FNT_DEF1 && opcode <= FNT_DEF4) {
+            fontdef(opcode - FNT_DEF1 + 1);
+            continue;
+        }
+        else if (opcode == NOP)
+            continue;
+        break;
+    }
     return opcode;
 
 } /* skipnops */
