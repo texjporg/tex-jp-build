@@ -1809,6 +1809,36 @@ void out_string(FILE *in, FILE *out, int len)
     }
 }
 
+
+void fontdef(FILE *dvi, int mode)
+{
+    int code, tmp = 0;
+    uint csum;
+
+    fprintf(fp_out, " %d", read_n(dvi, mode & 0xf));    /* code */
+    csum = read_n(dvi, 4);
+    if(csum)
+        fprintf(fp_out,
+            (f_dtl&DTL_FNTDEF)?((f_dtl&DTL_OCT)?" %o%s":" 0%o%s"):
+            " 0x%X%s", csum, MSG("/c-sum"));            /* chksum */
+    else
+        fprintf(fp_out, " 0%s", MSG("/c-sum"));
+    fprintf(fp_out, " %u%s", read_long(dvi), MSG("/s-size"));   /* scaled size */
+    fprintf(fp_out, " %u%s", read_long(dvi), MSG("/d-size"));   /* design size */
+    tmp = (uchar)read_byte(dvi);
+    fprintf(fp_out, " %d%s", tmp, MSG("/dir"));                 /* len:directry */
+    code = (uchar)read_byte(dvi);
+    fprintf(fp_out, " %d%s '", code, MSG("/name"));             /* len:name */
+    while (tmp-- > 0)
+        putc(read_byte(dvi), fp_out);
+    if((f_dtl&DTL_FNTNAME))
+        fputs("' '", fp_out);
+    while(code-- > 0)
+        putc(read_byte(dvi), fp_out);
+    fputs("'\n", fp_out);
+}
+
+
 /* preamble */
 void transpre(FILE *dvi)
 {
@@ -1981,6 +2011,8 @@ skip_m:             while(mode-- > 0)
                         continue;
 
                     case (2):   /* fntdef */
+                        fontdef(dvi, mode);
+#if 0
                         fprintf(fp_out, " %d", read_n(dvi, mode & 0xf));    /* code */
                         csum = read_n(dvi, 4);
                         if(csum)
@@ -2002,6 +2034,7 @@ skip_m:             while(mode-- > 0)
                         while(code-- > 0)
                             putc(read_byte(dvi), fp_out);
                         fputs("'\n", fp_out);
+#endif
                         continue;
 /*
                   case (3):
