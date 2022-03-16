@@ -191,6 +191,7 @@ struct DIMENSION_REC {
 #define FNT1            235
 #define XXX1            239
 #define FNT_DEF_1       243
+#define FNT_DEF_4       246
 #define PRE             247
 #define POST            248
 #define POST_POST       249
@@ -1810,12 +1811,12 @@ void out_string(FILE *in, FILE *out, int len)
 }
 
 
-void fontdef(FILE *dvi, int mode)
+void fontdef(FILE *dvi, int nn)
 {
     int code, tmp = 0;
     uint csum;
 
-    fprintf(fp_out, " %d", read_n(dvi, mode & 0xf));    /* code */
+    fprintf(fp_out, " %d", read_n(dvi, nn));    /* code */
     csum = read_n(dvi, 4);
     if(csum)
         fprintf(fp_out,
@@ -1839,6 +1840,24 @@ void fontdef(FILE *dvi, int mode)
 }
 
 
+uchar skipnop(FILE *dvi)
+{
+    uchar code;
+
+    while (code = (uchar)getc(dvi)) {
+        if (code >= FNT_DEF_1 && code <= FNT_DEF_4) {
+            fprintf(fp_out, "%s", (f_dtl&DTL_CMD)?c235_name[code-FNT1]:cmd235_name[code-FNT1]);
+            fontdef(dvi, code-FNT_DEF_1+1);
+            continue;
+        }
+        else if (code == NOP)
+            continue;
+        break;
+    }
+    return code;
+}
+
+
 /* preamble */
 void transpre(FILE *dvi)
 {
@@ -1856,6 +1875,7 @@ void transpre(FILE *dvi)
     putc('\'', fp_out);
     out_string(dvi, fp_out, len);
     fputs("\'\n", fp_out);
+    skipnop(dvi);
 }
 
 
@@ -2011,30 +2031,7 @@ skip_m:             while(mode-- > 0)
                         continue;
 
                     case (2):   /* fntdef */
-                        fontdef(dvi, mode);
-#if 0
-                        fprintf(fp_out, " %d", read_n(dvi, mode & 0xf));    /* code */
-                        csum = read_n(dvi, 4);
-                        if(csum)
-                            fprintf(fp_out, 
-                                (f_dtl&DTL_FNTDEF)?((f_dtl&DTL_OCT)?" %o%s":" 0%o%s"):
-                                " 0x%X%s", csum, MSG("/c-sum"));            /* chksum */
-                        else
-                            fprintf(fp_out, " 0%s", MSG("/c-sum")); 
-                        fprintf(fp_out, " %u%s", read_long(dvi), MSG("/s-size"));   /* scaled size */
-                        fprintf(fp_out, " %u%s", read_long(dvi), MSG("/d-size"));   /* design size */
-                        tmp = (uchar)read_byte(dvi);
-                        fprintf(fp_out, " %d%s", tmp, MSG("/dir"));                 /* len:directry */
-                        code = (uchar)read_byte(dvi);
-                        fprintf(fp_out, " %d%s '", code, MSG("/name"));             /* len:name */
-                        while (tmp-- > 0)
-                            putc(read_byte(dvi), fp_out);
-                        if((f_dtl&DTL_FNTNAME))
-                            fputs("' '", fp_out);
-                        while(code-- > 0)
-                            putc(read_byte(dvi), fp_out);
-                        fputs("'\n", fp_out);
-#endif
+                        fontdef(dvi, mode & 0xf);
                         continue;
 /*
                   case (3):
@@ -2060,6 +2057,7 @@ skip_m:             while(mode-- > 0)
     if(f_pos)
         fprintf(fp_out, "%ld: ", ftell(dvi)-1);
     fputs((code==EOP)?"eop\n":"post_post", fp_out);
+    if (code==EOP) ungetc(skipnop(dvi),dvi);
     return ftell(dvi);
 }
 
