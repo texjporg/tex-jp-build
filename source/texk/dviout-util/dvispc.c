@@ -2057,7 +2057,7 @@ skip_m:             while(mode-- > 0)
     if(f_pos)
         fprintf(fp_out, "%ld: ", ftell(dvi)-1);
     fputs((code==EOP)?"eop\n":"post_post", fp_out);
-    if (code==EOP) ungetc(skipnop(dvi),dvi);
+    if (code==EOP) skipnop(dvi);
     return ftell(dvi);
 }
 
