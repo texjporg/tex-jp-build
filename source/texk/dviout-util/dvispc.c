@@ -1850,8 +1850,10 @@ uchar skipnop(FILE *dvi)
             fontdef(dvi, code-FNT_DEF_1+1);
             continue;
         }
-        else if (code == NOP)
+        else if (code == NOP) {
+            fprintf(fp_out, "%s\n", (f_dtl&DTL_CMD)?c128_name[code-128]:cmd128_name[code-128]);
             continue;
+        }
         break;
     }
     return code;
@@ -2370,7 +2372,7 @@ er1:        fprintf(stderr, "Command after POST_POST\n");
             goto err;
         }
         if(!f_in){
-er2:        if(code < FNT_DEF_1 && code != BOP){
+er2:        if(code < FNT_DEF_1 && code != NOP && code != BOP){
                 fprintf(stderr, "This command shoud be after BOP\n");
                 goto err;
             }
@@ -2668,6 +2670,10 @@ put_num:        write_n(a2i(get_next(base)), sub_number);
 
             case OPCODE:
                 putc(a2i(get_next(s)), fp_out);
+                break;
+
+            case NOP:
+                putc(code, fp_out);
                 break;
 
             default:

@@ -179,7 +179,7 @@ $DIFF $testdir/putj.txt putj.da.txt || exit 1
 $DIFF $testdir/put.txt put.da.txt || exit 1
 
 
-## EXE2TEXT + EXE2DVI: different position of fntdef
+## EXE2TEXT + EXE2DVI: different position of fntdef, nop
 ./dvispc -a $testdir/fntdef0.dvi xfntdef0.txt || exit 2
 $DIFF $testdir/fntdef0.txt xfntdef0.txt || exit 1
 ./dvispc -x xfntdef0.txt xfntdef0.dvi || exit 2
@@ -194,6 +194,11 @@ $CMP $testdir/fntdef1.dvi xfntdef1.dvi || exit 1
 $DIFF $testdir/fntdef2.txt xfntdef2.txt || exit 1
 ./dvispc -x xfntdef2.txt xfntdef2.dvi || exit 2
 $CMP $testdir/fntdef2.dvi xfntdef2.dvi || exit 1
+
+./dvispc -a $testdir/fntdef3.dvi xfntdef3.txt || exit 2
+$DIFF $testdir/fntdef3.txt xfntdef3.txt || exit 1
+./dvispc -x xfntdef3.txt xfntdef3.dvi || exit 2
+$CMP $testdir/fntdef3.dvi xfntdef3.dvi || exit 1
 
 
 exit 0
