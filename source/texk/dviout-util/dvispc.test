@@ -200,6 +200,16 @@ $DIFF $testdir/fntdef3.txt xfntdef3.txt || exit 1
 ./dvispc -x xfntdef3.txt xfntdef3.dvi || exit 2
 $CMP $testdir/fntdef3.dvi xfntdef3.dvi || exit 1
 
+./dvispc -a -t $testdir/fntdef0.dvi xfntdef0-dtl.txt || exit 2
+$DIFF $testdir/fntdef0-dtl.txt xfntdef0-dtl.txt || exit 1
+./dvispc -x xfntdef0-dtl.txt xfntdef0-dtl.dvi || exit 2
+$CMP $testdir/fntdef0.dvi xfntdef0-dtl.dvi || exit 1
+
+./dvispc -a -t $testdir/fntdef3.dvi xfntdef3-dtl.txt || exit 2
+$DIFF $testdir/fntdef3-dtl.txt xfntdef3-dtl.txt || exit 1
+./dvispc -x xfntdef3-dtl.txt xfntdef3-dtl.dvi || exit 2
+$CMP $testdir/fntdef3.dvi xfntdef3-dtl.dvi || exit 1
+
 
 exit 0
 
