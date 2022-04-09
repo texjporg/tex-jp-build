@@ -1,3 +1,12 @@
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-03-08  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* texmfmp.c: Convert filename to utf8 in find_input_file for pTeX.
+	  https://github.com/texjporg/tex-jp-build/issues/45
+
 2022-03-03  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* texmfmp.c: Convert the argument of runpopen to utf8 for pTeX.
