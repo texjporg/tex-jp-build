@@ -50,6 +50,7 @@ for i:=@'200 to 255 do xord[i]:=i;
 @d u_exclamation = @"FF01       {Zenkaku exclamation mark; in UCS}
 @d u_double_question = @"2047   {Zenkaku double question mark; in UCS}
 @d u_double_exclam   = @"203C   {Zenkaku double exclamation mark; in UCS}
+@d u_interrobang     = @"203D   {Zenkaku interrobang; in UCS}
 @d u_question_exclam = @"2048   {Zenkaku question exclamation mark; in UCS}
 @d u_exclam_question = @"2049   {Zenkaku exclamation question mark; in UCS}
 @z
@@ -246,6 +247,7 @@ var i:0..last_text_char;    {this is the first one declared}
                 u_exclamation,
                 u_double_question,
                 u_double_exclam,
+                u_interrobang,
                 u_question_exclam,
                 u_exclam_question:
                     repush_string;
