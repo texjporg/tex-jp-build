@@ -31,6 +31,7 @@ cd source && mkdir -p Work && cd Work
   --enable-pmp \
   --enable-upmp \
   --enable-web-progs \
+  --enable-bibtex-x \
   --disable-tex \
   --disable-mf \
   --disable-mflua \

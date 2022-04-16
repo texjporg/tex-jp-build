@@ -33,7 +33,7 @@
 mkdir workXXX
 cd workXXX
 cp -p hoge/usermap_texlive_svn.txt .
-git svn clone svn://tug.org/texlive/trunk/Build -r 61101:HEAD --ignore-paths='^((?!source).*|source/(extra|libs/(freetype|gd|graphite|harfbuzz|lua|poppler|potrace|teckit|xpdf|zziplib)|utils/(a[^c]|[bd-z])|texk/(afm|bib|chk|cjk|det|dtl|dvil|dvipn|dvipo|dvis|gre|gsf|lcd|makei|mus|ps2|psu|tex4|texlive/linked_scripts(?!/(ChangeLog|Makefile.in)).*|ttf|xdv|web2c/(xetexdir|mfluadir|mfluajitdir|alephdir|pdftexdir|luatexdir(?!/luafontloader/ff-config.in).*))))' --authors-file=usermap_texlive_svn.txt
+git svn clone svn://tug.org/texlive/trunk/Build -r 61101:HEAD --ignore-paths='^((?!source).*|source/(extra|libs/(freetype|gd|graphite|harfbuzz|lua|poppler|potrace|teckit|xpdf|zziplib)|utils/(a[^c]|[bd-z])|texk/(afm|chk|cjk|det|dtl|dvil|dvipn|dvipo|dvis|gre|gsf|lcd|makei|mus|ps2|psu|tex4|texlive/linked_scripts(?!/(ChangeLog|Makefile.in)).*|ttf|xdv|web2c/(xetexdir|mfluadir|mfluajitdir|alephdir|pdftexdir|luatexdir(?!/luafontloader/ff-config.in).*))))' --authors-file=usermap_texlive_svn.txt
 cd Build/
 git branch -m master texlive-gitsvn
 ```
