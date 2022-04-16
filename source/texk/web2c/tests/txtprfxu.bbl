@@ -1,0 +1,67 @@
+\section*{Test result}
+\begin{itemize}
+\item[orig] ABCDEFG tuvwxyz
+\item[len] 15
+\item[1] A
+\item[2] AB
+\item[3] ABC
+\item[4] ABCD
+\item[5] ABCDE
+\item[6] ABCDEF
+\item[7] ABCDEFG
+\item[orig] ÅÇÈÎØÜÝ åçèîøüý
+\item[len] 29
+\item[1] Å
+\item[2] Å
+\item[3] ÅÇ
+\item[4] ÅÇ
+\item[5] ÅÇÈ
+\item[6] ÅÇÈ
+\item[7] ÅÇÈÎ
+\item[orig] ΑΒΓΔΕΖΗ στυφχψω
+\item[len] 29
+\item[1] Α
+\item[2] Α
+\item[3] ΑΒ
+\item[4] ΑΒ
+\item[5] ΑΒΓ
+\item[6] ΑΒΓ
+\item[7] ΑΒΓΔ
+\item[orig] АБВГДЕЖ щъыьэюя
+\item[len] 29
+\item[1] А
+\item[2] А
+\item[3] АБ
+\item[4] АБ
+\item[5] АБВ
+\item[6] АБВ
+\item[7] АБВГ
+\item[orig] あいうえおかき　ユヨワヰヱヲン
+\item[len] 45
+\item[1] あ
+\item[2] あ
+\item[3] あ
+\item[4] あい
+\item[5] あい
+\item[6] あい
+\item[7] あいう
+\item[orig] 一二三四五六七　肆伍陸漆捌玖拾
+\item[len] 45
+\item[1] 一
+\item[2] 一
+\item[3] 一
+\item[4] 一二
+\item[5] 一二
+\item[6] 一二
+\item[7] 一二三
+\item[orig] 櫛杓屠冤𦥑𠮟𠀋𡈽𥝱𨦇𡚴𠷡𧘕𧘔𩸽
+\item[len] 60
+\item[1] 櫛
+\item[2] 櫛
+\item[3] 櫛
+\item[4] 櫛
+\item[5] 櫛杓
+\item[6] 櫛杓
+\item[7] 櫛杓
+\end{itemize}
+\endinput

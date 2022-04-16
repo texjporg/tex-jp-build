@@ -71,6 +71,130 @@ for i:=@'240 to 254 do char_width[i]:=514;
 @y
 @z
 
+@x procedure lower_case
+procedure lower_case (var buf:buf_type; @!bf_ptr,@!len:buf_pointer);
+var i:buf_pointer;
+begin
+if (len > 0) then
+  for i := bf_ptr to bf_ptr+len-1 do
+    if ((buf[i]>="A") and (buf[i]<="Z")) then
+        buf[i] := buf[i] + case_difference;
+@y
+procedure lower_case (var buf:buf_type; @!bf_ptr,@!len:buf_pointer);
+var i:buf_pointer;
+    @!ch:integer;
+begin
+if (len > 0) then
+  for i := bf_ptr to bf_ptr+len-1 do
+    if ((buf[i]>="A") and (buf[i]<="Z")) then begin
+        buf[i] := buf[i] + case_difference;
+    end
+    else if ((is_internalUPTEX) and (buf[i]>=@"C3) and (buf[i]<=@"D4)) then begin
+        ch := fromBUFF(buf,i+2,i);
+        if (((ch>=@"C0) and (ch<=@"DE) and (ch<>@"D7)) or
+            ((ch>=@"391) and (ch<=@"3AA) and (ch<>@"3A2)) or
+            ((ch>=@"410) and (ch<=@"42F))) then begin
+            ch := toBUFF(ch + case_difference);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (((ch>=@"100) and (ch<=@"137) and ((ch mod 2)=0)) or
+                 ((ch>=@"139) and (ch<=@"148) and ((ch mod 2)=1)) or
+                 ((ch>=@"14A) and (ch<=@"177) and ((ch mod 2)=0)) or
+                 ((ch>=@"179) and (ch<=@"17E) and ((ch mod 2)=1)) or
+                 ((ch>=@"370) and (ch<=@"373) and ((ch mod 2)=0)) or
+                 ( ch=@"376 ) or
+                 ((ch>=@"3D8) and (ch<=@"3EF) and ((ch mod 2)=0)) or
+                 ( ch=@"3F7 ) or  ( ch=@"3FA ) or
+                 ((ch>=@"460) and (ch<=@"481) and ((ch mod 2)=0)) or
+                 ((ch>=@"48A) and (ch<=@"4BF) and ((ch mod 2)=0)) or
+                 ((ch>=@"4C1) and (ch<=@"4CE) and ((ch mod 2)=1)) or
+                 ((ch>=@"4D0) and (ch<=@"52F) and ((ch mod 2)=0))) then begin
+            ch := toBUFF(ch + 1);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (ch=@"178) then begin
+            ch := toBUFF(@"FF);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if ((ch>=@"400) and (ch<=@"40F)) then begin
+            ch := toBUFF(ch + @"50);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (ch=@"4C0) then begin
+            ch := toBUFF(@"4CF);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+    end
+@z
+
+@x procedure upper_case
+var i:buf_pointer;
+begin
+if (len > 0) then
+  for i := bf_ptr to bf_ptr+len-1 do
+    if ((buf[i]>="a") and (buf[i]<="z")) then
+        buf[i] := buf[i] - case_difference;
+@y
+var i:buf_pointer;
+    @!ch:integer;
+begin
+if (len > 0) then
+  for i := bf_ptr to bf_ptr+len-1 do
+    if ((buf[i]>="a") and (buf[i]<="z")) then begin
+        buf[i] := buf[i] - case_difference;
+    end
+    else if ((is_internalUPTEX) and (buf[i]>=@"C3) and (buf[i]<=@"D4)) then begin
+        ch := fromBUFF(buf,i+2,i);
+        if (((ch>=@"E0) and (ch<=@"FE) and (ch<>@"F7)) or
+            ((ch>=@"3B1) and (ch<=@"3CA) and (ch<>@"3C2)) or
+            ((ch>=@"430) and (ch<=@"44F))) then begin
+            ch := toBUFF(ch - case_difference);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (((ch>=@"100) and (ch<=@"137) and ((ch mod 2)=1)) or
+                 ((ch>=@"139) and (ch<=@"148) and ((ch mod 2)=0)) or
+                 ((ch>=@"14A) and (ch<=@"177) and ((ch mod 2)=1)) or
+                 ((ch>=@"179) and (ch<=@"17E) and ((ch mod 2)=0)) or
+                 ((ch>=@"370) and (ch<=@"373) and ((ch mod 2)=1)) or
+                 ( ch=@"377 ) or
+                 ((ch>=@"3D8) and (ch<=@"3EF) and ((ch mod 2)=1)) or
+                 ( ch=@"3F8 ) or  ( ch=@"3FB ) or
+                 ((ch>=@"460) and (ch<=@"481) and ((ch mod 2)=1)) or
+                 ((ch>=@"48A) and (ch<=@"4BF) and ((ch mod 2)=1)) or
+                 ((ch>=@"4C1) and (ch<=@"4CE) and ((ch mod 2)=0)) or
+                 ((ch>=@"4D0) and (ch<=@"52F) and ((ch mod 2)=1))) then begin
+            ch := toBUFF(ch - 1);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (ch=@"DF) then begin { Latin Small Letter Sharp S }
+            buf[i]   := "S";
+            buf[i+1] := "S";
+        end
+        else if (ch=@"FF) then begin
+            ch := toBUFF(@"178);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if ((ch>=@"450) and (ch<=@"45F)) then begin
+            ch := toBUFF(ch - @"50);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+        else if (ch=@"4CF) then begin
+            ch := toBUFF(@"4C0);
+            buf[i]   := BYTE3(ch);
+            buf[i+1] := BYTE4(ch);
+        end
+    end
+@z
+
 @x procedure get_the_top_level_aux_file_name
 label aux_found,@!aux_not_found;
 @y

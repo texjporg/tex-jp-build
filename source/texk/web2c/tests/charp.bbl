@@ -1,0 +1,37 @@
+\section*{Test result}
+\begin{itemize}
+\item A  i2str: 65  i2chr: A
+\item C  i2str: 67  i2chr: C
+\item D  i2str: 68  i2chr: D
+\item E  i2str: 69  i2chr: E
+\item i  i2str: 105  i2chr: i
+\item o  i2str: 111  i2chr: o
+\item u  i2str: 117  i2chr: u
+\item y  i2str: 121  i2chr: y
+\item 　  i2str: 161  i2chr:
+\item あ  i2str: 164  i2chr:
+\item い  i2str: 164  i2chr:
+\item う  i2str: 164  i2chr:
+\item ヱ  i2str: 165  i2chr:
+\item ヲ  i2str: 165  i2chr:
+\item ン  i2str: 165  i2chr:
+\item Α  i2str: 166  i2chr:
+\item Β  i2str: 166  i2chr:
+\item Γ  i2str: 166  i2chr:
+\item χ  i2str: 166  i2chr:
+\item ψ  i2str: 166  i2chr:
+\item ω  i2str: 166  i2chr:
+\item А  i2str: 167  i2chr:
+\item Б  i2str: 167  i2chr:
+\item В  i2str: 167  i2chr:
+\item э  i2str: 167  i2chr:
+\item ю  i2str: 167  i2chr:
+\item я  i2str: 167  i2chr:
+\item 一  i2str: 176  i2chr:
+\item 玖  i2str: 182  i2chr:
+\item 捌  i2str: 187  i2chr:
+\item 三  i2str: 187  i2chr:
+\item 拾  i2str: 189  i2chr:
+\item 二  i2str: 198  i2chr:
+\end{itemize}
+\endinput

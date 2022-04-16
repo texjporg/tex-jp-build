@@ -1,0 +1,57 @@
+#! /bin/sh -vx
+#
+# Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+# You may freely use, modify and/or distribute this file.
+
+test -d ptests || mkdir -p ptests
+
+rc=0
+
+TEXMFCNF=$srcdir/../kpathsea
+BSTINPUTS=$srcdir/tests
+BIBINPUTS=$srcdir/tests
+export TEXMFCNF BSTINPUTS BIBINPUTS
+
+
+## test for sorting and change.case$
+cp $srcdir/tests/sortp.aux ptests/xsortp.aux
+./pbibtex ptests/xsortp || rc=51
+diff $srcdir/tests/sortp.bbl ptests/xsortp.bbl || rc=52
+
+## test for change.case$
+cp $srcdir/tests/casep.aux ptests/xcasep.aux
+./pbibtex ptests/xcasep || rc=53
+diff $srcdir/tests/casep.bbl ptests/xcasep.bbl || rc=54
+
+## test for add.period$
+cp $srcdir/tests/periodp.aux ptests/xperiodp.aux
+./pbibtex ptests/xperiodp || rc=3
+diff $srcdir/tests/periodp.bbl ptests/xperiodp.bbl || rc=4
+
+## test for substring$
+cp $srcdir/tests/substrp.aux ptests/xsubstrp.aux
+./pbibtex ptests/xsubstrp || rc=5
+diff $srcdir/tests/substrp.bbl ptests/xsubstrp.bbl || rc=6
+
+## test for text.length$, text.prefix$
+cp $srcdir/tests/txtprfxp.aux ptests/xtxtprfxp.aux
+./pbibtex ptests/xtxtprfxp || rc=7
+diff $srcdir/tests/txtprfxp.bbl ptests/xtxtprfxp.bbl || rc=8
+
+## test for width$
+cp $srcdir/tests/widthp.aux ptests/xwidthp.aux
+./pbibtex ptests/xwidthp || rc=9
+diff $srcdir/tests/widthp.bbl ptests/xwidthp.bbl || rc=10
+
+## test for chr.to.int$, int.to.str$, int.to.chr$
+cp $srcdir/tests/charp.aux ptests/xcharp.aux
+./pbibtex ptests/xcharp
+### || rc=11
+### It results errors.
+diff $srcdir/tests/charp.bbl ptests/xcharp.bbl || rc=12
+
+
+exit $rc
+
+
+

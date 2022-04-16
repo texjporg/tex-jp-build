@@ -1,0 +1,49 @@
+\section*{Test result}
+\begin{itemize}
+\item[orig] ABCDEFG tuvwxyz
+\item[len] 15
+\item[1] A
+\item[2] AB
+\item[3] ABC
+\item[4] ABCD
+\item[5] ABCDE
+\item[6] ABCDEF
+\item[7] ABCDEFG
+\item[orig] あいうえおかき　ユヨワヰヱヲン
+\item[len] 30
+\item[1] あ
+\item[2] あ
+\item[3] あい
+\item[4] あい
+\item[5] あいう
+\item[6] あいう
+\item[7] あいうえ
+\item[orig] ΑΒΓΔΕΖΗ στυφχψω
+\item[len] 29
+\item[1] Α
+\item[2] Α
+\item[3] ΑΒ
+\item[4] ΑΒ
+\item[5] ΑΒΓ
+\item[6] ΑΒΓ
+\item[7] ΑΒΓΔ
+\item[orig] АБВГДЕЖ щъыьэюя
+\item[len] 29
+\item[1] А
+\item[2] А
+\item[3] АБ
+\item[4] АБ
+\item[5] АБВ
+\item[6] АБВ
+\item[7] АБВГ
+\item[orig] 一二三四五六七　肆伍陸漆捌玖拾
+\item[len] 30
+\item[1] 一
+\item[2] 一
+\item[3] 一二
+\item[4] 一二
+\item[5] 一二三
+\item[6] 一二三
+\item[7] 一二三四
+\end{itemize}
+\endinput
