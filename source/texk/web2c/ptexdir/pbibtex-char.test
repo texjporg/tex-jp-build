@@ -50,6 +50,11 @@ cp $srcdir/tests/charp.aux ptests/xcharp.aux
 ### It results errors.
 diff $srcdir/tests/charp.bbl ptests/xcharp.bbl || rc=12
 
+## test for is.knj.str$
+cp $srcdir/tests/isknjp.aux ptests/xisknjp.aux
+./pbibtex ptests/xisknjp || rc=15
+diff $srcdir/tests/isknjp.bbl ptests/xisknjp.bbl || rc=16
+
 
 exit $rc
 

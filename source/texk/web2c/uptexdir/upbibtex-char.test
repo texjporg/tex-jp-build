@@ -50,6 +50,11 @@ cp $srcdir/tests/charu.aux uptests/xcharu.aux
 ### It results errors.
 diff $srcdir/tests/charu.bbl uptests/xcharu.bbl || rc=12
 
+## test for is.knj.str$
+cp $srcdir/tests/isknju.aux uptests/xisknju.aux
+./upbibtex uptests/xisknju || rc=15
+diff $srcdir/tests/isknju.bbl uptests/xisknju.bbl || rc=16
+
 
 exit $rc
 
