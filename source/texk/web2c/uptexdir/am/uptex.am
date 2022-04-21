@@ -175,7 +175,7 @@ upweb_tests = \
 	uptexdir/gkhuge.test \
 	uptexdir/upkcat.test
 upweb_tests += uptexdir/upbibtex-mem.test uptexdir/upbibtex-bigauth.test
-upweb_tests += uptexdir/upbibtex-char.test
+upweb_tests += uptexdir/upbibtex-char.test uptexdir/upbibtex-jbib.test
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)

@@ -1,0 +1,94 @@
+\begin{thebibliography}{Tesu07}
+
+\bibitem[Bj^20]{bj^^c3^^b6rk2020}
+Tomas Bj^^c3^^b6rk.
+\newblock {\em Arbitrage Theory in Continuous Time}.
+\newblock Oxford University Press, 2020.
+
+\bibitem[bos12]{boswell}
+Dustin Boswell and Trevor Foucher.
+\newblock
+  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
+  in practice).
+\newblock オライリージャパン, 2012.
+
+\bibitem[dL68]{Lautr^^c3^^a9amont}
+Conte de~Lautr^^c3^^a9amont.
+\newblock {\em Les Chants de Maldoror}.
+\newblock 1868.
+
+\bibitem[Gri12]{Br^^c3^^bcderGrimm}
+Br^^c3^^bcder Grimm.
+\newblock {\em Kinder- und Hausm^^c3^^a4rchen}.
+\newblock Reimer, 1812.
+
+\bibitem[Kin63]{king63}
+Martin~Luther King, Jr.
+\newblock {\em I Have a Dream}.
+\newblock 1963.
+
+\bibitem[Knu86]{knuth86}
+Donald~E. Knuth.
+\newblock {\em The \TeX book}.
+\newblock Addison-Wesley, 1986.
+
+\bibitem[KR78]{kernighan78}
+Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
+\newblock {\em The C Programming Language, 1st edition}.
+\newblock Prentice Hall, 1978.
+
+\bibitem[KR88]{kernighan88}
+Brian~W. Kernighan and Dennis~M. Ritchie.
+\newblock {\em The C Programming Language, 2nd edition}.
+\newblock Prentice Hall, 1988.
+
+\bibitem[Nak96]{ken-na}
+中野賢.
+\newblock 日本語{\LaTeXe}ブック.
+\newblock アスキー, 1996.
+
+\bibitem[oku13]{bibunsho6}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第6版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2013.
+
+\bibitem[oku17]{bibunsho7}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第7版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2017.
+
+\bibitem[oku20]{bibunsho8}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第8版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2020.
+
+\bibitem[Pro27]{Proust}
+Marcel Proust.
+\newblock {\em ^^c3^^80 la recherche du temps perdu}.
+\newblock ^^c3^^89ditions Gallimard, 1913--1927.
+
+\bibitem[Tesu07]{test:misc0}
+テストてすと, 名無権兵衛, 何誰兵衛, 無名戦士, John Smith, Hans Schmidt.
+\newblock UTF-8版jbibtexのテスト: ±α、β，γ。§абв．
+\newblock Ω出版社, 2007.
+
+\bibitem[vW21]{weber1821}
+Carl~Maria von Weber.
+\newblock {\em Der Freisch^^c3^^bctz}.
+\newblock 1821.
+
+\bibitem[Ми66]{Булгаков}
+Михаил~АфанасьевичБулгаков.
+\newblock Мастер и Маргарита.
+\newblock 1966.
+
+\bibitem[曹]{CaoXueQin}
+曹雪芹.
+\newblock 紅樓夢.
+
+\bibitem[蘭陵10]{JinPingMei}
+蘭陵笑笑生.
+\newblock 金瓶梅.
+\newblock 1610.
+
+\end{thebibliography}

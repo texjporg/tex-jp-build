@@ -1,0 +1,32 @@
+#! /bin/sh -vx
+#
+# Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+# You may freely use, modify and/or distribute this file.
+
+test -d uptests || mkdir -p uptests
+
+rc=0
+
+TEXMFCNF=$srcdir/../kpathsea
+BSTINPUTS=$srcdir/tests
+BIBINPUTS=$srcdir/tests
+export TEXMFCNF BSTINPUTS BIBINPUTS
+
+
+## test for japanese bibtex style
+#cp $srcdir/tests/unibibu-jplain.aux uptests/xunibibu-jplain.aux
+#./upbibtex uptests/xunibibu-jplain || rc=1
+#diff $srcdir/tests/unibibu-jplain.bbl uptests/xunibibu-jplain.bbl || rc=2
+
+for st in jplain jalpha jabbrv junsrt jname; do
+
+cp $srcdir/tests/unibibu-$st.aux uptests/xunibibu-$st.aux
+./upbibtex uptests/xunibibu-$st || rc=1
+diff $srcdir/tests/unibibu-$st.bbl uptests/xunibibu-$st.bbl || rc=2
+
+done
+
+exit $rc
+
+
+

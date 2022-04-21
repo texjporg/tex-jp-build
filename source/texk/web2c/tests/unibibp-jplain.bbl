@@ -1,0 +1,94 @@
+\begin{thebibliography}{10}
+
+\bibitem{bj^^c3^^b6rk2020}
+Tomas Bj^^c3^^b6rk.
+\newblock {\em Arbitrage Theory in Continuous Time}.
+\newblock Oxford University Press, 2020.
+
+\bibitem{boswell}
+Dustin Boswell and Trevor Foucher.
+\newblock
+  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
+  in practice).
+\newblock オライリージャパン, 2012.
+
+\bibitem{Lautr^^c3^^a9amont}
+Conte de~Lautr^^c3^^a9amont.
+\newblock {\em Les Chants de Maldoror}.
+\newblock 1868.
+
+\bibitem{Br^^c3^^bcderGrimm}
+Br^^c3^^bcder Grimm.
+\newblock {\em Kinder- und Hausm^^c3^^a4rchen}.
+\newblock Reimer, 1812.
+
+\bibitem{kernighan88}
+Brian~W. Kernighan and Dennis~M. Ritchie.
+\newblock {\em The C Programming Language, 2nd edition}.
+\newblock Prentice Hall, 1988.
+
+\bibitem{kernighan78}
+Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
+\newblock {\em The C Programming Language, 1st edition}.
+\newblock Prentice Hall, 1978.
+
+\bibitem{king63}
+Martin~Luther King, Jr.
+\newblock {\em I Have a Dream}.
+\newblock 1963.
+
+\bibitem{knuth86}
+Donald~E. Knuth.
+\newblock {\em The \TeX book}.
+\newblock Addison-Wesley, 1986.
+
+\bibitem{ken-na}
+中野賢.
+\newblock 日本語{\LaTeXe}ブック.
+\newblock アスキー, 1996.
+
+\bibitem{bibunsho6}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第6版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2013.
+
+\bibitem{bibunsho7}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第7版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2017.
+
+\bibitem{bibunsho8}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第8版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2020.
+
+\bibitem{Proust}
+Marcel Proust.
+\newblock {\em ^^c3^^80 la recherche du temps perdu}.
+\newblock ^^c3^^89ditions Gallimard, 1913--1927.
+
+\bibitem{test:misc0}
+テストてすと, 名無権兵衛, 何誰兵衛, 無名戦士, John Smith, Hans Schmidt.
+\newblock UTF-8版jbibtexのテスト: ±α、β，γ。§абв．
+\newblock Ω出版社, 2007.
+
+\bibitem{weber1821}
+Carl~Maria von Weber.
+\newblock {\em Der Freisch^^c3^^bctz}.
+\newblock 1821.
+
+\bibitem{Булгаков}
+Михаил~АфанасьевичБулгаков.
+\newblock Мастер и Маргарита.
+\newblock 1966.
+
+\bibitem{CaoXueQin}
+曹雪芹.
+\newblock 紅樓夢.
+
+\bibitem{JinPingMei}
+蘭陵笑笑生.
+\newblock 金瓶梅.
+\newblock 1610.
+
+\end{thebibliography}

@@ -1,0 +1,94 @@
+\begin{thebibliography}{10}
+
+\bibitem{bj^^c3^^b6rk2020}
+T.~Bj^^c3^^b6rk.
+\newblock {\em Arbitrage Theory in Continuous Time}.
+\newblock Oxford University Press, 2020.
+
+\bibitem{boswell}
+D.~Boswell and T.~Foucher.
+\newblock
+  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
+  in practice).
+\newblock オライリージャパン, 2012.
+
+\bibitem{Lautr^^c3^^a9amont}
+C.~de~Lautr^^c3^^a9amont.
+\newblock {\em Les Chants de Maldoror}.
+\newblock 1868.
+
+\bibitem{Br^^c3^^bcderGrimm}
+B.~Grimm.
+\newblock {\em Kinder- und Hausm^^c3^^a4rchen}.
+\newblock Reimer, 1812.
+
+\bibitem{kernighan78}
+B.~W. Kernighan and D.~M. Ritchie.
+\newblock {\em The C Programming Language, 1st edition}.
+\newblock Prentice Hall, 1978.
+
+\bibitem{kernighan88}
+B.~W. Kernighan and D.~M. Ritchie.
+\newblock {\em The C Programming Language, 2nd edition}.
+\newblock Prentice Hall, 1988.
+
+\bibitem{king63}
+M.~L. King, Jr.
+\newblock {\em I Have a Dream}.
+\newblock 1963.
+
+\bibitem{knuth86}
+D.~E. Knuth.
+\newblock {\em The \TeX book}.
+\newblock Addison-Wesley, 1986.
+
+\bibitem{ken-na}
+中野.
+\newblock 日本語{\LaTeXe}ブック.
+\newblock アスキー, 1996.
+
+\bibitem{bibunsho6}
+奥村, 黒木.
+\newblock [改訂第6版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2013.
+
+\bibitem{bibunsho7}
+奥村, 黒木.
+\newblock [改訂第7版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2017.
+
+\bibitem{bibunsho8}
+奥村, 黒木.
+\newblock [改訂第8版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2020.
+
+\bibitem{Proust}
+M.~Proust.
+\newblock {\em ^^c3^^80 la recherche du temps perdu}.
+\newblock ^^c3^^89ditions Gallimard, 1913--1927.
+
+\bibitem{test:misc0}
+テスト, 名無, 何, 無名, J.~Smith, H.~Schmidt.
+\newblock UTF-8版jbibtexのテスト: ±α、β，γ。§абв．
+\newblock Ω出版社, 2007.
+
+\bibitem{weber1821}
+C.~M. von Weber.
+\newblock {\em Der Freisch^^c3^^bctz}.
+\newblock 1821.
+
+\bibitem{Булгаков}
+Михаил~Афанасьевич.
+\newblock Мастер и Маргарита.
+\newblock 1966.
+
+\bibitem{CaoXueQin}
+曹.
+\newblock 紅樓夢.
+
+\bibitem{JinPingMei}
+蘭陵笑笑生.
+\newblock 金瓶梅.
+\newblock 1610.
+
+\end{thebibliography}
