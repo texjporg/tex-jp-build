@@ -14,7 +14,7 @@
 	%
 	% Please notify Shouichi MATSUI(matsui@denken.or.jp) of any bugs in
 	% these standard styles or in this documentation file.
-	% $B>>0f(B $B@50l(B  ($B:b(B) $BEENOCf1{8&5f=j!!>pJs%7%9%F%`It(B
+	% 松井 正一  (財) 電力中央研究所　情報システム部
 
 
 
@@ -250,7 +250,7 @@ FUNCTION {format.names}
  	{s nameptr "{ff}" format.name$ 't :=
  	  t empty$
  	    { s nameptr "{ll}" format.name$ 't :=
-	      t " $B$K$O!$@+$HL>$N4V$K6uGr$,$J$$$h!)(B in " * cite$ * warning$
+	      t " には，姓と名の間に空白がないよ？ in " * cite$ * warning$
 	    }
  	    'skip$
  	  if$
@@ -273,7 +273,7 @@ FUNCTION {format.names}
 
  		{ s is.kanji.str$
 
- 			{"$BB>(B" * }
+ 			{"他" * }
 
 
  			{", et~al." * }
@@ -324,14 +324,14 @@ FUNCTION {format.editors}
  	{ editor is.kanji.str$
 
 
- 		{"$B!JJT!K(B" * } {" eds." * } if$
+ 		{"（編）" * } {" eds." * } if$
 
 
  	}
  	{ editor is.kanji.str$
 
 
- 		{"$B!JJT!K(B" *} {" ed." * } if$
+ 		{"（編）" *} {" ed." * } if$
 
 
  	}
@@ -418,7 +418,7 @@ FUNCTION {format.bvolume}
     { volume is.kanji.str$
 	{ volume }
 	{ is.kanji.entry
-	    {"$BBh(B" volume * "$B4,(B" *}
+	    {"第" volume * "巻" *}
 	    {"Vol." volume tie.or.space.connect}
 	  if$
 	}
@@ -471,7 +471,7 @@ FUNCTION {format.edition}
     { edition is.kanji.str$
 	{ edition }
         { is.kanji.entry
-	    {"$BBh(B" edition * "$BHG(B" *}
+	    {"第" edition * "版" *}
 	    { output.state mid.sentence =
 	      { edition "l" change.case$ " edition" * }
 	      { edition "t" change.case$ " edition" * }
@@ -544,7 +544,7 @@ FUNCTION {format.chapter.pages}
 	{ chapter is.kanji.str$
 	    { "" }
 	    { is.kanji.entry
-		{"$B>O(B"}
+		{"章"}
 		{"chapter"}
 	      if$
 	    }
@@ -553,7 +553,7 @@ FUNCTION {format.chapter.pages}
 	{ type "l" change.case$ }
       if$
       chapter is.kanji.str$ not is.kanji.entry and
-          {"$BBh(B" chapter * swap$ *}
+          {"第" chapter * swap$ *}
           { chapter is.kanji.str$
 		{chapter *}
 		{chapter tie.or.space.connect}
@@ -668,7 +668,7 @@ FUNCTION {format.crossref.editor}
   #2 >
     { editor is.kanji.str$
 
-	  {pop$ "$BB>(B" *} {pop$ ", et~al." * } if$
+	  {pop$ "他" *} {pop$ ", et~al." * } if$
 
     }
     { #2 <
@@ -678,7 +678,7 @@ FUNCTION {format.crossref.editor}
 
  	    { editor is.kanji.str$
 
- 		{"$BB>(B" *} {", et~al." * } if$
+ 		{"他" *} {", et~al." * } if$
 
  	    }
  	    { editor is.kanji.str$
@@ -713,7 +713,7 @@ FUNCTION {format.book.crossref}
     { volume is.kanji.str$
 	{ volume }
 	{ is.kanji.entry
-	    {"$BBh(B" volume * "$B4,(B" *}
+	    {"第" volume * "巻" *}
 	    {"Vol." volume tie.or.space.connect " of " *  }
 	  if$
 	}
@@ -1156,8 +1156,8 @@ MACRO {toms} {"ACM Trans. Math. Softw."}
 MACRO {toois} {"ACM Trans. Office Inf. Syst."}
 MACRO {toplas} {"ACM Trans. Prog. Lang. Syst."}
 MACRO {tcs} {"Theoretical Comput. Sci."}
-MACRO {tieice} {"$B?.3XO@(B"}
-MACRO {tipsj}  {"$B>pJs=hM}3X2qO@J8;o(B"}
+MACRO {tieice} {"信学論"}
+MACRO {tipsj}  {"情報処理学会論文誌"}
 MACRO {jipsj}  {"J.~Info. Proc. Soc. of Japan"}
 MACRO {jorsj}  {"Journal of the O. R. Society of Japan"}
 
@@ -1211,7 +1211,7 @@ FUNCTION {sort.format.names}
       nameptr numnames = t "others" = and
  	{ s is.kanji.str$
 
- 		{"$BB>(B" * }
+ 		{"他" * }
 
  		{"et~al." *}
 	  if$
