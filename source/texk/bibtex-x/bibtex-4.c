@@ -2739,3 +2739,62 @@ BEGIN
   END
 END
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^ END OF SECTION 454 ^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+#ifdef UTF_8
+void          x_is_cjk_string (void)
+BEGIN
+  pop_lit_stk (&pop_lit1, &pop_typ1);
+  if (pop_typ1 != STK_STR)
+  BEGIN
+    print_wrong_stk_lit (pop_lit1, pop_typ1, STK_STR);
+    push_lit_stk (-1, STK_INT);
+  END
+  else
+  BEGIN
+    ex_buf_length = 0;
+    add_buf_pool (pop_lit1);
+    string_width = 0;
+    BEGIN
+      ex_buf_ptr = 0;
+      while (ex_buf_ptr < ex_buf_length)
+      BEGIN
+        Integer_T ch;
+        U8_NEXT_OR_FFFD(ex_buf, ex_buf_ptr, -1, ch);
+        switch ( ublock_getCode(ch) )
+        BEGIN
+          case UBLOCK_HIRAGANA:
+          case UBLOCK_KATAKANA:
+          case UBLOCK_KATAKANA_PHONETIC_EXTENSIONS:
+          case UBLOCK_KANA_EXTENDED_A:
+          case UBLOCK_KANA_EXTENDED_B:
+          case UBLOCK_SMALL_KANA_EXTENSION:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_D:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_E:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_F:
+          case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_G:
+          case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS:
+          case UBLOCK_HANGUL_SYLLABLES:
+          case UBLOCK_HANGUL_JAMO:
+          case UBLOCK_HANGUL_JAMO_EXTENDED_A:
+          case UBLOCK_HANGUL_JAMO_EXTENDED_B:
+          case UBLOCK_HANGUL_COMPATIBILITY_JAMO:
+          case UBLOCK_BOPOMOFO:
+          case UBLOCK_BOPOMOFO_EXTENDED:
+          case UBLOCK_KANBUN:
+          case UBLOCK_KANGXI_RADICALS:
+          case UBLOCK_CJK_RADICALS_SUPPLEMENT:
+          case UBLOCK_IDEOGRAPHIC_DESCRIPTION_CHARACTERS:
+            string_width += 1;
+            break;
+        END
+      END
+    END
+/*^^^^^^^^^^^^^^^^^^^^^^^^^^ END OF SECTION 451 ^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+    push_lit_stk (string_width, STK_INT);
+  END
+END
+#endif

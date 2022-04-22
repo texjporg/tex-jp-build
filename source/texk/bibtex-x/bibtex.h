@@ -1346,7 +1346,12 @@
 #define N_WHILE                     34
 #define N_WIDTH                     35
 #define N_WRITE                     36
+#ifdef UTF_8
+#define N_IS_CJK_STRING             37
+#define NUM_BLT_IN_FNS              38
+#else
 #define NUM_BLT_IN_FNS              37
+#endif
 
 /***************************************************************************
  * WEB section number:  338

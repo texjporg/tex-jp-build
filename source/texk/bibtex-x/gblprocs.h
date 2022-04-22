@@ -392,6 +392,9 @@ void                    x_type (void);
 void                    x_warning (void);
 void                    x_width (void);
 void                    x_write (void);
+#ifdef UTF_8
+void                    x_is_cjk_string (void);
+#endif
 
 
 /*

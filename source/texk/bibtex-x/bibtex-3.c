@@ -274,6 +274,10 @@ BEGIN
   build_in ("while$      ", 6, &b_while, N_WHILE);
   build_in ("width$      ", 6, &b_width, N_WIDTH);
   build_in ("write$      ", 6, &b_write, N_WRITE);
+#ifdef UTF_8
+  build_in ("is.cjk.str$ ", 11, &b_cjk_string, N_IS_CJK_STRING);
+  build_in ("is.kanji.str$", 13, &b_cjk_string, N_IS_CJK_STRING);
+#endif
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^ END OF SECTION 334 ^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 /***************************************************************************

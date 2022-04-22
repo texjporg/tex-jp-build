@@ -468,6 +468,11 @@ End_While_Label: DO_NOTHING;
 	  case N_WRITE:
 	    x_write ();
 	    break;
+#ifdef UTF_8
+	  case N_IS_CJK_STRING:
+	    x_is_cjk_string ();
+	    break;
+#endif
 	  default:
 	    CONFUSION ("Unknown built-in function");
 	    break;

@@ -44,6 +44,11 @@ cp $srcdir/tests/nameu.aux tests/xnameu.aux
 ./bibtexu tests/xnameu || rc=13
 diff $srcdir/tests/nameu.bbl tests/xnameu.bbl || rc=14
 
+## test for is.knj.str$
+cp $srcdir/tests/isknju.aux tests/xisknju.aux
+./bibtexu tests/xisknju || rc=15
+#diff $srcdir/tests/isknju.bbl tests/xisknju.bbl || rc=16
+
 
 exit $rc
 

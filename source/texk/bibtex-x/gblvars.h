@@ -156,6 +156,9 @@ __EXTERN__ HashLoc_T                    b_warning;
 __EXTERN__ HashLoc_T                    b_while;
 __EXTERN__ HashLoc_T                    b_width;
 __EXTERN__ HashLoc_T                    b_write;
+#ifdef UTF_8
+__EXTERN__ HashLoc_T                    b_cjk_string;
+#endif
 __EXTERN__ Integer_T                    bad;
 __EXTERN__ AlphaFile_T                  bbl_file;
 __EXTERN__ Integer_T                    bbl_line_num;
