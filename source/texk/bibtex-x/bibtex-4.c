@@ -965,6 +965,13 @@ BEGIN
       END
       if (ex_buf_ptr < ex_buf_length)
       BEGIN
+#ifdef UTF_8
+        Integer_T ch;
+        U8_GET(&ex_buf[ex_buf_ptr-3], 0, 0, -1, ch);
+        if (ch==0x3001 || ch==0xFF0C) /* "、", "，" Ideographic/Fulwidth Comma */
+          ex_buf_ptr = ex_buf_ptr - 3;
+        else
+#endif
 	ex_buf_ptr = ex_buf_ptr - 4;
       END
       if (num_names < pop_lit2)

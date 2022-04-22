@@ -3590,7 +3590,19 @@ BEGIN
   and_found = FALSE;
   while (( ! and_found) && (ex_buf_ptr < ex_buf_length))
   BEGIN
+#ifdef UTF_8
+    UChar ch;
+    U8_GET(&ex_buf[ex_buf_ptr], 0, 0, -1, ch);
+    if (ch<0)
+    BEGIN
+      INCR (ex_buf_ptr);
+      preceding_white = FALSE;
+      continue;
+    END
+    switch (ch)
+#else
     switch (ex_buf[ex_buf_ptr])
+#endif
     BEGIN
       case 'a':
       case 'A':
@@ -3625,6 +3637,21 @@ BEGIN
 
         preceding_white = FALSE;
         break;
+#ifdef UTF_8
+      case 0x3001:                /* "、" Ideographic Comma */
+      case 0xFF0C:                /* "，" Fullwidth Comma   */
+        ex_buf_ptr = ex_buf_ptr + 3;
+        preceding_white = FALSE;
+        and_found = TRUE;
+        break;
+      case 0x3000:                /* "　" Ideographic Space */
+        ex_buf[ex_buf_ptr  ] = ' ';
+        ex_buf[ex_buf_ptr+1] = ' ';
+        ex_buf[ex_buf_ptr+2] = ' ';
+        ex_buf_ptr = ex_buf_ptr + 3;
+        preceding_white = TRUE;
+        break;
+#endif
       case LEFT_BRACE:
         INCR (brace_level);
         INCR (ex_buf_ptr);
@@ -3667,6 +3694,11 @@ BEGIN
         END
         else
         BEGIN
+#ifdef UTF_8
+          if (utf8len(ex_buf[ex_buf_ptr])>0)
+            ex_buf_ptr = ex_buf_ptr + utf8len(ex_buf[ex_buf_ptr]);
+          else
+#endif
           INCR (ex_buf_ptr);
           preceding_white = FALSE;
         END
