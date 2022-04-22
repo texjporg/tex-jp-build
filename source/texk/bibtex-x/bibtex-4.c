@@ -2761,13 +2761,8 @@ BEGIN
         U8_NEXT_OR_FFFD(ex_buf, ex_buf_ptr, -1, ch);
         switch ( ublock_getCode(ch) )
         BEGIN
-          case UBLOCK_HIRAGANA:
-          case UBLOCK_KATAKANA:
-          case UBLOCK_KATAKANA_PHONETIC_EXTENSIONS:
-          case UBLOCK_KANA_EXTENDED_A:
-          case UBLOCK_KANA_EXTENDED_B:
-          case UBLOCK_SMALL_KANA_EXTENSION:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS:
+          case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_C:
@@ -2775,19 +2770,32 @@ BEGIN
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_E:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_F:
           case UBLOCK_CJK_UNIFIED_IDEOGRAPHS_EXTENSION_G:
-          case UBLOCK_CJK_COMPATIBILITY_IDEOGRAPHS:
+            string_width |= 0x001;
+            break;
+          case UBLOCK_HIRAGANA:
+          case UBLOCK_KATAKANA:
+          case UBLOCK_KATAKANA_PHONETIC_EXTENSIONS:
+          case UBLOCK_KANA_EXTENDED_A:
+          case UBLOCK_KANA_EXTENDED_B:
+          case UBLOCK_SMALL_KANA_EXTENSION:
+            string_width |= 0x002;
+            break;
           case UBLOCK_HANGUL_SYLLABLES:
           case UBLOCK_HANGUL_JAMO:
           case UBLOCK_HANGUL_JAMO_EXTENDED_A:
           case UBLOCK_HANGUL_JAMO_EXTENDED_B:
           case UBLOCK_HANGUL_COMPATIBILITY_JAMO:
+            string_width |= 0x004;
+            break;
           case UBLOCK_BOPOMOFO:
           case UBLOCK_BOPOMOFO_EXTENDED:
+            string_width |= 0x008;
+            break;
           case UBLOCK_KANBUN:
           case UBLOCK_KANGXI_RADICALS:
           case UBLOCK_CJK_RADICALS_SUPPLEMENT:
           case UBLOCK_IDEOGRAPHIC_DESCRIPTION_CHARACTERS:
-            string_width += 1;
+            string_width |= 0x800;
             break;
         END
       END
