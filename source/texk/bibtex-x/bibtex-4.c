@@ -2739,6 +2739,44 @@ BEGIN
   END
 END
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^ END OF SECTION 454 ^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+void          x_bit_and (void)
+BEGIN
+  pop_lit_stk (&pop_lit1, &pop_typ1);
+  pop_lit_stk (&pop_lit2, &pop_typ2);
+  if (pop_typ1 != STK_INT)
+  BEGIN
+    print_wrong_stk_lit (pop_lit1, pop_typ1, STK_INT);
+    push_lit_stk (0, STK_INT);
+  END
+  else if (pop_typ2 != STK_INT)
+  BEGIN
+    print_wrong_stk_lit (pop_lit2, pop_typ2, STK_INT);
+    push_lit_stk (0, STK_INT);
+  END
+  else
+  BEGIN
+    push_lit_stk (pop_lit1 & pop_lit2, STK_INT);
+  END
+END
+void          x_bit_or (void)
+BEGIN
+  pop_lit_stk (&pop_lit1, &pop_typ1);
+  pop_lit_stk (&pop_lit2, &pop_typ2);
+  if (pop_typ1 != STK_INT)
+  BEGIN
+    print_wrong_stk_lit (pop_lit1, pop_typ1, STK_INT);
+    push_lit_stk (0, STK_INT);
+  END
+  else if (pop_typ2 != STK_INT)
+  BEGIN
+    print_wrong_stk_lit (pop_lit2, pop_typ2, STK_INT);
+    push_lit_stk (0, STK_INT);
+  END
+  else
+  BEGIN
+    push_lit_stk (pop_lit1 | pop_lit2, STK_INT);
+  END
+END
 #ifdef UTF_8
 void          x_is_cjk_string (void)
 BEGIN

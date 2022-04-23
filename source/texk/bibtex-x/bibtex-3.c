@@ -241,6 +241,8 @@ BEGIN
   build_in ("<           ", 1, &b_less_than, N_LESS_THAN);
   build_in ("+           ", 1, &b_plus, N_PLUS);
   build_in ("-           ", 1, &b_minus, N_MINUS);
+  build_in ("&           ", 1, &b_bit_and, N_BIT_AND);
+  build_in ("|           ", 1, &b_bit_or, N_BIT_OR);
   build_in ("*           ", 1, &b_concatenate, N_CONCATENATE);
   build_in (":=          ", 2, &b_gets, N_GETS);
   build_in ("add.period$ ", 11, &b_add_period, N_ADD_PERIOD);
@@ -272,7 +274,6 @@ BEGIN
   build_in ("warning$    ", 8, &b_warning, N_WARNING);
   build_in ("width$      ", 6, &b_width, N_WIDTH);
   build_in ("while$      ", 6, &b_while, N_WHILE);
-  build_in ("width$      ", 6, &b_width, N_WIDTH);
   build_in ("write$      ", 6, &b_write, N_WRITE);
 #ifdef UTF_8
   build_in ("is.cjk.str$ ", 11, &b_cjk_string, N_IS_CJK_STRING);

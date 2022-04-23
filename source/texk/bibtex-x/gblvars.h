@@ -119,6 +119,8 @@ __EXTERN__ Integer_T                    aux_name_length;
 __EXTERN__ AuxNumber_T                  aux_ptr;
 
 __EXTERN__ HashLoc_T                    b_add_period;
+__EXTERN__ HashLoc_T                    b_bit_and;
+__EXTERN__ HashLoc_T                    b_bit_or;
 __EXTERN__ HashLoc_T                    b_call_type;
 __EXTERN__ HashLoc_T                    b_change_case;
 __EXTERN__ HashLoc_T                    b_chr_to_int;

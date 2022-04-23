@@ -209,6 +209,12 @@ BEGIN
 	  case N_MINUS:
 	    x_minus ();
 	    break;
+	  case N_BIT_AND:
+	    x_bit_and ();
+	    break;
+	  case N_BIT_OR:
+	    x_bit_or ();
+	    break;
 	  case N_CONCATENATE:
 	    x_concatenate ();
 	    break;
