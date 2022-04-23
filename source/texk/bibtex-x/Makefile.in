@@ -657,7 +657,8 @@ bibtex8_tests = tests/bibtex8.test tests/bibtex8u-mem.test \
 
 bibtexu_tests = tests/bibtexu.test tests/bibtexu-basic.test \
                 tests/bibtexu-range.test tests/bibtexu-yannis.test \
-                tests/bibtexu-sort.test tests/bibtexu-char.test
+                tests/bibtexu-sort.test tests/bibtexu-char.test \
+                tests/bibtexu-jbib.test
 
 TESTS = $(am__append_3) $(am__append_4)
 EXTRA_DIST = $(bibtex8_tests) $(bibtexu_tests) tests/sort.aux \

@@ -1,0 +1,121 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{蘭陵笑笑10}
+
+\bibitem[Bjö20]{björk2020}
+Tomas Björk.
+\newblock {\em Arbitrage Theory in Continuous Time}.
+\newblock Oxford University Press, 2020.
+
+\bibitem[bos12]{boswell}
+Dustin Boswell and Trevor Foucher.
+\newblock リーダブルコード
+  ―より良いコードを書くためのシンプルで実践的
+  なテクニック (Theory in practice).
+\newblock オライリージャパン, 2012.
+
+\bibitem[dL68]{Lautréamont}
+Conte de~Lautréamont.
+\newblock {\em Les Chants de Maldoror}.
+\newblock 1868.
+
+\bibitem[Dos58]{dostoevskii}
+Фёдор~Миха́йлович Достое́вский.
+\newblock {\em Братья Карамазовы}.
+\newblock Гослитиздат, 1958.
+
+\bibitem[Gri12]{BrüderGrimm}
+Brüder Grimm.
+\newblock {\em Kinder- und Hausmärchen}.
+\newblock Reimer, 1812.
+
+\bibitem[Kaz20]{nikos}
+Νίκος Καζαντζάκης.
+\newblock {\em Συμπόσιον}.
+\newblock 京緑社, 2020.
+
+\bibitem[Kim75]{kim-manjung}
+김만중.
+\newblock 구운몽.
+\newblock 高麗書林, 1975.
+
+\bibitem[Kin63]{king63}
+Martin~Luther King, Jr.
+\newblock {\em I Have a Dream}.
+\newblock 1963.
+
+\bibitem[Knu86]{knuth86}
+Donald~E. Knuth.
+\newblock {\em The \TeX book}.
+\newblock Addison-Wesley, 1986.
+
+\bibitem[KR78]{kernighan78}
+Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
+\newblock {\em The C Programming Language, 1st edition}.
+\newblock Prentice Hall, 1978.
+
+\bibitem[KR88]{kernighan88}
+Brian~W. Kernighan and Dennis~M. Ritchie.
+\newblock {\em The C Programming Language, 2nd edition}.
+\newblock Prentice Hall, 1988.
+
+\bibitem[Nak96]{ken-na}
+中野賢.
+\newblock 日本語{\LaTeXe}ブック.
+\newblock アスキー, 1996.
+
+\bibitem[oku13]{bibunsho6}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第6版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2013.
+
+\bibitem[oku17]{bibunsho7}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第7版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2017.
+
+\bibitem[oku20]{bibunsho8}
+奥村晴彦, 黒木裕介.
+\newblock [改訂第8版] LaTeX2ε美文書作成入門.
+\newblock 技術評論社, 2020.
+
+\bibitem[Pro27]{Proust}
+Marcel Proust.
+\newblock {\em À la recherche du temps perdu}.
+\newblock Éditions Gallimard, 1913--1927.
+
+\bibitem[Tak07]{髙島𠮷野}
+髙島𠮷野, 𡈽方𠀋之助.
+\newblock 𠷡と𩸽と‼夢か幻か⁇
+\newblock 安全﻿㐧一, 2007.
+
+\bibitem[TNN{\etalchar{+}}07]{test:misc0}
+テストてすと, 名無権兵衛, 何誰兵衛, 無名戦士, John Smith,
+  Hans Schmidt.
+\newblock UTF-8版jbibtexのテスト: ±α、β，γ。§абв．
+\newblock Ω出版社, 2007.
+
+\bibitem[vW21]{weber1821}
+Carl~Maria von Weber.
+\newblock {\em Der Freischütz}.
+\newblock 1821.
+
+\bibitem[Бул66]{Булгаков}
+Михаил~Афанасьевич Булгаков.
+\newblock {\em Мастер и Маргарита}.
+\newblock 1966.
+
+\bibitem[Го́36]{Го́голь}
+Мико́ла~Васи́льович Го́голь.
+\newblock {\em Нос}.
+\newblock 1836.
+
+\bibitem[曹]{CaoXueQin}
+曹雪芹.
+\newblock 紅樓夢.
+
+\bibitem[蘭陵笑笑10]{JinPingMei}
+蘭陵笑笑生.
+\newblock 金瓶梅.
+\newblock 1610.
+
+\end{thebibliography}
