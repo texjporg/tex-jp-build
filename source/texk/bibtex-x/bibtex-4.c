@@ -966,7 +966,7 @@ BEGIN
       if (ex_buf_ptr < ex_buf_length)
       BEGIN
 #ifdef UTF_8
-        Integer_T ch;
+        UChar32 ch;
         U8_GET(&ex_buf[ex_buf_ptr-3], 0, 0, -1, ch);
         if (ch==0x3001 || ch==0xFF0C) /* "、", "，" Ideographic/Fulwidth Comma */
           ex_buf_ptr = ex_buf_ptr - 3;
@@ -2500,7 +2500,7 @@ END
 #ifdef UTF_8
 Integer_T    char_width_uni (ASCIICode_T * str)
 BEGIN
-  Integer_T ch;
+  UChar32 ch;
   U8_GET_OR_FFFD(str, 0, 0, -1, ch);
   if (ch<=LAST_LATIN_CHAR)
     return ( char_width[ch] );
@@ -2807,7 +2807,7 @@ BEGIN
       ex_buf_ptr = 0;
       while (ex_buf_ptr < ex_buf_length)
       BEGIN
-        Integer_T ch;
+        UChar32 ch;
         U8_NEXT_OR_FFFD(ex_buf, ex_buf_ptr, -1, ch);
         switch ( ublock_getCode(ch) )
         BEGIN

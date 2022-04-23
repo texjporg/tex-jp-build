@@ -3602,7 +3602,7 @@ BEGIN
   while (( ! and_found) && (ex_buf_ptr < ex_buf_length))
   BEGIN
 #ifdef UTF_8
-    UChar ch;
+    UChar32 ch;
     U8_GET(&ex_buf[ex_buf_ptr], 0, 0, -1, ch);
     if (ch<0)
     BEGIN
