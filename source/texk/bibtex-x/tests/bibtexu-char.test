@@ -45,9 +45,9 @@ cp $srcdir/tests/nameu.aux tests/xnameu.aux
 diff $srcdir/tests/nameu.bbl tests/xnameu.bbl || rc=14
 
 ## test for is.knj.str$
-cp $srcdir/tests/isknju.aux tests/xisknju.aux
-./bibtexu tests/xisknju || rc=15
-#diff $srcdir/tests/isknju.bbl tests/xisknju.bbl || rc=16
+cp $srcdir/tests/iscjku.aux tests/xiscjku.aux
+./bibtexu tests/xiscjku || rc=15
+diff $srcdir/tests/iscjku.bbl tests/xiscjku.bbl || rc=16
 
 
 exit $rc
