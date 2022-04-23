@@ -3656,9 +3656,9 @@ BEGIN
         and_found = TRUE;
         break;
       case 0x3000:                /* "　" Ideographic Space */
-        ex_buf[ex_buf_ptr  ] = ' ';
-        ex_buf[ex_buf_ptr+1] = ' ';
-        ex_buf[ex_buf_ptr+2] = ' ';
+        ex_buf[ex_buf_ptr  ] = SPACE;
+        ex_buf[ex_buf_ptr+1] = SPACE;
+        ex_buf[ex_buf_ptr+2] = SPACE;
         ex_buf_ptr = ex_buf_ptr + 3;
         preceding_white = TRUE;
         break;
