@@ -14,17 +14,17 @@ export TEXMFCNF BSTINPUTS BIBINPUTS
 
 
 ## test for japanese bibtex style
-#cp $srcdir/tests/unibibu-jplain.aux tests/xunibibu-jplain.aux
-#./bibtexu tests/xunibibu-jplain || rc=1
+#cp $srcdir/tests/mlgbibu-jplain.aux tests/xmlgbibu-jplain.aux
+#./bibtexu tests/xmlgbibu-jplain || rc=1
 #if [ $? -gt 1 ]; then rc=1; fi
-#diff $srcdir/tests/unibibu-jplain.bbl tests/xunibibu-jplain.bbl || rc=2
+#diff $srcdir/tests/mlgbibu-jplain.bbl tests/xmlgbibu-jplain.bbl || rc=2
 
 for st in jplain jalpha jabbrv junsrt jname; do
 
-cp $srcdir/tests/unibibu-$st.aux tests/xunibibu-$st.aux
-./bibtexu tests/xunibibu-$st
+cp $srcdir/tests/mlgbibu-$st.aux tests/xmlgbibu-$st.aux
+./bibtexu tests/xmlgbibu-$st
 if [ $? -gt 1 ]; then rc=1; fi
-diff $srcdir/tests/unibibu-$st.bbl tests/xunibibu-$st.bbl || rc=2
+diff $srcdir/tests/mlgbibu-$st.bbl tests/xmlgbibu-$st.bbl || rc=2
 
 done
 

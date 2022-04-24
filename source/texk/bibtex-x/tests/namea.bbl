@@ -18,9 +18,6 @@
  [1] {ff} Conte {ll} Lautréamont {vv} de {jj}
  | ContedeLautréamont | Conte de Lautréamont | de~Lautréamont, C. |
   C.~d.~Lautréamont
-\item Donald E. Knuth
- [1] {ff} Donald~E. {ll} Knuth {vv}  {jj}
- | Donald~E.Knuth | Donald~E. Knuth | Knuth, D.~E. | D.~E. Knuth
 \item Kernighan, Brian W. and Ritchie, Dennis M.
  [1] {ff} Brian~W. {ll} Kernighan {vv}  {jj}
  | Brian~W.Kernighan | Brian~W. Kernighan | Kernighan, B.~W. | B.~W. Kernighan
@@ -33,8 +30,5 @@
 \item Marcel Proust
  [1] {ff} Marcel {ll} Proust {vv}  {jj}
  | MarcelProust | Marcel Proust | Proust, M. | M.~Proust
-\item Tomas Björk
- [1] {ff} Tomas {ll} Björk {vv}  {jj}
- | TomasBjörk | Tomas Björk | Björk, T. | T.~Björk
 \end{itemize}
 \endinput
