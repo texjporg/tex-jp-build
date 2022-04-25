@@ -1,10 +1,5 @@
 \begin{thebibliography}{10}
 
-\bibitem{knuth86}
-Donald~E. Knuth.
-\newblock {\em The \TeX book}.
-\newblock Addison-Wesley, 1986.
-
 \bibitem{kernighan78}
 Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
 \newblock {\em The C Programming Language, 1st edition}.
@@ -17,23 +12,13 @@ Brian~W. Kernighan and Dennis~M. Ritchie.
 
 \bibitem{king63}
 Martin~Luther King, Jr.
-\newblock {\em I Have a Dream}.
+\newblock {\em I Have a Dream!}
 \newblock 1963.
 
 \bibitem{weber1821}
 Carl~Maria von Weber.
 \newblock {\em Der Freischütz}.
 \newblock 1821.
-
-\bibitem{björk2020}
-Tomas Björk.
-\newblock {\em Arbitrage Theory in Continuous Time}.
-\newblock Oxford University Press, 2020.
-
-\bibitem{ken-na}
-中野賢.
-\newblock 日本語{\LaTeXe}ブック.
-\newblock アスキー, 1996.
 
 \bibitem{bibunsho8}
 奥村晴彦, 黒木裕介.
@@ -50,20 +35,10 @@ Tomas Björk.
 \newblock [改訂第6版] LaTeX2ε美文書作成入門.
 \newblock 技術評論社, 2013.
 
-\bibitem{nikos}
-Νίκος Καζαντζάκης.
-\newblock {\em Συμπόσιον}.
-\newblock 京緑社, 2020.
-
-\bibitem{dostoevskii}
-Фёдор~Миха́йлович Достое́вский.
-\newblock {\em Братья Карамазовы}.
-\newblock Гослитиздат, 1958.
-
-\bibitem{kim-manjung}
-김만중.
-\newblock 구운몽.
-\newblock 高麗書林, 1975.
+\bibitem{kim-siseup}
+김시습.
+\newblock 금오신화 (金鰲新話).
+\newblock 1494?
 
 \bibitem{CaoXueQin}
 曹雪芹.
@@ -73,13 +48,6 @@ Tomas Björk.
 蘭陵笑笑生.
 \newblock 金瓶梅.
 \newblock 1610.
-
-\bibitem{boswell}
-Dustin Boswell and Trevor Foucher.
-\newblock
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice).
-\newblock オライリージャパン, 2012.
 
 \bibitem{test:misc0}
 テストてすと, 名無権兵衛, 何誰兵衛, 無名戦士, John Smith,
@@ -116,5 +84,11 @@ Brüder Grimm.
 Мико́ла~Васи́льович Го́голь.
 \newblock {\em Нос}.
 \newblock 1836.
+
+\bibitem{Διογένης}
+Διογένης Λαέρτιος.
+\newblock {\em
+  Βίοι καὶ γνῶμαι τῶν ἐν φιλοσοφίᾳ εὐδοκιμησάντων}.
+\newblock 3C.
 
 \end{thebibliography}

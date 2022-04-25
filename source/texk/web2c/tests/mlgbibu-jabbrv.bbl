@@ -1,36 +1,14 @@
 \begin{thebibliography}{10}
 
-\bibitem{björk2020}
-T.~Björk.
-\newblock {\em Arbitrage Theory in Continuous Time}.
-\newblock Oxford University Press, 2020.
-
-\bibitem{boswell}
-D.~Boswell and T.~Foucher.
-\newblock
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice).
-\newblock オライリージャパン, 2012.
-
 \bibitem{Lautréamont}
 C.~de~Lautréamont.
 \newblock {\em Les Chants de Maldoror}.
 \newblock 1868.
 
-\bibitem{dostoevskii}
-Ф.~М. Достое́вский.
-\newblock {\em Братья Карамазовы}.
-\newblock Гослитиздат, 1958.
-
 \bibitem{BrüderGrimm}
 B.~Grimm.
 \newblock {\em Kinder- und Hausmärchen}.
 \newblock Reimer, 1812.
-
-\bibitem{nikos}
-Ν. Καζαντζάκης.
-\newblock {\em Συμπόσιον}.
-\newblock 京緑社, 2020.
 
 \bibitem{kernighan78}
 B.~W. Kernighan and D.~M. Ritchie.
@@ -42,25 +20,10 @@ B.~W. Kernighan and D.~M. Ritchie.
 \newblock {\em The C Programming Language, 2nd edition}.
 \newblock Prentice Hall, 1988.
 
-\bibitem{kim-manjung}
-김.
-\newblock 구운몽.
-\newblock 高麗書林, 1975.
-
 \bibitem{king63}
 M.~L. King, Jr.
-\newblock {\em I Have a Dream}.
+\newblock {\em I Have a Dream!}
 \newblock 1963.
-
-\bibitem{knuth86}
-D.~E. Knuth.
-\newblock {\em The \TeX book}.
-\newblock Addison-Wesley, 1986.
-
-\bibitem{ken-na}
-中野.
-\newblock 日本語{\LaTeXe}ブック.
-\newblock アスキー, 1996.
 
 \bibitem{bibunsho6}
 奥村, 黒木.
@@ -82,6 +45,11 @@ M.~Proust.
 \newblock {\em À la recherche du temps perdu}.
 \newblock Éditions Gallimard, 1913--1927.
 
+\bibitem{kim-siseup}
+김.
+\newblock 금오신화 (金鰲新話).
+\newblock 1494?
+
 \bibitem{髙島𠮷野}
 髙島, 𡈽方.
 \newblock 𠷡と𩸽と‼夢か幻か⁇
@@ -96,6 +64,12 @@ M.~Proust.
 C.~M. von Weber.
 \newblock {\em Der Freischütz}.
 \newblock 1821.
+
+\bibitem{Διογένης}
+Δ. Λαέρτιος.
+\newblock {\em
+  Βίοι καὶ γνῶμαι τῶν ἐν φιλοσοφίᾳ εὐδοκιμησάντων}.
+\newblock 3C.
 
 \bibitem{Булгаков}
 М.~А. Булгаков.

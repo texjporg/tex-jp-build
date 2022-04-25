@@ -1,23 +1,7 @@
-\begin{thebibliography}{蘭陵10}
-
-\bibitem[Bjö20]{björk2020}
-Björk,~T.: {\em Arbitrage Theory in Continuous Time}, Oxford University Press,
-  2020.
-
-\bibitem[bos12]{boswell}
-Boswell,~D. and T.~Foucher:
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice), オライリージャパン, 2012.
-
-\bibitem[Dos58]{dostoevskii}
-Достое́вский,~Ф.~М.: {\em Братья Карамазовы},
-  Гослитиздат, 1958.
+\begin{thebibliography}{Λα3C}
 
 \bibitem[Gri12]{BrüderGrimm}
 Grimm,~B.: {\em Kinder- und Hausmärchen}, Reimer, 1812.
-
-\bibitem[Kaz20]{nikos}
-Καζαντζάκης,~Ν.: {\em Συμπόσιον}, 京緑社, 2020.
 
 \bibitem[Ker78]{kernighan78}
 Kernighan,~B.~W. and D.~M. Ritchie: {\em The C Programming Language, 1st
@@ -27,20 +11,11 @@ Kernighan,~B.~W. and D.~M. Ritchie: {\em The C Programming Language, 1st
 Kernighan,~B.~W. and D.~M. Ritchie: {\em The C Programming Language, 2nd
   edition}, Prentice Hall, 1988.
 
-\bibitem[Kim75]{kim-manjung}
-김：구운몽, 高麗書林, 1975.
-
 \bibitem[Kin63]{king63}
-King,~M.~L., Jr.: {\em I Have a Dream}, 1963.
-
-\bibitem[Knu86]{knuth86}
-Knuth,~D.~E.: {\em The \TeX book}, Addison-Wesley, 1986.
+King,~M.~L., Jr.: {\em I Have a Dream!}, 1963.
 
 \bibitem[Lau68]{Lautréamont}
 Lautréamont,~de~C.: {\em Les Chants de Maldoror}, 1868.
-
-\bibitem[Nak96]{ken-na}
-中野：日本語{\LaTeXe}ブック, アスキー, 1996.
 
 \bibitem[oku13]{bibunsho6}
 奥村, 黒木：[改訂第6版] LaTeX2ε美文書作成入門,
@@ -58,6 +33,9 @@ Lautréamont,~de~C.: {\em Les Chants de Maldoror}, 1868.
 Proust,~M.: {\em À la recherche du temps perdu}, Éditions Gallimard,
   1913--1927.
 
+\bibitem[Si-94]{kim-siseup}
+김：금오신화 (金鰲新話), 1494?
+
 \bibitem[Tak07]{髙島𠮷野}
 髙島, 𡈽方：𠷡と𩸽と‼夢か幻か⁇, 安全㐧一, 2007.
 
@@ -68,6 +46,11 @@ Proust,~M.: {\em À la recherche du temps perdu}, Éditions Gallimard,
 
 \bibitem[Web21]{weber1821}
 Weber,~von C.~M.: {\em Der Freischütz}, 1821.
+
+\bibitem[Λα3C]{Διογένης}
+Λαέρτιος,~Δ.: {\em
+  Βίοι καὶ γνῶμαι τῶν ἐν φιλοσοφίᾳ εὐδοκιμησάντων},
+  3C.
 
 \bibitem[Бу66]{Булгаков}
 Булгаков,~М.~А.: {\em Мастер и Маргарита}, 1966.

@@ -9,6 +9,96 @@
 \item[5] ABCDE
 \item[6] ABCDEF
 \item[7] ABCDEFG
+\item[orig] {AB}CDEFG tuvwx{yz}
+\item[len] 15
+\item[1] {A}
+\item[2] {AB}
+\item[3] {AB}C
+\item[4] {AB}CD
+\item[5] {AB}CDE
+\item[6] {AB}CDEF
+\item[7] {AB}CDEFG
+\item[orig] {{AB}CD}EFG tuv{wx{yz}}
+\item[len] 15
+\item[1] {{A}}
+\item[2] {{AB}}
+\item[3] {{AB}C}
+\item[4] {{AB}CD}
+\item[5] {{AB}CD}E
+\item[6] {{AB}CD}EF
+\item[7] {{AB}CD}EFG
+\item[orig] {{あい}う}えおかき　ユヨワヰ{ヱ{ヲン}}
+\item[len] 30
+\item[1] {{あ}}
+\item[2] {{あ}}
+\item[3] {{あい}}
+\item[4] {{あい}}
+\item[5] {{あい}う}
+\item[6] {{あい}う}
+\item[7] {{あい}う}え
+\item[orig] {{ΑΒ}ΓΔ}ΕΖΗ στυ{φχ{ψω}}
+\item[len] 29
+\item[1] {{Α}}
+\item[2] {{Α}}
+\item[3] {{ΑΒ}}
+\item[4] {{ΑΒ}}
+\item[5] {{ΑΒ}Γ}
+\item[6] {{ΑΒ}Γ}
+\item[7] {{ΑΒ}ΓΔ}
+\item[orig] {{АБ}ВГ}ДЕЖ щъы{ьэ{юя}}
+\item[len] 29
+\item[1] {{А}}
+\item[2] {{А}}
+\item[3] {{АБ}}
+\item[4] {{АБ}}
+\item[5] {{АБ}В}
+\item[6] {{АБ}В}
+\item[7] {{АБ}ВГ}
+\item[orig] {{一二}三}四五六七　肆伍陸漆{捌{玖拾}}
+\item[len] 30
+\item[1] {{一}}
+\item[2] {{一}}
+\item[3] {{一二}}
+\item[4] {{一二}}
+\item[5] {{一二}三}
+\item[6] {{一二}三}
+\item[7] {{一二}三}四
+\item[orig] {あい}うえおかき　ユヨワヰヱ{ヲン}
+\item[len] 30
+\item[1] {あ}
+\item[2] {あ}
+\item[3] {あい}
+\item[4] {あい}
+\item[5] {あい}う
+\item[6] {あい}う
+\item[7] {あい}うえ
+\item[orig] {ΑΒ}ΓΔΕΖΗ στυφχ{ψω}
+\item[len] 29
+\item[1] {Α}
+\item[2] {Α}
+\item[3] {ΑΒ}
+\item[4] {ΑΒ}
+\item[5] {ΑΒ}Γ
+\item[6] {ΑΒ}Γ
+\item[7] {ΑΒ}ΓΔ
+\item[orig] {АБ}ВГДЕЖ щъыьэ{юя}
+\item[len] 29
+\item[1] {А}
+\item[2] {А}
+\item[3] {АБ}
+\item[4] {АБ}
+\item[5] {АБ}В
+\item[6] {АБ}В
+\item[7] {АБ}ВГ
+\item[orig] {一二}三四五六七　肆伍陸漆捌{玖拾}
+\item[len] 30
+\item[1] {一}
+\item[2] {一}
+\item[3] {一二}
+\item[4] {一二}
+\item[5] {一二}三
+\item[6] {一二}三
+\item[7] {一二}三四
 \item[orig] あいうえおかき　ユヨワヰヱヲン
 \item[len] 30
 \item[1] あ

@@ -1,10 +1,5 @@
 \begin{thebibliography}{10}
 
-\bibitem{knuth86}
-Donald~E. Knuth.
-\newblock {\em The \TeX book}.
-\newblock Addison-Wesley, 1986.
-
 \bibitem{kernighan78}
 Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
 \newblock {\em The C Programming Language, 1st edition}.
@@ -17,23 +12,13 @@ Brian~W. Kernighan and Dennis~M. Ritchie.
 
 \bibitem{king63}
 Martin~Luther King, Jr.
-\newblock {\em I Have a Dream}.
+\newblock {\em I Have a Dream!}
 \newblock 1963.
 
 \bibitem{weber1821}
 Carl~Maria von Weber.
 \newblock {\em Der Freisch^^c3^^bctz}.
 \newblock 1821.
-
-\bibitem{bj^^c3^^b6rk2020}
-Tomas Bj^^c3^^b6rk.
-\newblock {\em Arbitrage Theory in Continuous Time}.
-\newblock Oxford University Press, 2020.
-
-\bibitem{ken-na}
-中野賢.
-\newblock 日本語{\LaTeXe}ブック.
-\newblock アスキー, 1996.
 
 \bibitem{bibunsho8}
 奥村晴彦, 黒木裕介.
@@ -59,13 +44,6 @@ Tomas Bj^^c3^^b6rk.
 \newblock 金瓶梅.
 \newblock 1610.
 
-\bibitem{boswell}
-Dustin Boswell and Trevor Foucher.
-\newblock
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice).
-\newblock オライリージャパン, 2012.
-
 \bibitem{test:misc0}
 テストてすと, 名無権兵衛, 何誰兵衛, 無名戦士, John Smith, Hans Schmidt.
 \newblock UTF-8版jbibtexのテスト: ±α、β，γ。§абв．
@@ -90,5 +68,12 @@ Br^^c3^^bcder Grimm.
 Михаил~АфанасьевичБулгаков.
 \newblock Мастер и Маргарита.
 \newblock 1966.
+
+\bibitem{Διογ^^ce^^adνη^^cf^^82}
+Λα^^ce^^adρτιο^^cf^^82.
+\newblock Β^^ce^^afοι κα^^e1^^bd^^b6
+  γν^^e1^^bf^^b6μαι τ^^e1^^bf^^b6ν ^^e1^^bc^^90ν φιλοσοφ^^ce^^af^^e1^^be^^b3
+  ε^^e1^^bd^^90δοκιμησ^^ce^^acντων.
+\newblock 3C.
 
 \end{thebibliography}

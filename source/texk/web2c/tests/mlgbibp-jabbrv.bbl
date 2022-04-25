@@ -1,17 +1,5 @@
 \begin{thebibliography}{10}
 
-\bibitem{bj^^c3^^b6rk2020}
-T.~Bj^^c3^^b6rk.
-\newblock {\em Arbitrage Theory in Continuous Time}.
-\newblock Oxford University Press, 2020.
-
-\bibitem{boswell}
-D.~Boswell and T.~Foucher.
-\newblock
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice).
-\newblock オライリージャパン, 2012.
-
 \bibitem{Lautr^^c3^^a9amont}
 C.~de~Lautr^^c3^^a9amont.
 \newblock {\em Les Chants de Maldoror}.
@@ -34,18 +22,8 @@ B.~W. Kernighan and D.~M. Ritchie.
 
 \bibitem{king63}
 M.~L. King, Jr.
-\newblock {\em I Have a Dream}.
+\newblock {\em I Have a Dream!}
 \newblock 1963.
-
-\bibitem{knuth86}
-D.~E. Knuth.
-\newblock {\em The \TeX book}.
-\newblock Addison-Wesley, 1986.
-
-\bibitem{ken-na}
-中野.
-\newblock 日本語{\LaTeXe}ブック.
-\newblock アスキー, 1996.
 
 \bibitem{bibunsho6}
 奥村, 黒木.
@@ -76,6 +54,13 @@ M.~Proust.
 C.~M. von Weber.
 \newblock {\em Der Freisch^^c3^^bctz}.
 \newblock 1821.
+
+\bibitem{Διογ^^ce^^adνη^^cf^^82}
+Λα^^ce^^adρτιο^^cf^^82.
+\newblock Β^^ce^^afοι κα^^e1^^bd^^b6
+  γν^^e1^^bf^^b6μαι τ^^e1^^bf^^b6ν ^^e1^^bc^^90ν φιλοσοφ^^ce^^af^^e1^^be^^b3
+  ε^^e1^^bd^^90δοκιμησ^^ce^^acντων.
+\newblock 3C.
 
 \bibitem{Булгаков}
 Михаил~Афанасьевич.

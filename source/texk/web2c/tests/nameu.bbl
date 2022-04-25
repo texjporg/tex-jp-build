@@ -1,10 +1,5 @@
 \section*{Test result}
 \begin{itemize}
-\item Boswell, Dustin and Foucher, Trevor
- [1] {ff} Dustin {ll} Boswell {vv}  {jj}
- | DustinBoswell | Dustin Boswell | Boswell, D. | D.~Boswell
- [2] {ff} Trevor {ll} Foucher {vv}  {jj}
- | TrevorFoucher | Trevor Foucher | Foucher, T. | T.~Foucher
 \item Brian Wilson Kernighan and Dennis MacAlistair Ritchie
  [1] {ff} Brian~Wilson {ll} Kernighan {vv}  {jj}
  | Brian~WilsonKernighan | Brian~Wilson Kernighan | Kernighan, B.~W. | B.~W.
@@ -23,9 +18,6 @@
  [1] {ff} Conte {ll} Lautréamont {vv} de {jj}
  | ContedeLautréamont | Conte de Lautréamont | de~Lautréamont, C. |
   C.~d.~Lautréamont
-\item Donald E. Knuth
- [1] {ff} Donald~E. {ll} Knuth {vv}  {jj}
- | Donald~E.Knuth | Donald~E. Knuth | Knuth, D.~E. | D.~E. Knuth
 \item Kernighan, Brian W. and Ritchie, Dennis M.
  [1] {ff} Brian~W. {ll} Kernighan {vv}  {jj}
  | Brian~W.Kernighan | Brian~W. Kernighan | Kernighan, B.~W. | B.~W. Kernighan
@@ -41,9 +33,6 @@
 \item Tarantin, Nicolas
  [1] {ff} Nicolas {ll} Tarantin {vv}  {jj}
  | NicolasTarantin | Nicolas Tarantin | Tarantin, N. | N.~Tarantin
-\item Tomas Björk
- [1] {ff} Tomas {ll} Björk {vv}  {jj}
- | TomasBjörk | Tomas Björk | Björk, T. | T.~Björk
 \item Échelon, Nicolas
  [1] {ff} Nicolas {ll} Échelon {vv}  {jj}
  | NicolasÉchelon | Nicolas Échelon | Échelon, N. | N.~Échelon
@@ -53,26 +42,20 @@
 \item Διογένης
  [1] {ff}  {ll} Διογένης {vv}  {jj}
  | Διογένης | Διογένης | Διογένης | Διογένης
+\item Διογένης Λαέρτιος
+ [1] {ff} Διογένης {ll} Λαέρτιος {vv}  {jj}
+ | ΔιογένηςΛαέρτιος | Διογένης Λαέρτιος |
+  Λαέρτιος, Δ. | Δ. Λαέρτιος
 \item Ζαχαρόπουλος, Ζαχαρίας
  [1] {ff} Ζαχαρίας {ll} Ζαχαρόπουλος {vv}  {jj}
  | ΖαχαρίαςΖαχαρόπουλος |
   Ζαχαρίας Ζαχαρόπουλος | Ζαχαρόπουλος, Ζ. |
   Ζ. Ζαχαρόπουλος
-\item Νίκος Καζαντζάκης
- [1] {ff} Νίκος {ll} Καζαντζάκης {vv}  {jj}
- | ΝίκοςΚαζαντζάκης | Νίκος Καζαντζάκης |
-  Καζαντζάκης, Ν. | Ν. Καζαντζάκης
 \item Булгаков, Михаил Афанасьевич
  [1] {ff} Михаил~Афанасьевич {ll} Булгаков {vv}  {jj}
  | Михаил~АфанасьевичБулгаков |
   Михаил~Афанасьевич Булгаков | Булгаков,
   М.~А. | М.~А. Булгаков
-\item Достое́вский, Фёдор Миха́йлович
- [1] {ff} Фёдор~Миха́йлович {ll} Достое́вский {vv}
-  {jj}
- | Фёдор~Миха́йловичДостое́вский |
-  Фёдор~Миха́йлович Достое́вский |
-  Достое́вский, Ф.~М. | Ф.~М. Достое́вский
 \item Мико́ла Васи́льович Го́голь
  [1] {ff} Мико́ла~Васи́льович {ll} Го́голь {vv}  {jj}
  | Мико́ла~Васи́льовичГо́голь |
@@ -103,9 +86,6 @@
  | JohnSmith | John Smith | Smith, J. | J.~Smith
  [6] {ff} Hans {ll} Schmidt {vv}  {jj}
  | HansSchmidt | Hans Schmidt | Schmidt, H. | H.~Schmidt
-\item 中野 賢
- [1] {ff} 中野 {ll} 賢 {vv}  {jj}
- | 中野賢 | 中野 賢 | 賢, 中. | 中. 賢
 \item 天堂最新的章节表, 格的儿子
  [1] {ff} 格的儿子 {ll} 天堂最新的章节表 {vv}  {jj}
  | 格的儿子天堂最新的章节表 |
@@ -142,8 +122,8 @@
  [2] {ff} 𡈽方 {ll} 𠀋之助 {vv}  {jj}
  | 𡈽方𠀋之助 | 𡈽方 𠀋之助 | 𠀋之助, 𡈽. | 𡈽.
   𠀋之助
-\item 김 만중
- [1] {ff} 김 {ll} 만중 {vv}  {jj}
- | 김만중 | 김 만중 | 만중, 김. | 김. 만중
+\item 김 시습
+ [1] {ff} 김 {ll} 시습 {vv}  {jj}
+ | 김시습 | 김 시습 | 시습, 김. | 김. 시습
 \end{itemize}
 \endinput

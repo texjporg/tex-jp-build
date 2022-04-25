@@ -20,9 +20,9 @@ export TEXMFCNF BSTINPUTS BIBINPUTS
 
 for st in jplain jalpha jabbrv junsrt jname; do
 
-cp $srcdir/tests/unibibu-$st.aux uptests/xunibibu-$st.aux
-./upbibtex uptests/xunibibu-$st || rc=1
-diff $srcdir/tests/unibibu-$st.bbl uptests/xunibibu-$st.bbl || rc=2
+cp $srcdir/tests/mlgbibu-$st.aux uptests/xmlgbibu-$st.aux
+./upbibtex uptests/xmlgbibu-$st || rc=1
+diff $srcdir/tests/mlgbibu-$st.bbl uptests/xmlgbibu-$st.bbl || rc=2
 
 done
 

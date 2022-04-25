@@ -1,10 +1,5 @@
 \section*{Test result}
 \begin{itemize}
-\item Boswell, Dustin and Foucher, Trevor
- [1] {ff} Dustin {ll} Boswell {vv}  {jj}
- | DustinBoswell | Dustin Boswell | Boswell, D. | D.~Boswell
- [2] {ff} Trevor {ll} Foucher {vv}  {jj}
- | TrevorFoucher | Trevor Foucher | Foucher, T. | T.~Foucher
 \item Br^^c3^^bcder Grimm
  [1] {ff} Br^^c3^^bcder {ll} Grimm {vv}  {jj}
  | Br^^c3^^bcderGrimm | Br^^c3^^bcder Grimm | Grimm, B. | B.~Grimm
@@ -23,9 +18,6 @@
  [1] {ff} Conte {ll} Lautr^^c3^^a9amont {vv} de {jj}
  | ContedeLautr^^c3^^a9amont | Conte de Lautr^^c3^^a9amont |
   de~Lautr^^c3^^a9amont, C. | C.~d.~Lautr^^c3^^a9amont
-\item Donald E. Knuth
- [1] {ff} Donald~E. {ll} Knuth {vv}  {jj}
- | Donald~E.Knuth | Donald~E. Knuth | Knuth, D.~E. | D.~E. Knuth
 \item Kernighan, Brian W. and Ritchie, Dennis M.
  [1] {ff} Brian~W. {ll} Kernighan {vv}  {jj}
  | Brian~W.Kernighan | Brian~W. Kernighan | Kernighan, B.~W. | B.~W. Kernighan
@@ -38,9 +30,6 @@
 \item Marcel Proust
  [1] {ff} Marcel {ll} Proust {vv}  {jj}
  | MarcelProust | Marcel Proust | Proust, M. | M.~Proust
-\item Tomas Bj^^c3^^b6rk
- [1] {ff} Tomas {ll} Bj^^c3^^b6rk {vv}  {jj}
- | TomasBj^^c3^^b6rk | Tomas Bj^^c3^^b6rk | Bj^^c3^^b6rk, T. | T.~Bj^^c3^^b6rk
 \item テスト てすと and 名無 権兵衛、 何　誰兵衛， 無名 　戦士 and John Smith
   and Schmidt, Hans
  [1] {ff} テスト {ll} てすと {vv}  {jj}
@@ -55,6 +44,13 @@
  | JohnSmith | John Smith | Smith, J. | J.~Smith
  [6] {ff} Hans {ll} Schmidt {vv}  {jj}
  | HansSchmidt | Hans Schmidt | Schmidt, H. | H.~Schmidt
+\item Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82
+ [1] {ff}  {ll} Λα^^ce^^adρτιο^^cf^^82 {vv} Διογ^^ce^^adνη^^cf^^82
+  {jj}
+ | Διογ^^ce^^adνη^^cf^^82Λα^^ce^^adρτιο^^cf^^82 |
+  Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82 |
+  Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82 | Δ.
+  Λα^^ce^^adρτιο^^cf^^82
 \item Булгаков, Михаил Афанасьевич
  [1] {ff} Михаил~Афанасьевич {ll} Булгаков {vv}  {jj}
  | Михаил~АфанасьевичБулгаков |
@@ -78,9 +74,6 @@
 \item 曹 雪芹
  [1] {ff} 曹 {ll} 雪芹 {vv}  {jj}
  | 曹雪芹 | 曹 雪芹 | 雪芹, 曹. | 曹. 雪芹
-\item 中野 賢
- [1] {ff} 中野 {ll} 賢 {vv}  {jj}
- | 中野賢 | 中野 賢 | 賢, 中. | 中. 賢
 \item 蘭陵笑笑生
  [1] {ff}  {ll} 蘭陵笑笑生 {vv}  {jj}
  | 蘭陵笑笑生 | 蘭陵笑笑生 | 蘭陵笑笑生 | 蘭陵笑笑生

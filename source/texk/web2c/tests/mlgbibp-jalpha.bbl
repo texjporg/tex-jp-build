@@ -1,16 +1,4 @@
-\begin{thebibliography}{Tesu07}
-
-\bibitem[Bj^20]{bj^^c3^^b6rk2020}
-Tomas Bj^^c3^^b6rk.
-\newblock {\em Arbitrage Theory in Continuous Time}.
-\newblock Oxford University Press, 2020.
-
-\bibitem[bos12]{boswell}
-Dustin Boswell and Trevor Foucher.
-\newblock
-  リーダブルコード ―より良いコードを書くためのシンプルで実践的 なテクニック (Theory
-  in practice).
-\newblock オライリージャパン, 2012.
+\begin{thebibliography}{Λα3C}
 
 \bibitem[dL68]{Lautr^^c3^^a9amont}
 Conte de~Lautr^^c3^^a9amont.
@@ -24,13 +12,8 @@ Br^^c3^^bcder Grimm.
 
 \bibitem[Kin63]{king63}
 Martin~Luther King, Jr.
-\newblock {\em I Have a Dream}.
+\newblock {\em I Have a Dream!}
 \newblock 1963.
-
-\bibitem[Knu86]{knuth86}
-Donald~E. Knuth.
-\newblock {\em The \TeX book}.
-\newblock Addison-Wesley, 1986.
 
 \bibitem[KR78]{kernighan78}
 Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
@@ -41,11 +24,6 @@ Brian~Wilson Kernighan and Dennis~MacAlistair Ritchie.
 Brian~W. Kernighan and Dennis~M. Ritchie.
 \newblock {\em The C Programming Language, 2nd edition}.
 \newblock Prentice Hall, 1988.
-
-\bibitem[Nak96]{ken-na}
-中野賢.
-\newblock 日本語{\LaTeXe}ブック.
-\newblock アスキー, 1996.
 
 \bibitem[oku13]{bibunsho6}
 奥村晴彦, 黒木裕介.
@@ -76,6 +54,13 @@ Marcel Proust.
 Carl~Maria von Weber.
 \newblock {\em Der Freisch^^c3^^bctz}.
 \newblock 1821.
+
+\bibitem[Λα3C]{Διογ^^ce^^adνη^^cf^^82}
+Λα^^ce^^adρτιο^^cf^^82.
+\newblock Β^^ce^^afοι κα^^e1^^bd^^b6
+  γν^^e1^^bf^^b6μαι τ^^e1^^bf^^b6ν ^^e1^^bc^^90ν φιλοσοφ^^ce^^af^^e1^^be^^b3
+  ε^^e1^^bd^^90δοκιμησ^^ce^^acντων.
+\newblock 3C.
 
 \bibitem[Ми66]{Булгаков}
 Михаил~АфанасьевичБулгаков.
