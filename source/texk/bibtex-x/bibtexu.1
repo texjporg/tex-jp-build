@@ -98,7 +98,7 @@ and CJK characters are supported.
 .TP
 \fBis.cjk.str$\fR
 Pops the top (string) literal, set flag bits to an integer if CJK characters are found in the string,
-and pushes the resulting integer.
+and pushes the resulting integer, otherwise pushes 0.
 Flags 0x001, 0x002, 0x004, 0x008 and 0x800 are corresponding to Hanzi (Kanji, Hanja), Kana, Hangul,
 Bopomofo and other CJK characters, respectively.
 For example, an integer 0x003 will be pushed if Hanzi and Kana characters are found in a poped string literal.
