@@ -4,9 +4,7 @@
 **
 **  MODULE
 **
-**      $RCSfile: gblvars.h,v $
-**      $Revision: 3.71 $
-**      $Date: 1996/08/18 20:47:30 $
+**      file: gblvars.h
 **
 **  DESCRIPTION
 **

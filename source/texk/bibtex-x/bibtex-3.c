@@ -4,9 +4,7 @@
 **
 **  MODULE
 **
-**      $RCSfile: bibtex-3.c,v $
-**      $Revision: 3.71 $
-**      $Date: 1996/08/18 20:37:06 $
+**      file: bibtex-3.c
 **
 **  DESCRIPTION
 **

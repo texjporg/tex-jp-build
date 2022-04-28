@@ -4,9 +4,7 @@
 **
 **  MODULE
 **
-**      $RCSfile: version.h,v $
-**      $Revision: 3.71 $
-**      $Date: 1996/08/18 20:37:06 $
+**      file: version.h
 **
 **  DESCRIPTION
 **
