@@ -1,6 +1,10 @@
+% BibTeX test style file
+% Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+% You may freely use, modify and/or distribute this file.
+
 ENTRY {author}{}{}
 
-STRINGS { s t }
+STRINGS { s }
 
 INTEGERS { nameptr namesleft numnames }
 
@@ -10,7 +14,7 @@ FUNCTION {format.names}
   s num.names$ 'numnames :=
   numnames 'namesleft :=
     { namesleft #0 > }
-    { " [" nameptr int.to.str$ *  "]" * write$
+    { " [" nameptr int.to.str$ * "]" * write$
       " {ff} " s nameptr "{ff}" format.name$ * write$
       " {ll} " s nameptr "{ll}" format.name$ * write$
       " {vv} " s nameptr "{vv}" format.name$ * write$
