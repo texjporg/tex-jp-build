@@ -8,7 +8,7 @@ test -d tests || mkdir -p tests
 rc=0
 
 TEXMFCNF=$srcdir/../kpathsea
-BSTINPUTS=$srcdir/tests
+BSTINPUTS=$srcdir/tests:$srcdir/csf
 BIBINPUTS=$srcdir/tests
 export TEXMFCNF BSTINPUTS BIBINPUTS
 
@@ -40,7 +40,7 @@ diff $srcdir/tests/chara.bbl tests/xchara.bbl || rc=12
 
 ## test for num.names$, format.name$
 cp $srcdir/tests/namea.aux tests/xnamea.aux
-./bibtexu tests/xnamea || rc=13
+max_print_line=119 ./bibtex8 tests/xnamea || rc=13
 diff $srcdir/tests/namea.bbl tests/xnamea.bbl || rc=14
 
 
