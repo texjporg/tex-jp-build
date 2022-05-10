@@ -45,9 +45,7 @@ diff $srcdir/tests/widthp.bbl ptests/xwidthp.bbl || rc=10
 
 ## test for chr.to.int$, int.to.str$, int.to.chr$
 cp $srcdir/tests/charp.aux ptests/xcharp.aux
-./pbibtex ptests/xcharp
-### || rc=11
-### It results errors.
+./pbibtex ptests/xcharp || rc=11
 diff $srcdir/tests/charp.bbl ptests/xcharp.bbl || rc=12
 
 ## test for format.name$

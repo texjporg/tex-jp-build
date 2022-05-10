@@ -45,9 +45,7 @@ diff $srcdir/tests/widthu.bbl uptests/xwidthu.bbl || rc=10
 
 ## test for chr.to.int$, int.to.str$, int.to.chr$
 cp $srcdir/tests/charu.aux uptests/xcharu.aux
-./upbibtex uptests/xcharu
-### || rc=11
-### It results errors.
+./upbibtex uptests/xcharu || rc=11
 diff $srcdir/tests/charu.bbl uptests/xcharu.bbl || rc=12
 
 ## test for format.name$

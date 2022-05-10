@@ -8,30 +8,30 @@
 \item o  i2str: 111  i2chr: o
 \item u  i2str: 117  i2chr: u
 \item y  i2str: 121  i2chr: y
-\item 　  i2str: 161  i2chr:
-\item あ  i2str: 164  i2chr:
-\item い  i2str: 164  i2chr:
-\item う  i2str: 164  i2chr:
-\item ヱ  i2str: 165  i2chr:
-\item ヲ  i2str: 165  i2chr:
-\item ン  i2str: 165  i2chr:
-\item Α  i2str: 166  i2chr:
-\item Β  i2str: 166  i2chr:
-\item Γ  i2str: 166  i2chr:
-\item χ  i2str: 166  i2chr:
-\item ψ  i2str: 166  i2chr:
-\item ω  i2str: 166  i2chr:
-\item А  i2str: 167  i2chr:
-\item Б  i2str: 167  i2chr:
-\item В  i2str: 167  i2chr:
-\item э  i2str: 167  i2chr:
-\item ю  i2str: 167  i2chr:
-\item я  i2str: 167  i2chr:
-\item 一  i2str: 176  i2chr:
-\item 玖  i2str: 182  i2chr:
-\item 捌  i2str: 187  i2chr:
-\item 三  i2str: 187  i2chr:
-\item 拾  i2str: 189  i2chr:
-\item 二  i2str: 198  i2chr:
+\item 　  i2str: 8481  i2chr: 　
+\item あ  i2str: 9250  i2chr: あ
+\item い  i2str: 9252  i2chr: い
+\item う  i2str: 9254  i2chr: う
+\item ヱ  i2str: 9585  i2chr: ヱ
+\item ヲ  i2str: 9586  i2chr: ヲ
+\item ン  i2str: 9587  i2chr: ン
+\item Α  i2str: 9761  i2chr: Α
+\item Β  i2str: 9762  i2chr: Β
+\item Γ  i2str: 9763  i2chr: Γ
+\item χ  i2str: 9814  i2chr: χ
+\item ψ  i2str: 9815  i2chr: ψ
+\item ω  i2str: 9816  i2chr: ω
+\item А  i2str: 10017  i2chr: А
+\item Б  i2str: 10018  i2chr: Б
+\item В  i2str: 10019  i2chr: В
+\item э  i2str: 10095  i2chr: э
+\item ю  i2str: 10096  i2chr: ю
+\item я  i2str: 10097  i2chr: я
+\item 一  i2str: 12396  i2chr: 一
+\item 玖  i2str: 13930  i2chr: 玖
+\item 捌  i2str: 15147  i2chr: 捌
+\item 三  i2str: 15152  i2chr: 三
+\item 拾  i2str: 15654  i2chr: 拾
+\item 二  i2str: 18035  i2chr: 二
 \end{itemize}
 \endinput
