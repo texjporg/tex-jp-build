@@ -473,6 +473,12 @@ incr(current_option);
 @ An element with all zeros always ends the list.
 @z
 
+@x
+begin kpse_set_program_name (argv[0], 'pbibtex');
+@y
+begin kpse_set_program_name (argv[0], 'upbibtex');
+@z
+
 @x procedure x_is_kanji_str
 procedure x_is_kanji_str;
 label exit;
@@ -525,7 +531,7 @@ begin
   if (is_internalUPTEX) then begin { should be in sync with |kcat_code| of uptex-m.ch }
     k := kcatcodekey(c);
     if k=@"25 then return { Hangul Jamo }
-    else if (k>=@"68)and(k<=@"6A) then return { CJK Radicals Supplement .. Ideographic Description Characters }
+    else if (k>=@"68)and(k<=@"69) then return { CJK Radicals Supplement, Kangxi Radicals }
     else if (k>=@"6C)and(k<=@"6D) then return { Hiragana, Katakana }
     else if k=@"6E then return { Bopomofo }
     else if k=@"6F then return { Hangul Compatibility Jamo }
