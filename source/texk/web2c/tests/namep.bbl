@@ -5,33 +5,27 @@
  | Br^^c3^^bcderGrimm | Br^^c3^^bcder Grimm | Grimm, B. | B.~Grimm
 \item Brian Wilson Kernighan and Dennis MacAlistair Ritchie
  [1] {ff} Brian~Wilson {ll} Kernighan {vv}  {jj}
- | Brian~WilsonKernighan | Brian~Wilson Kernighan | Kernighan, B.~W. | B.~W.
-  Kernighan
+ | Brian~WilsonKernighan | Brian~Wilson Kernighan | Kernighan, B.~W. | B.~W. Kernighan
  [2] {ff} Dennis~MacAlistair {ll} Ritchie {vv}  {jj}
- | Dennis~MacAlistairRitchie | Dennis~MacAlistair Ritchie | Ritchie, D.~M. |
-  D.~M. Ritchie
+ | Dennis~MacAlistairRitchie | Dennis~MacAlistair Ritchie | Ritchie, D.~M. | D.~M. Ritchie
 \item Carl Maria von Weber
  [1] {ff} Carl~Maria {ll} Weber {vv} von {jj}
- | Carl~MariavonWeber | Carl~Maria von Weber | von Weber, C.~M. | C.~M.
-  v.~Weber
+ | Carl~MariavonWeber | Carl~Maria von Weber | von Weber, C.~M. | C.~M. v.~Weber
 \item Conte de Lautr^^c3^^a9amont
  [1] {ff} Conte {ll} Lautr^^c3^^a9amont {vv} de {jj}
- | ContedeLautr^^c3^^a9amont | Conte de Lautr^^c3^^a9amont |
-  de~Lautr^^c3^^a9amont, C. | C.~d.~Lautr^^c3^^a9amont
-\item Kernighan, Brian W. and Ritchie, Dennis M.
+ | ContedeLautr^^c3^^a9amont | Conte de Lautr^^c3^^a9amont | de~Lautr^^c3^^a9amont, C. | C.~d.~Lautr^^c3^^a9amont
+\item Kernighan, Brian W. AND Ritchie, Dennis M.
  [1] {ff} Brian~W. {ll} Kernighan {vv}  {jj}
  | Brian~W.Kernighan | Brian~W. Kernighan | Kernighan, B.~W. | B.~W. Kernighan
  [2] {ff} Dennis~M. {ll} Ritchie {vv}  {jj}
  | Dennis~M.Ritchie | Dennis~M. Ritchie | Ritchie, D.~M. | D.~M. Ritchie
 \item King, Jr., Martin Luther
  [1] {ff} Martin~Luther {ll} King {vv}  {jj} Jr.
- | Martin~LutherKingJr. | Martin~Luther King Jr. | King, Jr., M.~L. | M.~L.
-  King, Jr.
+ | Martin~LutherKingJr. | Martin~Luther King Jr. | King, Jr., M.~L. | M.~L. King, Jr.
 \item Marcel Proust
  [1] {ff} Marcel {ll} Proust {vv}  {jj}
  | MarcelProust | Marcel Proust | Proust, M. | M.~Proust
-\item テスト てすと and 名無 権兵衛、 何　誰兵衛， 無名 　戦士 and John Smith
-  and Schmidt, Hans
+\item テスト てすと and 名無 権兵衛、 何　誰兵衛， 無名 　戦士 and John Smith and Schmidt, Hans
  [1] {ff} テスト {ll} てすと {vv}  {jj}
  | テストてすと | テスト てすと | てすと, テ. | テ. てすと
  [2] {ff} 名無 {ll} 権兵衛 {vv}  {jj}
@@ -45,17 +39,13 @@
  [6] {ff} Hans {ll} Schmidt {vv}  {jj}
  | HansSchmidt | Hans Schmidt | Schmidt, H. | H.~Schmidt
 \item Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82
- [1] {ff}  {ll} Λα^^ce^^adρτιο^^cf^^82 {vv} Διογ^^ce^^adνη^^cf^^82
-  {jj}
- | Διογ^^ce^^adνη^^cf^^82Λα^^ce^^adρτιο^^cf^^82 |
-  Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82 |
-  Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82 | Δ.
-  Λα^^ce^^adρτιο^^cf^^82
+ [1] {ff}  {ll} Λα^^ce^^adρτιο^^cf^^82 {vv} Διογ^^ce^^adνη^^cf^^82 {jj}
+ | Διογ^^ce^^adνη^^cf^^82Λα^^ce^^adρτιο^^cf^^82 | Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82
+  | Διογ^^ce^^adνη^^cf^^82 Λα^^ce^^adρτιο^^cf^^82 | Δ. Λα^^ce^^adρτιο^^cf^^82
 \item Булгаков, Михаил Афанасьевич
  [1] {ff} Михаил~Афанасьевич {ll} Булгаков {vv}  {jj}
- | Михаил~АфанасьевичБулгаков |
-  Михаил~Афанасьевич Булгаков | Булгаков,
-  М.~А. | М.~А. Булгаков
+ | Михаил~АфанасьевичБулгаков | Михаил~Афанасьевич Булгаков |
+  Булгаков, М.~А. | М.~А. Булгаков
 \item 奥村 　晴彦、黒木　 裕介
  [1] {ff} 奥村 {ll} 晴彦 {vv}  {jj}
  | 奥村晴彦 | 奥村 晴彦 | 晴彦, 奥. | 奥. 晴彦

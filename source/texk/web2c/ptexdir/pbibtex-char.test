@@ -50,7 +50,7 @@ diff $srcdir/tests/charp.bbl ptests/xcharp.bbl || rc=12
 
 ## test for format.name$
 cp $srcdir/tests/namep.aux ptests/xnamep.aux
-./pbibtex ptests/xnamep || rc=13
+max_print_line=119 ./pbibtex ptests/xnamep || rc=13
 diff $srcdir/tests/namep.bbl ptests/xnamep.bbl || rc=14
 
 ## test for is.knj.str$

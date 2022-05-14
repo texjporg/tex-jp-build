@@ -20,7 +20,7 @@ diff $srcdir/tests/sortu.bbl uptests/xsortu.bbl || rc=52
 
 ## test for change.case$
 cp $srcdir/tests/caseu.aux uptests/xcaseu.aux
-./upbibtex uptests/xcaseu || rc=53
+max_print_line=99 ./upbibtex uptests/xcaseu || rc=53
 diff $srcdir/tests/caseu.bbl uptests/xcaseu.bbl || rc=54
 
 ## test for add.period$
@@ -50,7 +50,7 @@ diff $srcdir/tests/charu.bbl uptests/xcharu.bbl || rc=12
 
 ## test for format.name$
 cp $srcdir/tests/nameu.aux uptests/xnameu.aux
-./upbibtex uptests/xnameu || rc=13
+max_print_line=119 ./upbibtex uptests/xnameu || rc=13
 diff $srcdir/tests/nameu.bbl uptests/xnameu.bbl || rc=14
 
 ## test for is.knj.str$
