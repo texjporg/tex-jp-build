@@ -1,3 +1,7 @@
+% BibTeX test style file
+% Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+% You may freely use, modify and/or distribute this file.
+
 ENTRY {field}{}{}
 
 FUNCTION {output_entry} {
@@ -10,15 +14,15 @@ FUNCTION {type} {output_entry}
 
 READ
 
-FUNCTION {set_sortkey} {
+FUNCTION {set_sort_key} {
   field 'sort.key$ :=
 }
 
-ITERATE {set_sortkey}
+ITERATE {set_sort_key}
 
 SORT
 
-FUNCTION {output_beg} {
+FUNCTION {output_bgn} {
   "\section*{Test result}" write$ newline$
   "\begin{itemize}" write$ newline$
 }
@@ -28,7 +32,7 @@ FUNCTION {output_end} {
   "\endinput" write$ newline$
 }
 
-EXECUTE {output_beg}
+EXECUTE {output_bgn}
 
 ITERATE {call.type$}
 
