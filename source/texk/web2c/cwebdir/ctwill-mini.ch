@@ -878,9 +878,9 @@ Section 123.
 Section 124.
 
 @x l.291
-\+& |exp| |attr| & |attr| \hfill $E\.\ A$ & \&{enum} $\{x\ [[\ldots]]\}$ \cr
+\+& |exp| |attr| & |exp| \hfill $E\.\ A$ & \&{enum} $\{x\ [[\ldots]]\}$ \cr
 @y
-\+& |exp| |attr| & |attr| \hfill $E\.\ A$ & \&{enum} $\{x\ [[\ldots]]\}$ \cr
+\+& |exp| |attr| & |exp| \hfill $E\.\ A$ & \&{enum} $\{x\ [[\ldots]]\}$ \cr
 \endgroup
 
 @ Cont.
@@ -1287,15 +1287,39 @@ Section 170.
 Section 173.
 
 @x
-if (cat1==else_like || cat1==if_like || cat1==define_like)
+if (cat1==if_like || cat1==else_like || cat1==define_like)
 @y
-if (cat1==else_like || cat1==if_like || cat1==define_like) @/
+if (cat1==if_like || cat1==else_like || cat1==define_like) @/
 @z
 
 @x
 } else if (cat1==exp || cat1==function) {
 @y
 } else @/ if (cat1==exp || cat1==function) {
+@z
+
+Section 178.
+
+@x l.3017
+      app(opt); app('9'); reduce(pp,4,langle,0,153);
+    }
+    else reduce(pp,4,cast,-1,154);
+@y
+      app(opt); app('9'); reduce(pp,4,langle,0,153);
+    } @+
+    else reduce(pp,4,cast,-1,154);
+@z
+
+Section 179.
+
+@x l.3028
+  big_app1_insert(pp,' '); reduce(pp,2,struct_like,0,155);
+}
+else reduce(pp,0,raw_int,0,91);
+@y
+  big_app1_insert(pp,' '); reduce(pp,2,struct_like,0,155);
+} @+
+else reduce(pp,0,raw_int,0,91);
 @z
 
 Section 181.
@@ -1566,9 +1590,9 @@ Section 233--234.
           if ((a<indent && !(b==big_cancel&&a==' ')) @|
             || (a>big_force && a!=dindent)) break;
           switch (a) {
+          case dindent: c++; @=/* fall through */@>@;
           case indent: c++; break;
           case outdent: c--; break;
-          case dindent: c+=2; break;
           case opt: a=get_output();
           }
         }
@@ -1608,9 +1632,9 @@ Section 233--234.
           if ((a<indent && !(b==big_cancel&&a==' ')) @|
             || (a>big_force && a!=dindent)) break;
           switch (a) {
+          case dindent: c++; @=/* fall through */@>@;
           case indent: c++; break;
           case outdent: c--; break;
-          case dindent: c+=2; break;
           case opt: a=get_output();
           }
         }

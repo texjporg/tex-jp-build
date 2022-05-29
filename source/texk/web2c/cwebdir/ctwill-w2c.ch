@@ -618,7 +618,7 @@ static void print_text(text_pointer p);
 
 @ @c
 #if 0
-@t\4\4@>static void
+static void
 print_text( /* prints a token list for debugging; not used in |main| */
 @z
 
@@ -697,7 +697,7 @@ if(cat1==lbrace || cat1==int_like || cat1==decl) {
 @x
 @ @<Cases for |decl_head|@>=
 if (cat1==comma) {
-  big_app2(pp); big_app(' '); reduce(pp,2,decl_head,-1,33);
+  big_app2(pp); app(opt); app('9'); reduce(pp,2,decl_head,-1,33);
 }
 else if (cat1==ubinop) {
   big_app1_insert(pp,'{'); big_app('}'); reduce(pp,2,decl_head,-1,34);
@@ -709,14 +709,14 @@ else if ((cat1==binop||cat1==colon) && cat2==exp && (cat3==comma ||
     cat3==semi || cat3==rpar))
   squash(pp,3,decl_head,-1,36);
 else if (cat1==cast) squash(pp,2,decl_head,-1,37);
-else if (cat1==lbrace || cat1==int_like || cat1==decl) {
+else if (cat1==int_like || cat1==lbrace || cat1==decl) {
   big_app(dindent); squash(pp,1,fn_decl,0,38);
 }
 else if (cat1==semi) squash(pp,2,decl,-1,39);
 @y
 @ @<Cases for |decl_head|@>=
 if (cat1==comma) {
-  big_app2(pp); big_app(' '); reduce(pp,2,decl_head,-1,33);
+  big_app2(pp); app(opt); app('9'); reduce(pp,2,decl_head,-1,33);
 }
 else if (cat1==ubinop) {
   big_app1_insert(pp,'{'); big_app('}');
@@ -730,7 +730,7 @@ else if ((cat1==binop||cat1==colon) && cat2==exp && (cat3==comma ||
     cat3==semi || cat3==rpar))
   squash(pp,3,decl_head,-1,36);
 else if (cat1==cast) squash(pp,2,decl_head,-1,37);
-else if (cat1==lbrace || cat1==int_like || cat1==decl) {
+else if (cat1==int_like || cat1==lbrace || cat1==decl) {
   if (indent_param_decl) big_app(dindent);
   squash(pp,1,fn_decl,0,38);
 }
@@ -793,10 +793,10 @@ else if (cat1==stmt) {
 @z
 
 @x
-  big_app1_insert(pp, (cat1==function || cat1==decl) ? big_force :
+  big_app1_insert(pp, (cat1==decl || cat1==function) ? big_force :
      force_lines ? force : break_space); reduce(pp,2,cat1,-1,76);
 @y
-  big_app1_insert(pp, (cat1==function || cat1==decl) ? @|
+  big_app1_insert(pp, (cat1==decl || cat1==function) ? @|
      ( order_decl_stmt ? big_force : force ) : @|
      ( force_lines ? force : break_space ) ); reduce(pp,2,cat1,-1,76);
 @z
@@ -834,13 +834,11 @@ if ((cat1==int_like || cat1==cast) && (cat2==comma || cat2==semi))
 else if (cat1==int_like) {
   big_app1_insert(pp,' '); reduce(pp,2,typedef_like,0,116);
 }
-else if (cat1==exp && cat2!=lpar && cat2!=exp && cat2!=cast) {
+else if (cat1==exp && cat2!=lpar && cat2!=lbrack && cat2!=exp && cat2!=cast) {
   make_underlined(pp+1); make_reserved(pp+1);
   big_app1_insert(pp,' '); reduce(pp,2,typedef_like,0,117);
 }
-else if (cat1==comma) {
-  big_app2(pp); big_app(' '); reduce(pp,2,typedef_like,0,118);
-}
+else if (cat1==comma) squash(pp,2,typedef_like,0,118);
 else if (cat1==semi) squash(pp,2,decl,-1,119);
 else if (cat1==ubinop && (cat2==ubinop || cat2==cast)) {
   big_app('{'); big_app1_insert(pp+1,'}'); reduce(pp+1,2,cat2,0,120);
