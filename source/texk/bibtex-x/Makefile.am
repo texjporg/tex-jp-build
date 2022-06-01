@@ -79,8 +79,7 @@ bibtex8_tests = tests/bibtex8.test tests/bibtex8u-mem.test \
                 tests/bibtex8-sort.test tests/bibtex8-char.test
 bibtexu_tests = tests/bibtexu.test tests/bibtexu-basic.test \
                 tests/bibtexu-range.test tests/bibtexu-yannis.test \
-                tests/bibtexu-sort.test tests/bibtexu-char.test \
-                tests/bibtexu-jbib.test
+                tests/bibtexu-sort.test tests/bibtexu-char.test
 
 TESTS =
 if BIBTEX8
