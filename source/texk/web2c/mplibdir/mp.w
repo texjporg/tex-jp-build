@@ -7659,6 +7659,14 @@ void mp_toss_knot (MP mp, mp_knot q) {
     q->next = mp->knot_nodes;
     mp->knot_nodes = q;
     mp->num_knot_nodes++;
+    if (mp->math_mode > mp_math_double_mode) {
+      free_number (q->x_coord);
+      free_number (q->y_coord);
+      free_number (q->left_x);
+      free_number (q->left_y);
+      free_number (q->right_x);
+      free_number (q->right_y);
+    }
     return;
   }
   if (mp->math_mode > mp_math_double_mode) {
@@ -7667,6 +7675,8 @@ void mp_toss_knot (MP mp, mp_knot q) {
     mp_xfree (q);
   }
 }
+
+
 void mp_toss_knot_list (MP mp, mp_knot p) {
   mp_knot q;    /* the node being freed */
   mp_knot r;    /* the next node */
@@ -21159,7 +21169,7 @@ void mp_begin_iteration (MP mp) {
       p->value_mod = mp_suffix_sym;
     }
     mp_get_x_next (mp);
-    if (cur_cmd() == mp_within_token) {
+    if (p->value_mod == mp_expr_sym && cur_cmd() == mp_within_token) {
       @<Set up a picture iteration@>;
     } else {
       @<Check for the assignment in a loop header@>;
