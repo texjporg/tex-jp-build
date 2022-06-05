@@ -199,7 +199,6 @@ boolean set_enc_string(const_string file_str, const_string internal_str)
     if (file     != ENC_UNKNOWN) {
         set_file_enc(file);
 #if !defined(WIN32)
-        infile_enc_auto = 0;
         nkf_disable();
 #endif
     }
