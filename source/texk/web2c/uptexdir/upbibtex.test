@@ -15,3 +15,12 @@ TEXMFCNF=$srcdir/../kpathsea \
   ./upbibtex uptests/xexampl || exit 1
 diff $srcdir/tests/exampl.bbl uptests/xexampl.bbl || exit 2
 
+
+cp $srcdir/tests/enc.aux uptests/xenc.aux
+
+TEXMFCNF=$srcdir/../kpathsea \
+  BSTINPUTS=$srcdir/tests \
+  BIBINPUTS=$srcdir/tests \
+  ./upbibtex uptests/xenc || exit 3
+diff $srcdir/tests/encu.bbl uptests/xenc.bbl || exit 4
+

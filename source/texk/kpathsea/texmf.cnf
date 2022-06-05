@@ -888,8 +888,10 @@ max_rows.gftype = 8191
 max_cols.gftype = 8191
 
 % Guess input encoding (SJIS vs. Unicode, etc.) in pTeX and friends?
-% Default is 1, to guess. Used on Windows only.
-guess_input_kanji_encoding = 1
+% Default is 1, to guess.
+guess_input_kanji_encoding = 0
+guess_input_kanji_encoding.pbibtex = 1
+guess_input_kanji_encoding.upbibtex = 1
 
 % command_line_encoding
 %

@@ -1,0 +1,40 @@
+\section*{Test result}
+\begin{itemize}
+\item ABC xyz
+\item ABC xyz
+\item ABC xyz
+\item ABC xyz
+\item ABC xyz
+\item
+  ^^e0^^a1^^e0^^a2^^e0^^a3^^e0^^a4^^e0^^a5^^e0^^a6^^e0^^a7^^e0^^a8^^e0^^a9^^e0^^aa^^e0^^ab^^e0^^ac^^e0^^ad^^e0^^ae^^e0^^af
+\item
+  ^^e2^^a1^^e2^^a2^^e2^^a3^^e2^^a4^^e2^^a5^^e2^^a6^^e2^^a7^^e2^^a8^^e2^^a9^^e2^^aa^^e2^^ab^^e2^^ac^^e2^^ad^^e2^^ae^^e2^^af
+\item
+  ^^e4^^a1^^e4^^a2^^e4^^a3^^e4^^a4^^e4^^a5^^e4^^a6^^e4^^a7^^e4^^a8^^e4^^a9^^e4^^aa^^e4^^ab^^e4^^ac^^e4^^ad^^e4^^ae^^e4^^af
+\item
+  ^^e6^^a1^^e6^^a2^^e6^^a3^^e6^^a4^^e6^^a5^^e6^^a6^^e6^^a7^^e6^^a8^^e6^^a9^^e6^^aa^^e6^^ab^^e6^^ac^^e6^^ad^^e6^^ae^^e6^^af
+\item
+  ^^e8^^a1^^e8^^a2^^e8^^a3^^e8^^a4^^e8^^a5^^e8^^a6^^e8^^a7^^e8^^a8^^e8^^a9^^e8^^aa^^e8^^ab^^e8^^ac^^e8^^ad^^e8^^ae^^e8^^af
+\item ^^ea^^a1^^ea^^a2^^ea^^a3^^ea^^a4
+\item あいうえお
+\item あいうえお
+\item あいうえお
+\item あいうえお
+\item ΑΒΓ χψω
+\item ΑΒΓ χψω
+\item ΑΒΓ χψω
+\item ΑΒΓ χψω
+\item АБВ эюя
+\item АБВ эюя
+\item АБВ эюя
+\item АБВ эюя
+\item СТУФХ
+\item 一二三四五
+\item 一二三四五
+\item 一二三四五
+\item 一二三四五
+\item 係q体y
+\item 語^^e2^^91^^a0誚^^e2^^91^^a1
+\item 信俣
+\end{itemize}
+\endinput
