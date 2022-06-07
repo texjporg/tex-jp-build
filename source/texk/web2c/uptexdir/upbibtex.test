@@ -5,7 +5,7 @@
 # You may freely use, modify and/or distribute this file.
 
 test -d uptests || mkdir -p uptests
-rm -f uptests/xexampl.* uptests/enc*.*
+rm -f uptests/xexampl.* uptests/xenc*.*
 
 rc=0
 
@@ -23,7 +23,7 @@ diff $srcdir/tests/exampl.bbl uptests/xexampl.bbl || rc=2
 cp $srcdir/tests/enc.aux uptests/xenc.aux
 
 ./upbibtex uptests/xenc || rc=3
-diff $srcdir/tests/encu.bbl uptests/xenc.bbl || rc=4
+diff $srcdir/tests/enc-u.bbl uptests/xenc.bbl || rc=4
 
 
 cp $srcdir/tests/enc-e.aux uptests/xenc-e.aux

@@ -71,7 +71,7 @@ static int string_to_enc(const_string str)
     if (UPTEX_enabled && strcasecmp(str, "uptex")  == 0) return ENC_UPTEX;
 
     if (strcasecmp(str, "ASCII")== 0)        return file_enc;
-    if (strcasecmp(str, "AMBIGUOUS") == 0)   return file_enc;
+    if (strncasecmp(str, "AMBIGUOUS", 9) == 0) return file_enc;
     if (strcasecmp(str, "BINARY") == 0)      return ENC_JIS;
     if (strcasecmp(str, "ISO-2022-JP") == 0) return ENC_JIS;
     if (strcasecmp(str, "EUC-JP") == 0)      return ENC_EUC;
@@ -786,7 +786,7 @@ static boolean isUTF8Nstream(FILE *fp)
     int i;
     int c[MARK_LEN];
     int bom_u[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x7E };
-    int bom_l[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0 };
+    int bom_l[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x01 };
 
     for (i=0; i<MARK_LEN; i++) {
         c[i] = getc4(fp);
@@ -815,7 +815,11 @@ char *ptenc_guess_enc(FILE *fp)
     int k0, cdb[2], cu8[4], len_utf8;
     int is_ascii=1, lbyte=0;
     int maybe_sjis=1, maybe_euc=1, maybe_utf8=1, pos_db=0, pos_utf8=0;
-    enc = xmalloc(sizeof(char)*12);
+#ifdef DEBUG
+    int i;
+    unsigned char str0[5];
+#endif /* DEBUG */
+    enc = xmalloc(sizeof(char)*18);
 
     while ((k0 = fgetc(fp)) != EOF && maybe_sjis+maybe_euc+maybe_utf8>1) {
         lbyte++;
@@ -835,6 +839,9 @@ char *ptenc_guess_enc(FILE *fp)
                 break;
             }
             continue;
+        } else if (k0==0x00) {
+            strcpy(enc,"BINARY");
+            goto post_process;
         } else if (k0<0x80) {
             if (pos_utf8>0) {
                 maybe_utf8 = 0;
@@ -846,10 +853,18 @@ char *ptenc_guess_enc(FILE *fp)
                 if (maybe_sjis) {
                     cdb[1] = k0;
                     if (JIStoUCS2(SJIStoJIS(HILO(cdb[0],cdb[1])))) {
+#ifdef DEBUG
+                        fprintf(stderr, "Character for guess encoding: 0x%02X%02X sjis\n", cdb[0], cdb[1]);
+#endif /* DEBUG */
                         continue;
                     }
                 }
                 maybe_sjis = 0;
+            }
+            if (is_ascii && lbyte>10000) {
+                /* guess ASCII if we did not find 8bit chars in head 10000 bytes */
+                strcpy(enc,"ASCII");
+                goto post_process;
             }
             continue;
         }
@@ -870,6 +885,14 @@ char *ptenc_guess_enc(FILE *fp)
                     maybe_euc = 0;
             }
             pos_db = 0;
+#ifdef DEBUG
+            if (maybe_sjis || maybe_euc) {
+                fprintf(stderr, "Character for guess encoding: 0x%02X%02X", cdb[0], cdb[1]);
+                if (maybe_sjis) fprintf(stderr, " sjis");
+                if (maybe_euc)  fprintf(stderr, " euc");
+                fprintf(stderr, "\n");
+            }
+#endif /* DEBUG */
         }
         if (pos_utf8==0) {
             len_utf8 = UTF8length(k0);
@@ -897,6 +920,13 @@ char *ptenc_guess_enc(FILE *fp)
                     pos_utf8 = 0;
                     continue;
                 }
+#ifdef DEBUG
+                for (i=0; i<len_utf8; i++) str0[i] = cu8[i];
+                str0[i] = '\0';
+                fprintf(stderr, "Character for guess encoding: 0x");
+                for (i=0; i<len_utf8; i++) fprintf(stderr, "%02X", cu8[i]);
+                fprintf(stderr, " U+%06X (%s)\n", UTF8StoUCS(str0), str0);
+#endif /* DEBUG */
                 len_utf8 = 0;
                 pos_utf8 = 0;
                 cu8[0]=cu8[1]=cu8[2]=cu8[3]=0;
@@ -906,8 +936,16 @@ char *ptenc_guess_enc(FILE *fp)
 
     if (is_ascii)
         strcpy(enc,"ASCII");
-    else if (maybe_sjis+maybe_euc+maybe_utf8>1)
-        strcpy(enc,"AMBIGUOUS");
+    else if (maybe_sjis+maybe_euc+maybe_utf8>1) {
+        strcpy(enc,"AMBIGUOUS(");
+        if (maybe_sjis)
+            enc = strcat(enc,"s");
+        if (maybe_euc)
+            enc = strcat(enc, maybe_sjis ? ",e" : "e");
+        if (maybe_utf8)
+            enc = strcat(enc, ",u");
+        enc = strcat(enc,")");
+    }
     else if (maybe_sjis)
         strcpy(enc,"Shift_JIS");
     else if (maybe_euc)
@@ -934,7 +972,12 @@ long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2,
 
     if (infile_enc[fd] == ENC_UNKNOWN) { /* just after opened */
         ungetbuff[fd].size = 0;
-        if (isUTF8Nstream(fp)) infile_enc[fd] = ENC_UTF8;
+        if (isUTF8Nstream(fp)) {
+            infile_enc[fd] = ENC_UTF8;
+#ifdef DEBUG
+            fprintf(stderr, "Detect UTF-8 with BOM #%d\n", fd);
+#endif /* DEBUG */
+        }
         else if (infile_enc_auto && fd != fileno(stdin)) {
             char *enc;
             getc4(fp);
