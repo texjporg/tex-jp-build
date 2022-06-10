@@ -40,14 +40,12 @@ int main(int argc, char **argv)
 			fprintf (stderr, "Ignoring bad kanji encoding \"%s\".\n", p);
 	}
 
-#ifdef WIN32
 	p = kpse_var_value ("guess_input_kanji_encoding");
 	if (p) {
 		if (*p == '1' || *p == 'y' || *p == 't')
 			infile_enc_auto = 1;
 		free(p);
 	}
-#endif
 
 	kp_ist.var_name = "INDEXSTYLE";
 	kp_ist.path = DEFAULT_INDEXSTYLES; /* default path. */
