@@ -22,19 +22,19 @@ diff $srcdir/tests/exampl.bbl uptests/xexampl.bbl || rc=2
 
 cp $srcdir/tests/enc.aux uptests/xenc.aux
 
-./upbibtex uptests/xenc || rc=3
+guess_input_kanji_encoding=1 ./upbibtex uptests/xenc || rc=3
 diff $srcdir/tests/enc-u.bbl uptests/xenc.bbl || rc=4
 
 
 cp $srcdir/tests/enc-e.aux uptests/xenc-e.aux
 
-./upbibtex -kanji=euc uptests/xenc-e || rc=5
+guess_input_kanji_encoding=1 ./upbibtex -kanji=euc uptests/xenc-e || rc=5
 diff $srcdir/tests/enc-eu.bbl uptests/xenc-e.bbl || rc=6
 
 
 cp $srcdir/tests/enc-s.aux uptests/xenc-s.aux
 
-./upbibtex -kanji=sjis uptests/xenc-s || rc=7
+guess_input_kanji_encoding=1 ./upbibtex -kanji=sjis uptests/xenc-s || rc=7
 diff $srcdir/tests/enc-su.bbl uptests/xenc-s.bbl || rc=8
 
 
