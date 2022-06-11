@@ -34,7 +34,7 @@ diff $srcdir/tests/enc-ep.bbl ptests/xenc-e.bbl || rc=6
 
 cp $srcdir/tests/enc-s.aux ptests/xenc-s.aux
 
-guess_input_kanji_encoding=1 ./pbibtex -kanji=sjis ptests/xenc-s || rc=7
+./pbibtex -guess-input-enc -kanji=sjis ptests/xenc-s || rc=7
 diff $srcdir/tests/enc-sp.bbl ptests/xenc-s.bbl || rc=8
 
 

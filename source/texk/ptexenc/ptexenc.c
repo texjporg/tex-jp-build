@@ -146,6 +146,11 @@ static int get_terminal_enc(void)
     return terminal_enc;
 }
 
+void set_guess_file_enc(boolean enable)
+{
+    infile_enc_auto = (int) enable;
+}
+
 /* enable ptex mode (use flag 0x100 for Japanese char) */
 void ptenc_ptex_mode (const boolean enable)
 {

@@ -34,7 +34,7 @@ diff $srcdir/tests/enc-eu.bbl uptests/xenc-e.bbl || rc=6
 
 cp $srcdir/tests/enc-s.aux uptests/xenc-s.aux
 
-guess_input_kanji_encoding=1 ./upbibtex -kanji=sjis uptests/xenc-s || rc=7
+./upbibtex -guess-input-enc -kanji=sjis uptests/xenc-s || rc=7
 diff $srcdir/tests/enc-su.bbl uptests/xenc-s.bbl || rc=8
 
 
