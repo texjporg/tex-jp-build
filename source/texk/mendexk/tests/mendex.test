@@ -35,7 +35,7 @@ cat $srcdir/tests/uni.idx | \
 	&& diff $srcdir/tests/uni.ind sjis.ind1 || rc=20
 
 cat $srcdir/tests/uni.idx | \
-	guess_input_kanji_encoding=1 ./mendex -U -d $srcdir/tests/uni.dict -s $srcdir/tests/euc.ist \
+	./mendex -U -d $srcdir/tests/uni.dict -s $srcdir/tests/euc.ist --guess-input-enc \
 	>euc.ind1 2>euc.ilg1 \
 	&& diff $srcdir/tests/uni.ind euc.ind1 || rc=21
 
