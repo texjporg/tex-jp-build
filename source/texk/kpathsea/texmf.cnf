@@ -893,6 +893,7 @@ guess_input_kanji_encoding = 0
 guess_input_kanji_encoding.ptex = 1
 guess_input_kanji_encoding.eptex = 1
 guess_input_kanji_encoding.platex = 1
+guess_input_kanji_encoding.platex-dev = 1
 guess_input_kanji_encoding.pbibtex = 1
 guess_input_kanji_encoding.mendex = 1
 
