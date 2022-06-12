@@ -817,7 +817,7 @@ static int infile_enc[NOFILE]; /* ENC_UNKNOWN (=0): not determined
 char *ptenc_guess_enc(FILE *fp)
 {
     char *enc;
-    int k0, cdb[2], cu8[4], len_utf8;
+    int k0, k1, k2, cdb[2], cu8[4], len_utf8;
     int is_ascii=1, lbyte=0;
     int maybe_sjis=1, maybe_euc=1, maybe_utf8=1, pos_db=0, pos_utf8=0;
 #ifdef DEBUG
@@ -857,9 +857,13 @@ char *ptenc_guess_enc(FILE *fp)
                 pos_db = 0;
                 if (maybe_sjis) {
                     cdb[1] = k0;
-                    if (JIStoUCS2(SJIStoJIS(HILO(cdb[0],cdb[1])))) {
+                    k1 = JIStoUCS2(SJIStoJIS(HILO(cdb[0],cdb[1])));
+                    if (k1) {
 #ifdef DEBUG
-                        fprintf(stderr, "Character for guess encoding: 0x%02X%02X sjis\n", cdb[0], cdb[1]);
+                        i = UCStoUTF8S(k1, str0);
+                        str0[i] = '\0';
+                        fprintf(stderr, "Character for guess encoding: 0x%02X%02X", cdb[0], cdb[1]);
+                        fprintf(stderr, " sjis (%s)\n", str0);
 #endif /* DEBUG */
                         continue;
                     }
@@ -881,20 +885,30 @@ char *ptenc_guess_enc(FILE *fp)
         }
         else if (pos_db==1 && (maybe_sjis || maybe_euc)) {
             cdb[1] = k0;
+            k1 = JIStoUCS2(SJIStoJIS(HILO(cdb[0],cdb[1])));
+            k2 = JIStoUCS2(EUCtoJIS(HILO(cdb[0],cdb[1])));
             if (maybe_sjis) {
-                if (!JIStoUCS2(SJIStoJIS(HILO(cdb[0],cdb[1]))))
+                if (!k1)
                     maybe_sjis = 0;
             }
             if (maybe_euc) {
-                if (!JIStoUCS2(EUCtoJIS(HILO(cdb[0],cdb[1]))))
+                if (!k2)
                     maybe_euc = 0;
             }
             pos_db = 0;
 #ifdef DEBUG
             if (maybe_sjis || maybe_euc) {
                 fprintf(stderr, "Character for guess encoding: 0x%02X%02X", cdb[0], cdb[1]);
-                if (maybe_sjis) fprintf(stderr, " sjis");
-                if (maybe_euc)  fprintf(stderr, " euc");
+                if (maybe_sjis) {
+                    i = UCStoUTF8S(k1, str0);
+                    str0[i] = '\0';
+                    fprintf(stderr, " sjis (%s)", str0);
+                }
+                if (maybe_euc) {
+                    i = UCStoUTF8S(k2, str0);
+                    str0[i] = '\0';
+                    fprintf(stderr, " euc (%s)", str0);
+                }
                 fprintf(stderr, "\n");
             }
 #endif /* DEBUG */
@@ -930,7 +944,7 @@ char *ptenc_guess_enc(FILE *fp)
                 str0[i] = '\0';
                 fprintf(stderr, "Character for guess encoding: 0x");
                 for (i=0; i<len_utf8; i++) fprintf(stderr, "%02X", cu8[i]);
-                fprintf(stderr, " U+%06X (%s)\n", UTF8StoUCS(str0), str0);
+                fprintf(stderr, " U+%06lX (%s)\n", UTF8StoUCS(str0), str0);
 #endif /* DEBUG */
                 len_utf8 = 0;
                 pos_utf8 = 0;
