@@ -888,7 +888,7 @@ max_rows.gftype = 8191
 max_cols.gftype = 8191
 
 % Guess input encoding (SJIS vs. Unicode, etc.) in pTeX and friends?
-% Default is 1 for (e)p(la)tex, pbibtex & pbibtex, to guess.
+% Default is 1 for (e)p(la)tex, pbibtex & mendex, to guess.
 guess_input_kanji_encoding = 0
 guess_input_kanji_encoding.ptex = 1
 guess_input_kanji_encoding.eptex = 1
@@ -908,6 +908,7 @@ guess_input_kanji_encoding.mendex = 1
 % ignored. If file names in sources and DVI or XDV files are ASCII
 % only, the value of command_line_encoding is irrelevant.
 % If command_line_encoding = utf8 or command_line_encoding = utf-8,
+% characters on a command line in cmd.exe are assumed to be Unicode and
 % file names in sources and DVI or XDV files are assumed to be UTF-8.
 % Default is utf-8, from 2019-07-24, to assume UTF-8 file names.
 % In order to switch off the function, define an environment variable:
