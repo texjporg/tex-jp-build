@@ -1,3 +1,15 @@
+2022-06-15  Clerk Ma  <maqiyuan130324@vip.qq.com>
+
+	* cidtype2.c, tt_cmap.c: Support some TrueType fonts in macOS
+	which use 0-4 cmap.
+
+2022-06-13  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* pdfximage.c: Fix a bug due to an uninitialized variable
+	pointed out in
+	https://tug.org/pipermail/dvipdfmx/2022-June/000340.html.
+	(Windows only)
+
 2022-04-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* {dvi,dvipdfmx,tfm}.c, dvi.h:
