@@ -874,6 +874,7 @@ maininit (int ac, string *av)
        free(p);
      }
    }
+   if (infile_enc_auto == 2) infile_enc_auto = 0;
 #endif
 
 #if IS_pTeX || ((defined(XeTeX) || defined(pdfTeX)) && defined(WIN32))
