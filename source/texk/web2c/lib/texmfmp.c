@@ -789,9 +789,6 @@ void
 maininit (int ac, string *av)
 {
   string main_input_file;
-#if IS_pTeX
-  char *p;
-#endif
 #if (IS_upTeX || defined(XeTeX) || defined(pdfTeX)) && defined(WIN32)
   string enc;
 #endif
