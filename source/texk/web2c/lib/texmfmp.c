@@ -820,7 +820,6 @@ maininit (int ac, string *av)
 #if IS_pTeX
   kpse_set_program_name (argv[0], NULL);
   initkanji (); ptenc_ptex_mode(true);
-  infile_enc_auto = 2;
 #endif
 #if (defined(XeTeX) || defined(pdfTeX)) && defined(WIN32)
   kpse_set_program_name (argv[0], NULL);
@@ -864,17 +863,6 @@ maininit (int ac, string *av)
   parse_options (argc, argv);
 #else
   parse_options (ac, av);
-#endif
-
-#if IS_pTeX
-   if (infile_enc_auto == 2) {
-     p = kpse_var_value ("guess_input_kanji_encoding");
-     if (p) {
-       if (*p == '1' || *p == 'y' || *p == 't')  infile_enc_auto = 1;
-       free(p);
-     }
-   }
-   if (infile_enc_auto == 2) infile_enc_auto = 0;
 #endif
 
 #if IS_pTeX || ((defined(XeTeX) || defined(pdfTeX)) && defined(WIN32))
