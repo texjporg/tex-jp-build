@@ -38,5 +38,24 @@ cp $srcdir/tests/enc-s.aux uptests/xenc-s.aux
 diff $srcdir/tests/enc-su.bbl uptests/xenc-s.bbl || rc=8
 
 
+## -kanji-internal=euc, compatible with pbibtex
+cp $srcdir/tests/enc.aux uptests/xenc-ue.aux
+
+guess_input_kanji_encoding=1 ./upbibtex -kanji-internal=euc uptests/xenc-ue || rc=9
+diff $srcdir/tests/enc-p.bbl uptests/xenc-ue.bbl || rc=10
+
+
+cp $srcdir/tests/enc-e.aux uptests/xenc-ee.aux
+
+guess_input_kanji_encoding=1 ./upbibtex -kanji=euc -kanji-internal=euc uptests/xenc-ee || rc=11
+diff $srcdir/tests/enc-ep.bbl uptests/xenc-ee.bbl || rc=12
+
+
+cp $srcdir/tests/enc-s.aux uptests/xenc-se.aux
+
+guess_input_kanji_encoding=1 ./upbibtex -kanji=sjis -kanji-internal=euc uptests/xenc-se || rc=13
+diff $srcdir/tests/enc-sp.bbl uptests/xenc-se.bbl || rc=14
+
+
 exit $rc
 
