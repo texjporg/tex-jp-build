@@ -43,9 +43,9 @@ diff $srcdir/tests/enc-su.bbl uptests/xenc-s.bbl || rc=8
 cp $srcdir/tests/enc-u.aux uptests/xenc-u0.aux
 
 ./upbibtex -no-guess-input-enc uptests/xenc-u0 || rc=9
-diff $srcdir/tests/enc-u0.bbl uptests/xenc-u0.bbl || rc=10
+diff $srcdir/tests/enc-uu.bbl uptests/xenc-u0.bbl || rc=10
 ./upbibtex -guess-input-enc uptests/xenc-u0 || rc=11
-diff $srcdir/tests/enc-u0.bbl uptests/xenc-u0.bbl || rc=12
+diff $srcdir/tests/enc-uu.bbl uptests/xenc-u0.bbl || rc=12
 
 
 ## -kanji-internal=euc, compatible with pbibtex
