@@ -3510,7 +3510,13 @@ continue:
       synch_h;
       end;
     p:=link(p);
-    jc:=toDVI(KANJI(info(p)));
+    jc:=KANJI(info(p));
+    if font_enc[f]=2 then {Unicode TFM}
+      jc:=toUCS(jc)
+    else if font_enc[f]=1 then {JIS-encoded TFM}
+      jc:=toJIS(jc)
+    else
+      jc:=toDVI(jc);
     dvi_out(set2); dvi_out(Hi(jc)); dvi_out(Lo(jc));
     cur_h:=cur_h+char_width(f)(orig_char_info(f)(c)); {not |jc|}
     end;

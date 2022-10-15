@@ -757,10 +757,14 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 @z
 
 @x
-    jc:=toDVI(KANJI(info(p)));
+    jc:=KANJI(info(p));
+@y
+    jc:=KANJI(info(p)) mod max_cjk_val;
+@z
+
+@x
     dvi_out(set2); dvi_out(Hi(jc)); dvi_out(Lo(jc));
 @y
-    jc:=toDVI(KANJI(info(p)) mod max_cjk_val);
     if (jc<@"10000) then begin
       dvi_out(set2);
     end else begin
