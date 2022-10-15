@@ -3085,8 +3085,11 @@ in the |glue_kern| array. And a \.{JFM} does not use |tag=2| and |tag=3|.
 @!font_info: ^memory_word; {pTeX: use halfword for |char_type| table.}
 @!font_dir: ^eight_bits;
   {pTeX: direction of fonts, 0 is default, 1 is Yoko, 2 is Tate}
+@!font_enc: ^eight_bits;
+  {pTeX: encoding of fonts, 0 is default, 1 is JIS, 2 is Unicode}
 @!font_num_ext: ^integer;
   {pTeX: number of the |char_type| table.}
+@!jfm_enc: ^eight_bits; {pTeX: holds scanned result of encoding}
 @z
 
 @x [30.550] l.11270 - pTeX:
@@ -3097,6 +3100,13 @@ in the |glue_kern| array. And a \.{JFM} does not use |tag=2| and |tag=3|.
   {base addresses for |char_info|}
 @!ctype_base: ^integer;
   {pTeX: base addresses for KANJI character type parameters}
+@z
+
+@x
+@ @<Set init...@>=
+@y
+@ @<Set init...@>=
+jfm_enc:=0;
 @z
 
 @x [30.554] l.11373 - pTeX:
@@ -3238,6 +3248,7 @@ if (font_ptr=font_max)or(fmem_ptr+lf>font_mem_size) then
   @<Apologize for not loading the font, |goto done|@>;
 f:=font_ptr+1;
 font_dir[f]:=jfm_flag;
+font_enc[f]:=jfm_enc;
 font_num_ext[f]:=nt;
 ctype_base[f]:=fmem_ptr;
 char_base[f]:=ctype_base[f]+nt-bc;
@@ -3260,8 +3271,15 @@ for k:=fmem_ptr to width_base[f]-1 do
 if jfm_flag<>dir_default then
   for k:=ctype_base[f] to ctype_base[f]+nt-1 do
     begin
-    fget; read_twentyfourx(cx); font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
-    fget; cx:=fbyte; font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
+    fget; read_twentyfourx(cx);
+    if jfm_enc=2 then {Unicode TFM}
+      font_info[k].hh.rh:=toDVI(fromUCS(cx))
+    else if jfm_enc=1 then {JIS-encoded TFM}
+      font_info[k].hh.rh:=toDVI(fromJIS(cx))
+    else
+      font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; cx:=fbyte;
+    font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
     end;
 for k:=char_base[f]+bc to width_base[f]-1 do
   begin store_four_quarters(font_info[k].qqqq);
@@ -6369,10 +6387,13 @@ any_mode(def_tfont),
 @z
 
 @x [49.1211] l.23397 - pTeX: prefixed_command
+@t\4@>@<Declare subprocedures for |prefixed_command|@>@t@>@;@/
 procedure prefixed_command;
 label done,exit;
 var a:small_number; {accumulated prefix codes so far}
 @y
+@t\4@>@<Declare the function called |scan_keyword_noexpand|@>
+@<Declare subprocedures for |prefixed_command|@>@t@>@;@/
 procedure prefixed_command;
 label done,exit;
 var a:small_number; {accumulated prefix codes so far}
@@ -6548,6 +6569,13 @@ def_font: new_font(a);
 def_tfont,def_jfont,def_font: new_font(a);
 @z
 
+@x [49.????] pTeX: new_font
+get_r_token; u:=cur_cs;
+@y
+@<Scan the font encoding specification@>;
+get_r_token; u:=cur_cs;
+@z
+
 @x [49.1292] l.24451 - pTeX: shift_case
 @<Change the case of the token in |p|, if a change is appropriate@>=
 t:=info(p);
@@ -6663,6 +6691,7 @@ dump_things(font_check[null_font], font_ptr+1-null_font);
 @ @<Dump the array info for internal font number |k|@>=
 begin
 dump_things(font_dir[null_font], font_ptr+1-null_font);
+dump_things(font_enc[null_font], font_ptr+1-null_font);
 dump_things(font_num_ext[null_font], font_ptr+1-null_font);
 dump_things(font_check[null_font], font_ptr+1-null_font);
 @z
@@ -6681,6 +6710,7 @@ begin {Allocate the font arrays}
 @<Undump the array info for internal font number |k|@>=
 begin {Allocate the font arrays}
 font_dir:=xmalloc_array(eight_bits, font_max);
+font_enc:=xmalloc_array(eight_bits, font_max);
 font_num_ext:=xmalloc_array(integer, font_max);
 @z
 
@@ -6695,6 +6725,7 @@ char_base:=xmalloc_array(integer, font_max);
 undump_things(font_check[null_font], font_ptr+1-null_font);
 @y
 undump_things(font_dir[null_font], font_ptr+1-null_font);
+undump_things(font_enc[null_font], font_ptr+1-null_font);
 undump_things(font_num_ext[null_font], font_ptr+1-null_font);
 undump_things(font_check[null_font], font_ptr+1-null_font);
 @z
@@ -6723,6 +6754,7 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
   font_check:=xmalloc_array(four_quarters, font_max);
 @y
   font_dir:=xmalloc_array(eight_bits, font_max);
+  font_enc:=xmalloc_array(eight_bits, font_max);
   font_num_ext:=xmalloc_array(integer, font_max);
   font_check:=xmalloc_array(four_quarters, font_max);
 @z
@@ -6739,6 +6771,7 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 @y
   font_ptr:=null_font; fmem_ptr:=7;
   font_dir[null_font]:=dir_default;
+  font_enc[null_font]:=0;
   font_num_ext[null_font]:=0;
 @z
 
@@ -6890,7 +6923,9 @@ if f=null_font then
 jc:=toDVI(kcode);
 sp:=1; { start position }
 ep:=font_num_ext[f]-1; { end position }
-if (ep>=1)and(kchar_code(f)(sp)<=jc)and(jc<=kchar_code(f)(ep)) then
+if (ep>=1) then { nt is larger than 1; |char_type| is non-empty }
+if font_enc[f]=0 then { |kchar_code| are ordered; faster search }
+begin if (kchar_code(f)(sp)<=jc)and(jc<=kchar_code(f)(ep)) then
   begin while (sp <= ep) do
     begin mp:=sp+((ep-sp) div 2);
     if jc<kchar_code(f)(mp) then ep:=mp-1
@@ -6900,8 +6935,55 @@ if (ep>=1)and(kchar_code(f)(sp)<=jc)and(jc<=kchar_code(f)(ep)) then
       end;
     end;
   end;
+end
+else { TFM-DVI encoding conversion; whole search }
+  begin while (sp <= ep) do
+    if jc=kchar_code(f)(sp) then
+      begin get_jfm_pos:=kchar_type(f)(sp); return;
+      end
+    else incr(sp);
+  end;
 get_jfm_pos:=kchar_type(f)(0);
 end;
+
+@ The function |scan_keyword_noexpand| is used to scan a keyword
+preceding possibly undefined control sequence.
+It is used while scanning \.{\\font} with JFM encoding specification.
+
+@<Declare the function called |scan_keyword_noexpand|@>=
+function scan_keyword_noexpand(@!s:str_number):boolean;
+label exit;
+var p:pointer; {tail of the backup list}
+@!q:pointer; {new node being added to the token list via |store_new_token|}
+@!k:pool_pointer; {index into |str_pool|}
+begin p:=backup_head; link(p):=null; k:=str_start[s];
+while k<str_start[s+1] do
+  begin get_token; {no expansion}
+  if (cur_cs=0)and@|
+   ((cur_chr=so(str_pool[k]))or(cur_chr=so(str_pool[k])-"a"+"A")) then
+    begin store_new_token(cur_tok); incr(k);
+    end
+  else if (cur_cmd<>spacer)or(p<>backup_head) then
+    begin back_input;
+    if p<>backup_head then back_list(link(backup_head));
+    scan_keyword:=false; return;
+    end;
+  end;
+flush_list(link(backup_head)); scan_keyword:=true;
+exit:end;
+
+@ @<Scan the font encoding specification@>=
+begin jfm_enc:=0;
+if scan_keyword_noexpand("in") then
+  if scan_keyword_noexpand("jis") then jfm_enc:=1
+  else if scan_keyword_noexpand("ucs") then jfm_enc:=2
+  else begin
+    print_err("Unknown TFM encoding");
+@.Unknown TFM encoding@>
+    help1("TFM encoding specification is ignored.");@/
+    error;
+  end;
+end
 
 @ Following codes are used to calculate a KANJI width and height.
 
