@@ -6972,10 +6972,10 @@ while k<str_start[s+1] do
   else if (cur_cmd<>spacer)or(p<>backup_head) then
     begin back_input;
     if p<>backup_head then back_list(link(backup_head));
-    scan_keyword:=false; return;
+    scan_keyword_noexpand:=false; return;
     end;
   end;
-flush_list(link(backup_head)); scan_keyword:=true;
+flush_list(link(backup_head)); scan_keyword_noexpand:=true;
 exit:end;
 
 @ @<Scan the font encoding specification@>=
