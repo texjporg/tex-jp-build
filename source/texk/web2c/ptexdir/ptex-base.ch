@@ -1436,7 +1436,8 @@ if n<math_code_base then
 @d script_baseline_shift_factor_code=58
 @d scriptscript_baseline_shift_factor_code=59
 @d ptex_lineend_code=60
-@d tex_int_pars=61 {total number of \TeX's integer parameters}
+@d ptex_tracing_fonts_code=61
+@d tex_int_pars=62 {total number of \TeX's integer parameters}
 @z
 
 @x [17.236] l.5167 - pTeX: cur_jfam, |jchr_widow_penalty|
@@ -1451,6 +1452,7 @@ if n<math_code_base then
 @d script_baseline_shift_factor==int_par(script_baseline_shift_factor_code)
 @d scriptscript_baseline_shift_factor==int_par(scriptscript_baseline_shift_factor_code)
 @d ptex_lineend==int_par(ptex_lineend_code)
+@d ptex_tracing_fonts==int_par(ptex_tracing_fonts_code)
 @z
 
 @x [17.237] l.5244 - pTeX: cur_jfam_code, jchr_window_penalty_code
@@ -1463,6 +1465,7 @@ text_baseline_shift_factor_code:print_esc("textbaselineshiftfactor");
 script_baseline_shift_factor_code:print_esc("scriptbaselineshiftfactor");
 scriptscript_baseline_shift_factor_code:print_esc("scriptscriptbaselineshiftfactor");
 ptex_lineend_code:print_esc("ptexlineendmode");
+ptex_tracing_fonts_code:print_esc("ptextracingfonts");
 @z
 
 @x [17.238] l.5365 - pTeX: cur_jfam_code, jchr_window_penalty_code
@@ -1483,6 +1486,8 @@ primitive("scriptscriptbaselineshiftfactor",assign_int,int_base+scriptscript_bas
 @!@:scriptscript_baseline_shift_factor}{\.{\\scriptscriptbaselineshiftfactor} primitive@>
 primitive("ptexlineendmode",assign_int,int_base+ptex_lineend_code);@/
 @!@:ptex_lineend_mode_}{\.{\\ptexlineendmode} primitive@>
+primitive("ptextracingfonts",assign_int,int_base+ptex_tracing_fonts_code);@/
+@!@:ptex_tracing_fonts_}{\.{\\ptextracingfonts} primitive@>
 @z
 
 @x [17.247] l.5490 - pTeX: kinsoku, t_baseline_shift, y_baseline_shift
@@ -1626,6 +1631,32 @@ def_font: print_esc("font");
 def_font: print_esc("font");
 def_jfont: print_esc("jfont");
 def_tfont: print_esc("tfont");
+@z
+
+@x [18.???] pTeX: \ptextracingfonts based on pdfTeX \pdftracingfonts
+@<Print the font identifier for |font(p)|@>=
+print_esc(font_id_text(font(p)))
+@y
+@<Print the font identifier for |font(p)|@>=
+begin
+  print_esc(font_id_text(font(p)));
+  if ptex_tracing_fonts > 0 then begin
+    print(" (");
+    print(font_name[font(p)]);
+    if font_size[font(p)] <> font_dsize[font(p)] then begin
+      print("@@");
+      print_scaled(font_size[font(p)]);
+      print("pt");
+    end;
+  if ptex_tracing_fonts > 1 then begin
+    if font_dir[font(p)]=dir_yoko then print("/YOKO");
+    if font_dir[font(p)]=dir_tate then print("/TATE");
+    if font_enc[font(p)]=2 then print("+Unicode");
+    if font_enc[font(p)]=1 then print("+JIS");
+  end;
+    print(")");
+  end;
+end;
 @z
 
 @x [20.289] l.6387 - pTeX: cs_token_flag
