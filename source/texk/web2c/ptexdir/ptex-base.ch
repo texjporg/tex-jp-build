@@ -3372,6 +3372,25 @@ var @!l:0..255; {small indices or counters}
   print(" in font ");
 @z
 
+@x [30.???]
+@ Here is a function that returns a pointer to a character node for a
+@y
+@ Another warning for (u)\pTeX.
+
+@p procedure char_warning_jis(@!f:internal_font_number;@!jc:KANJI_code);
+begin if tracing_lost_chars>0 then
+  begin begin_diagnostic;
+  print_nl("Character "); print_kanji(jc); print(" (");
+  print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
+  slow_print(font_name[f]);
+  print_char(","); print_nl("so I use .notdef glyph instead.");
+  end_diagnostic(false);
+  end;
+end;
+
+@ Here is a function that returns a pointer to a character node for a
+@z
+
 @x [31.586] l.12189 - pTeX: define set2
 @d set1=128 {typeset a character and move right}
 @y
@@ -3521,14 +3540,7 @@ continue:
     if font_enc[f]=2 then {Unicode TFM}
       jc:=toUCS(jc)
     else if font_enc[f]=1 then {JIS-encoded TFM}
-      begin if toJIS(jc)=0 then begin
-        begin_diagnostic;
-        print_nl("Character "); print_kanji(jc); print(" (");
-        print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
-        slow_print(font_name[f]);
-        print_char(","); print_nl("so I use notdef glyph instead.");
-        end_diagnostic(false);
-        end;
+      begin if toJIS(jc)=0 then char_warning_jis(f,jc);
       jc:=toJIS(jc); end
     else
       jc:=toDVI(jc);
