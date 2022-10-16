@@ -90,13 +90,11 @@ begin if tracing_lost_chars>0 then
   slow_print(font_name[f]);
   print_char(",");
  if tracing_lost_chars > 2 then
-  print_nl("  so I use .notdef glyph instead")
+  begin print_nl("  so I use .notdef glyph instead");
+  help0; error; end
  else
-  print_nl("so I use .notdef glyph instead.");
- if tracing_lost_chars > 2 then
-  begin help0; error; end
- else
-  end_diagnostic(false);
+  begin print_nl("so I use .notdef glyph instead.");
+  end_diagnostic(false); end;
  tracing_online:=old_setting;
  end; {of |tracing_lost_chars>0|}
 end;  {of procedure}
