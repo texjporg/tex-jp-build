@@ -92,8 +92,7 @@ begin if tracing_lost_chars>0 then
  if tracing_lost_chars > 2 then
   print_nl("  so I use .notdef glyph instead")
  else
-  print_nl("so I use .notdef glyph instead");
- if tracing_lost_chars < 3 then print_char(".");
+  print_nl("so I use .notdef glyph instead.");
  if tracing_lost_chars > 2 then
   begin help0; error; end
  else
