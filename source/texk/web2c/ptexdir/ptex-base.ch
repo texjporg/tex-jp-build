@@ -3286,7 +3286,7 @@ if (font_ptr=font_max)or(fmem_ptr+lf>font_mem_size) then
   @<Apologize for not loading the font, |goto done|@>;
 f:=font_ptr+1;
 font_dir[f]:=jfm_flag;
-font_enc[f]:=jfm_enc;
+font_enc[f]:=jfm_enc; if jfm_flag=dir_default then font_enc[f]:=0;
 font_num_ext[f]:=nt;
 ctype_base[f]:=fmem_ptr;
 char_base[f]:=ctype_base[f]+nt-bc;
