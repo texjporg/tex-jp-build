@@ -2637,8 +2637,9 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d kuten_code=9 {command code for \.{\\kuten}}
 @d ucs_code=10 {command code for \.{\\ucs}}
 @d toucs_code=11 {command code for \.{\\toucs}}
-@d ptex_revision_code=12 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=13 {end of \pTeX's command codes}
+@d tojis_code=12 {command code for \.{\\tojis}}
+@d ptex_revision_code=13 {command code for \.{\\ptexrevision}}
+@d ptex_convert_codes=14 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -2662,6 +2663,8 @@ primitive("ucs",convert,ucs_code);
 @!@:ucs_}{\.{\\ucs} primitive@>
 primitive("toucs",convert,toucs_code);
 @!@:toucs_}{\.{\\toucs} primitive@>
+primitive("tojis",convert,tojis_code);
+@!@:tojis_}{\.{\\tojis} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
@@ -2677,6 +2680,7 @@ primitive("ptexrevision",convert,ptex_revision_code);
   kuten_code:print_esc("kuten");
   ucs_code:print_esc("ucs");
   toucs_code:print_esc("toucs");
+  tojis_code:print_esc("tojis");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
@@ -2701,7 +2705,8 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 KANJI(cx):=0;
 case c of
 number_code,roman_numeral_code,
-kansuji_code,euc_code,sjis_code,jis_code,kuten_code,ucs_code,toucs_code: scan_int;
+kansuji_code,euc_code,sjis_code,jis_code,kuten_code,
+ucs_code,toucs_code,tojis_code: scan_int;
 ptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
@@ -2734,6 +2739,8 @@ kuten_code: begin cur_val:=fromKUTEN(cur_val);
 ucs_code:   begin cur_val:=fromUCS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 toucs_code: begin cur_val:=toUCS(cur_val);
+  if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+tojis_code: begin cur_val:=toJIS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 ptex_revision_code: print(pTeX_revision);
 kansuji_code: print_kansuji(cur_val);
