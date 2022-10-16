@@ -86,7 +86,7 @@
 @d pTeX_version=4
 @d pTeX_minor_version=0
 @d pTeX_revision==".0"
-@d pTeX_version_string=='-p4.0.0' {current \pTeX\ version}
+@d pTeX_version_string=='-p4.0.91-emulate_jfm' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -3096,7 +3096,7 @@ in the |glue_kern| array. And a \.{JFM} does not use |tag=2| and |tag=3|.
   {pTeX: encoding of fonts, 0 is default, 1 is JIS, 2 is Unicode}
 @!font_num_ext: ^integer;
   {pTeX: number of the |char_type| table.}
-@!jfm_enc: ^eight_bits; {pTeX: holds scanned result of encoding}
+@!jfm_enc: eight_bits; {pTeX: holds scanned result of encoding}
 @z
 
 @x [30.550] l.11270 - pTeX:
@@ -3521,7 +3521,15 @@ continue:
     if font_enc[f]=2 then {Unicode TFM}
       jc:=toUCS(jc)
     else if font_enc[f]=1 then {JIS-encoded TFM}
-      jc:=toJIS(jc)
+      begin if toJIS(jc)=0 then begin
+        begin_diagnostic;
+        print_nl("Character "); print_kanji(jc); print(" (");
+        print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
+        slow_print(font_name[f]);
+        print_char(","); print_nl("so I use notdef glyph instead.");
+        end_diagnostic(false);
+        end;
+      jc:=toJIS(jc); end
     else
       jc:=toDVI(jc);
     dvi_out(set2); dvi_out(Hi(jc)); dvi_out(Lo(jc));
