@@ -662,12 +662,12 @@ while k<pool_ptr do
 
 @x
 
-@d ptex_revision_code=13 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=14 {end of \pTeX's command codes}
-@y
-@d ptex_revision_code=13 {command code for \.{\\ptexrevision}}
-@d uptex_revision_code=14 {command code for \.{\\uptexrevision}}
+@d ptex_revision_code=14 {command code for \.{\\ptexrevision}}
 @d ptex_convert_codes=15 {end of \pTeX's command codes}
+@y
+@d ptex_revision_code=14 {command code for \.{\\ptexrevision}}
+@d uptex_revision_code=15 {command code for \.{\\uptexrevision}}
+@d ptex_convert_codes=16 {end of \pTeX's command codes}
 @z
 
 @x

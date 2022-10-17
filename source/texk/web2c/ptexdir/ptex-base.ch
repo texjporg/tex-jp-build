@@ -726,6 +726,13 @@ processing we will see that a |style_node| has |type=16|; and a number
 of larger type codes will also be defined, for use in math mode only.
 @z
 
+@x
+@p procedure short_display(@!p:integer); {prints highlights of list |p|}
+@y
+@p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures|@>@;@/
+procedure short_display(@!p:integer); {prints highlights of list |p|}
+@z
+
 @x [12.174] l.3662 - pTeX: print KANJI
       print_ASCII(qo(character(p)));
 @y
@@ -1642,20 +1649,31 @@ begin
   print_esc(font_id_text(font(p)));
   if ptex_tracing_fonts > 0 then begin
     print(" (");
-    print(font_name[font(p)]);
-    if font_size[font(p)] <> font_dsize[font(p)] then begin
-      print("@@");
-      print_scaled(font_size[font(p)]);
-      print("pt");
-    end;
+    print_font_name_and_size(font(p));
   if ptex_tracing_fonts > 1 then begin
-    if font_dir[font(p)]=dir_yoko then print("/YOKO");
-    if font_dir[font(p)]=dir_tate then print("/TATE");
-    if font_enc[font(p)]=2 then print("+Unicode");
-    if font_enc[font(p)]=1 then print("+JIS");
+    print_font_dir_and_enc(font(p));
   end;
     print(")");
   end;
+end;
+
+@ @<Declare the pTeX-specific |print_font_...| procedures|@>=
+procedure print_font_name_and_size(f:internal_font_number);
+begin
+  print(font_name[f]);
+  if font_size[f]<>font_dsize[f] then begin
+    print("@@");
+    print_scaled(font_size[f]);
+    print("pt");
+  end;
+end;
+@#
+procedure print_font_dir_and_enc(f:internal_font_number);
+begin
+  if font_dir[f]=dir_tate then print("/TATE")
+  else if font_dir[f]=dir_yoko then print("/YOKO");
+  if font_enc[f]=2 then print("+Unicode")
+  else if font_enc[f]=1 then print("+JIS");
 end;
 @z
 
@@ -2669,8 +2687,9 @@ help6("Dimensions can be in units of em, ex, zw, zh, in, pt, pc,")@/
 @d ucs_code=10 {command code for \.{\\ucs}}
 @d toucs_code=11 {command code for \.{\\toucs}}
 @d tojis_code=12 {command code for \.{\\tojis}}
-@d ptex_revision_code=13 {command code for \.{\\ptexrevision}}
-@d ptex_convert_codes=14 {end of \pTeX's command codes}
+@d ptex_font_name_code=13 {command code for \.{\\ptexfontname}}
+@d ptex_revision_code=14 {command code for \.{\\ptexrevision}}
+@d ptex_convert_codes=15 {end of \pTeX's command codes}
 @d job_name_code=ptex_convert_codes {command code for \.{\\jobname}}
 @z
 
@@ -2696,6 +2715,8 @@ primitive("toucs",convert,toucs_code);
 @!@:toucs_}{\.{\\toucs} primitive@>
 primitive("tojis",convert,tojis_code);
 @!@:tojis_}{\.{\\tojis} primitive@>
+primitive("ptexfontname",convert,ptex_font_name_code);
+@!@:ptexfontname_}{\.{\\ptexfontname} primitive@>
 primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 @z
@@ -2712,6 +2733,7 @@ primitive("ptexrevision",convert,ptex_revision_code);
   ucs_code:print_esc("ucs");
   toucs_code:print_esc("toucs");
   tojis_code:print_esc("tojis");
+  ptex_font_name_code: print_esc("ptexfontname");
   ptex_revision_code:print_esc("ptexrevision");
 @z
 
@@ -2738,6 +2760,7 @@ case c of
 number_code,roman_numeral_code,
 kansuji_code,euc_code,sjis_code,jis_code,kuten_code,
 ucs_code,toucs_code,tojis_code: scan_int;
+ptex_font_name_code: scan_font_ident;
 ptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
@@ -2759,6 +2782,7 @@ string_code:if cur_cs<>0 then sprint_cs(cur_cs)
 case c of
 number_code: print_int(cur_val);
 roman_numeral_code: print_roman_int(cur_val);
+kansuji_code: print_kansuji(cur_val);
 jis_code:   begin cur_val:=fromJIS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 euc_code:   begin cur_val:=fromEUC(cur_val);
@@ -2773,8 +2797,11 @@ toucs_code: begin cur_val:=toUCS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
 tojis_code: begin cur_val:=toJIS(cur_val);
   if cur_val=0 then print_int(-1) else print_int(cur_val); end;
+ptex_font_name_code: begin
+  print_font_name_and_size(cur_val);
+  print_font_dir_and_enc(cur_val);
+  end;
 ptex_revision_code: print(pTeX_revision);
-kansuji_code: print_kansuji(cur_val);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
   else if KANJI(cx)=0 then print_char(cur_chr)
   else print_kanji(cx);
