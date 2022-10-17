@@ -726,7 +726,7 @@ processing we will see that a |style_node| has |type=16|; and a number
 of larger type codes will also be defined, for use in math mode only.
 @z
 
-@x
+@x [12.???] pTeX: \ptexfontname, \ptextracingfonts
 @p procedure short_display(@!p:integer); {prints highlights of list |p|}
 @y
 @p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures|@>@;@/
