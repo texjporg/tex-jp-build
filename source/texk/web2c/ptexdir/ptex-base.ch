@@ -71,6 +71,8 @@
 %                  for better support of LaTeX3 (expl3).
 %                  Requires ptexenc version 1.4.0.
 %                  More details in TUGboat 41(2):329--334, 2020.
+% (2022-10-24) HY  pTeX p4.1.0 Add new syntax \font [in jis/ucs].
+%                  New primitives: \tojis, \ptextracingfonts and \ptexfontname.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -84,9 +86,9 @@
 @d banner_k==TeX_banner_k
 @y
 @d pTeX_version=4
-@d pTeX_minor_version=0
+@d pTeX_minor_version=1
 @d pTeX_revision==".0"
-@d pTeX_version_string=='-p4.0.91-emulate_jfm' {current \pTeX\ version}
+@d pTeX_version_string=='-p4.1.0' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
