@@ -830,6 +830,10 @@ HITEX_FALSE
 HITEX_TRUE
 ALEPH_FALSE
 ALEPH_TRUE
+NPTEX_SYNCTEX_FALSE
+NPTEX_SYNCTEX_TRUE
+NPTEX_FALSE
+NPTEX_TRUE
 EUPTEX_SYNCTEX_FALSE
 EUPTEX_SYNCTEX_TRUE
 EUPTEX_FALSE
@@ -1050,6 +1054,8 @@ enable_uptex
 enable_uptex_synctex
 enable_euptex
 enable_euptex_synctex
+enable_nptex
+enable_nptex_synctex
 enable_aleph
 enable_hitex
 enable_pdftex
@@ -1793,6 +1799,8 @@ Optional Features:
   --disable-uptex-synctex   build upTeX without SyncTeX support
   --disable-euptex        do not compile and install e-upTeX
   --disable-euptex-synctex  build e-upTeX without SyncTeX support
+  --disable-nptex         do not compile and install npTeX
+  --disable-nptex-synctex   build npTeX without SyncTeX support
   --disable-aleph         do not compile and install Aleph
   --disable-hitex         do not compile and install HiTeX
   --disable-pdftex        do not compile and install pdfTeX
@@ -19816,6 +19824,28 @@ test "x$enable_web2c:$enable_euptex" = xyes:yes && {
   need_ptexenc=yes
   need_zlib=yes
 }
+# Check whether --enable-nptex was given.
+if test ${enable_nptex+y}
+then :
+  enableval=$enable_nptex;
+fi
+case $enable_nptex in #(
+  yes | no) :
+     ;; #(
+  *) :
+    enable_nptex=yes ;;
+esac
+
+# Check whether --enable-nptex-synctex was given.
+if test ${enable_nptex_synctex+y}
+then :
+  enableval=$enable_nptex_synctex;
+fi
+
+test "x$enable_web2c:$enable_nptex" = xyes:yes && {
+  need_ptexenc=yes
+  need_zlib=yes
+}
 # Check whether --enable-aleph was given.
 if test ${enable_aleph+y}
 then :
@@ -22551,6 +22581,35 @@ esac
 else
   EUPTEX_SYNCTEX_TRUE='#'
   EUPTEX_SYNCTEX_FALSE=
+fi
+ if test "x$enable_nptex" = xyes; then
+  NPTEX_TRUE=
+  NPTEX_FALSE='#'
+else
+  NPTEX_TRUE='#'
+  NPTEX_FALSE=
+fi
+
+case $enable_native_texlive_build:$enable_nptex_synctex in #(
+  yes:yes | no:yes | no:no) :
+     ;; #(
+  *) :
+    if test -z "$enable_nptex_synctex"
+then :
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Assuming \`--enable-nptex-synctex=yes'" >&5
+printf "%s\n" "$as_me: Assuming \`--enable-nptex-synctex=yes'" >&6;}
+else $as_nop
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Enforcing \`--enable-nptex-synctex=yes' (native TeX Live build)" >&5
+printf "%s\n" "$as_me: WARNING: Enforcing \`--enable-nptex-synctex=yes' (native TeX Live build)" >&2;}
+fi
+         enable_nptex_synctex=yes ;;
+esac
+ if test "x$enable_nptex_synctex" = xyes; then
+  NPTEX_SYNCTEX_TRUE=
+  NPTEX_SYNCTEX_FALSE='#'
+else
+  NPTEX_SYNCTEX_TRUE='#'
+  NPTEX_SYNCTEX_FALSE=
 fi
  if test "x$enable_aleph" = xyes; then
   ALEPH_TRUE=
@@ -28448,6 +28507,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${EUPTEX_SYNCTEX_TRUE}" && test -z "${EUPTEX_SYNCTEX_FALSE}"; then
   as_fn_error $? "conditional \"EUPTEX_SYNCTEX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${NPTEX_TRUE}" && test -z "${NPTEX_FALSE}"; then
+  as_fn_error $? "conditional \"NPTEX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${NPTEX_SYNCTEX_TRUE}" && test -z "${NPTEX_SYNCTEX_FALSE}"; then
+  as_fn_error $? "conditional \"NPTEX_SYNCTEX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ALEPH_TRUE}" && test -z "${ALEPH_FALSE}"; then

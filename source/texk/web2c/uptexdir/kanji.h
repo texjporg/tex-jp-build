@@ -6,7 +6,7 @@
 #include "cpascal.h"
 #include <ptexenc/ptexenc.h>
 #include <ptexenc/unicode.h>
-#ifdef eupTeX
+#if defined(eupTeX) || defined(npTeX)
 #define getintone(w) ((w).cint1)
 #define setintone(w,a) ((w).cint1=(a))
 #endif

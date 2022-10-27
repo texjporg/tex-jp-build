@@ -286,6 +286,38 @@ euptex_CPPFLAGS += -D__SyncTeX__ -DSYNCTEX_ENGINE_H=\"synctex-euptex.h\"
 
 endif EUPTEX_SYNCTEX
 
+## SyncTeX infrastructure: npTeX
+
+if NPTEX_SYNCTEX
+
+nptex_CPPFLAGS += -I$(srcdir)/synctexdir $(ZLIB_INCLUDES)
+
+nptex_LDADD += $(ZLIB_LIBS)
+nptex_prereq += $(ZLIB_DEPEND)
+
+nptex_ch_synctex = \
+	synctexdir/synctex-def.ch0 \
+	synctexdir/synctex-ep-mem.ch0 \
+	synctexdir/synctex-mem.ch0 \
+	synctexdir/synctex-e-mem.ch0 \
+	synctexdir/synctex-ep-mem.ch1 \
+	synctexdir/synctex-p-rec.ch0 \
+	synctexdir/synctex-rec.ch0 \
+	synctexdir/synctex-rec.ch1 \
+	synctexdir/synctex-ep-rec.ch0 \
+	synctexdir/synctex-e-rec.ch0 \
+	synctexdir/synctex-p-rec.ch1
+
+dist_nptex_SOURCES += \
+	synctexdir/synctex.c \
+	synctexdir/synctex.h \
+	synctexdir/synctex-common.h \
+	synctexdir/synctex-nptex.h
+
+nptex_CPPFLAGS += -D__SyncTeX__ -DSYNCTEX_ENGINE_H=\"synctex-nptex.h\"
+
+endif NPTEX_SYNCTEX
+
 ## SyncTeX infrastructure: pdfTeX
 
 if PDFTEX_SYNCTEX

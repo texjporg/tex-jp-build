@@ -73,6 +73,11 @@
 #define IS_pTeX 1
 #define IS_upTeX 1
 #include <euptexdir/euptexextra.h>
+#elif defined (npTeX)
+#define IS_eTeX 1
+#define IS_pTeX 1
+#define IS_upTeX 1
+#include <nptexdir/nptexextra.h>
 #else
 #define BANNER "This is TeX, Version 3.141592653"
 #define COPYRIGHT_HOLDER "D.E. Knuth"
@@ -132,7 +137,7 @@
    Borrowed from LuaTeX.
 */
 #if defined(_WIN32)
-#if defined(pdfTeX) || defined(upTeX) || defined(eupTeX) || defined(XeTeX)
+#if defined(pdfTeX) || defined(upTeX) || defined(eupTeX) || defined(npTeX) || defined(XeTeX)
 #define W32USYNCTEX 1
 #endif
 #endif
@@ -1998,7 +2003,7 @@ parse_options (int argc, string *argv)
       } else {
         WARNING1 ("Ignoring unknown argument `%s' to --interaction", optarg);
       }
-#if IS_pTeX
+#if IS_pTeX && !defined(npTeX)
     } else if (ARGUMENT_IS ("kanji")) {
       if (!set_enc_string (optarg, NULL)) {
         WARNING1 ("Ignoring unknown argument `%s' to --kanji", optarg);
@@ -2503,7 +2508,7 @@ WARNING1 ("invalid value (expected 0 or 1) for environment variable $FORCE_SOURC
   }
 }
 
-#if defined(pdfTeX) || defined(epTeX) || defined(eupTeX) || defined(XeTeX)
+#if defined(pdfTeX) || defined(epTeX) || defined(eupTeX) || defined(npTeX) || defined(XeTeX)
 /*
  Getting a high resolution time.
  */
@@ -3255,8 +3260,8 @@ makesrcspecial (strnumber srcfilename, int lineno)
   return (oldpoolptr);
 }
 
-/* pdfTeX routines also used for e-pTeX, e-upTeX, and XeTeX */
-#if defined (pdfTeX) || defined (epTeX) || defined (eupTeX) || defined(XeTeX)
+/* pdfTeX routines also used for e-pTeX, e-upTeX, npTeX, and XeTeX */
+#if defined (pdfTeX) || defined (epTeX) || defined (eupTeX) || defined(npTeX)|| defined(XeTeX)
 
 #include <kpathsea/c-stat.h>
 #include "md5.h"

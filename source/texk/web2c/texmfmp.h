@@ -77,6 +77,10 @@ typedef void* voidpointer;
 #define TEXMFPOOLNAME "euptex.pool"
 #define TEXMFENGINENAME "euptex"
 #include "uptexdir/kanji.h"
+#elif defined (npTeX)
+#define TEXMFPOOLNAME "nptex.pool"
+#define TEXMFENGINENAME "nptex"
+#include "uptexdir/kanji.h"
 #else
 #define TEXMFPOOLNAME "tex.pool"
 #define TEXMFENGINENAME "tex"
@@ -119,8 +123,8 @@ typedef void* voidpointer;
 /* Hacks for TeX that are better not to #ifdef, see lib/openclose.c.  */
 extern int tfmtemp, texinputtype;
 
-/* pdfTeX routines also used for e-pTeX, e-upTeX, and XeTeX */
-#if defined (pdfTeX) || defined (epTeX) || defined (eupTeX) || defined(XeTeX)
+/* pdfTeX routines also used for e-pTeX, npTeX, and XeTeX */
+#if defined (pdfTeX) || defined (epTeX) || defined (eupTeX) || defined (npTeX) || defined(XeTeX)
 #if !defined (pdfTeX)
 extern void pdftex_fail(const char *fmt, ...);
 #endif
@@ -221,7 +225,7 @@ extern boolean input_line (FILE *);
 #define	dateandtime(i,j,k,l) get_date_and_time (&(i), &(j), &(k), &(l))
 extern void get_date_and_time (integer *, integer *, integer *, integer *);
 
-#if defined(pdfTeX) || defined(epTeX) || defined(eupTeX) || defined(XeTeX)
+#if defined(pdfTeX) || defined(epTeX) || defined(eupTeX) || defined(npTeX) || defined(XeTeX)
 /* Get high-res time info. */
 #define secondsandmicros(i,j) get_seconds_and_micros (&(i), &(j))
 extern void get_seconds_and_micros (integer *, integer *);
@@ -249,7 +253,7 @@ extern void topenin (void);
 #endif
 
 /* define FMT_COMPRESS for engines which compress formats */
-#if defined(pTeX) || defined(epTeX) || defined(upTeX) || defined(eupTeX)
+#if defined(pTeX) || defined(epTeX) || defined(upTeX) || defined(eupTeX) || defined(npTeX)
 #define FMT_COMPRESS 1
 #endif
 #if defined(eTeX) || defined(pdfTeX) || defined(XeTeX)

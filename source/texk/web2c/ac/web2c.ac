@@ -35,6 +35,7 @@ m4_define([kpse_tex_progs], [dnl
 [[eptex],     [yes], [yes], [e-pTeX],     [ptexenc zlib]],
 [[uptex],     [yes], [yes], [upTeX],      [ptexenc zlib]],
 [[euptex],    [yes], [yes], [e-upTeX],    [ptexenc zlib]],
+[[nptex],     [yes], [yes], [npTeX],    [ptexenc zlib]],
 [[aleph],     [yes], [],    [Aleph],      []],
 [[hitex],     [yes], [],    [HiTeX],      [zlib]],
 [[pdftex],    [yes], [yes], [pdfTeX],     [xpdf libpng zlib]],
