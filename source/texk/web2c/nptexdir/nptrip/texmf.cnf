@@ -1,4 +1,4 @@
-% euptexdir/euptrip/texmf.cnf -- configuration for the e-uptrip test.
+% nptexdir/nptrip/texmf.cnf -- configuration for the nptrip test.
 
 % These values apply to all the programs, and they are necessary for any
 % kind of reasonable diff.
@@ -6,7 +6,7 @@ error_line = 64
 half_error_line = 32
 max_print_line = 72
 		
-% e-upTeX.
+% npTeX.
 mem_bot          =    1
 main_memory      = 4500
 max_strings     = 3300

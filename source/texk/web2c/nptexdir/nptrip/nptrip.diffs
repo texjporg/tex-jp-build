@@ -1,5 +1,5 @@
 #! /bin/sh -vx
-# $Id: euptriptest.test 48633 2018-09-09 17:56:55Z karl $
+# $Id: nptriptest.test 48633 2018-09-09 17:56:55Z karl $
 # Copyright 2017-2018 Karl Berry <tex-live@tug.org>
 # Copyright 2011-2014 Peter Breitenlohner <tex-live@tug.org>
 # Copyright 2010 Hironori Kitagawa <tex-live@tug.org>
@@ -17,29 +17,29 @@ etestdir=$abs_srcdir/etexdir/etrip
 + etestdir=SRCDIR/etexdir/etrip
 eptestdir=$abs_srcdir/eptexdir/eptrip
 + eptestdir=SRCDIR/eptexdir/eptrip
-euptestdir=$abs_srcdir/euptexdir/euptrip
-+ euptestdir=SRCDIR/euptexdir/euptrip
+nptestdir=$abs_srcdir/nptexdir/nptrip
++ nptestdir=SRCDIR/nptexdir/nptrip
 
-TEXMFCNF=$euptestdir; export TEXMFCNF
-+ TEXMFCNF=SRCDIR/euptexdir/euptrip
+TEXMFCNF=$nptestdir; export TEXMFCNF
++ TEXMFCNF=SRCDIR/nptexdir/nptrip
 + export TEXMFCNF
 
-rm -rf euptripdir
-+ rm -rf euptripdir
-mkdir euptripdir
-+ mkdir euptripdir
-cd euptripdir
-+ cd euptripdir
+rm -rf nptripdir
++ rm -rf nptripdir
+mkdir nptripdir
++ mkdir nptripdir
+cd nptripdir
++ cd nptripdir
 
 dvitype_args="-output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*'"
 + dvitype_args='-output-level=2 -dpi=72.27 -page-start='\''*.*.*.*.*.*.*.*.*.*'\'''
 
-echo ">>> Running e-TRIP test for e-upTeX." >&2
-+ echo '>>> Running e-TRIP test for e-upTeX.'
->>> Running e-TRIP test for e-upTeX.
-echo ">>> See $euptestdir/euptrip.diffs for example of acceptable diffs." >&2
-+ echo '>>> See SRCDIR/euptexdir/euptrip/euptrip.diffs for example of acceptable diffs.'
->>> See SRCDIR/euptexdir/euptrip/euptrip.diffs for example of acceptable diffs.
+echo ">>> Running e-TRIP test for npTeX." >&2
++ echo '>>> Running e-TRIP test for npTeX.'
+>>> Running e-TRIP test for npTeX.
+echo ">>> See $nptestdir/nptrip.diffs for example of acceptable diffs." >&2
++ echo '>>> See SRCDIR/nptexdir/nptrip/nptrip.diffs for example of acceptable diffs.'
+>>> See SRCDIR/nptexdir/nptrip/nptrip.diffs for example of acceptable diffs.
 
 # upTeX outputs direction of boxes.
 P_SED1='s/, yoko direction//;s/yoko direction, //'
@@ -53,9 +53,9 @@ is_OK=:
 set -x
 + set -x
 
-echo "*** TRIP test for e-upTeX in compatibility mode ***."
-+ echo '*** TRIP test for e-upTeX in compatibility mode ***.'
-*** TRIP test for e-upTeX in compatibility mode ***.
+echo "*** TRIP test for npTeX in compatibility mode ***."
++ echo '*** TRIP test for npTeX in compatibility mode ***.'
+*** TRIP test for npTeX in compatibility mode ***.
 
 ./pltotf $testdir/trip.pl trip.tfm || exit 1
 + ./pltotf SRCDIR/triptrap/trip.pl trip.tfm
@@ -72,8 +72,8 @@ $LN_S $testdir/trip.tex .
 
 rm -f trip.log
 + rm -f trip.log
-./euptex --progname=eupinitex --ini <$testdir/trip1.in >cuptripin.fot
-+ ./euptex --progname=eupinitex --ini
+./nptex --progname=npinitex --ini <$testdir/trip1.in >cuptripin.fot
++ ./nptex --progname=npinitex --ini
 if test ! -s trip.fmt; then
   echo "*** trip.fmt not created by trip1.in, investigate!" >&2
   exit 1
@@ -86,7 +86,7 @@ diff $testdir/tripin.log cuptripin.log
 1c1
 < This is TeX, Version 3.141592653 (INITEX)  4 JUL 1776 12:00
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
 3c3
 < (trip.tex
 ---
@@ -125,8 +125,8 @@ diff $testdir/tripin.log cuptripin.log
 # May as well test non-ini second time through.
 rm -f trip.log
 + rm -f trip.log
-./euptex --progname=euptex <$testdir/trip2.in >cuptrip.fot
-+ ./euptex --progname=euptex
+./nptex --progname=nptex <$testdir/trip2.in >cuptrip.fot
++ ./nptex --progname=nptex
 sed "$P_SED1;$P_SED2" trip.log > cuptrip.log
 + sed 's/, yoko direction//;s/yoko direction, //;s/yoko(math) direction, //' trip.log
 diff $testdir/trip.fot cuptrip.fot
@@ -136,7 +136,7 @@ diff $testdir/trip.fot cuptrip.fot
 < ** &trip  trip 
 < (trip.tex ##
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=euptex)
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=nptex)
 > **(./trip.tex ##
 17c16
 < Memory usage before: 159&313; after: 102&278; still untouched: 1613
@@ -154,7 +154,7 @@ $DIFF $DIFFFLAGS $testdir/trip.log cuptrip.log
 1c1
 < This is TeX, Version 3.141592653 (preloaded format=trip 1776.7.4)  4 JUL 1776 12:00
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=trip 2021.1.27)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=trip 2021.1.27)  27 JAN 2021 18:03
 3c3
 < (trip.tex ##
 ---
@@ -634,14 +634,14 @@ mv trip.fmt ctrip.fmt
 
 # =================================
 
-echo "*** TRIP test for e-upTeX in extended mode ***."
-+ echo '*** TRIP test for e-upTeX in extended mode ***.'
-*** TRIP test for e-upTeX in extended mode ***.
+echo "*** TRIP test for npTeX in extended mode ***."
++ echo '*** TRIP test for npTeX in extended mode ***.'
+*** TRIP test for npTeX in extended mode ***.
 
 rm -f trip.log
 + rm -f trip.log
-./euptex --progname=eupinitex --ini <$etestdir/etrip1.in >xuptripin.fot
-+ ./euptex --progname=eupinitex --ini
+./nptex --progname=npinitex --ini <$etestdir/etrip1.in >xuptripin.fot
++ ./nptex --progname=npinitex --ini
 if test ! -s trip.fmt; then
   echo "*** trip.fmt not created by etrip1.in, investigate!" >&2
   exit 1
@@ -656,7 +656,7 @@ diff $testdir/tripin.log xuptripin.log
 < **\input trip
 < (trip.tex
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
 > entering extended mode
 > ***\input trip
 > (./trip.tex
@@ -701,8 +701,8 @@ diff $testdir/tripin.log xuptripin.log
 # May as well test non-ini second time through.
 rm -f trip.log
 + rm -f trip.log
-./euptex --progname=euptex <$etestdir/trip2.in >xuptrip.fot
-+ ./euptex --progname=euptex
+./nptex --progname=nptex <$etestdir/trip2.in >xuptrip.fot
++ ./nptex --progname=nptex
 sed "$P_SED1;$P_SED2" trip.log > xuptrip.log
 + sed 's/, yoko direction//;s/yoko direction, //;s/yoko(math) direction, //' trip.log
 diff $testdir/trip.fot xuptrip.fot
@@ -712,7 +712,7 @@ diff $testdir/trip.fot xuptrip.fot
 < ** &trip  trip 
 < (trip.tex ##
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=euptex)
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=nptex)
 > **entering extended mode
 > ## (./trip.tex
 17c17
@@ -737,7 +737,7 @@ $DIFF $DIFFFLAGS $testdir/trip.log xuptrip.log
 < ** &trip  trip
 < (trip.tex ##
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=trip 2021.1.27)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=trip 2021.1.27)  27 JAN 2021 18:03
 > entering extended mode
 > **&trip \toksdef\tokens=0 \input trip
 >  (./trip.tex
@@ -1278,9 +1278,9 @@ mv trip.fmt xtrip.fmt
 
 # =================================
 
-echo "*** e-TeX specific part of e-TRIP test for e-upTeX ***."
-+ echo '*** e-TeX specific part of e-TRIP test for e-upTeX ***.'
-*** e-TeX specific part of e-TRIP test for e-upTeX ***.
+echo "*** e-TeX specific part of e-TRIP test for npTeX ***."
++ echo '*** e-TeX specific part of e-TRIP test for npTeX ***.'
+*** e-TeX specific part of e-TRIP test for npTeX ***.
 
 ./pltotf $etestdir/etrip.pl etrip.tfm || exit 1
 + ./pltotf SRCDIR/etexdir/etrip/etrip.pl etrip.tfm
@@ -1295,21 +1295,21 @@ diff $etestdir/etrip.pl etrip.pl || is_OK=false
 $LN_S $eptestdir/eptrip.tex etrip.tex
 + ln -s SRCDIR/eptexdir/eptrip/eptrip.tex etrip.tex
 
-./euptex --progname=eupinitex --ini <$etestdir/etrip2.in >euptripin.fot
-+ ./euptex --progname=eupinitex --ini
+./nptex --progname=npinitex --ini <$etestdir/etrip2.in >nptripin.fot
++ ./nptex --progname=npinitex --ini
 if test ! -s etrip.fmt; then
   echo "*** etrip.fmt not created by etrip2.in, investigate!" >&2
   exit 1
 fi
 + test '!' -s etrip.fmt
-sed "$P_SED1" etrip.log > euptripin.log || exit 1
+sed "$P_SED1" etrip.log > nptripin.log || exit 1
 + sed 's/, yoko direction//;s/yoko direction, //' etrip.log
-diff $etestdir/etripin.log euptripin.log
-+ diff SRCDIR/etexdir/etrip/etripin.log euptripin.log
+diff $etestdir/etripin.log nptripin.log
++ diff SRCDIR/etexdir/etrip/etripin.log nptripin.log
 1c1
 < This is e-TeX, Version 3.14159265-2.6 (TeX Live 2014) (INITEX)  22 JAN 2014 11:25
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (INITEX)  27 JAN 2021 18:03
 26,29c26,29
 <  (preloaded format=etrip 2014.1.22)
 < 1491 strings of total length 26258
@@ -1322,28 +1322,28 @@ diff $etestdir/etripin.log euptripin.log
 > 503 multiletter control sequences
 
 # May as well test non-ini second time through.
-./euptex --progname=euptex <$etestdir/etrip3.in >euptrip.fot
-+ ./euptex --progname=euptex
-sed "$P_SED1;$P_SED2" etrip.log > euptrip.log
+./nptex --progname=nptex <$etestdir/etrip3.in >nptrip.fot
++ ./nptex --progname=nptex
+sed "$P_SED1;$P_SED2" etrip.log > nptrip.log
 + sed 's/, yoko direction//;s/yoko direction, //;s/yoko(math) direction, //' etrip.log
-diff $etestdir/etrip.fot euptrip.fot
-+ diff SRCDIR/etexdir/etrip/etrip.fot euptrip.fot
+diff $etestdir/etrip.fot nptrip.fot
++ diff SRCDIR/etexdir/etrip/etrip.fot nptrip.fot
 1c1
 < This is e-TeX, Version 3.14159265-2.6 (TeX Live 2014) (preloaded format=etex)
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=euptex)
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=nptex)
 45,46d44
 < 
 < \openout1 = `etrip.out'.
 
 # We use $DIFF instead of `diff' only for those files where there
 # might actually be legitimate numerical differences.
-$DIFF $DIFFFLAGS $eptestdir/eptrip.log euptrip.log
-+ diff SRCDIR/eptexdir/eptrip/eptrip.log euptrip.log
+$DIFF $DIFFFLAGS $eptestdir/eptrip.log nptrip.log
++ diff SRCDIR/eptexdir/eptrip/eptrip.log nptrip.log
 1c1
 < This is e-pTeX, Version 3.14159265-p3.4-130605-2.6 (utf8.euc) (TeX Live 2014) (preloaded format=etrip 2014.1.22)  22 JAN 2014 11:25
 ---
-> This is e-upTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=etrip 2021.1.27)  27 JAN 2021 18:03
+> This is npTeX, Version 3.141592653-p3.8.3-u1.27-191112-2.6 (utf8.uptex) (TeX Live 2021/dev) (preloaded format=etrip 2021.1.27)  27 JAN 2021 18:03
 57a58
 > .\displace 0.0
 104a106
@@ -1418,17 +1418,17 @@ $DIFF $DIFFFLAGS $eptestdir/eptrip.log euptrip.log
 ---
 >  504 multiletter control sequences out of 15000+0
 
-mv etrip.out euptrip.out
-+ mv etrip.out euptrip.out
-diff $etestdir/etrip.out euptrip.out
-+ diff SRCDIR/etexdir/etrip/etrip.out euptrip.out
+mv etrip.out nptrip.out
++ mv etrip.out nptrip.out
+diff $etestdir/etrip.out nptrip.out
++ diff SRCDIR/etexdir/etrip/etrip.out nptrip.out
 
-eval ./dvitype $dvitype_args etrip.dvi >euptrip.typ || exit 1
+eval ./dvitype $dvitype_args etrip.dvi >nptrip.typ || exit 1
 + eval ./dvitype -output-level=2 -dpi=72.27 '-page-start='\''*.*.*.*.*.*.*.*.*.*'\''' etrip.dvi
 ./dvitype -output-level=2 -dpi=72.27 -page-start='*.*.*.*.*.*.*.*.*.*' etrip.dvi
 ++ ./dvitype -output-level=2 -dpi=72.27 '-page-start=*.*.*.*.*.*.*.*.*.*' etrip.dvi
-$DIFF $DIFFFLAGS $etestdir/etrip.typ euptrip.typ
-+ diff SRCDIR/etexdir/etrip/etrip.typ euptrip.typ
+$DIFF $DIFFFLAGS $etestdir/etrip.typ nptrip.typ
++ diff SRCDIR/etexdir/etrip/etrip.typ nptrip.typ
 1c1
 < This is DVItype, Version 3.6 (TeX Live 2014)
 ---
@@ -1444,5 +1444,5 @@ $is_OK || {
 }
 + :
 
-PASS euptexdir/euptriptest.test (exit status: 0)
-PASS: euptexdir/euptriptest.test
+PASS nptexdir/nptriptest.test (exit status: 0)
+PASS: nptexdir/nptriptest.test

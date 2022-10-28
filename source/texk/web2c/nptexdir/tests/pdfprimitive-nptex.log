@@ -1,8 +1,8 @@
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**pdfprimitive-euptex
-(./pdfprimitive-euptex.tex
+**pdfprimitive-nptex
+(./pdfprimitive-nptex.tex
 RELAX macro:->\message {RELAX} FUGA F T F F F
 > \pdfstrcmp=\pdfstrcmp.
 l.28 \show\pdfstrcmp
