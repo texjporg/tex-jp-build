@@ -3204,7 +3204,7 @@ until not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul))or(k>limit);
 {@@<If an expanded...@@>;}
 if not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)) then decr(k);
 if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to first nonletter}
-if k>loc+1 then {multiletter control sequence has been scanned}
+if k>loc+multistrlen(ustringcast(buffer),limit+1,loc) then {multiletter control sequence has been scanned}
   begin cur_cs:=id_lookup(loc,k-loc); loc:=k; goto found;
   end;
 end
