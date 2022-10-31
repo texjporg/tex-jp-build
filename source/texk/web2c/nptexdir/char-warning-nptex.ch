@@ -66,7 +66,7 @@ end;  {of procedure}
 @p procedure char_warning_jis(@!f:internal_font_number;@!jc:KANJI_code);
 begin if tracing_lost_chars>0 then
   begin begin_diagnostic;
-  print_nl("Character "); print_utf8(jc); print(" (");
+  print_nl("Character "); print_kanji(jc); print(" (");
   print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
   slow_print(font_name[f]);
   print_char(","); print_nl("so I use .notdef glyph instead.");
@@ -85,7 +85,7 @@ begin if tracing_lost_chars>0 then
   begin_diagnostic;
   print_nl("Character ")
  end;
-  print_utf8(jc); print(" (");
+  print_kanji(jc); print(" (");
   print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
   slow_print(font_name[f]);
   print_char(",");

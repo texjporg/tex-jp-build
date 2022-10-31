@@ -123,7 +123,8 @@ to be a part of a Japanese character, in |get_next| routine.
 @!packed_ASCII_code = 0..255; {elements of |str_pool| array}
 @y
 @!packed_ASCII_code = 0..32768; {elements of |str_pool| array}
-  { 256..511 are used by Japanese characters }
+  { 256..511 are used by (non-Japanese) UTF-8 sequence }
+  { 512..767 are used by Japanese UTF-8 sequence }
 @z
 
 @x
@@ -239,11 +240,11 @@ begin if @<Character |s| is the current new-line character@> then
  if selector<pseudo then
   begin print_ln; return;
   end;
-if s>@"1FF then s:=s mod 256;
-if s<256 then kcode_pos:=0
+if s>@"2FF then s:=s mod @"100;
+if s<@"100 then kcode_pos:=0
 else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
    or((kcode_pos>=@'21)and(kcode_pos<=@'23)) then incr(kcode_pos)
-else if iskanji1(xchr[s-256]) then
+else if iskanji1(xchr[s-@"100]) then
   begin
   if (ismultichr(4,1,xchr[s])) then kcode_pos:=@'21
   else if (ismultichr(3,1,xchr[s])) then kcode_pos:=@'11
@@ -1175,7 +1176,7 @@ procedure short_display(@!p:integer); {prints highlights of list |p|}
       print_ASCII(qo(character(p)));
 @y
       if font_dir[font(p)]<>dir_default then
-        begin p:=link(p); print_utf8(info(p));
+        begin p:=link(p); print_kanji(info(p));
         end
       else print_ASCII(qo(character(p))); { We have |character(p)<256| }
 @z
@@ -1193,7 +1194,7 @@ hlist_node,vlist_node,dir_node,ins_node,whatsit_node,
 @y
   print_char(" ");
   if font_dir[font(p)]<>dir_default then
-    begin p:=link(p); print_utf8(info(p));
+    begin p:=link(p); print_kanji(info(p));
     end
   else print_ASCII(qo(character(p))); { We have |character(p)<256| }
 @z
@@ -1799,6 +1800,7 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
 @d auto_xspacing==equiv(auto_xspacing_code)
 @d enable_cjk_token==equiv(enable_cjk_token_code)
 @d cjkx_code(#)==equiv(cjkx_code_base+#)
+@d kcatcodekey(#)==(#) { npTeX: \cjkxcode は文字ごと }
 @d auto_xsp_code(#)==equiv(auto_xsp_code_base+#)
 @d inhibit_xsp_type(#)==eq_type(inhibit_xsp_code_base+#)
 @d inhibit_xsp_code(#)==equiv(inhibit_xsp_code_base+#)
@@ -2674,17 +2676,30 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @y
 @<Display the token ...@>=
 case m of
-kanji,kana,other_kchar,hangul: print_utf8(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char: print(c);
+  letter,other_char:
+  if c<@"80 then print(c) else print_utf8(c);
+kanji,kana,other_kchar,hangul: print_kanji(KANJI(c));
 @z
 
 @x
+@d chr_cmd(#)==begin print(#); print_ASCII(chr_code);
+@y
+@d chr_cmd(#)==begin print(#); 
+  if chr_code<@"80 then print_ASCII(chr_code)
+  else print_utf8(chr_code); 
+@z
+
+@x
+letter: chr_cmd("the letter ");
 other_char: chr_cmd("the character ");
 @y
+letter: chr_cmd("the letter ");
 other_char: chr_cmd("the character ");
-kanji,kana,other_kchar,hangul: begin print("kanji character ");
-  print_utf8(KANJI(chr_code)); print(".");end;
+kanji,kana,other_kchar: begin
+  print("kanji character ");
+  if chr_code<@"80 then print_ASCII(chr_code) else print_kanji(KANJI(chr_code));
+  end;
 @z
 
 @x
@@ -2868,14 +2883,24 @@ begin switch: if loc<=limit then {current line not yet finished}
 begin switch: if loc<=limit then {current line not yet finished}
   begin
     cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
-    for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
-      buffer2[l]:=1;
-    loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
-    reswitch: cur_cmd:=cat_code(cur_chr);
+    cur_cmd:=cat_code(cur_chr);
     if (cur_cmd=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
       cur_cmd:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
     else if (cur_cmd=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
       cur_cmd:=other_kchar;
+    if cur_cmd>=cjk_code_flag then
+      begin for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
+        buffer2[l]:=2;
+      loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
+      end
+    else if multistrlen(ustringcast(buffer), limit+1, loc)>1 then
+      begin for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
+        buffer2[l]:=1;
+      loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
+      end
+    else begin
+      incr(loc); reswitch: cur_cmd:=cat_code(cur_chr);
+    end;
 @z
 
 @x
@@ -3000,17 +3025,18 @@ end
 begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
 else  begin k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
-  if multistrlen(ustringcast(buffer), limit+1, k)>1 then
-    begin print("<"); print_hex(cur_chr); print(">");
-    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[l]:=1;
-     end;
-  k:=k+multistrlen(ustringcast(buffer), limit+1, k);
   cat:=cat_code(cur_chr);
   if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
     cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
   else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
     cat:=other_kchar;
+  if cat>=cjk_code_flag then
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=2
+  else if multistrlen(ustringcast(buffer), limit+1, k)>1 then
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=1;
+  k:=k+multistrlen(ustringcast(buffer), limit+1, k);
 start_cs:
   if (cat=letter)or(cat=hangul) then state:=skip_blanks
   else if (cat=kanji)or(cat=kana) then
@@ -3097,15 +3123,18 @@ end
 @ @<Scan ahead in the buffer...@>=
 begin repeat
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
-  if multistrlen(ustringcast(buffer), limit+1, k)>1 then
-    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[l]:=1;
   cat:=cat_code(cur_chr);
-  k:=k+multistrlen(ustringcast(buffer), limit+1, k);
   if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
     cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
   else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
     cat:=other_kchar;
+  if cat>=cjk_code_flag then
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=2
+  else if multistrlen(ustringcast(buffer), limit+1, k)>1 then
+    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
+      buffer2[l]:=1;
+  k:=k+multistrlen(ustringcast(buffer), limit+1, k);
   while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
     begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
       begin d:=2;
@@ -4254,23 +4283,21 @@ while k<pool_ptr do
   if t=" " then t:=space_token
   else t:=other_token+t;
 @y
-@!t:halfword; {token being appended}
+@!t,tb:halfword; {token being appended}
 @!k:pool_pointer; {index into |str_pool|}
-@!cc:escape..max_char_code;
 begin str_room(1);
 p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
-  begin  t:=so(str_pool[k]);
-  if t>=@"100 then { there is no |wchar_token| whose code is 0--127. }
+  begin  t:=so(str_pool[k]); tb:=t;
+  if t>=@"100 then
     begin t:=fromBUFFshort(str_pool, pool_ptr, k); 
     k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
+    end;
+  if cat=0 then
+    begin if tb>=@"200 then t:=other_kchar*max_cjk_val+t { wchar_token }
+    else if t=" " then t:=space_token
+    else t:=other_token+t;
     end
-  else 
-  cc:=cjkx_code(kcatcodekey(t));
-  if (cat=letter)and(cc>0) then t:=t+(letter+cc*cjk_code_flag)*max_cjk_val
-  else if (cat=other_char)and(cc>0) then t:=t+other_kchar*max_cjk_val
-  else if (t=" ")and(cat=0) then t:=space_token
-  else if (cat=0)or(cat>=kanji) then t:=other_token+t
   else if cat=active_char then t:= cs_token_flag + active_base + t
   else t:=t+cat*max_cjk_val;
 @z
@@ -4566,10 +4593,7 @@ pdf_mdfive_sum_code:
     save_cur_string;
     bool := scan_keyword("file");
     scan_pdf_ext_toks;
-    if bool then s := tokens_to_string(def_ref)
-    else begin
-      isprint_utf8:=true; s := tokens_to_string(def_ref); isprint_utf8:=false;
-    end;
+    s := tokens_to_string(def_ref);
     delete_token_ref(def_ref);
     def_ref := save_def_ref;
     warning_index := save_warning_index;
@@ -4689,8 +4713,9 @@ ptex_font_name_code: begin
 ptex_revision_code: print(pTeX_revision);
 uptex_revision_code: print(upTeX_revision);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
-  else if KANJI(cx)=0 then print_char(cur_chr)
-  else print_utf8(cx);
+  else if cur_chr<@"80 then print_char(cur_chr)
+  else if cur_cmd>=kanji then print_kanji(cur_chr)
+  else print_utf8(cur_chr);
 @z
 
 @x
@@ -4701,9 +4726,9 @@ pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
 Uchar_convert_code:
-if is_char_ascii(cur_val) then print_char(cur_val) else print_utf8(cur_val);
+if is_char_ascii(cur_val) then print_utf8(cur_val) else print_kanji(cur_val);
 Ucharcat_convert_code:
-if cat<kanji then print_char(cur_val) else print_utf8(cur_val);
+if cat<kanji then print_utf8(cur_val) else print_kanji(cur_val);
 @z
 
 @x
@@ -5394,7 +5419,7 @@ var old_setting: integer; {saved value of |tracing_online|}
 @p procedure char_warning_jis(@!f:internal_font_number;@!jc:KANJI_code);
 begin if tracing_lost_chars>0 then
   begin begin_diagnostic;
-  print_nl("Character "); print_utf8(jc); print(" (");
+  print_nl("Character "); print_kanji(jc); print(" (");
   print_hex(jc); print(") cannot be typeset in JIS-encoded JFM ");
   slow_print(font_name[f]);
   print_char(","); print_nl("so I use .notdef glyph instead.");
@@ -10040,7 +10065,6 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 fix_date_and_time;@/
 @y
 fix_date_and_time;@/
-isprint_utf8:=false;
 random_seed:=(microseconds*1000)+(epochseconds mod 1000000);@/
 init_randoms(random_seed);@/
 @z
@@ -10895,7 +10919,7 @@ end;
     for k:=0 to 255 do
       xprn[k]:=1;
 end;
-for k:=256 to 511 do xchr[k]:=k;
+for k:=256 to 511 do begin xchr[k]:=k; xchr[k+256]:=k; end;
 @z
 
 @x
@@ -12055,20 +12079,19 @@ else
   end;
 skip_loop: do_nothing;
 
-@ @<Basic printing...@>=
-procedure print_utf8(@!s:KANJI_code); {prints a single character}
+@ |print_kanji| and |print_utf8| prints a Unicode character.
+
+@d print_kanji(#)==print_utf8_generic(#,@"200)
+@d print_utf8(#)==print_utf8_generic(KANJI(#),@"100)
+
+@<Basic printing...@>=
+procedure print_utf8_generic(@!s:integer; @!f:integer); {prints a single character}
 begin
-if isprint_utf8 then s:=UCStoUTF8(toUCS(s mod max_cjk_val))
-else s:=toBUFF(s mod max_cjk_val);
-print("(");
-print_int(+BYTE1(s)); print(",");
-print_int(+BYTE2(s)); print(",");
-print_int(+BYTE3(s)); print(",");
-print_int(+BYTE4(s)); print(")");
-if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
-if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
-if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
-                    print_char(@"100+BYTE4(s));
+s:=toBUFF(s mod max_cjk_val);
+if BYTE1(s)<>0 then print_char(f+BYTE1(s));
+if BYTE2(s)<>0 then print_char(f+BYTE2(s));
+if BYTE3(s)<>0 then print_char(f+BYTE3(s));
+                    print_char(f+BYTE4(s));
 end;
 
 @ This procedure changes the direction of the page, if |page_contents|
@@ -12162,7 +12185,6 @@ current_cjk_token_code: cur_val:=enable_cjk_token;
 @d flushable(#) == (# = str_ptr - 1)
 
 @<Glob...@>=
-@!isprint_utf8: boolean;
 @!epochseconds: integer;
 @!microseconds: integer;
 
@@ -12205,10 +12227,10 @@ var s1, s2: str_number;
     save_cur_cs: pointer;
 begin
     save_cur_cs:=cur_cs; call_func(scan_toks(false, true));
-    isprint_utf8:=true; s1 := tokens_to_string(def_ref); isprint_utf8:=false;
+    s1 := tokens_to_string(def_ref);
     delete_token_ref(def_ref);
     cur_cs:=save_cur_cs; call_func(scan_toks(false, true));
-    isprint_utf8:=true; s2 := tokens_to_string(def_ref); isprint_utf8:=false;
+    s2 := tokens_to_string(def_ref);
     delete_token_ref(def_ref);
     i1 := str_start[s1];
     j1 := str_start[s1 + 1];
@@ -12373,7 +12395,6 @@ if_ps_unit('s')('p')(do_nothing)
 @ Finally, we declare some routine needed for \.{\\pdffilemoddate}.
 
 @<Glob...@>=
-@!isprint_utf8: boolean;
 @!last_tokens_string: str_number; {the number of the most recently string
 created by |tokens_to_string|}
 
