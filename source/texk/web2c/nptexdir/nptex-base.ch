@@ -71,7 +71,7 @@
 @!ASCII_code=0..255; {eight-bit numbers}
 @y
 @!ASCII_code=0..255; {eight-bit numbers}
-@!KANJI_code=0..@"FFFFFF; {0..0x10FFFF: Unicode, 0x110000..0xFFFFFF: special}
+@!KANJI_code=0..@"7FFFFF; {0..0x10FFFF: Unicode, 0x110000..0x7FFFFF: special}
 @!ext_ASCII_code=0..32768; { only use 0--511 }
 @z
 
@@ -817,7 +817,7 @@ end;
 @d max_quarterword=@"FFFF {largest allowable value in a |quarterword|}
 @d min_halfword=-@"3FFFFFFF {smallest allowable value in a |halfword|}
 @d max_halfword=@"3FFFFFFF {largest allowable value in a |halfword|}
-@d max_cjk_val=@"1000000 {to separate character code and command code}
+@d max_cjk_val=@"0800000 {to separate character code and command code}
 @d number_usvs=@"0110000 {number of Unicode characters}
 @z
 
@@ -1886,7 +1886,48 @@ for k:="A" to "Z" do
   auto_xsp_code(k):=3; auto_xsp_code(k+"a"-"A"):=3;@/
   sf_code(k):=999;
   end;
-{ FIXME |cjkx_code| init }
+{ |cjkx_code| init }
+for k:=@"80 to @"A9 do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"AB to @"B9 do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"BB to @"BF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"250 to @"10FF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"1100 to @"11FF do begin cat_code(k):=letter; cjkx_code(k):=3; end;
+for k:=@"1200 to @"1DFF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"1F00 to @"2E7F do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"2E80 to @"2FEF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"2FF0 to @"303F do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"3040 to @"30FF do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"3100 to @"312F do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"3130 to @"318F do begin cat_code(k):=letter; cjkx_code(k):=3; end;
+for k:=@"3190 to @"31EF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"31F0 to @"31FF do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"3200 to @"33FF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"3400 to @"4DBF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"4DC0 to @"4DFF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"4E00 to @"9FFF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"A000 to @"A95F do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"A960 to @"A97F do begin cat_code(k):=letter; cjkx_code(k):=3; end;
+for k:=@"A980 to @"ABFF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"AC00 to @"D7FF do begin cat_code(k):=letter; cjkx_code(k):=3; end;
+for k:=@"D800 to @"F8FF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"F900 to @"FAFF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"FB00 to @"FF0F do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"FF10 to @"FF19 do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"FF1A to @"FF20 do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"FF21 to @"FF3A do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"FF3B to @"FF40 do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"FF41 to @"FF5A do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"FF5B to @"FF65 do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"FF66 to @"FF6F do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"FF71 to @"FF9D do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"FF9E to @"1AFEF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"1AFF0 to @"1B16F do begin cat_code(k):=letter; cjkx_code(k):=2; end;
+for k:=@"1B170 to @"1FFFF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+for k:=@"20000 to @"323AF do begin cat_code(k):=letter; cjkx_code(k):=1; end;
+for k:=@"323B0 to @"10FFFF do begin cat_code(k):=other_char; cjkx_code(k):=1; end;
+cat_code(@"D7):=other_char; cjkx_code(@"D7):=1;
+cat_code(@"F7):=other_char; cjkx_code(@"F7):=1;
+cat_code(@"FF70):=other_char; cjkx_code(@"FF70):=1;
 @z
 
 @x
@@ -2620,25 +2661,25 @@ end;
 @y
 @d cs_token_flag=@"1FFFFFFF {amount added to the |eqtb| location in a
   token that stands for a control sequence; is a multiple of~@@"1000000, less~1}
-@d max_char_val=@"1000000 {to separate char and command code}
-@d left_brace_token=@"1000000 {$2^{24}\cdot|left_brace|$}
-@d left_brace_limit=@"2000000 {$2^{24}\cdot(|left_brace|+1)$}
-@d right_brace_token=@"2000000 {$2^{24}\cdot|right_brace|$}
-@d right_brace_limit=@"3000000 {$2^{24}\cdot(|right_brace|+1)$}
-@d math_shift_token=@"3000000 {$2^{24}\cdot|math_shift|$}
-@d tab_token=@"4000000 {$2^{24}\cdot|tab_mark|$}
-@d out_param_token=@"5000000 {$2^{24}\cdot|out_param|$}
-@d space_token=@"A000020 {$2^{24}\cdot|spacer|+|" "|$}
-@d letter_token=@"B000000 {$2^{24}\cdot|letter|$}
-@d other_token=@"C000000 {$2^{24}\cdot|other_char|$}
-@d match_token=@"D000000 {$2^{24}\cdot|match|$}
-@d end_match_token=@"E000000 {$2^{24}\cdot|end_match|$}
+@d max_char_val=@"0800000 {to separate char and command code}
+@d left_brace_token=@"0800000 {$2^{23}\cdot|left_brace|$}
+@d left_brace_limit=@"1000000 {$2^{23}\cdot(|left_brace|+1)$}
+@d right_brace_token=@"1000000 {$2^{23}\cdot|right_brace|$}
+@d right_brace_limit=@"1800000 {$2^{23}\cdot(|right_brace|+1)$}
+@d math_shift_token=@"1800000 {$2^{23}\cdot|math_shift|$}
+@d tab_token=@"2000000 {$2^{23}\cdot|tab_mark|$}
+@d out_param_token=@"2800000 {$2^{23}\cdot|out_param|$}
+@d space_token=@"5000020 {$2^{23}\cdot|spacer|+|" "|$}
+@d letter_token=@"5800000 {$2^{23}\cdot|letter|$}
+@d other_token=@"6000000 {$2^{23}\cdot|other_char|$}
+@d match_token=@"6800000 {$2^{23}\cdot|match|$}
+@d end_match_token=@"7000000 {$2^{23}\cdot|end_match|$}
 @z
 
 @x
 @d protected_token=@'7001 {$2^8\cdot|end_match|+1$}
 @y
-@d protected_token=@"E000001 {$2^{24}\cdot|end_match|+1$}
+@d protected_token=@"7000001 {$2^{23}\cdot|end_match|+1$}
 @z
 
 @x
@@ -3055,6 +3096,7 @@ start_cs:
     |goto found|@>
   else @<If an expanded code is present, reduce it and |goto start_cs|@>;
   {single-letter control sequence}
+  print_int(fromBUFF(ustringcast(buffer), limit+1, loc)); print(" "); print_int(single_base);
   cur_cs:=single_base+fromBUFF(ustringcast(buffer), limit+1, loc);
   loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
   end;
@@ -4192,6 +4234,7 @@ end
 @y
 @<Scan an alphabetic character code into |cur_val|@>=
 begin get_token; {suppress macro expansion}
+print("<"); print_hex(cur_tok); print(" "); print_hex(cur_chr); print(">");
 if cur_tok<cs_token_flag then
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
     begin skip_mode:=false; cur_val:=tonum(cur_chr);
@@ -4206,7 +4249,7 @@ else if cur_tok<cs_token_flag+single_base then
 else
   cur_val:=cur_tok-cs_token_flag-single_base;
 if cur_val>=number_usvs then
-  begin print_err("Improper alphabetic constant");
+  begin print_hex(cur_val); print_err("Improper alphabetic constant");
 @.Improper alphabetic constant@>
   help2("A one-character control sequence belongs after a ` mark.")@/
     ("So I'm essentially inserting \0 here.");
@@ -5388,7 +5431,7 @@ else  begin print_err("Missing font identifier");
 @d print_lc_hex(#)==l:=#;
   if l<10 then print_char(l+"0")@+else print_char(l-10+"a")
 
-@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@p procedure char_warning(@!f:internal_font_number;@!c:integer);
 var @!l:0..255; {small indices or counters}
 old_setting: integer; {saved value of |tracing_online|}
 @z
@@ -9845,6 +9888,22 @@ get_r_token; u:=cur_cs;
 @y
 @<Scan the font encoding specification@>;
 get_r_token; u:=cur_cs;
+@z
+
+@x
+else  begin old_setting:=selector; selector:=new_string;
+  print("FONT"); print(u-active_base); selector:=old_setting;
+@.FONTx@>
+  str_room(1); t:=make_string;
+  end;
+@y
+else  begin old_setting:=selector; selector:=new_string;
+  print("FONT");
+  if u-active_base<@"80 then print(u-active_base) else print_utf8(u-active_base);
+  selector:=old_setting;
+@.FONTx@>
+  str_room(1); t:=make_string;
+  end;
 @z
 
 @x

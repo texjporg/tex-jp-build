@@ -2,7 +2,7 @@
 % Public domain. See ../pdftexdir/char-warning-pdftex.ch for info.
 
 @x [30] If \tracinglostchars > 2, then promote full errors.
-@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@p procedure char_warning(@!f:internal_font_number;@!c:integer);
 var @!l:0..255; {small indices or counters}
 old_setting: integer; {saved value of |tracing_online|}
 begin if tracing_lost_chars>0 then
@@ -25,7 +25,7 @@ begin if tracing_lost_chars>0 then
  end;
 end;
 @y
-@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@p procedure char_warning(@!f:internal_font_number;@!c:integer);
 var @!l:0..255; {small indices or counters}
 old_setting: integer; {saved value of |tracing_online|}
 begin if tracing_lost_chars>0 then
@@ -38,7 +38,8 @@ begin if tracing_lost_chars>0 then
    print_nl("Missing character: There is no ")
  end;
 @.Missing character@>
- if (c<" ")or(c>"~") then begin
+ if c>=@"100 then print_utf8(c)
+ else if (c<" ")or(c>"~") then begin
    print_char("^"); print_char("^");
    if c<64 then print_char(c+64)
    else if c<128 then print_char(c-64)
