@@ -37,9 +37,8 @@
 @d upTeX_version_string=='-u1.29' {current u\pTeX\ version}
 @#
 @d npTeX_version=0
-@d npTeX_minor_version=0
 @d npTeX_revision==".0"
-@d npTeX_version_string==eTeX_version_string, '-np0.0.00'
+@d npTeX_version_string==eTeX_version_string, '-np0.0'
 @#
 @d npTeX_banner=='This is npTeX, Version 3.141592653',npTeX_version_string
 @d npTeX_banner_k==npTeX_banner
@@ -2913,6 +2912,13 @@ begin if suppress_outer_error=0 then if scanner_status<>normal then
 @z
 
 @x
+@!d:2..3; {number of excess characters in an expanded code}
+@y
+@!d:small_number; {number of excess characters in an expanded code}
+@!i:integer;
+@z
+
+@x
 @ @<Input from external file, |goto restart| if no input found@>=
 @^inner loop@>
 begin switch: if loc<=limit then {current line not yet finished}
@@ -2924,24 +2930,23 @@ begin switch: if loc<=limit then {current line not yet finished}
 begin switch: if loc<=limit then {current line not yet finished}
   begin
     cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
-    cur_cmd:=cat_code(cur_chr);
+    i:=1;
+    reswitch: cur_cmd:=cat_code(cur_chr);
     if (cur_cmd=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
       cur_cmd:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
     else if (cur_cmd=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
       cur_cmd:=other_kchar;
-    if cur_cmd>=cjk_code_flag then
-      begin for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
-        buffer2[l]:=2;
-      loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
-      end
-    else if multistrlen(ustringcast(buffer), limit+1, loc)>1 then
-      begin for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
-        buffer2[l]:=1;
-      loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
-      end
-    else begin
-      incr(loc); reswitch: cur_cmd:=cat_code(cur_chr);
-    end;
+    if i>0 then begin
+      if cur_cmd>=cjk_code_flag then
+        begin for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
+          buffer2[l]:=1;
+        loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
+        end
+      else if multistrlen(ustringcast(buffer), limit+1, loc)>1 then
+        loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc)
+      else incr(loc);
+      end;
+    i:=0;
 @z
 
 @x
@@ -3036,6 +3041,40 @@ if (suppress_outer_error=0)and(cur_cmd>=outer_call) then check_outer_validity;
 @z
 
 @x
+@<If this |sup_mark| starts an expanded character...@>=
+begin if cur_chr=buffer[loc] then if loc<limit then
+  begin c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
+    begin loc:=loc+2; 
+    if is_hex(c) then if loc<=limit then
+      begin cc:=buffer[loc]; @+if is_hex(cc) then
+        begin incr(loc); hex_to_cur_chr; goto reswitch;
+        end;
+      end;
+    if c<@'100 then cur_chr:=c+@'100 @+else cur_chr:=c-@'100;
+    goto reswitch;
+    end;
+  end;
+state:=mid_line;
+end
+@y
+@<If this |sup_mark| starts an expanded character...@>=
+begin if cur_chr=buffer[loc] then if loc<limit then
+  begin c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
+    begin loc:=loc+2;
+    if is_hex(c) then if loc<=limit then
+      begin cc:=buffer[loc]; @+if is_hex(cc) then
+        begin incr(loc); hex_to_cur_chr; goto reswitch;
+        end;
+      end;
+    if c<@'100 then cur_chr:=c+@'100 @+else cur_chr:=c-@'100;
+    goto reswitch;
+    end;
+  end;
+state:=mid_line;
+end
+@z
+
+@x
 if cur_cmd>=outer_call then check_outer_validity;
 @y
 if (suppress_outer_error=0)and(cur_cmd>=outer_call) then check_outer_validity;
@@ -3064,7 +3103,7 @@ end
 @y
 @<Scan a control...@>=
 begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
-else  begin k:=loc;
+else  begin start_cs: k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=cat_code(cur_chr);
   if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
@@ -3073,12 +3112,8 @@ else  begin k:=loc;
     cat:=other_kchar;
   if cat>=cjk_code_flag then
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[l]:=2
-  else if multistrlen(ustringcast(buffer), limit+1, k)>1 then
-    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
   k:=k+multistrlen(ustringcast(buffer), limit+1, k);
-start_cs:
   if (cat=letter)or(cat=hangul) then state:=skip_blanks
   else if (cat=kanji)or(cat=kana) then
     begin if (ptex_lineend mod 2)=0 then state:=skip_blanks_kanji
@@ -3096,7 +3131,6 @@ start_cs:
     |goto found|@>
   else @<If an expanded code is present, reduce it and |goto start_cs|@>;
   {single-letter control sequence}
-  print_int(fromBUFF(ustringcast(buffer), limit+1, loc)); print(" "); print_int(single_base);
   cur_cs:=single_base+fromBUFF(ustringcast(buffer), limit+1, loc);
   loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
   end;
@@ -3134,13 +3168,24 @@ begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
     if is_hex(c) then @+if k+2<=limit then
       begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
       end;
-    if d>2 then
-      begin hex_to_cur_chr; buffer[k-1]:=cur_chr;
+    if d>2 then { |^^xy| notation }
+      begin hex_to_cur_chr; 
+      i:=toBUFF(cur_chr); 
+      print("<"); print_int(cur_chr); print(">");
+      if BYTE1(i)<>0 then begin decr(d); buffer[k-1]:=BYTE1(i); buffer2[k-1]:=0; incr(k); end; 
+      if BYTE2(i)<>0 then begin decr(d); buffer[k-1]:=BYTE2(i); buffer2[k-1]:=0; incr(k); end; 
+      if BYTE3(i)<>0 then begin decr(d); buffer[k-1]:=BYTE3(i); buffer2[k-1]:=0; incr(k); end; 
+                                buffer[k-1]:=BYTE4(cur_chr); 
+      i:=0;
       end
     else if c<@'100 then buffer[k-1]:=c+@'100
     else buffer[k-1]:=c-@'100;
     buffer2[k-1]:=0; limit:=limit-d; first:=first-d;
     l:=k; cur_chr:=buffer[k-1]; cat:=cat_code(cur_chr);
+    { if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+      cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
+    else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+      cat:=other_kchar; }
     while l<=limit do
       begin buffer[l]:=buffer[l+d]; buffer2[l]:=buffer2[l+d]; incr(l);
       end;
@@ -3172,36 +3217,11 @@ begin repeat
     cat:=other_kchar;
   if cat>=cjk_code_flag then
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
-      buffer2[l]:=2
-  else if multistrlen(ustringcast(buffer), limit+1, k)>1 then
-    for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
   k:=k+multistrlen(ustringcast(buffer), limit+1, k);
-  while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
-    begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
-      begin d:=2;
-      if is_hex(c) then @+if k+2<=limit then
-        begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
-        end;
-      if d>2 then
-        begin hex_to_cur_chr;
-        end
-      else if c<@'100 then cur_chr:=c+@'100
-      else cur_chr:=c-@'100;
-      cat:=cat_code(cur_chr);
-      if (cat=letter)or(cat=sup_mark) then
-        begin buffer[k-1]:=cur_chr; buffer2[k-1]:=0;
-        limit:=limit-d; first:=first-d;
-        l:=k;
-        while l<=limit do
-          begin buffer[l]:=buffer[l+d]; buffer2[l]:=buffer2[l+d]; incr(l);
-          end;
-        end;
-      end;
-    end;
   if cat=letter then state:=skip_blanks;
 until not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul))or(k>limit);
-{@@<If an expanded...@@>;}
+@<If an expanded...@>;
 if not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)) then decr(k);
 if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to first nonletter}
 if k>loc+multistrlen(ustringcast(buffer),limit+1,loc) then {multiletter control sequence has been scanned}
@@ -3742,7 +3762,8 @@ else { \.{\\delcode} }
 @d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
 @d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
 @d uptex_version_code=eptex_version_code+1 {code for \.{\\uptexversion}}
-@d pdf_last_x_pos_code=uptex_version_code+1 {code for \.{\\pdflastxpos}}
+@d nptex_version_code=uptex_version_code+1 {code for \.{\\nptexversion}}
+@d pdf_last_x_pos_code=nptex_version_code+1 {code for \.{\\pdflastxpos}}
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}
 @d elapsed_time_code =pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
@@ -3773,6 +3794,8 @@ primitive("epTeXversion",last_item,eptex_version_code);
 @!@:epTeXversion_}{\.{\\epTeXversion} primitive@>
 primitive("uptexversion",last_item,uptex_version_code);
 @!@:uptexversion_}{\.{\\uptexversion} primitive@>
+primitive("nptexversion",last_item,nptex_version_code);
+@!@:nptexversion_}{\.{\\nptexversion} primitive@>
 primitive("ptexminorversion",last_item,ptex_minor_version_code);
 @!@:ptexminorversion_}{\.{\\ptexminorversion} primitive@>
 @z
@@ -3784,6 +3807,7 @@ primitive("ptexminorversion",last_item,ptex_minor_version_code);
   ptex_version_code: print_esc("ptexversion");
   eptex_version_code: print_esc("epTeXversion");
   uptex_version_code: print_esc("uptexversion");
+  nptex_version_code: print_esc("nptexversion");
   ptex_minor_version_code: print_esc("ptexminorversion");
 @z
 
@@ -3912,6 +3936,7 @@ end
   ptex_version_code: cur_val:=pTeX_version;
   eptex_version_code: cur_val:=epTeX_version_number;
   uptex_version_code: cur_val:=upTeX_version;
+  nptex_version_code: cur_val:=npTeX_version;
   ptex_minor_version_code: cur_val:=pTeX_minor_version;
   @/@<Cases for fetching an integer value@>@/
   end; {there are no other cases}
@@ -4234,7 +4259,6 @@ end
 @y
 @<Scan an alphabetic character code into |cur_val|@>=
 begin get_token; {suppress macro expansion}
-print("<"); print_hex(cur_tok); print(" "); print_hex(cur_chr); print(">");
 if cur_tok<cs_token_flag then
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
     begin skip_mode:=false; cur_val:=tonum(cur_chr);
@@ -4383,7 +4407,8 @@ begin str_toks:=str_toks_cat(b,0); end;
 @d ptex_font_name_code=13 {command code for \.{\\ptexfontname}}
 @d ptex_revision_code=14 {command code for \.{\\ptexrevision}}
 @d uptex_revision_code=15 {command code for \.{\\uptexrevision}}
-@d ptex_convert_codes=16 {end of \pTeX's command codes}
+@d nptex_revision_code=16 {command code for \.{\\nptexrevision}}
+@d ptex_convert_codes=17 {end of \pTeX's command codes}
 @d etex_convert_base=ptex_convert_codes {base for \eTeX's command codes}
 @d eTeX_revision_code=etex_convert_base {command code for \.{\\eTeXrevision}}
 @d etex_convert_codes=etex_convert_base+1 {end of \eTeX's command codes}
@@ -4432,6 +4457,8 @@ primitive("ptexrevision",convert,ptex_revision_code);
 @!@:ptexrevision_}{\.{\\ptexrevision} primitive@>
 primitive("uptexrevision",convert,uptex_revision_code);
 @!@:uptexrevision_}{\.{\\uptexrevision} primitive@>
+primitive("nptexrevision",convert,nptex_revision_code);
+@!@:nptexrevision_}{\.{\\nptexrevision} primitive@>
 @z
 
 @x
@@ -4459,6 +4486,7 @@ primitive("jobname",convert,job_name_code);@/
   ptex_font_name_code: print_esc("ptexfontname");
   ptex_revision_code:print_esc("ptexrevision");
   uptex_revision_code:print_esc("uptexrevision");
+  nptex_revision_code:print_esc("nptexrevision");
 @z
 
 @x
@@ -4540,7 +4568,7 @@ number_code,roman_numeral_code,
 kansuji_code,euc_code,sjis_code,jis_code,kuten_code,
 ucs_code,toucs_code,tojis_code: scan_int;
 ptex_font_name_code: scan_font_ident;
-ptex_revision_code, uptex_revision_code: do_nothing;
+ptex_revision_code, uptex_revision_code, nptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
@@ -4755,6 +4783,7 @@ ptex_font_name_code: begin
   end;
 ptex_revision_code: print(pTeX_revision);
 uptex_revision_code: print(upTeX_revision);
+nptex_revision_code: print(npTeX_revision);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
   else if cur_chr<@"80 then print_char(cur_chr)
   else if cur_cmd>=kanji then print_kanji(cur_chr)
@@ -7481,11 +7510,27 @@ loop@+  begin get_x_token;
     end;
 @y
 loop@+  begin get_x_token;
-  reswitch: case cur_cmd of
-  letter,other_char,char_given,kchar_given:@<Append a new letter or hyphen@>;
+  reswitch: print("["); print_int(cur_cmd); print("]"); 
+  case cur_cmd of
+  letter,other_char,kanji,kana,other_kchar,hangul,
+    char_given,kchar_given:@<Append a new letter or hyphen@>;
   char_num,kchar_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
     goto reswitch;
     end;
+@z
+
+@x
+@<Enter all of the patterns into a linked trie...@>=
+k:=0; hyf[0]:=0; digit_sensed:=false;
+loop@+  begin get_x_token;
+  case cur_cmd of
+  letter,other_char:@<Append a new letter or a hyphen level@>;
+@y
+@<Enter all of the patterns into a linked trie...@>=
+k:=0; hyf[0]:=0; digit_sensed:=false;
+loop@+  begin get_x_token;
+  case cur_cmd of
+  letter,other_char,kanji,kana,other_kchar,hangul:@<Append a new letter or a hyphen level@>;
 @z
 
 @x

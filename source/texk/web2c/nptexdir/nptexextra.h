@@ -5,7 +5,7 @@
 
 #include <etexdir/etex_version.h> /* for ETEX_VERSION */
 
-#define BANNER "This is npTeX, Version 3.141592653-" ETEX_VERSION "-np0.0.00"
+#define BANNER "This is npTeX, Version 3.141592653-" ETEX_VERSION "-np0.0"
 #define COPYRIGHT_HOLDER "D.E. Knuth"
 #define AUTHOR "Japanese TeX Development Community"
 #define PROGRAM_HELP NPTEXHELP
