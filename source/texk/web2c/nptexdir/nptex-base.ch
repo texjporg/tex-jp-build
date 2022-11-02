@@ -2905,6 +2905,13 @@ begin if suppress_outer_error=0 then if scanner_status<>normal then
 @z
 
 @x
+@d start_cs=26 {another}
+@y
+@d start_cs=26 {another}
+@d not_exp=27
+@z
+
+@x
 @!cat:0..max_char_code; {|cat_code(cur_chr)|, usually}
 @y
 @!cat:escape..max_char_code; {|cat_code(cur_chr)|, usually}
@@ -2915,6 +2922,7 @@ begin if suppress_outer_error=0 then if scanner_status<>normal then
 @!d:2..3; {number of excess characters in an expanded code}
 @y
 @!d:small_number; {number of excess characters in an expanded code}
+@!sup_count:small_number;
 @!i:integer;
 @z
 
@@ -3059,18 +3067,37 @@ end
 @y
 @<If this |sup_mark| starts an expanded character...@>=
 begin if cur_chr=buffer[loc] then if loc<limit then
-  begin c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
-    begin loc:=loc+2;
-    if is_hex(c) then if loc<=limit then
-      begin cc:=buffer[loc]; @+if is_hex(cc) then
-        begin incr(loc); hex_to_cur_chr; goto reswitch;
+  begin sup_count:=2;
+  {we have |^^| and another char; check how many |^|s we have altogether, up to a max of 6}
+  while (sup_count<6) and (loc+2*sup_count-2<=limit) and (cur_chr=buffer[loc+sup_count-1]) do
+    incr(sup_count);
+  {check whether we have enough hex chars for the number of |^|s}
+  for d:=1 to sup_count do
+    if not is_hex(buffer[loc+sup_count-2+d]) then {found a non-hex char, so do single |^^X| style}
+      begin c:=buffer[loc+1];
+      if c<@'200 then
+        begin loc:=loc+2;
+        if c<@'100 then cur_chr:=c+@'100 @+else cur_chr:=c-@'100;
+        goto reswitch;
         end;
+      goto not_exp;
       end;
-    if c<@'100 then cur_chr:=c+@'100 @+else cur_chr:=c-@'100;
-    goto reswitch;
+  {there were the right number of hex chars, so convert them}
+  cur_chr:=0;
+  for d:=1 to sup_count do
+    begin c:=buffer[loc+sup_count-2+d];
+    if c<="9" then cur_chr:=16*cur_chr+c-"0"
+    else cur_chr:=16*cur_chr+c-"a"+10;
     end;
+  {check the resulting value is within the valid range}
+  if cur_chr>=number_usvs then
+    begin cur_chr:=buffer[loc];
+    goto not_exp;
+    end;
+  loc:=loc+2*sup_count-1;
+  goto reswitch;
   end;
-state:=mid_line;
+not_exp: state:=mid_line;
 end
 @z
 
@@ -3163,35 +3190,50 @@ end
 @y
 @<If an expanded...@>=
 begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
-  begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
-    begin d:=2;
-    if is_hex(c) then @+if k+2<=limit then
-      begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
+  begin sup_count:=2;
+  {we have |^^| and another char; check how many |^|s we have altogether, up to a max of 6}
+  while (sup_count<6) and (k+2*sup_count-2<=limit) and (buffer[k+sup_count-1]=cur_chr) do
+    incr(sup_count);
+  {check whether we have enough hex chars for the number of |^|s}
+  for d:=1 to sup_count do
+    if not is_hex(buffer[k+sup_count-2+d]) then {found a non-hex char, so do single |^^X| style}
+      begin c:=buffer[k+1];
+      if c<@'200 then
+        begin if c<@'100 then buffer[k-1]:=c+@'100 @+else buffer[k-1]:=c-@'100;
+        d:=2; limit:=limit-d; buffer2[k-1]:=0;
+        while k<=limit do
+          begin buffer2[k]:=buffer2[k+d]; buffer[k]:=buffer[k+d]; incr(k);
+          end;
+        goto start_cs;
+        end
+      else sup_count:=0;
       end;
-    if d>2 then { |^^xy| notation }
-      begin hex_to_cur_chr; 
-      i:=toBUFF(cur_chr); 
+  if sup_count>0 then {there were the right number of hex chars, so convert them}
+    begin cur_chr:=0;
+    for d:=1 to sup_count do
+      begin c:=buffer[k+sup_count-2+d];
+      if c<="9" then cur_chr:=16*cur_chr+c-"0"
+      else cur_chr:=16*cur_chr+c-"a"+10;
+      end;
+    {check the resulting value is within the valid range}
+    if cur_chr>=number_usvs then cur_chr:=buffer[k]
+    else  begin
+      i:=toBUFF(cur_chr); d:=2*sup_count-1;
       print("<"); print_int(cur_chr); print(">");
       if BYTE1(i)<>0 then begin decr(d); buffer[k-1]:=BYTE1(i); buffer2[k-1]:=0; incr(k); end; 
       if BYTE2(i)<>0 then begin decr(d); buffer[k-1]:=BYTE2(i); buffer2[k-1]:=0; incr(k); end; 
       if BYTE3(i)<>0 then begin decr(d); buffer[k-1]:=BYTE3(i); buffer2[k-1]:=0; incr(k); end; 
-                                buffer[k-1]:=BYTE4(cur_chr); 
+                                buffer[k-1]:=BYTE4(i); buffer2[k-1]:=0;
       i:=0;
+      {shift the rest of the buffer left by |d| chars}
+      limit:=limit-d;
+      while k<=limit do
+        begin buffer2[k]:=buffer2[k+d]; buffer[k]:=buffer[k+d]; incr(k);
+        end;
+      goto start_cs;
       end
-    else if c<@'100 then buffer[k-1]:=c+@'100
-    else buffer[k-1]:=c-@'100;
-    buffer2[k-1]:=0; limit:=limit-d; first:=first-d;
-    l:=k; cur_chr:=buffer[k-1]; cat:=cat_code(cur_chr);
-    { if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-      cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
-    else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-      cat:=other_kchar; }
-    while l<=limit do
-      begin buffer[l]:=buffer[l+d]; buffer2[l]:=buffer2[l+d]; incr(l);
-      end;
-    goto start_cs;
-    end;
-  end;
+    end
+  end
 end
 @z
 
@@ -3489,12 +3531,20 @@ while p<>null do
       overflow("buffer size",buf_size);
 @:TeX capacity exceeded buffer size}{\quad buffer size@>
     end;
-  if check_kanji(info(p)) then {|wchar_token|}
+  if info(p) mod max_cjk_val>=@"80 then {|wchar_token|}
     begin t:=toBUFF(info(p) mod max_cjk_val);
-    if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
-    if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
-    if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
-                              buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+    if info(p) div max_cjk_val>=cjk_code_flag then begin
+      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
+      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
+      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
+                                buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+      end
+    else begin
+      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=0; incr(j); end;
+      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=0; incr(j); end;
+      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=0; incr(j); end;
+                                buffer[j]:=BYTE4(t); buffer2[j]:=0; incr(j);
+      end;
     p:=link(p);
     end
   else
