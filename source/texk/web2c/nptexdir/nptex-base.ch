@@ -2717,8 +2717,7 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @<Display the token ...@>=
 case m of
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char:
-  if c<@"80 then print(c) else print_utf8(c);
+  letter,other_char: print_utf8(c);
 kanji,kana,other_kchar,hangul: print_kanji(KANJI(c));
 @z
 
@@ -2950,9 +2949,7 @@ begin switch: if loc<=limit then {current line not yet finished}
           buffer2[l]:=1;
         loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
         end
-      else if multistrlen(ustringcast(buffer), limit+1, loc)>1 then
-        loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc)
-      else incr(loc);
+      else loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc);
       end;
     i:=0;
 @z
@@ -3219,7 +3216,6 @@ begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
     if cur_chr>=number_usvs then cur_chr:=buffer[k]
     else  begin
       i:=toBUFF(cur_chr); d:=2*sup_count-1;
-      print("<"); print_int(cur_chr); print(">");
       if BYTE1(i)<>0 then begin decr(d); buffer[k-1]:=BYTE1(i); buffer2[k-1]:=0; incr(k); end; 
       if BYTE2(i)<>0 then begin decr(d); buffer[k-1]:=BYTE2(i); buffer2[k-1]:=0; incr(k); end; 
       if BYTE3(i)<>0 then begin decr(d); buffer[k-1]:=BYTE3(i); buffer2[k-1]:=0; incr(k); end; 
@@ -3522,7 +3518,15 @@ if j>first+1 then
 else if j=first then cur_cs:=null_cs {the list is empty}
 else cur_cs:=single_base+buffer[first] {the list has length one}
 @y
-@ @<Look up the characters of list |r| in the hash table...@>=
+@ 
+@d set_buffer_from_t(#)==begin
+      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=#; incr(j); end;
+      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=#; incr(j); end;
+      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=#; incr(j); end;
+                                buffer[j]:=BYTE4(t); buffer2[j]:=#; incr(j);
+    end
+
+@<Look up the characters of list |r| in the hash table...@>=
 j:=first; p:=link(r);
 while p<>null do
   begin if j>=max_buf_stack then
@@ -3533,18 +3537,8 @@ while p<>null do
     end;
   if info(p) mod max_cjk_val>=@"80 then {|wchar_token|}
     begin t:=toBUFF(info(p) mod max_cjk_val);
-    if info(p) div max_cjk_val>=cjk_code_flag then begin
-      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
-      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
-      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
-                                buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
-      end
-    else begin
-      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=0; incr(j); end;
-      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=0; incr(j); end;
-      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=0; incr(j); end;
-                                buffer[j]:=BYTE4(t); buffer2[j]:=0; incr(j);
-      end;
+    if info(p) div max_cjk_val>=cjk_code_flag then set_buffer_from_t(1)
+    else set_buffer_from_t(0);
     p:=link(p);
     end
   else
@@ -4405,13 +4399,11 @@ while k<pool_ptr do
 begin str_room(1);
 p:=temp_head; link(p):=null; k:=b;
 while k<pool_ptr do
-  begin  t:=so(str_pool[k]); tb:=t;
-  if t>=@"100 then
-    begin t:=fromBUFFshort(str_pool, pool_ptr, k); 
-    k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
-    end;
+  begin  tb:=so(str_pool[k]);
+  t:=fromBUFFshort(str_pool, pool_ptr, k); 
+  k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
   if cat=0 then
-    begin if tb>=@"200 then t:=other_kchar*max_cjk_val+t { wchar_token }
+    begin if tb>=@"100 then t:=other_kchar*max_cjk_val+t { wchar_token }
     else if t=" " then t:=space_token
     else t:=other_token+t;
     end
@@ -7560,7 +7552,7 @@ loop@+  begin get_x_token;
     end;
 @y
 loop@+  begin get_x_token;
-  reswitch: print("["); print_int(cur_cmd); print("]"); 
+  reswitch:
   case cur_cmd of
   letter,other_char,kanji,kana,other_kchar,hangul,
     char_given,kchar_given:@<Append a new letter or hyphen@>;
@@ -12235,17 +12227,21 @@ skip_loop: do_nothing;
 
 @ |print_kanji| and |print_utf8| prints a Unicode character.
 
-@d print_kanji(#)==print_utf8_generic(#,@"200)
-@d print_utf8(#)==print_utf8_generic(KANJI(#),@"100)
+@d print_kanji(#)==print_utf8_generic(#,@"100)
+@d print_utf8(#)==print_utf8_generic(KANJI(#),0)
 
 @<Basic printing...@>=
 procedure print_utf8_generic(@!s:integer; @!f:integer); {prints a single character}
+var i: integer;
 begin
-s:=toBUFF(s mod max_cjk_val);
-if BYTE1(s)<>0 then print_char(f+BYTE1(s));
-if BYTE2(s)<>0 then print_char(f+BYTE2(s));
-if BYTE3(s)<>0 then print_char(f+BYTE3(s));
-                    print_char(f+BYTE4(s));
+i:=s mod max_cjk_val;
+if (i<@"20)or((i>=@"80)and(i<@"A0)) then print(i)
+else begin s:=toBUFF(i);
+  if BYTE1(s)<>0 then print_char(f+BYTE1(s));
+  if BYTE2(s)<>0 then print_char(f+BYTE2(s));
+  if BYTE3(s)<>0 then print_char(f+BYTE3(s));
+                      print_char(f+BYTE4(s));
+end;
 end;
 
 @ This procedure changes the direction of the page, if |page_contents|
