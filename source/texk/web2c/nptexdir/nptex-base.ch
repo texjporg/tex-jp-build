@@ -1766,6 +1766,13 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
 @z
 
 @x
+@d etex_toks=etex_toks_base+1 {end of \eTeX's token list parameters}
+@y
+@d node_recipe_loc=every_eof_loc+1 {not really used, but serves as a flag}
+@d etex_toks=node_recipe_loc+1 {end of \eTeX's token list parameters}
+@z
+
+@x
 @d math_font_base=cur_font_loc+1 {table of 48 math font numbers}
 @d cat_code_base=math_font_base+48
   {table of 256 command codes (the ``catcodes'')}
@@ -2784,6 +2791,17 @@ instead of |mid_line|.
 @z
 
 @x
+@d every_eof_text=every_eof_loc-eTeX_text_offset
+  {|token_type| code for \.{\\everyeof}}
+@y
+@d every_eof_text=every_eof_loc-eTeX_text_offset
+  {|token_type| code for \.{\\everyeof}}
+@#
+@d node_recipe_text=node_recipe_loc-eTeX_text_offset
+  {|token_type| code for \.{\\nptexnoderecipe}}
+@z
+
+@x
 @p procedure show_context; {prints where the scanner is}
 label done;
 var old_setting:0..max_selector; {saved |selector| setting}
@@ -2792,6 +2810,13 @@ var old_setting:0..max_selector; {saved |selector| setting}
 label done, done1;
 var old_setting:0..max_selector; {saved |selector| setting}
 @!s: pointer; {temporary pointer}
+@z
+
+@x
+every_eof_text: print_nl("<everyeof> ");
+@y
+every_eof_text: print_nl("<everyeof> ");
+node_recipe_text: print_nl("<nptexnoderecipe> ");
 @z
 
 @x
@@ -3661,8 +3686,8 @@ procedure@?scan_something_internal_ident; forward;
 @<Glob...@>=
 @!cur_val:integer; {value returned by numeric scanners}
 @y
-@d node_recipe_val=5 { \.{\\nptexnoderecipe} token lists }
-@d tok_val=6 {token lists}
+@d tok_val=5 {token lists}
+@d node_recipe_val=6 { \.{\\nptexnoderecipe} token lists }
 
 @<Glob...@>=
 @!cur_val:integer; {value returned by numeric scanners}
@@ -3794,6 +3819,22 @@ else if m<math_code_base then { \.{\\lccode}, \.{\\uccode}, \.{\\sfcode} }
 else { \.{\\delcode} }
   begin scan_ascii_num;
   scanned_result(eqtb[m+cur_val].int)(int_val) end;
+@z
+
+@x
+    else cur_val:=sa_ptr(m)
+  else cur_val:=equiv(m);
+  cur_val_level:=tok_val;
+@y
+    else cur_val:=sa_ptr(m)
+  else if cur_chr=node_recipe_loc then begin
+    scan_char_num;
+    find_sa_element(node_recipe_val, cur_val, false);
+    if cur_ptr=null then cur_val:=null
+    else cur_val:=sa_ptr(cur_ptr);
+    end
+  else cur_val:=equiv(m);
+  cur_val_level:=tok_val;
 @z
 
 @x
@@ -9756,6 +9797,36 @@ omath_given: begin print_esc("omathchar"); print_hex(chr_code);
 @z
 
 @x
+      else cur_chr:=toks_base+cur_val;
+      end
+    else e:=true;
+  p:=cur_chr; {|p=every_par_loc| or |output_routine_loc| or \dots}
+@y
+      else cur_chr:=toks_base+cur_val;
+      end
+    else e:=true
+  else if cur_chr=node_recipe_loc then begin
+    scan_char_num;
+    find_sa_element(node_recipe_val, cur_val, true);
+    cur_chr:=cur_ptr; e:=true;
+  end;
+  p:=cur_chr; {|p=every_par_loc| or |output_routine_loc| or \dots}
+@z
+
+@x
+  else q:=equiv(cur_chr);
+  if q=null then sa_define(p,null)(p,undefined_cs,null)
+@y
+  else if cur_chr=node_recipe_loc then begin
+    scan_char_num;
+    find_sa_element(node_recipe_val, cur_val, false);
+    if cur_ptr=null then q:=null
+    else q:=sa_ptr(cur_ptr);
+  end else q:=equiv(cur_chr);
+  if q=null then sa_define(p,null)(p,undefined_cs,null)
+@z
+
+@x
 assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
   word_define(p,cur_val);
   end;
@@ -10095,6 +10166,20 @@ while k+4<pool_ptr do
   begin undump_four_ASCII; k:=k+4;
   end;
 k:=pool_ptr-4; undump_four_ASCII;
+@z
+
+@x
+if eTeX_ex then for k:=int_val to tok_val do dump_int(sa_root[k]);
+@y
+if eTeX_ex then for k:=int_val to node_recipe_val do dump_int(sa_root[k]);
+@z
+
+@x
+if eTeX_ex then for k:=int_val to tok_val do
+  undump(null)(lo_mem_max)(sa_root[k]);
+@y
+if eTeX_ex then for k:=int_val to node_recipe_val do
+  undump(null)(lo_mem_max)(sa_root[k]);
 @z
 
 @x
@@ -10550,6 +10635,8 @@ primitive("Uchar",convert,Uchar_convert_code);@/
 @!@:Uchar_}{\.{\\Uchar} primitive@>
 primitive("Ucharcat",convert,Ucharcat_convert_code);@/
 @!@:Ucharcat_}{\.{\\Ucharcat} primitive@>
+primitive("nptexnoderecipe",assign_toks,node_recipe_loc);
+@!@:nptex_node_recipe_}{\.{\\nptexnoderecipe} primitive@>
 @z
 
 @x
@@ -12656,6 +12743,10 @@ end
 begin
   seconds_and_micros(epochseconds,microseconds);
 end
+
+@ \.{\\nptexnoderecipe}.
+@<Cases of |assign_toks| for |print_cmd_chr|@>=
+node_recipe_loc: print_esc("nptexnoderecipe");
 
 @* \[54] System-dependent changes.
 @z
