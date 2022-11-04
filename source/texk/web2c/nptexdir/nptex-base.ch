@@ -11,7 +11,9 @@
 \def\eTeX{$\varepsilon$-\TeX}
 \def\epTeX{$\varepsilon$-\pTeX}
 \def\eupTeX{$\varepsilon$-\upTeX}
+\def\upTeX{u\pTeX}
 \def\npTeX{n\pTeX}
+\def\pdfTeX{pdf\/\TeX}
 @z
 
 @x
@@ -1167,7 +1169,7 @@ stretch(fill_glue):=unity; stretch_order(fill_glue):=fill;@/
 @x
 @p procedure short_display(@!p:integer); {prints highlights of list |p|}
 @y
-@p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures|@>@;@/
+@p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures@>@;@/
 procedure short_display(@!p:integer); {prints highlights of list |p|}
 @z
 
@@ -1799,7 +1801,7 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
 @d auto_xspacing==equiv(auto_xspacing_code)
 @d enable_cjk_token==equiv(enable_cjk_token_code)
 @d cjkx_code(#)==equiv(cjkx_code_base+#)
-@d kcatcodekey(#)==(#) { npTeX: \cjkxcode は文字ごと }
+@d kcatcodekey(#)==(#) { npTeX: \.{\\cjkxcode} は文字ごと }
 @d auto_xsp_code(#)==equiv(auto_xsp_code_base+#)
 @d inhibit_xsp_type(#)==eq_type(inhibit_xsp_code_base+#)
 @d inhibit_xsp_code(#)==equiv(inhibit_xsp_code_base+#)
@@ -2554,7 +2556,7 @@ begin
   end;
 end;
 
-@ @<Declare the pTeX-specific |print_font_...| procedures|@>=
+@ @<Declare the pTeX-specific |print_font_...| procedures@>=
 procedure print_font_name_and_size(f:internal_font_number);
 begin
   print(font_name[f]);
@@ -3659,7 +3661,8 @@ procedure@?scan_something_internal_ident; forward;
 @<Glob...@>=
 @!cur_val:integer; {value returned by numeric scanners}
 @y
-@d tok_val=5 {token lists}
+@d node_recipe_val=5 { \.{\\nptexnoderecipe} token lists }
+@d tok_val=6 {token lists}
 
 @<Glob...@>=
 @!cur_val:integer; {value returned by numeric scanners}
@@ -4403,7 +4406,7 @@ while k<pool_ptr do
   t:=fromBUFFshort(str_pool, pool_ptr, k); 
   k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
   if cat=0 then
-    begin if tb>=@"100 then t:=other_kchar*max_cjk_val+t { wchar_token }
+    begin if tb>=@"100 then t:=other_kchar*max_cjk_val+t { |wchar_token| }
     else if t=" " then t:=space_token
     else t:=other_token+t;
     end
@@ -10879,6 +10882,7 @@ max_reg_help_line:="A register number must be between 0 and 65535.";
 @z
 
 @x
+@ There are seven almost identical doubly linked trees, one for the
 sparse array of the up to 32512 additional registers of each kind and
 one for the sparse array of the up to 32767 additional mark classes.
 The root of each such tree, if it exists, is an index node containing 16
@@ -10886,14 +10890,64 @@ pointers to subtrees for 4096 consecutive array elements.  Similar index
 nodes are the starting points for all nonempty subtrees for 4096, 256,
 and 16 consecutive array elements.  These four levels of index nodes are
 followed by a fifth level with nodes for the individual array elements.
+
+Each index node is nine words long.  The pointers to the 16 possible
+subtrees or are kept in the |info| and |link| fields of the last eight
+words.  (It would be both elegant and efficient to declare them as
+array, unfortunately \PASCAL\ doesn't allow this.)
 @y
+@ There are eight almost identical doubly linked trees, one for the
 sparse array of the up to 65280 additional registers of each kind and
 one for the sparse array of the up to 65535 additional mark classes.
-The root of each such tree, if it exists, is an index node containing 16
-pointers to subtrees for 65536 consecutive array elements.  Similar index
-nodes are the starting points for all nonempty subtrees for 65536, 4096,
-256, and 16 consecutive array elements.  These five levels of index nodes
+The root of each such tree, if it exists, is an index node containing 32
+pointers to subtrees for $32^5$ consecutive array elements.  Similar index
+nodes are the starting points for all nonempty subtrees for $32^4$, $32^3$,
+$32^2$, and 32 consecutive array elements.  These five levels of index nodes
 are followed by a sixth level with nodes for the individual array elements.
+
+Each index node is 17 words long.  The pointers to the 32 possible
+subtrees or are kept in the |info| and |link| fields of the last eight
+words.  (It would be both elegant and efficient to declare them as
+array, unfortunately \PASCAL\ doesn't allow this.)
+@z
+
+@x
+@d mark_val=6 {the additional mark classes}
+@#
+@d dimen_val_limit=@"20 {$2^4\cdot(|dimen_val|+1)$}
+@d mu_val_limit=@"40 {$2^4\cdot(|mu_val|+1)$}
+@d box_val_limit=@"50 {$2^4\cdot(|box_val|+1)$}
+@d tok_val_limit=@"60 {$2^4\cdot(|tok_val|+1)$}
+@#
+@d index_node_size=9 {size of an index node}
+@y
+@d mark_val=7 {the additional mark classes}
+@#
+@d dimen_val_limit=@"40 {$2^5\cdot(|dimen_val|+1)$}
+@d mu_val_limit=@"80 {$2^5\cdot(|mu_val|+1)$}
+@d box_val_limit=@"A0 {$2^5\cdot(|box_val|+1)$}
+@d tok_val_limit=@"C0 {$2^5\cdot(|tok_val|+1)$}
+@#
+@d index_node_size=17 {size of an index node}
+@z
+
+@x
+for k:=1 to index_node_size-1 do {clear all 16 pointers}
+@y
+for k:=1 to index_node_size-1 do {clear all 32 pointers}
+@z
+
+
+@x
+We use macros to extract the four-bit pieces from a sixteen-bit register
+number or mark class and to fetch or store one of the 16 pointers from
+an index node.
+@y
+We use macros to extract the five-bit pieces from a twenty-five-bit register
+number or mark class and to fetch or store one of the 32 pointers from
+an index node. (Note that the |hex_dig| macros are mis-named since the conversion
+from 4-bit to 5-bit fields for \npTeX!)
+
 @z
 
 @x
@@ -10902,11 +10956,11 @@ are followed by a sixth level with nodes for the individual array elements.
 @d hex_dig3(#)==(# div 16) mod 16 {the second lowest hexadecimal digit}
 @d hex_dig4(#)==# mod 16 {the lowest hexadecimal digit}
 @y
-@d hex_dig1(#)==# div 65536 {the fifth lowest hexadecimal digit}
-@d hex_dig2(#)==(# div 4096) mod 16 {the fourth lowest hexadecimal digit}
-@d hex_dig3(#)==(# div 256) mod 16 {the third lowest hexadecimal digit}
-@d hex_dig4(#)==(# div 16) mod 16 {the second lowest hexadecimal digit}
-@d hex_dig5(#)==# mod 16 {the lowest hexadecimal digit}
+@d hex_dig1(#)==# div @"100000 {the fifth lowest 5-bit field}
+@d hex_dig2(#)==(# div @"8000) mod @"20 {the fourth lowest 5-bit field}
+@d hex_dig3(#)==(# div @"400) mod @"20 {the third lowest 5-bit field}
+@d hex_dig4(#)==(# div @"20) mod @"20 {the second lowest 5-bit field}
+@d hex_dig5(#)==# mod @"20 {the lowest 5-bit field}
 @z
 
 @x
@@ -10942,7 +10996,7 @@ procedure find_sa_element(@!t:small_number;@!n:halfword;@!w:boolean);
   {sets |cur_val| to sparse array element location or |null|}
 label not_found,not_found1,not_found2,not_found3,not_found4,not_found5,exit;
 var q:pointer; {for list manipulations}
-@!i:small_number; {a four bit index}
+@!i:small_number; {a five bit index}
 begin cur_ptr:=sa_root[t];
 if_cur_ptr_is_null_then_return_or_goto(not_found);@/
 q:=cur_ptr; i:=hex_dig1(n); get_sa_ptr;
@@ -10972,6 +11026,18 @@ exit:end;
 @z
 
 @x
+@d sa_type(#)==(sa_index(#) div 16) {type part of combined type/index}
+@y
+@d sa_type(#)==(sa_index(#) div 32) {type part of combined type/index}
+@z
+
+@x
+sa_index(cur_ptr):=16*t+i; sa_lev(cur_ptr):=level_one
+@y
+sa_index(cur_ptr):=32*t+i; sa_lev(cur_ptr):=level_one
+@z
+
+@x
 repeat i:=hex_dig4(sa_index(q)); p:=q; q:=link(p); free_node(p,s);
 @y
 repeat i:=hex_dig5(sa_index(q)); p:=q; q:=link(p); free_node(p,s);
@@ -10981,9 +11047,9 @@ repeat i:=hex_dig5(sa_index(q)); p:=q; q:=link(p); free_node(p,s);
 else  begin n:=hex_dig4(sa_index(q)); q:=link(q); n:=n+16*sa_index(q);
   q:=link(q); n:=n+256*(sa_index(q)+16*sa_index(link(q)));
 @y
-else  begin n:=hex_dig5(sa_index(q)); q:=link(q); n:=n+16*sa_index(q);
-  q:=link(q); n:=n+256*(sa_index(q)+16*sa_index(link(q)));
-  q:=link(link(q)); n:=n+65536*sa_index(q);
+else  begin n:=hex_dig5(sa_index(q)); q:=link(q); n:=n+32*sa_index(q);
+  q:=link(q); n:=n+@"400*(sa_index(q)+32*sa_index(link(q)));
+  q:=link(link(q)); n:=n+@"100000*sa_index(q);
 @z
 
 @x
