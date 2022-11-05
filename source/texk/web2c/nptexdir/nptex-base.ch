@@ -6873,6 +6873,17 @@ inhibit_glue_flag:=false;
 @z
 
 @x
+if n>max_quarterword then confusion("256 spans"); {this can happen, but won't}
+@^system dependencies@>
+@:this can't happen 256 spans}{\quad 256 spans@>
+@y
+if n>max_quarterword then confusion("too many spans");
+   {this can happen, but won't}
+@^system dependencies@>
+@:this can't happen too many spans}{\quad too many spans@>
+@z
+
+@x
   begin p:=hpack(link(head),natural);
 @y
   begin adjust_hlist(head,false);
