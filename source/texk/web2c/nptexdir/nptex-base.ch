@@ -7923,6 +7923,15 @@ box(n):=vpack(temp_ptr,natural); set_box_dir(box(n))(abs(ins_dir(p)));
 @d main_loop_j=130 {like |main_loop|, but |cur_chr| holds a KANJI code}
 @d skip_loop=141
 @d again_2=150
+@#
+@d check_node_recipe(#)==
+  begin cur_ptr:=null;
+  find_sa_element(node_recipe_val,cur_chr,false);
+  if (cur_ptr<>null)and(sa_ptr(cur_ptr)<>null) then
+    begin begin_token_list(sa_ptr(cur_ptr), node_recipe_text); 
+    get_x_token; goto #;
+    end;
+  end
 @z
 
 @x
@@ -7932,6 +7941,12 @@ label big_switch,reswitch,main_loop,main_loop_wrapup,
 procedure main_control; {governs \TeX's activities}
 label big_switch,reswitch,main_loop,main_loop_wrapup,
   main_loop_j,main_loop_j+1,main_loop_j+3,skip_loop,again_2,
+@z
+
+@x
+  main_loop_lookahead,main_loop_lookahead+1,
+@y
+  main_loop_lookahead,main_loop_lookahead+1,main_loop_lookahead+2,
 @z
 
 @x
@@ -7957,7 +7972,7 @@ hmode+no_boundary: begin get_x_token;
 @y
 ins_kp:=false;
 case abs(mode)+cur_cmd of
-hmode+letter,hmode+other_char: goto main_loop;
+hmode+letter,hmode+other_char: begin check_node_recipe(reswitch); goto main_loop; end;
 hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+kchar_given: goto main_loop_j;
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop else goto main_loop_j;
@@ -8037,10 +8052,10 @@ if cur_r=false_bchar then cur_r:=non_char {this prevents spurious ligatures}
 @y
 @<Look ahead for another character...@>=
 get_next; {set only |cur_cmd| and |cur_chr|, for speed}
-if cur_cmd=letter then goto main_loop_lookahead+1;
+if cur_cmd=letter then @<Look for \.{\\nptexnoderecipe}, and goto |main_lig_loop| if found@>;
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   @<goto |main_lig_loop|@>;
-if cur_cmd=other_char then goto main_loop_lookahead+1;
+if cur_cmd=other_char then @<Look for \.{\\nptexnoderecipe}, and goto |main_lig_loop| if found@>;
 if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
   else @<goto |main_lig_loop|@>;
@@ -8069,12 +8084,15 @@ if cur_cmd=inhibit_glue then
   begin inhibit_glue_flag:=true; goto main_loop_lookahead;
   end;
 if cur_cmd=no_boundary then bchar:=non_char;
-cur_r:=bchar; lig_stack:=null; goto main_lig_loop;
+main_loop_lookahead+2: cur_r:=bchar; lig_stack:=null; goto main_lig_loop;
 main_loop_lookahead+1: adjust_space_factor;
 inhibit_glue_flag:=false;
 fast_get_avail(lig_stack); font(lig_stack):=main_f;
 cur_r:=qi(cur_chr); character(lig_stack):=cur_r;
 if cur_r=false_bchar then cur_r:=non_char {this prevents spurious ligatures}
+
+@ @<Look for \.{\\nptexnoderecipe}, and goto |main_lig_loop| if found@>=
+begin check_node_recipe(main_loop_lookahead+2); print("B"); goto main_loop_lookahead+1; end
 
 @ @<goto |main_lig_loop|@>=
 begin bchar:=non_char; cur_r:=bchar; lig_stack:=null;
@@ -11035,6 +11053,13 @@ for k:=1 to index_node_size-1 do {clear all 16 pointers}
 for k:=1 to index_node_size-1 do {clear all 32 pointers}
 @z
 
+@x
+@ @<Initialize table...@>=
+for i:=int_val to tok_val do sa_root[i]:=null;
+@y
+@ @<Initialize table...@>=
+for i:=int_val to node_recipe_val do sa_root[i]:=null;
+@z
 
 @x
 We use macros to extract the four-bit pieces from a sixteen-bit register
