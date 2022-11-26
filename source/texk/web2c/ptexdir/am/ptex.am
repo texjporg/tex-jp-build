@@ -179,18 +179,24 @@ pweb_tests = \
 	ptexdir/pdvitype.test \
 	ptexdir/ppltotf.test \
 	ptexdir/ptftopl.test
-pweb_tests += ptexdir/pbibtex-openout-test.pl ptexdir/pbibtex-longline-test.pl
-pweb_tests += ptexdir/pbibtex-mem.test ptexdir/nissya.test
-pweb_tests += ptexdir/sample.test
-pweb_tests += ptexdir/yokotate.test
-pweb_tests += ptexdir/skipjfmp.test
-ptexdir/pbibtex.log ptexdir/pbibtex-openout-test.log ptexdir/pbibtex-longline-test.log \
-	ptexdir/pbibtex-mem.log ptexdir/nissya.log: pbibtex$(EXEEXT)
-ptexdir/pdvitype.log ptexdir/sample.log: pdvitype$(EXEEXT)
+## pBibTeX
+pweb_tests += \
+	ptexdir/pbibtex-openout-test.pl ptexdir/pbibtex-longline-test.pl \
+	ptexdir/pbibtex-mem.test ptexdir/nissya.test
+## pDviType
+pweb_tests += \
+	ptexdir/sample.test
+# ppPLtoTF/pTFtoPL
+pweb_tests += \
+	ptexdir/yokotate.test ptexdir/skipjfmp.test
+ptexdir/pbibtex.log: pbibtex$(EXEEXT)
+ptexdir/pdvitype.log: pdvitype$(EXEEXT)
 ptexdir/ppltotf.log: ppltotf$(EXEEXT)
 ptexdir/ptftopl.log: ptftopl$(EXEEXT)
-ptexdir/yokotate.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
-ptexdir/skipjfmp.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
+ptexdir/pbibtex-openout-test.log ptexdir/pbibtex-longline-test.log \
+	ptexdir/pbibtex-mem.log ptexdir/nissya.log: pbibtex$(EXEEXT)
+ptexdir/sample.log: pdvitype$(EXEEXT)
+ptexdir/yokotate.log ptexdir/skipjfmp.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
 
 EXTRA_DIST += $(ptex_tests) $(pweb_tests)
 DISTCLEANFILES += $(pweb_programs:=.c) $(pweb_programs:=.h) \

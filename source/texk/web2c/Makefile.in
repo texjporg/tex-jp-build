@@ -3681,8 +3681,10 @@ TRIPTRAP = $(am__append_7) $(am__append_17) $(am__append_26) \
 	$(am__append_79)
 bin_links = $(am__append_5) $(am__append_14) $(am__append_15) \
 	$(am__append_24) $(am__append_33) $(am__append_41) \
-	$(am__append_49) $(am__append_54) $(am__append_91) \
-	$(am__append_96) $(am__append_101) $(am__append_106)
+	$(am__append_49) $(am__append_54) upbibtex$(EXEEXT):ppbibtex \
+	updvitype$(EXEEXT):ppdvitype uppltotf$(EXEEXT):pppltotf \
+	uptftopl$(EXEEXT):pptftopl $(am__append_91) $(am__append_96) \
+	$(am__append_101) $(am__append_106)
 install_exe_links = $(am__append_12) $(am__append_22) $(am__append_31) \
 	$(am__append_39) $(am__append_47) $(am__append_52) \
 	$(am__append_89) $(am__append_94) $(am__append_99) \
@@ -4466,6 +4468,7 @@ ptftopl_DEPENDENCIES = $(ptex_dependencies)
 # pTeX Tests
 #
 ptex_tests = ptexdir/ptriptest.test ptexdir/pver.test
+# ppPLtoTF/pTFtoPL
 pweb_tests = ptexdir/pbibtex.test ptexdir/pdvitype.test \
 	ptexdir/ppltotf.test ptexdir/ptftopl.test \
 	ptexdir/pbibtex-openout-test.pl \
@@ -4574,18 +4577,15 @@ uptftopl_LDADD = $(uptex_ldadd)
 uptftopl_DEPENDENCIES = $(uptex_dependencies)
 
 # upTeX Tests
-uptex_tests = uptexdir/uptriptest.test uptexdir/upver.test
-upweb_tests = \
-	uptexdir/upbibtex.test \
-	uptexdir/updvitype.test \
-	uptexdir/uppltotf.test \
-	uptexdir/uptftopl.test \
-	uptexdir/yokotate.test \
-	uptexdir/newjfm.test \
-	uptexdir/uparse.test \
-	uptexdir/gkhuge.test \
-	uptexdir/upkcat.test
-
+uptex_tests = uptexdir/uptriptest.test uptexdir/upver.test uptexdir/upkcat.test
+# uppPLtoTF/upTFtoPL
+upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
+	uptexdir/uppltotf.test uptexdir/uptftopl.test \
+	uptexdir/upbibtex-openout-test.pl \
+	uptexdir/upbibtex-longline-test.pl uptexdir/upbibtex-mem.test \
+	uptexdir/nissya.test uptexdir/sample.test \
+	uptexdir/yokotate.test uptexdir/skipjfmp.test \
+	uptexdir/newjfm.test uptexdir/uparse.test uptexdir/gkhuge.test
 euptex_CPPFLAGS = $(PTEXENC_INCLUDES) $(AM_CPPFLAGS) \
 	-I$(srcdir)/libmd5 $(ZLIB_INCLUDES) $(am__append_149)
 
@@ -22170,13 +22170,14 @@ ptftopl.web: tie$(EXEEXT) tftopl.web tftopl.ch
 	$(tie_m) tftopl.web tftopl.ch
 ptexdir/ptriptest.log: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 ptexdir/pver.log: ptex$(EXEEXT)
-ptexdir/pbibtex.log ptexdir/pbibtex-openout-test.log ptexdir/pbibtex-longline-test.log \
-	ptexdir/pbibtex-mem.log ptexdir/nissya.log: pbibtex$(EXEEXT)
-ptexdir/pdvitype.log ptexdir/sample.log: pdvitype$(EXEEXT)
+ptexdir/pbibtex.log: pbibtex$(EXEEXT)
+ptexdir/pdvitype.log: pdvitype$(EXEEXT)
 ptexdir/ppltotf.log: ppltotf$(EXEEXT)
 ptexdir/ptftopl.log: ptftopl$(EXEEXT)
-ptexdir/yokotate.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
-ptexdir/skipjfmp.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
+ptexdir/pbibtex-openout-test.log ptexdir/pbibtex-longline-test.log \
+	ptexdir/pbibtex-mem.log ptexdir/nissya.log: pbibtex$(EXEEXT)
+ptexdir/sample.log: pdvitype$(EXEEXT)
+ptexdir/yokotate.log ptexdir/skipjfmp.log: ppltotf$(EXEEXT) ptftopl$(EXEEXT)
 ptrip.diffs: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: ptrip-clean
@@ -22283,15 +22284,16 @@ uptftopl.p: tangle$(EXEEXT) uptftopl.web uptexdir/uptftopl.ch
 uptftopl.web: tie$(EXEEXT) tftopl.web tftopl.ch ptexdir/ptftopl.ch
 	$(tie_m) tftopl.web tftopl.ch ptexdir/ptftopl.ch
 uptexdir/uptriptest.log: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
-uptexdir/upver.log: uptex$(EXEEXT)
+uptexdir/upver.log uptexdir/upkcat.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)
 uptexdir/uptftopl.log: uptftopl$(EXEEXT)
-uptexdir/yokotate.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
-uptexdir/newjfm.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
-uptexdir/uparse.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
-uptexdir/gkhuge.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
+uptexdir/upbibtex-openout-test.log uptexdir/upbibtex-longline-test.log \
+	uptexdir/upbibtex-mem.log uptexdir/nissya.log: upbibtex$(EXEEXT)
+uptexdir/sample.log: pdvitype$(EXEEXT)
+uptexdir/yokotate.log uptexdir/skipjfmp.log \
+	uptexdir/newjfm.log uptexdir/uparse.log uptexdir/gkhuge.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
 uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: uptrip-clean
