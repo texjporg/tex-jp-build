@@ -36,13 +36,14 @@ for font in chcode; do
   ./uptftopl -kanji=utf8 -charcode-format octal $testdir/$font.tfm uptests/x$font.pl && \
     diff $testdir/$font.pl uptests/x$font.pl && echo || exit 4
 
-for enc in utf8 jis; do
+for enc in utf8 euc sjis jis; do
 
   ./uppltotf -kanji=$enc $testdir/$font-$enc.pl uptests/x$font-$enc.tfm && \
     cmp $testdir/$font.tfm uptests/x$font-$enc.tfm && echo || exit 5
 
   ./uptftopl -kanji=$enc $testdir/$font.tfm uptests/x$font-$enc.pl && \
-    sed -i".bak" -e "y/―～∥－￠￡￢/—〜‖−¢£¬/" uptests/x$font-$enc.pl && \
+    if [ $enc = utf8 ]; then \
+      sed -i".bak" -e "y/―～∥－￠￡￢/—〜‖−¢£¬/" uptests/x$font-$enc.pl; fi && \
     diff $testdir/$font-$enc.pl uptests/x$font-$enc.pl && echo || exit 6
 
 done

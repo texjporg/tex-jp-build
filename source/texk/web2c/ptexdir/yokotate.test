@@ -33,13 +33,14 @@ for font in chcode; do
   ./ptftopl -charcode-format octal $testdir/$font.tfm ptests/x$font.pl && \
     diff $testdir/$font.pl ptests/x$font.pl && echo || exit 4
 
-for enc in utf8 jis; do
+for enc in utf8 euc sjis jis; do
 
   ./ppltotf -kanji=$enc $testdir/$font-$enc.pl ptests/x$font-$enc.tfm && \
     cmp $testdir/$font.tfm ptests/x$font-$enc.tfm && echo || exit 5
 
   ./ptftopl -kanji=$enc $testdir/$font.tfm ptests/x$font-$enc.pl && \
-    sed -i".bak" -e "y/―～∥－￠￡￢/—〜‖−¢£¬/" ptests/x$font-$enc.pl && \
+    if [ $enc = utf8 ]; then \
+      sed -i".bak" -e "y/―～∥－￠￡￢/—〜‖−¢£¬/" ptests/x$font-$enc.pl; fi && \
     diff $testdir/$font-$enc.pl ptests/x$font-$enc.pl && echo || exit 6
 
 done
