@@ -182,6 +182,8 @@ pweb_tests = \
 ## pBibTeX
 pweb_tests += \
 	ptexdir/pbibtex-openout-test.pl ptexdir/pbibtex-longline-test.pl \
+	ptexdir/pbibtex-char.test \
+	ptexdir/pbibtex-jxampl.test \
 	ptexdir/pbibtex-mem.test ptexdir/nissya.test
 ## pDviType
 pweb_tests += \

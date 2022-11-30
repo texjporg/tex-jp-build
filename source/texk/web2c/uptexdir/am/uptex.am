@@ -172,6 +172,8 @@ upweb_tests = \
 ## upBibTeX
 upweb_tests += \
 	uptexdir/upbibtex-openout-test.pl uptexdir/upbibtex-longline-test.pl \
+	uptexdir/upbibtex-char.test uptexdir/pbibtex-char.test \
+	uptexdir/upbibtex-jxampl.test uptexdir/pbibtex-jxampl.test \
 	uptexdir/upbibtex-mem.test uptexdir/nissya.test
 ## upDviType
 upweb_tests += \

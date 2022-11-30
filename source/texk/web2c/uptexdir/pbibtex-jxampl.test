@@ -1,0 +1,45 @@
+#! /bin/sh -vx
+#
+# Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+# You may freely use, modify and/or distribute this file.
+
+test -d uptests || mkdir -p uptests
+
+rc=0
+bb=
+
+TEXMFCNF=$srcdir/../kpathsea
+${BSTINPUTS:=.:/usr/share/texlive/texmf-dist//}
+${BIBINPUTS:=.:/usr/share/texlive/texmf-dist//}
+export TEXMFCNF BSTINPUTS BIBINPUTS
+
+BIBTEX="./upbibtex -kanji-internal=euc"
+
+## test for Japanese example
+for bst in jabbrv jplain jalpha junsrt jname jipsj tieice tipsj jorsj; do
+
+  job=jxampl-$bst-p
+  cp $srcdir/bibtests/$job.aux uptests/$job.aux
+  $BIBTEX uptests/$job \
+   && diff $srcdir/bibtests/$job.bbl uptests/$job.bbl || { rc=1 ; bb=$bb,$bst ; }
+
+done
+
+for bst in jabbrv jplain jalpha junsrt jname jipsj tieice tipsj jorsj; do\
+
+  job=jxampl-$bst-p
+  cp $srcdir/bibtests/$job.aux uptests/$job-wide.aux
+  max_print_line=399 ${BIBTEX} uptests/$job-wide \
+   && diff $srcdir/bibtests/$job-wide.bbl uptests/$job-wide.bbl || { rc=2 ; bb=$bb,$bst-w ; }
+
+done
+
+
+if [ $rc -gt 0 ]; then
+  if [ -n "$bb" ]; then
+    echo ERROR in upbibtex-euc $bb
+  fi
+else
+  echo SUCCESS
+fi
+exit $rc

@@ -1,0 +1,66 @@
+#! /bin/sh -vx
+#
+# Copyright 2022 TANAKA Takuji <ttk@t-lab.opal.ne.jp>
+# You may freely use, modify and/or distribute this file.
+
+test -d uptests || mkdir -p uptests
+
+rc=0
+
+TEXMFCNF=$srcdir/../kpathsea
+BSTINPUTS=$srcdir/bibtests
+BIBINPUTS=$srcdir/bibtests
+export TEXMFCNF BSTINPUTS BIBINPUTS
+
+PBIBTEX="./upbibtex -kanji-internal=euc"
+
+## test for sorting and change.case$
+cp $srcdir/bibtests/sortp.aux uptests/xsortp.aux
+$PBIBTEX uptests/xsortp || rc=51
+diff $srcdir/bibtests/sortp.bbl uptests/xsortp.bbl || rc=52
+
+## test for change.case$
+cp $srcdir/bibtests/casep.aux uptests/xcasep.aux
+$PBIBTEX uptests/xcasep || rc=53
+diff $srcdir/bibtests/casep.bbl uptests/xcasep.bbl || rc=54
+
+## test for add.period$
+cp $srcdir/bibtests/periodp.aux uptests/xperiodp.aux
+$PBIBTEX uptests/xperiodp || rc=3
+diff $srcdir/bibtests/periodp.bbl uptests/xperiodp.bbl || rc=4
+
+## test for substring$
+cp $srcdir/bibtests/substrp.aux uptests/xsubstrp.aux
+$PBIBTEX uptests/xsubstrp || rc=5
+diff $srcdir/bibtests/substrp.bbl uptests/xsubstrp.bbl || rc=6
+
+## test for text.length$, text.prefix$
+cp $srcdir/bibtests/txtprfxp.aux uptests/xtxtprfxp.aux
+$PBIBTEX uptests/xtxtprfxp || rc=7
+diff $srcdir/bibtests/txtprfxp.bbl uptests/xtxtprfxp.bbl || rc=8
+
+## test for width$
+cp $srcdir/bibtests/widthp.aux uptests/xwidthp.aux
+$PBIBTEX uptests/xwidthp || rc=9
+diff $srcdir/bibtests/widthp.bbl uptests/xwidthp.bbl || rc=10
+
+## test for chr.to.int$, int.to.str$, int.to.chr$
+cp $srcdir/bibtests/charp.aux uptests/xcharp.aux
+$PBIBTEX uptests/xcharp
+### || rc=11
+### It results errors.
+diff $srcdir/bibtests/charp.bbl uptests/xcharp.bbl || rc=12
+
+## test for num.names$, format.name$
+cp $srcdir/bibtests/namep.aux tests/xnamep.aux
+max_print_line=119 $PBIBTEX tests/xnamep || rc=13
+diff $srcdir/bibtests/namep.bbl tests/xnamep.bbl || rc=14
+
+## test for is.knj.str$
+cp $srcdir/bibtests/isknjp.aux uptests/xisknjp.aux
+$PBIBTEX uptests/xisknjp || rc=15
+diff $srcdir/bibtests/isknjp.bbl uptests/xisknjp.bbl || rc=16
+
+
+exit $rc
+

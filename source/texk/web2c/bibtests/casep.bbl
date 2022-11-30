@@ -1,0 +1,16 @@
+\section*{Test result}
+\begin{itemize}
+\item[~] ABC HIJ XYZ abc hij xyz {ACE} {ace}
+\item[u] ABC HIJ XYZ ABC HIJ XYZ {ACE} {ace}
+\item[l] abc hij xyz abc hij xyz {ACE} {ace}
+\item[t] Abc hij xyz abc hij xyz {ACE} {ace}
+\item[~] ΑΒΓ ΠΡ ΣΤ ΧΨΩ αβγ πρ στ χψω {ΑΠΣ} {απσ}
+\item[u] ΑΒΓ ΠΡ ΣΤ ΧΨΩ αβγ πρ στ χψω {ΑΠΣ} {απσ}
+\item[l] ΑΒΓ ΠΡ ΣΤ ΧΨΩ αβγ πρ στ χψω {ΑΠΣ} {απσ}
+\item[t] ΑΒΓ ΠΡ ΣΤ ΧΨΩ αβγ πρ στ χψω {ΑΠΣ} {απσ}
+\item[~] АБВ ОП РС ЭЮЯ абв оп рс эюя {АРЯ} {апя}
+\item[u] АБВ ОП РС ЭЮЯ абв оп рс эюя {АРЯ} {апя}
+\item[l] АБВ ОП РС ЭЮЯ абв оп рс эюя {АРЯ} {апя}
+\item[t] АБВ ОП РС ЭЮЯ абв оп рс эюя {АРЯ} {апя}
+\end{itemize}
+\endinput

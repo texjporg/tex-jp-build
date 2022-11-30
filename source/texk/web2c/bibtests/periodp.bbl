@@ -1,0 +1,50 @@
+\section*{Test result}
+\begin{itemize}
+\item[~~] ABC xyz
+\item[ap] ABC xyz.
+\item[~~] ABC xyz!
+\item[ap] ABC xyz!
+\item[~~] ABC xyz,
+\item[ap] ABC xyz,.
+\item[~~] ABC xyz.
+\item[ap] ABC xyz.
+\item[~~] ABC xyz?
+\item[ap] ABC xyz?
+\item[~~] ABC {xyz!}
+\item[ap] ABC {xyz!}
+\item[~~] ABC {{xyz?}}
+\item[ap] ABC {{xyz?}}
+\item[~~] あいうわ{{おん？}}
+\item[ap] あいうわ{{おん？}}
+\item[~~] あいうわ{おん！}
+\item[ap] あいうわ{おん！}
+\item[~~] あいうわおん
+\item[ap] あいうわおん.
+\item[~~] あいうわおん、
+\item[ap] あいうわおん、.
+\item[~~] あいうわおん。
+\item[ap] あいうわおん。
+\item[~~] あいうわおん，
+\item[ap] あいうわおん，.
+\item[~~] あいうわおん．
+\item[ap] あいうわおん．
+\item[~~] あいうわおん？
+\item[ap] あいうわおん？
+\item[~~] あいうわおん！
+\item[ap] あいうわおん！
+\item[~~] АБВ {{эюя?}}
+\item[ap] АБВ {{эюя?}}
+\item[~~] АБВ {эюя!}
+\item[ap] АБВ {эюя!}
+\item[~~] АБВ эюя
+\item[ap] АБВ эюя.
+\item[~~] АБВ эюя!
+\item[ap] АБВ эюя!
+\item[~~] АБВ эюя,
+\item[ap] АБВ эюя,.
+\item[~~] АБВ эюя.
+\item[ap] АБВ эюя.
+\item[~~] АБВ эюя?
+\item[ap] АБВ эюя?
+\end{itemize}
+\endinput
