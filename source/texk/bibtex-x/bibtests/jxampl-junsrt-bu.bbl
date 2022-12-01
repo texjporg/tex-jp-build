@@ -1,0 +1,611 @@
+\newcommand{\noopsort}[1]{} \newcommand{\printfirst}[2]{#1}
+  \newcommand{\singleletter}[1]{#1} \newcommand{\switchargs}[2]{#2#1}
+\begin{thebibliography}{100}
+
+\bibitem{article-minimal}
+L[eslie]~A. Aamport.
+\newblock The gnats and gnus document preparation system.
+\newblock {\em \mbox{G-Animal's} Journal}, 1986.
+
+\bibitem{article-full}
+L[eslie]~A. Aamport.
+\newblock The gnats and gnus document preparation system.
+\newblock {\em \mbox{G-Animal's} Journal}, Vol.~41, No.~7, pp. 73+, July 1986.
+\newblock This is a full ARTICLE entry.
+
+\bibitem{article-crossref}
+L[eslie]~A. Aamport.
+\newblock The gnats and gnus document preparation system.
+\newblock In {\em \mbox{G-Animal's} Journal\/} \cite{whole-journal}, pp. 73+.
+\newblock This is a cross-referencing ARTICLE entry.
+
+\bibitem{whole-journal}
+{\em \mbox{G-Animal's} Journal}, Vol.~41, No.~7, July 1986.
+\newblock The entire issue is devoted to gnats and gnus (this entry is a
+  cross-referenced ARTICLE (journal)).
+
+\bibitem{inbook-minimal}
+Donald~E. Knuth.
+\newblock {\em Fundamental Algorithms}, chapter 1.2.
+\newblock Addison-Wesley, {\noopsort{1973b}}1973.
+
+\bibitem{inbook-full}
+Donald~E. Knuth.
+\newblock {\em Fundamental Algorithms}, Vol.~1 of {\em The Art of Computer
+  Programming}, section 1.2, pp. 10--119.
+\newblock Addison-Wesley, Reading, Massachusetts, second edition, 10~January
+  {\noopsort{1973b}}1973.
+\newblock This is a full INBOOK entry.
+
+\bibitem{inbook-crossref}
+Donald~E. Knuth.
+\newblock {\em Fundamental Algorithms}, section 1.2.
+\newblock Vol.~1 of {\em The Art of Computer Programming\/} \cite{whole-set},
+  second edition, {\noopsort{1973b}}1973.
+\newblock This is a cross-referencing INBOOK entry.
+
+\bibitem{book-minimal}
+Donald~E. Knuth.
+\newblock {\em Seminumerical Algorithms}.
+\newblock Addison-Wesley, {\noopsort{1973c}}1981.
+
+\bibitem{book-full}
+Donald~E. Knuth.
+\newblock {\em Seminumerical Algorithms}, Vol.~2 of {\em The Art of Computer
+  Programming}.
+\newblock Addison-Wesley, Reading, Massachusetts, second edition, 10~January
+  {\noopsort{1973c}}1981.
+\newblock This is a full BOOK entry.
+
+\bibitem{book-crossref}
+Donald~E. Knuth.
+\newblock {\em Seminumerical Algorithms}.
+\newblock Vol.~2 of {\em The Art of Computer Programming\/} \cite{whole-set},
+  second edition, {\noopsort{1973c}}1981.
+\newblock This is a cross-referencing BOOK entry.
+
+\bibitem{whole-set}
+Donald~E. Knuth.
+\newblock {\em The Art of Computer Programming}.
+\newblock Four volumes. Addison-Wesley,
+  {\noopsort{1973a}}{\switchargs{--90}{1968}}.
+\newblock Seven volumes planned (this is a cross-referenced set of BOOKs).
+
+\bibitem{booklet-minimal}
+The programming of computer art.
+
+\bibitem{booklet-full}
+Jill~C. Knvth.
+\newblock The programming of computer art.
+\newblock Vernier Art Center, Stanford, California, February 1988.
+\newblock This is a full BOOKLET entry.
+
+\bibitem{incollection-minimal}
+Daniel~D. Lincoll.
+\newblock Semigroups of recurrences.
+\newblock In {\em High Speed Computer and Algorithm Organization}. Academic
+  Press, 1977.
+
+\bibitem{incollection-full}
+Daniel~D. Lincoll.
+\newblock Semigroups of recurrences.
+\newblock In David~J. Lipcoll, D.~H. Lawrie, and A.~H. Sameh, editors, {\em
+  High Speed Computer and Algorithm Organization}, No.~23 in Fast Computers,
+  part~3, pp. 179--183. Academic Press, New York, third edition, September
+  1977.
+\newblock This is a full INCOLLECTION entry.
+
+\bibitem{incollection-crossref}
+Daniel~D. Lincoll.
+\newblock Semigroups of recurrences.
+\newblock In Lipcoll, et~al. \cite{whole-collection}, pp. 179--183.
+\newblock This is a cross-referencing INCOLLECTION entry.
+
+\bibitem{whole-collection}
+David~J. Lipcoll, D.~H. Lawrie, and A.~H. Sameh, editors.
+\newblock {\em High Speed Computer and Algorithm Organization}.
+\newblock No.~23 in Fast Computers. Academic Press, New York, third edition,
+  September 1977.
+\newblock This is a cross-referenced BOOK (collection) entry.
+
+\bibitem{manual-minimal}
+{\em The Definitive Computer Manual}.
+
+\bibitem{manual-full}
+Larry Manmaker.
+\newblock {\em The Definitive Computer Manual}.
+\newblock Chips-R-Us, Silicon Valley, silver edition, April-May 1986.
+\newblock This is a full MANUAL entry.
+
+\bibitem{mastersthesis-minimal}
+{\'{E}}douard Masterly.
+\newblock Mastering thesis writing.
+\newblock Master's thesis, Stanford University, 1988.
+
+\bibitem{mastersthesis-full}
+{\'{E}}douard Masterly.
+\newblock Mastering thesis writing.
+\newblock Master's project, Stanford University, English Department,
+  June-August 1988.
+\newblock This is a full MASTERSTHESIS entry.
+
+\bibitem{misc-minimal}
+This is a minimal MISC entry.
+
+\bibitem{misc-full}
+Joe-Bob Missilany.
+\newblock Handing out random pamphlets in airports.
+\newblock Handed out at O'Hare, October 1984.
+\newblock This is a full MISC entry.
+
+\bibitem{inproceedings-minimal}
+Alfred~V. Oaho, Jeffrey~D. Ullman, and Mihalis Yannakakis.
+\newblock On notions of information transfer in {VLSI} circuits.
+\newblock In {\em Proc. Fifteenth Annual ACM Symposium on the Theory of
+  Computing}, 1983.
+
+\bibitem{inproceedings-full}
+Alfred~V. Oaho, Jeffrey~D. Ullman, and Mihalis Yannakakis.
+\newblock On notions of information transfer in {VLSI} circuits.
+\newblock In Wizard~V. Oz and Mihalis Yannakakis, editors, {\em Proc. Fifteenth
+  Annual ACM Symposium on the Theory of Computing}, No.~17 in All ACM
+  Conferences, pp. 133--139, Boston, March 1983. The OX Association for
+  Computing Machinery, Academic Press.
+\newblock This is a full INPROCEDINGS entry.
+
+\bibitem{inproceedings-crossref}
+Alfred~V. Oaho, Jeffrey~D. Ullman, and Mihalis Yannakakis.
+\newblock On notions of information transfer in {VLSI} circuits.
+\newblock In OX{\singleletter{stoc}} \cite{whole-proceedings}, pp. 133--139.
+\newblock This is a cross-referencing INPROCEEDINGS entry.
+
+\bibitem{proceedings-minimal}
+{\em Proc. Fifteenth Annual Symposium on the Theory of Computing}, 1983.
+
+\bibitem{proceedings-full}
+Wizard~V. Oz and Mihalis Yannakakis, editors.
+\newblock {\em Proc. Fifteenth Annual Symposium on the Theory of Computing},
+  No.~17 in All ACM Conferences, Boston, March 1983. The OX Association for
+  Computing Machinery, Academic Press.
+\newblock This is a full PROCEEDINGS entry.
+
+\bibitem{whole-proceedings}
+The OX Association for Computing Machinery.
+\newblock {\em Proc. Fifteenth Annual Symposium on the Theory of Computing},
+  Boston, 1983.
+\newblock This is a cross-referenced PROCEEDINGS.
+
+\bibitem{phdthesis-minimal}
+F.~Phidias Phony-Baloney.
+\newblock {\em Fighting Fire with Fire: Festooning {F}rench Phrases}.
+\newblock PhD thesis, Fanstord University, 1988.
+
+\bibitem{phdthesis-full}
+F.~Phidias Phony-Baloney.
+\newblock {\em Fighting Fire with Fire: Festooning {F}rench Phrases}.
+\newblock {PhD} dissertation, Fanstord University, Department of French,
+  June-August 1988.
+\newblock This is a full PHDTHESIS entry.
+
+\bibitem{techreport-minimal}
+Tom Terrific.
+\newblock An {$O(n \log n / \! \log\log n)$} sorting algorithm.
+\newblock Technical report, Fanstord University, 1988.
+
+\bibitem{techreport-full}
+Tom T{\'{e}}rrific.
+\newblock An {$O(n \log n / \! \log\log n)$} sorting algorithm.
+\newblock Wishful Research Result~7, Fanstord University, Computer Science
+  Department, Fanstord, California, October 1988.
+\newblock This is a full TECHREPORT entry.
+
+\bibitem{unpublished-minimal}
+Ulrich {\"{U}}nderwood, Ned {\~N}et, and Paul {\={P}}ot.
+\newblock Lower bounds for wishful research results.
+\newblock Talk at Fanstord University (this is a minimal UNPUBLISHED entry).
+
+\bibitem{unpublished-full}
+Ulrich {\"{U}}nderwood, Ned {\~N}et, and Paul {\={P}}ot.
+\newblock Lower bounds for wishful research results.
+\newblock Talk at Fanstord University (this is a full UNPUBLISHED entry),
+  November, December 1988.
+
+\bibitem{random-note-crossref}
+Volume~2 is listed under Knuth \cite{book-full}.
+
+\bibitem{inbook-full-j}
+ドナルド・ダック.
+\newblock 基本算法, 手回し計算機の裏技集, 第1巻, 第1.2節, pp.
+  10--119.
+\newblock 林南出版, 東京, 調布市, 第2版, 4月1日 1963.
+\newblock いんちき.
+
+\bibitem{incol-full-j-1}
+ドナルド・ハック.
+\newblock  {究極のJBibTeXing}, これでわかるかな？講座, No.~1,
+  第6.2節, p. 321. 豊島園出版, 東京, 練馬区, 第1版, 11月7日
+  1991.
+\newblock テスト用.
+
+\bibitem{article-crossref-j}
+匿名希望.
+\newblock 論文乱造の裏技教えます.
+\newblock  Big TomorrowでなくSmall Yesterday \cite{whole-journal-j}, pp.
+  73+.
+\newblock これは文献リスト内参照しているARTICLEの例.
+
+\bibitem{article-crossref-jj}
+匿名希望.
+\newblock 論文乱造の裏技教えます，その２.
+\newblock  Big TomorrowでなくSmall Yesterday \cite{whole-journal-j}, pp.
+  83+.
+\newblock これは文献リスト内参照しているARTICLEの例.
+
+\bibitem{whole-journal-j}
+Big TomorrowでなくSmall Yesterday, Vol.~41, No.~7, July 1986.
+\newblock
+  いかにして手抜きして出世するか，インチキで儲けるかの特集号！
+
+\bibitem{inbook-crossref-j}
+ドナルド・ハック.
+\newblock {究極のJBibTeXing}, 第3.5節.
+\newblock これでわかるかな？講座, 第1巻 \cite{whole-set-j},
+  第1版, 1991.
+\newblock 文献リスト内参照をしているINBOOKの例。
+
+\bibitem{whole-set-j}
+ドナルド・ハック.
+\newblock これでわかるかな？講座, 全13巻.
+\newblock 豊島園出版, 東京, 練馬区, 1991.
+\newblock
+  13巻を予定はしているが，締切を守らない著者のことだから？これはシリーズ全体が参照されている例．
+
+\bibitem{inbook-crossref-j-1}
+ドナルド・ハック.
+\newblock {はじめてのJBibTeXing}, 第3.5節.
+\newblock これでわかるかな？講座, 全13巻 \cite{whole-set-j},
+  第1版, {\noopsort{1973b}}1973.
+\newblock 文献リスト内参照をしているINBOOKの例！
+
+\bibitem{cvs}
+機械振興協会.
+\newblock {CVS技術レポート}, 昭52.
+
+\bibitem{ha}
+浜松芳夫, 中田勝治, 加地郁夫.
+\newblock
+  個別軌道輸送システム十字路付近のモデル化とその解析.
+\newblock 電子情報通信学会論文誌(A), Vol. J64-A, No.~10, pp.
+  835--842, 1982.
+
+\bibitem{costa}
+J.~M. Costa and A.~N. Venetsanopoulos.
+\newblock Design of circularly symmetric two-demensional recursive filters.
+\newblock {\em IEEE Trans. Acoust., Speech \& Signal Process.}, Vol. ASSP-22,
+  No.~6, pp. 432--443, 1974.
+
+\bibitem{mcclella}
+J.~H. McClellan.
+\newblock The design of two-dimensional digital filters by transformation.
+\newblock In {\em Proc. 7th Annu. Princeton Conf. Inform. Sci. \& Systm.}, pp.
+  247--251, 1973.
+
+\bibitem{dug}
+D.~E. Dudgen and R.~M. Mersereau.
+\newblock {\em Multideimensional digital signal processing}.
+\newblock Prentice-Hall, 1984.
+
+\bibitem{sakawa}
+M.~Sakawa and H.~Yano.
+\newblock Interactive decision making for multiobjective linear programming
+  problems with fuzzy parameters.
+\newblock In G.~Fandel, M.~Grauer, A.~Kurzhanski, and A.~P. Wierzbiki, editors,
+  {\em Large-Scale Modeling and Interactive Decision Analysis, Proceedings,
+  Eisenach, GDR}, pp. 88--96. Springer-Verlag, 1986.
+
+\bibitem{ssl}
+富士通.
+\newblock SSL~II使用手引書, 1980.
+
+\bibitem{newman}
+J.~R. Norman.
+\newblock {\em The World of Mathematics, 4 vols.}
+\newblock Simon and Schuster, 1956.
+\newblock (翻訳~: 林 雄一朗訳編~: ``数学と論理と'',
+  東京図書(1970)).
+
+\bibitem{Rich}
+Elaine~A. Rich.
+\newblock {\em Artificial Intelligence}.
+\newblock McGraw-Hill Series in Artificial Intelligence. McGraw-Hill Book
+  Company, 1983.
+\newblock (翻訳~: 廣田, 宮村 訳~: ``人工知能 I,
+  II'',マグロウヒル(1984)).
+
+\bibitem{goto}
+後藤英一.
+\newblock 計算機による数式処理とは.
+\newblock  後藤英一, 一松信, 広田良吾（編）,
+  計算機による数式処理のすすめ,
+  コンピュータ・サイエンス\ {\bf bit}\ 別冊, pp. 4--6.
+  共立出版, 昭61-4.
+
+\bibitem{磯崎}
+磯崎秀樹.
+\newblock How to use {\JLaTeX}.
+\newblock memo for {\JLaTeX}, 1987.
+
+\bibitem{斉藤}
+斉藤康己.
+\newblock 日本語{\TeX}:~{\JTeX}.
+\newblock DECUS第7回シンポジウム配付資料, 1987.
+
+\bibitem{sym}
+Janusz~S. Kowalik, editor.
+\newblock {\em Coupling Symbolic and Numerical Computing in Expert Systems}.
+\newblock North-Holland, 1986.
+
+\bibitem{eda}
+F.~N. Springsteel.
+\newblock A multilevel expert system for explaratory data analysis.
+\newblock In Janusz~S. Kowalik, editor, {\em Coupling Symbolic and Numerical
+  Computing in Expert Systems}, pp. 295--306. North-Holland, 1986.
+
+\bibitem{dss}
+Clyde~W. Holsapple and Andrew~B. Whinston, editors.
+\newblock {\em Decision Support Systems: Theory and Application}.
+\newblock North-Holland, 1987.
+
+\bibitem{cm}
+Amilcar Sernads and Cristina Sernads.
+\newblock Conceptual modeling for knowledge-based dss development.
+\newblock In Clyde~W. Holsapple and Andrew~B. Whinston, editors, {\em Decision
+  Support Systems: Theory and Application}, pp. 91--135. North-Holland, 1987.
+
+\bibitem{reduce}
+後藤英一, 一松信, 広田良吾（編）.
+\newblock 計算機による数式処理のすすめ.
+\newblock コンピュータ・サイエンス\ {\bf bit}\ 別冊.
+  共立出版, 1986.
+
+\bibitem{fp}
+Shouichi Matsui and Masao Iri.
+\newblock An overflow/underflow-free floating-point representation of numbers.
+\newblock {\em Journal of Information Processing}, Vol.~4, No.~3, pp. 123--133,
+  November 1981.
+
+\bibitem{la}
+Masao Iri, Kazuo Murota, and Shouichi Matsui.
+\newblock Linear-time approximation algorithms for finding the minimum-weight
+  perfect matching on a plane.
+\newblock {\em Information Processing Letters}, Vol.~12, pp. 206--209, 1981.
+
+\bibitem{あふれ無し}
+松井正一, 伊理正夫.
+\newblock あふれのない浮動小数点表示方式.
+\newblock 情報処理学会論文誌, Vol.~21, No.~4, pp. 306--313, 1980.
+
+\bibitem{ダム}
+中村秀治, 松浦真一, 松井正一, 寺野隆雄.
+\newblock 知識工学的手法に基づく水力鋼構造物の寿命予測.
+\newblock 土木学会論文集, No. 368/I-5, pp. 301--310, April 1986.
+
+\bibitem{人名表記}
+マーク・ピーターセン.
+\newblock 日本人の英語.
+\newblock 岩波新書(新赤版) 18. 岩波書店, April 1988.
+\newblock pp. 187--189 英語での日本人の名前の書き方,
+  日本の国際化のためには明治時代からの考え方をこのあたりでやめたらどうか Shouichi
+  Matsui でなく Matsui Shouichi.
+
+\bibitem{EUC日本語TeX}
+松井正一.
+\newblock {NTT}版日本語{\TeX}: {\JTeX}の使い方, May 1988.
+\newblock 電力中央研究所 情報システム部 内部メモ.
+
+\bibitem{multi}
+松井正一, 篠原靖志, 大屋隆生, 高橋誠.
+\newblock
+  マルチメディアを活用した意思決定支援システムの開発.
+\newblock
+  「利用者志向の情報システム」シンポジウム予稿集, pp.
+  39--48. 情報処理学会, July 1986.
+
+\bibitem{marumoji}
+山根一真.
+\newblock 変体少女文字の研究.
+\newblock 講談社, 1986.
+
+\bibitem{maru}
+味岡伸太郎.
+\newblock 横書きで文字を書けば自然とマル字になる.
+\newblock とよはし百選＜夏号＞, 通巻37号, p.~25, 1986.
+
+\bibitem{goto-h}
+後藤英一.
+\newblock 計算機による数式処理とは.
+\newblock  後藤ほか \cite{reduce}, pp. 4--6.
+
+\bibitem{磯崎-h}
+磯崎秀樹.
+\newblock How to use {\JLaTeX}.
+\newblock memo for {\JLaTeX}, 1987.
+
+\bibitem{斉藤-h}
+斉藤康己.
+\newblock 日本語{\TeX}:~{\JTeX}.
+\newblock DECUS第7回シンポジウム配付資料, 1987.
+
+\bibitem{multi-h}
+松井正一, 篠原靖志, 大屋隆生, 高橋誠.
+\newblock
+  マルチメディアを活用した意思決定支援システムの開発.
+\newblock
+  「利用者志向の情報システム」シンポジウム予稿集, pp.
+  39--48. 情報処理学会, July 1986.
+
+\bibitem{ama}
+M.~Amamiya, R.~Hasegawa, and H.~Mikami.
+\newblock List processing with data flow machine.
+\newblock In E.~Goto, Oozei Sonota, et~al., editors, {\em RIMS Symposium on
+  Software Science and Engineering}, pp. 165--190. Springer-Verlag, 1982.
+
+\bibitem{Arv}
+Kathall~V. Arvind and K.~Pingali.
+\newblock A data flow architecture with tagged tokens.
+\newblock MIT LCS Momo TM174, 1980.
+
+\bibitem{cha}
+V.~Chachra, P.~M. Chare, and J.~M. Moore.
+\newblock {\em Applications of Graph Theory Algorithms}.
+\newblock Elsevier North Holland, 1979.
+
+\bibitem{dav}
+D.~Davidson, D.~Landskov, B.~D. Shriver, and P.~W. Maliett.
+\newblock Some experiments in local microcodes compaction for horizontal
+  machines.
+\newblock {\em IEEE Transactions on Computers}, Vol. C-30, No.~7, pp. 460--477,
+  July 1981.
+
+\bibitem{den}
+J.~B. Dennis and D.~P. Misunas.
+\newblock A preliminary architecture for a basic data flow processor.
+\newblock In {\em Proc. of the 2nd Int'l Symp. on Computer Architecture}, pp.
+  126--132, January 1975.
+
+\bibitem{fis}
+J.~A. Fisher.
+\newblock Trace scheduling: A techinique for global microcode compaction.
+\newblock {\em IEEE Transactions on Computers}, Vol. C-30, No.~7, pp. 478--490,
+  1981.
+
+\bibitem{gajski}
+D.~D. Gajski, D.~A. Padua, D.~J. Kuck, and R.~H. Kuhn.
+\newblock A second optinion on data flow machines and languages.
+\newblock {\em Computer}, Vol.~15, No.~2, pp. 58--69, February 1982.
+
+\bibitem{suna1}
+砂原秀樹, 所真理雄.
+\newblock データ駆動型計算機の実行制御に関する考察.
+\newblock  データフローワークショップ'86, pp. 83--89, May 1986.
+
+\bibitem{suna2}
+Hideki Sunahara and Mario Tokoro.
+\newblock Half-dynamic scheduling with data-flow control.
+\newblock In {\em Presented at Int'l Conf. on SuperComputing}, Athens, Greece,
+  June 8--12 1987.
+
+\bibitem{toko1}
+M.~Tokoro, E.~Tamura, and T.~Takizuka.
+\newblock Optimization of microprograms.
+\newblock {\em IEEE Transactions on Computers}, Vol. C-30, No.~7, pp. 491--504,
+  July 1981.
+
+\bibitem{toko2}
+M.~Tokoro, J.~R. Jagannathan, and H.~Sunahara.
+\newblock On the working set concepts for data-flow machines.
+\newblock In {\em Proc. of the 10th Int'l Symp. on Computer Architecture}, pp.
+  90--97, June 1983.
+
+\bibitem{suna86}
+H.~Sunahara and M.~Tokoro.
+\newblock On the working set concept for data-flow machines: Policies and their
+  evaluation.
+\newblock In J.~V. Woods, editor, {\em Fifth Generation Computer
+  Architectures}, pp. 147--160. North-Holland, 1986.
+
+\bibitem{onda}
+H.~Onda, T.~Hasegawa, and T.~Matsui.
+\newblock Collision avoidance for a 6-dof manipulator based on empty space
+  analysis of 3-d real world.
+\newblock In {\em IEEE Int. Workshop on Intelligent Robots and Systems},
+  Ibaraki, 1990.
+
+\bibitem{近藤}
+近藤, 木村.
+\newblock
+  迷路法に基づく自由空間算出法を用いた障害物回避動作計画.
+\newblock 日本ロボット学会誌, Vol.~5, No.~4, pp. 263--272, 1987.
+
+\bibitem{JSAI-1}
+人工知能学会誌, Vol.~5, No.~4, July 1990.
+\newblock 特集「分散人工知能」.
+
+\bibitem{grosz}
+B.~Grosz.
+\newblock The representation and use of focus in a system for understanding
+  dialog.
+\newblock In B.~Grosz, K.~S. Jones, and B.~L. Webber, editors, {\em Natural
+  Language Processing}, pp. 353--362. Morgan Kaufram Publisher, 1979, in part
+  1986.
+
+\bibitem{fake-database-key}
+
+
+\bibitem{scribe}
+Unilogic, Ltd., Pittsburgh.
+\newblock {\em Scribe Document Production System User Manual}, April 1984.
+\newblock Chapter twelve and appendices E8 through E10 deal with
+  bibliographies.
+
+\bibitem{松井}
+松井正一.
+\newblock
+  日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方日本語TeXの使い方.
+\newblock 電力中央研究所, 1987.
+\newblock ＪＢｉｂＴｅＸのテスト.
+
+\bibitem{prime-number-theorem}
+Charles Louis Xavier~Joseph de~la Vall{\'e}e~Poussin.
+\newblock A strong form of the prime number theorem, 19th century.
+
+\bibitem{chicago}
+{\em The Chicago Manual of Style}, pp. 400--401.
+\newblock University of Chicago Press, thirteenth edition, 1982.
+
+\bibitem{texbook}
+Donald~E. Knuth.
+\newblock {\em The {{\TeX}book}}.
+\newblock Addison-Wesley, 1984.
+\newblock (邦訳：『{\TeX} ブック』 斉藤 信男 監訳, 鷺谷 好輝
+  訳, アスキー, 1989年).
+
+\bibitem{latex}
+Leslie Lamport.
+\newblock {\em {\LaTeX \rm:} {A} Document Preparation System}.
+\newblock Addison-Wesley, 1986.
+\newblock (邦訳：『文書処理システム {\LaTeX}』 Edgar Cooke, 倉沢
+  良一 監訳, 大野 俊治, 小暮 博道, 藤浦 はる美 訳,
+  アスキー， 1990年).
+
+\bibitem{btxdoc}
+Oren Patashnik.
+\newblock {{\BibTeX ing}}.
+\newblock Documentation for general {\BibTeX} users, January 1988.
+
+\bibitem{btxhak}
+Oren Patashnik.
+\newblock Designing {\BibTeX} styles.
+\newblock The part of \BibTeX's documentation that's not meant for general
+  users, January 1988.
+
+\bibitem{strunk-and-white}
+William Strunk, Jr. and E.~B. White.
+\newblock {\em The Elements of Style}.
+\newblock Macmillan, third edition, 1979.
+\newblock (邦訳：『英語文章ルールブック』荒竹 三郎訳,
+  荒竹出版, 1985年).
+
+\bibitem{van-leunen}
+Mary-Claire van Leunen.
+\newblock {\em A Handbook for Scholars}.
+\newblock Knopf, 1979.
+
+\bibitem{jbibtex}
+松井正一.
+\newblock 日本語{\BibTeX:\JBibTeX}.
+\newblock \JBibTeX~C
+  Versionキットと共に配布されている文書(ver.0.20用, 1989年),
+  1991.
+
+\end{thebibliography}
