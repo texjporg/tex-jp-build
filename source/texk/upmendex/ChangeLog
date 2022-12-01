@@ -1,3 +1,20 @@
+2022-11-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.07  Stable version.
+	* configure.ac: Bump version.
+	* sort.c, fwrite.c, {,ex}hanzi.h:
+	Improve detection of hanzi header to support
+	Chinese polyphone (多音字).
+
+2022-11-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.06  Stable version.
+	* configure.ac: Bump version.
+	* sort.c: Add parameter option "@" to character_order,
+	which denotes character order is defined by icu_rules.
+	* fwrite.c: Better treatment for Marathi KSSA, JNYA.
+	* upmendex.ja.txt: Update document.
+
 2022-10-08  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* version 1.05  Stable version.
