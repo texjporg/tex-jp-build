@@ -1,3 +1,12 @@
+2022-12-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	am/ptex.am:
+	Merge change files/binaries for pTeX tools into upTeX tools.
+	Now pTeX tools (pbibtex, pdvitype, ppltotf, ptftopl) run
+	as the compatible mode.
+	https://github.com/texjporg/tex-jp-build/issues/32
+	https://github.com/texjporg/tex-jp-build/issues/154
+
 2022-11-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* {nissya,pdvitype,yokotate}.test, tests/nissya_bib.bbl,
