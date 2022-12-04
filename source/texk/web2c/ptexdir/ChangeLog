@@ -1,6 +1,6 @@
 2022-11-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
-	* tests/{nissya,pdvitype,yokotate}.test, tests/nissya_bib.bbl,
+	* {nissya,pdvitype,yokotate}.test, tests/nissya_bib.bbl,
 	tests/chcode.pl, tests/chcode-{jis,utf8,euc,sjis}.pl, tests/chcode.tfm,
 	tests/ptex[34].{tex,dvi}, tests/ptex[34]a-{jis,utf8}.typ, am/ptex.am:
 	Add tests for pTeX compatible mode of tools for upTeX.
@@ -32,7 +32,7 @@
 	Check options before initialization of kpathsearch parameters.
 	This change prevents unwanted looking for texmf.cnf.
 	https://github.com/texjporg/tex-jp-build/issues/145
-	* tests/pbibtex.test, am/ptex.am:
+	* pbibtex.test, am/ptex.am:
 	Update tests for pBibTeX.
 
 2022-09-01  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
@@ -46,7 +46,7 @@
 	* kanji.[ch], pbibtex.ch:
 	Support guessing input file encodings.
 	https://github.com/texjporg/tex-jp-build/issues/142
-	* tests/pbibtex.test, am/ptex.am:
+	* pbibtex.test, am/ptex.am:
 	Add tests for guess encodings & pBibTeX.
 
 2022-05-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
