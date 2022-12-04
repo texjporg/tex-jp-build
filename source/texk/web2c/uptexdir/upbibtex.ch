@@ -30,14 +30,16 @@
 % 2022-02-20    Still version 0.34 by H. Yamashita (-> TL'22 version)
 %   * Improve substring$ to truncate at least one character when trying to
 %     start counting from the middle byte of the first or last Japanese character.
-% 2022-05-15    Version 0.35 by Takuji Tanaka (-> TL'23 version)
+% 2022-05-15    Version 0.35 by Takuji Tanaka
 %   * Accept multibyte characters by int.to.chr$ and chr.to.int$.
+% 2022-12-03    Version 0.36 by Takuji Tanaka (-> TL'23 version)
+%   * Merge pBibTeX source/binary into upBibTeX.
 
 @x [0] only print chnages
 \def\title{\BibTeX\ }
 @y
 \let\maybe=\iffalse
-\def\title{J\BibTeX\ 0.35 Changes for C Version \BibTeX\ }
+\def\title{J\BibTeX\ 0.36 Changes for C Version \BibTeX\ }
 @z
 
 @x
@@ -47,7 +49,7 @@
 @y
  \def\titlepage{F}
  \centerline{\:\titlefont The {\:\ttitlefont J\BibTeX} preprocessor}
- \vskip 15pt \centerline{(Version 0.99d-j0.35---\today)} \vfill}
+ \vskip 15pt \centerline{(Version 0.99d-j0.36---\today)} \vfill}
 @z
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,7 +60,7 @@
 @d banner=='This is BibTeX, Version 0.99d' {printed when the program starts}
 @y
 @d my_name=='upbibtex'
-@d banner=='This is upBibTeX, Version 0.99d-j0.35-u1.29'
+@d banner=='This is upBibTeX, Version 0.99d-j0.36-u1.29'
   {printed when the program starts}
 @z
 
