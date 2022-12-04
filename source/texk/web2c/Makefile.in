@@ -3303,9 +3303,8 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	eptexdir/pdfprimitive.test \
 	eptexdir/tests/pdfprimitive-test.tex \
 	eptexdir/tests/pdfprimitive-eptex.log $(uptex_web_srcs) \
-	$(uptex_ch_srcs) uptexdir/uptex.defines ptexdir/pbibtex.ch \
-	uptexdir/upbibtex.ch ptexdir/pdvitype.ch uptexdir/updvitype.ch \
-	ptexdir/ppltotf.ch uptexdir/uppltotf.ch ptexdir/ptftopl.ch \
+	$(uptex_ch_srcs) uptexdir/uptex.defines uptexdir/upbibtex.ch \
+	uptexdir/updvitype.ch uptexdir/uppltotf.ch \
 	uptexdir/uptftopl.ch uptexdir/COPYRIGHT uptexdir/COPYRIGHT.jis \
 	uptexdir/ChangeLog $(uptex_tests) $(upweb_tests) \
 	tests/enc-u.bbl tests/enc-eu.bbl tests/enc-su.bbl \
@@ -22307,7 +22306,7 @@ uptexdir/uppltotf.log: uppltotf$(EXEEXT)
 uptexdir/uptftopl.log: uptftopl$(EXEEXT)
 uptexdir/upbibtex-openout-test.log uptexdir/upbibtex-longline-test.log \
 	uptexdir/upbibtex-mem.log uptexdir/nissya.log: upbibtex$(EXEEXT)
-uptexdir/sample.log: pdvitype$(EXEEXT)
+uptexdir/sample.log: updvitype$(EXEEXT)
 uptexdir/yokotate.log uptexdir/skipjfmp.log \
 	uptexdir/newjfm.log uptexdir/uparse.log uptexdir/gkhuge.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
 uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)

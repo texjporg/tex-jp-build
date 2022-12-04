@@ -101,7 +101,7 @@ upbibtex.p: tangle$(EXEEXT) upbibtex.web uptexdir/upbibtex.ch
 	$(up_tangle) upbibtex upbibtex
 upbibtex.web: tie$(EXEEXT) bibtex.web bibtex.ch
 	$(tie_m) bibtex.web bibtex.ch
-EXTRA_DIST += ptexdir/pbibtex.ch uptexdir/upbibtex.ch
+EXTRA_DIST += uptexdir/upbibtex.ch
 
 ## upDVItype
 ##
@@ -118,7 +118,7 @@ updvitype.p: tangle$(EXEEXT) updvitype.web uptexdir/updvitype.ch
 	$(up_tangle) updvitype updvitype
 updvitype.web: tie$(EXEEXT) dvitype.web dvitype.ch
 	$(tie_m) dvitype.web dvitype.ch
-EXTRA_DIST += ptexdir/pdvitype.ch uptexdir/updvitype.ch
+EXTRA_DIST += uptexdir/updvitype.ch
 
 ## upPLtoTF
 ##
@@ -135,7 +135,7 @@ uppltotf.p: tangle$(EXEEXT) uppltotf.web uptexdir/uppltotf.ch
 	$(up_tangle) uppltotf uppltotf
 uppltotf.web: tie$(EXEEXT) pltotf.web pltotf.ch
 	$(tie_m) pltotf.web pltotf.ch
-EXTRA_DIST += ptexdir/ppltotf.ch uptexdir/uppltotf.ch
+EXTRA_DIST += uptexdir/uppltotf.ch
 
 ## upTFtoPL
 ##
@@ -152,7 +152,7 @@ uptftopl.p: tangle$(EXEEXT) uptftopl.web uptexdir/uptftopl.ch
 	$(up_tangle) uptftopl uptftopl
 uptftopl.web: tie$(EXEEXT) tftopl.web tftopl.ch
 	$(tie_m) tftopl.web tftopl.ch
-EXTRA_DIST += ptexdir/ptftopl.ch uptexdir/uptftopl.ch
+EXTRA_DIST += uptexdir/uptftopl.ch
 
 ##
 EXTRA_DIST += \
@@ -188,7 +188,7 @@ uptexdir/uppltotf.log: uppltotf$(EXEEXT)
 uptexdir/uptftopl.log: uptftopl$(EXEEXT)
 uptexdir/upbibtex-openout-test.log uptexdir/upbibtex-longline-test.log \
 	uptexdir/upbibtex-mem.log uptexdir/nissya.log: upbibtex$(EXEEXT)
-uptexdir/sample.log: pdvitype$(EXEEXT)
+uptexdir/sample.log: updvitype$(EXEEXT)
 uptexdir/yokotate.log uptexdir/skipjfmp.log \
 	uptexdir/newjfm.log uptexdir/uparse.log uptexdir/gkhuge.log: uppltotf$(EXEEXT) uptftopl$(EXEEXT)
 
