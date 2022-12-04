@@ -2,13 +2,14 @@
 %
 % 09/27/95 (KA)  Supporting ASCII pTeX
 % 2020-08-24 (HY)  Support \dtou
+% 2022-12-03 (TTK) Merge pDVItype source/binary into upDVItype
 %
 @x
 @d my_name=='dvitype'
 @d banner=='This is DVItype, Version 3.6' {printed when the program starts}
 @y
 @d my_name=='updvitype'
-@d banner=='This is upDVItype, Version 3.6-p0.5-u1.29'
+@d banner=='This is upDVItype, Version 3.6-p221203'
   {printed when the program starts}
 @z
 

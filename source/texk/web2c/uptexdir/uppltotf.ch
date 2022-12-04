@@ -1,5 +1,6 @@
 % This is a change file for PLtoTF
 %
+% (2022-12-03) TTK Merge pPLtoTF source/binary into upPLtoTF
 % (2018-01-27) HY pPLtoTF p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST PLtoTF p1.8 (3.5, Web2c 7.2)
 % (11/13/2000) KN PLtoTF p1.4 (3.5, Web2c 7.2)
@@ -16,7 +17,7 @@
 @d banner=='This is PLtoTF, Version 3.6' {printed when the program starts}
 @y
 @d my_name=='uppltotf'
-@d banner=='This is upPLtoTF, Version 3.6-p2.0-u1.29'
+@d banner=='This is upPLtoTF, Version 3.6-p221203'
   {printed when the program starts}
 @z
 
