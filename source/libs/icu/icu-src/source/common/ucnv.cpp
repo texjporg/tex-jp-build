@@ -234,7 +234,7 @@ ucnv_safeClone(const UConverter* cnv, void *stackBuffer, int32_t *pBufferSize, U
         ptrdiff_t pointerAdjustment = aligned_p - p;
         if (bufferSizeNeeded + pointerAdjustment <= stackBufferSize) {
             stackBuffer = reinterpret_cast<void *>(aligned_p);
-            stackBufferSize -= pointerAdjustment;
+            stackBufferSize -= static_cast<int32_t>(pointerAdjustment);
         } else {
             /* prevent using the stack buffer but keep the size > 0 so that we do not just preflight */
             stackBufferSize = 1;
@@ -252,7 +252,10 @@ ucnv_safeClone(const UConverter* cnv, void *stackBuffer, int32_t *pBufferSize, U
             UTRACE_EXIT_STATUS(*status);
             return NULL;
         }
-        *status = U_SAFECLONE_ALLOCATED_WARNING;
+        // If pBufferSize was NULL as the input, pBufferSize is set to &stackBufferSize in this function.
+        if (pBufferSize != &stackBufferSize) {
+            *status = U_SAFECLONE_ALLOCATED_WARNING;
+        }
 
         /* record the fact that memory was allocated */
         *pBufferSize = bufferSizeNeeded;
@@ -317,7 +320,11 @@ ucnv_safeClone(const UConverter* cnv, void *stackBuffer, int32_t *pBufferSize, U
     return localConverter;
 }
 
-
+U_CAPI UConverter* U_EXPORT2
+ucnv_clone(const UConverter* cnv, UErrorCode *status)
+{
+    return ucnv_safeClone(cnv, nullptr, nullptr, status);
+}
 
 /*Decreases the reference counter in the shared immutable section of the object
  *and frees the mutable part*/

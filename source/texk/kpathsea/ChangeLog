@@ -1,3 +1,140 @@
+2022-11-05  Sam James  <sam@gentoo.org>
+
+	* configure.ac (Ghostscript version): #include <stdlib.h>
+	to declare exit and placate clang16.
+	https://tug.org/pipermail/tlbuild/2022q4/005269.html
+
+2022-06-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* texmf.cnf (guess_input_kanji_encoding):
+	Support guessing input file encodings for unix-like platforms.
+	(It has already been supported on Windows.)
+	Now we set default on for (e)p(la)tex, pbibtex & mendex.
+	https://github.com/texjporg/tex-jp-build/issues/142
+
+2022-05-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* texmf.cnf (max_print_line):
+	Now it applies to BibTeX family:
+	bibtex, pbibtex, upbibtex, bibtex8 and bibtexu.
+
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-03-05  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (TEXINPUTS.hi*tex): new entries.
+
+2022-02-27  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (nest_size): 500 -> 1000.
+	(param_size): 10000 -> 20000.
+	(stack_size): 5000 -> 10000.
+	For stex (ctan.org/pkg/stex), although they also double main_memory
+	to 12M (despite the supposed limit of 8M)?
+
+2022-01-18  Karl Berry  <karl@freefriends.org>
+
+	* version.ac (kpse_dev): no more /dev.
+	* NEWS,
+	* doc/kpathsea.texi,
+	* kpsewhich.c,
+	* texmf.cnf: copyright 2022.
+
+2021-11-01  Marcel Fabian Krueger  <tex@2krueger.de>
+
+	* str-list.c (str_list_uniqify): compare each input element
+	against the elements to be returned, to keep the ordering of the
+	result the same as the input.  Then the first result in a list
+	from kpsewhich -a will be the same as the result of just kpsewhich.
+
+2021-05-14  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (TEXINPUTS.optex): new definition for new format.
+	Move some other definitions around for consistency, but no changes.
+
+2021-05-07  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (save_size): re-increase to 200000
+	with parallel change to tex.ch.
+
+2021-04-22  Karl Berry  <karl@freefriends.org>
+
+	* doc/kpathsea.texi (TeX directory structure): link to
+	ctan.org/pkg/tds instead of http://mirror.ctan.org.
+
+2021-04-17  Karl Berry  <karl@tug.org>
+
+	* version.ac: now 6.3.4/dev since TL'21 is released.
+
+2021-04-07  Akira Kakuto  <kakuto@w32tex.org>
+
+	* knj.c, readable.c: Fix a bug that the "nul" device given in
+	a full-path form, such as c:/usr/work/nul was not readable.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2021-03-18  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (save_size): reset to 80000 since that is what
+	sup_save_size is set to in tex.ch. Found by Christian Schenk,
+	tex-live 18 Mar 2021 18:39:04.
+
+2021-03-08  Karl Berry  <karl@freefriends.org>
+
+	* tests/cnfline/texmf.cnf (maxpr.lt-kpsewhich): set this,
+	for --enable-shared builds.
+	https://tug.org/pipermail/tex-k/2021-March/003490.html
+	* tests/cnfline.test: unset maxpr othervar, just in case
+	they are set in the environment. Maybe unset on an unset variable
+	is portable enough nowadays?
+
+2021-02-17  Karl Berry  <karl@freefriends.org>
+
+	* doc/kpathsea.texi,
+	* version.ac (kpse_dev): no /dev for 6.3.3.
+	* NEWS,
+	* doc/kpathsea.texi,
+	* kpsewhich.c,
+	* texmf.cnf: copyright 2021.
+
+2020-12-05  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* knj.[ch]: Add new functions win32_fprintf(), win32_perror().
+	(Windows only)
+
+2020-10-24  Akira Kakuto  <kakuto@w32tex.org>
+
+	* readable.c, knj.c: More than one adjacent directory
+	separators in filename+2 should not exist in \\?\ form of
+	absolute path.
+
+2020-08-26  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (save_size): double to 200,000. Needed with
+	long documents, tex4ht, and l3regex. Hopefully no harm in increasing.
+	https://tug.org/pipermail/tex4ht/2020q3/002710.html
+
+2020-07-05  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (snprintf): two more test programs
+	also need <stdarg.h> and <stdio.h>.
+
+2020-07-04  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (snprintf): #include <stdio.h> to placate
+	new arm64 Mac compiler, since apparently that's the standard
+	place for the [v]snprintf declaration. We'll see. Report from Dick.
+
+2020-06-22  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (EXTRA_DIST): add COPYING.LESSERv2.
+	* texmf.cnf (expand_depth, pk_dpi, strings_free): write a few
+	words about these parameters; see web2c/doc for more.
+
 2020-06-12  Karl Berry  <karl@freefriends.org>
 
 	* tex-make.c (kpathsea_make_tex): do not emit any warnings for

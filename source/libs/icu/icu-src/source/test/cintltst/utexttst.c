@@ -57,7 +57,7 @@ addUTextTest(TestNode** root)
  *            This is not intended to be a complete test of the API functionality.  That is
  *            in the C++ intltest program.
  *            This test is intended to check that everything can be accessed and built in 
- *            a pure C enviornment.
+ *            a pure C environment.
  */
 
 
@@ -292,6 +292,22 @@ static void TestAPI(void) {
         utext_close(uta);
     }
 
-
+    {
+        // utext_equals() checks for the same type of text provider,
+        // same string pointer(!), and same index.
+        status = U_ZERO_ERROR;
+        const UChar *s = u"aßカ🚲";
+        UText *ut1 = utext_openUChars(NULL, s, -1, &status);
+        UText *ut2 = utext_openUChars(NULL, s, 5, &status);
+        TEST_SUCCESS(status);
+        TEST_ASSERT(utext_equals(ut1, ut2));
+        UChar32 c = utext_next32(ut1);
+        TEST_ASSERT(c == u'a');
+        TEST_ASSERT(!utext_equals(ut1, ut2));  // indexes out of sync
+        c = utext_next32(ut2);
+        TEST_ASSERT(c == u'a');
+        TEST_ASSERT(utext_equals(ut1, ut2));  // back in sync
+        utext_close(ut1);
+        utext_close(ut2);
+    }
 }
-

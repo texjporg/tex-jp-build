@@ -22,7 +22,7 @@
  **/
 class DateFormatRegressionTest: public CalendarTimeZoneTest {
     // IntlTest override
-    void runIndexedTest( int32_t index, UBool exec, const char* &name, char* par );
+    void runIndexedTest( int32_t index, UBool exec, const char* &name, char* par ) override;
 public:
 
     void Test4029195(void);
@@ -59,6 +59,7 @@ public:
     void TestT10334(void);
     void TestT10619(void);
     void TestT10855(void);
+    void TestT10858(void);
     void TestT10906(void);
     void TestT13380(void);
  };

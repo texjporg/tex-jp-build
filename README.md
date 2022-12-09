@@ -5,7 +5,7 @@ for building binaries of Japanese TeX processing tools.
 This bundle also provides the latest "upstream" sources for the followings:
 
 * ptexenc
-* ptex, pbibtex
+* ptex, (u)pbibtex, (u)pdvitype, (u)ppltotf, (u)ptftopl
 * eptex
 * makejvf
 * mendex
@@ -30,7 +30,7 @@ dvips, dvipdfmx, dvi2tty, makejvf, mendex, upmendex,
 pbibtex, upbibtex, pmpost, upmpost,
 dviout-util (dvispc, chkdvifont),
 seetex (dvibook, dviconcat, dviselect, dvitodvi),
-dvidvi, related tools
+dvidvi, bibtex-x, related tools
 and related libraries (kpathsea, ptexenc).
 
 ## Release Date

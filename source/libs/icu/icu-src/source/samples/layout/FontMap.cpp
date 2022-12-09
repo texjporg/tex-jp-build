@@ -1,7 +1,7 @@
 /*
  ******************************************************************************
  * © 2016 and later: Unicode, Inc. and others.                    *
- * License & terms of use: http://www.unicode.org/copyright.html#License      *
+ * License & terms of use: http://www.unicode.org/copyright.html      *
  ******************************************************************************
  ******************************************************************************
  * Copyright (C) 1998-2006, International Business Machines Corporation and   *
@@ -144,7 +144,7 @@ le_int32 FontMap::getFontIndex(const char *fontName)
         // The font name table is full. Since there can
         // only be scriptCodeCount fonts in use at once,
         // there should be at least one that's not being
-        // referenced; find it and resue it's index.
+        // referenced; find it and reuse it's index.
 
         for (index = 0; index < fFontCount; index += 1) {
             le_int32 script;

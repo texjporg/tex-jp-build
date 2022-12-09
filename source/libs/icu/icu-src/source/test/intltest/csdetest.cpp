@@ -109,6 +109,10 @@ void CharsetDetectionTest::runIndexedTest( int32_t index, UBool exec, const char
             if (exec) Ticket6954Test();
             break;
 
+       case 10: name = "Ticket21823Test";
+            if (exec) Ticket21823Test();
+            break;
+
         default: name = "";
             break; //needed to end loop
     }
@@ -218,7 +222,7 @@ void CharsetDetectionTest::checkEncoding(const UnicodeString &testString, const 
     dLength = ucsdet_getUChars(matches[0], decoded, testLength, &status);
 
     if (testString.compare(decoded, dLength) != 0) {
-        errln("Round-trip error for " + id + ", " + eSplit[0] + ": getUChars() didn't yeild the original string.");
+        errln("Round-trip error for " + id + ", " + eSplit[0] + ": getUChars() didn't yield the original string.");
 
 #ifdef DEBUG_DETECT
         for(int32_t i = 0; i < testLength; i += 1) {
@@ -396,7 +400,7 @@ void CharsetDetectionTest::UTF16Test()
     conf = ucsdet_getConfidence(match, &status);
 
     if (strcmp(name, "UTF-16LE") != 0) {
-        errln("Enconding detection failure for UTF-16LE: got %s", name);
+        errln("Encoding detection failure for UTF-16LE: got %s", name);
         return;
     }
 
@@ -780,7 +784,7 @@ void CharsetDetectionTest::Ticket6394Test() {
         return;
     }
 
-    UnicodeSet  setOfCharsetNames;    // UnicodSets can hold strings.
+    UnicodeSet  setOfCharsetNames;    // UnicodeSets can hold strings.
     int32_t i;
     for (i=0; i<matchCount; i++) {
         UnicodeString charSetName(ucsdet_getName(matches[i], &status));
@@ -838,4 +842,23 @@ void CharsetDetectionTest::Ticket6954Test() {
     TEST_ASSERT_SUCCESS(status);
     TEST_ASSERT(strcmp(name1, "windows-1252")==0);
 #endif
+}
+
+
+// Ticket 21823 - Issue with Charset Detector for ill-formed input strings. 
+//                Its fix involves returning a failure based error code 
+//                (U_INVALID_CHAR_FOUND) incase no charsets appear to match the input data.
+void CharsetDetectionTest::Ticket21823Test() {
+    UErrorCode status = U_ZERO_ERROR;
+    std::string str = "\x80";
+    UCharsetDetector* csd = ucsdet_open(&status);
+
+    ucsdet_setText(csd, str.data(), str.length(), &status);
+    const UCharsetMatch* match = ucsdet_detect(csd, &status);
+
+    if (match == NULL) {
+        TEST_ASSERT(U_FAILURE(status));
+    }
+
+    ucsdet_close(csd);
 }

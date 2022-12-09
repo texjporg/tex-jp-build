@@ -1,6 +1,7 @@
 ## Makefile.am for the TeX Live subdirectory texk/dvipdfm-x/
 ##
-## Copyright (C) 2009-2015 Peter Breitenlohner <tex-live@tug.org>
+## Copyright 2015-2021 Karl Berry <tex-live@tug.org>
+## Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 ##
 bin_PROGRAMS = xdvipdfmx
@@ -26,7 +27,6 @@ xdvipdfmx_SOURCES = \
 	cid_basefont.h \
 	cid.c \
 	cid.h \
-	cid_p.h \
 	cidtype0.c \
 	cidtype0.h \
 	cidtype2.c \
@@ -210,10 +210,11 @@ dist_cmapdata_DATA = data/EUC-UCS2
 
 install-exec-hook: install-bin-links
 if WIN32
-	$(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) $(DESTDIR)$(bindir)/dvipdfm$(EXEEXT)
-	$(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) $(DESTDIR)$(bindir)/dvipdfmx$(EXEEXT)
-	$(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) $(DESTDIR)$(bindir)/ebb$(EXEEXT)
-	$(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) $(DESTDIR)$(bindir)/extractbb$(EXEEXT)
+# same install happens in web2c/omegafonts.
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/dvipdfm$(EXEEXT)"
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/dvipdfmx$(EXEEXT)"
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/ebb$(EXEEXT)"
+	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/extractbb$(EXEEXT)"
 endif WIN32
 
 install-data-hook: install-man1-links
@@ -293,8 +294,13 @@ EXTRA_DIST += tests/ttc.dvi tests/ttc.tex tests/test.ttc
 DISTCLEANFILES += ttc*.pdf
 ## dvipdfmx-upjf.test
 EXTRA_DIST += tests/upjf.dvi tests/upjf.tex tests/upjf.map tests/Makefile_upjf
-EXTRA_DIST += tests/upjf_full.cnf tests/upjf_omit.cnf tests/upjf_full.vf tests/upjf_omit.vf
+EXTRA_DIST += tests/upjf_full.cnf tests/upjf_omit.cnf
+EXTRA_DIST += tests/upjf_full.vf tests/upjf_omit.vf
 EXTRA_DIST += tests/upjf-r.tfm tests/upjf-g.tfm tests/upjf.tfm tests/UPJF-UTF16-H
-DISTCLEANFILES += upjf.vf upjf*.pdf
+EXTRA_DIST += tests/upjv_full.vf tests/upjv_omit.vf
+EXTRA_DIST += tests/upjv-r.tfm tests/upjv-g.tfm tests/upjv.tfm tests/UPJF-UTF16-V
+EXTRA_DIST += tests/upjf-g00.opl tests/upjf-g00.ofm
+EXTRA_DIST += tests/upjv-g00.opl tests/upjv-g00.ofm
+DISTCLEANFILES += upjf.vf upjv.vf upjf-g.ofm upjv-g.ofm upjf*.pdf
 ##
 EXTRA_DIST += tests/fullmap.dvi tests/fullmap.tex

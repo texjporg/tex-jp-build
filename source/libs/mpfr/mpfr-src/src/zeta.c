@@ -1,6 +1,6 @@
 /* mpfr_zeta -- compute the Riemann Zeta function
 
-Copyright 2003-2019 Free Software Foundation, Inc.
+Copyright 2003-2022 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
 
 This file is part of the GNU MPFR Library.
@@ -35,7 +35,7 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
    sum(tc[i]*product((s+2j)*(s+2j-1)/n^2,j=1..i-1), i=1..p)*s*n^(-s-1)
 */
 static void
-mpfr_zeta_part_b (mpfr_t b, mpfr_srcptr s, int n, int p, mpfr_t *tc)
+mpfr_zeta_part_b (mpfr_ptr b, mpfr_srcptr s, int n, int p, mpfr_t *tc)
 {
   mpfr_t s1, d, u;
   unsigned long n2;
@@ -82,16 +82,33 @@ mpfr_zeta_part_b (mpfr_t b, mpfr_srcptr s, int n, int p, mpfr_t *tc)
 /* Input: p - an integer
    Output: fills tc[1..p], tc[i] = bernoulli(2i)/(2i)!
    tc[1]=1/12, tc[2]=-1/720, tc[3]=1/30240, ...
+   Assumes all the tc[i] have the same precision.
+
+   Uses the recurrence (4.60) from the book "Modern Computer Arithmetic"
+   by Brent and Zimmermann for C_k = bernoulli(2k)/(2k)!:
+   sum(C_k/(2k+1-2j)!/4^(k-j), j=0..k) = 1/(2k)!/4^k
+   If we put together the terms involving C_0 and C_1 we get:
+   sum(D_k/(2k+1-2j)!/4^(k-j), j=1..k) = 0
+   with D_1 = C_0/4/(2k+1)/(2k)+C_1-1/(2k)/4=(k-1)/(12k+6),
+   and D_k = C_k for k >= 2.
+
+   FIXME: we have C_k = (-1)^(k-1) 2/(2pi)^(2k) * zeta(2k),
+   see for example formula (4.65) from the above book,
+   thus since |zeta(2k)-1| < 2^(1-2k) for k >= 2, we have:
+   |C_k - E_k| < E_k * 2^(1-2k) for k >= 2 and E_k := (-1)^(k-1) 2/(2pi)^(2k).
+   Then if 2k-1 >= prec we can evaluate E_k instead, which only requires one
+   multiplication per term, instead of O(k) small divisions.
 */
 static void
 mpfr_zeta_c (int p, mpfr_t *tc)
 {
-  mpfr_t d;
-  int k, l;
-
   if (p > 0)
     {
-      mpfr_init2 (d, MPFR_PREC (tc[1]));
+      mpfr_t d;
+      int k, l;
+      mpfr_prec_t prec = MPFR_PREC (tc[1]);
+
+      mpfr_init2 (d, prec);
       mpfr_div_ui (tc[1], __gmpfr_one, 12, MPFR_RNDN);
       for (k = 2; k <= p; k++)
         {
@@ -113,7 +130,7 @@ mpfr_zeta_c (int p, mpfr_t *tc)
           n - an integer
    Output: sum - a floating-point number approximating sum(1/i^s, i=1..n-1) */
 static void
-mpfr_zeta_part_a (mpfr_t sum, mpfr_srcptr s, int n)
+mpfr_zeta_part_a (mpfr_ptr sum, mpfr_srcptr s, int n)
 {
   mpfr_t u, s1;
   int i;
@@ -141,7 +158,7 @@ mpfr_zeta_part_a (mpfr_t sum, mpfr_srcptr s, int n)
    Output: z - Zeta(s) rounded to the precision of z with direction rnd_mode
 */
 static int
-mpfr_zeta_pos (mpfr_t z, mpfr_srcptr s, mpfr_rnd_t rnd_mode)
+mpfr_zeta_pos (mpfr_ptr z, mpfr_srcptr s, mpfr_rnd_t rnd_mode)
 {
   mpfr_t b, c, z_pre, f, s1;
   double beta, sd, dnep;
@@ -306,7 +323,7 @@ compute_add (mpfr_srcptr s, mpfr_prec_t precz)
   /* since 1/eps = 2^(precz+14), if EXP(sd) >= precz+14, then
      sd >= 1/2*2^(precz+14) thus 2*sd >= 2^(precz+14) >= 1/eps */
   if (mpfr_get_exp (t) >= precz + 14)
-    mpfr_mul_2exp (t, t, 1, MPFR_RNDU);
+    mpfr_mul_2ui (t, t, 1, MPFR_RNDU);
   else
     mpfr_set_ui_2exp (t, 1, precz + 14, MPFR_RNDU);
   /* now t = max(1/eps,2*sd) */
@@ -318,7 +335,7 @@ compute_add (mpfr_srcptr s, mpfr_prec_t precz)
   else
     mpfr_set (t, m1, MPFR_RNDU);
   /* now t = max(8,m1) */
-  mpfr_div_2exp (t, t, precz + 14, MPFR_RNDU); /* eps*max(8,m1) */
+  mpfr_div_2ui (t, t, precz + 14, MPFR_RNDU); /* eps*max(8,m1) */
   mpfr_add_ui (t, t, 1, MPFR_RNDU); /* 1+eps*max(8,m1) */
   mpfr_mul (t, t, u, MPFR_RNDU); /* t = c */
   mpfr_add_ui (u, m1, 13, MPFR_RNDU); /* 13+m1 */
@@ -339,8 +356,8 @@ compute_add (mpfr_srcptr s, mpfr_prec_t precz)
    At input, p is Pi rounded down.
    The comments in the code are for rnd = RNDD. */
 static void
-mpfr_reflection_overflow (mpfr_t z, mpfr_t s1, const mpfr_t s, mpfr_t y,
-                          mpfr_t p, mpfr_rnd_t rnd)
+mpfr_reflection_overflow (mpfr_ptr z, mpfr_ptr s1, mpfr_srcptr s, mpfr_ptr y,
+                          mpfr_ptr p, mpfr_rnd_t rnd)
 {
   mpz_t sint;
 
@@ -415,7 +432,7 @@ mpfr_reflection_overflow (mpfr_t z, mpfr_t s1, const mpfr_t s, mpfr_t y,
 }
 
 int
-mpfr_zeta (mpfr_t z, mpfr_srcptr s, mpfr_rnd_t rnd_mode)
+mpfr_zeta (mpfr_ptr z, mpfr_srcptr s, mpfr_rnd_t rnd_mode)
 {
   mpfr_t z_pre, s1, y, p;
   long add;

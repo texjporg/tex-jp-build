@@ -1,6 +1,7 @@
 ## $Id$
 ## Makefile.am for the TeX Live subdirectory texk/web2c/man/
-## Copyright 2015-2019 Karl Berry <tex-live@tug.org>
+##
+## Copyright 2015-2022 Karl Berry <tex-live@tug.org>
 ## Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 ##
@@ -18,7 +19,8 @@ endif WEB
 EXTRA_DIST += $(web_man_sources)
 web_man_sources = bibtex.man dvicopy.man dvitomp.man dvitype.man gftodvi.man \
 	gftopk.man gftype.man mft.man patgen.man pktogf.man pktype.man \
-	pltotf.man pooltype.man tftopl.man vftovp.man vptovf.man weave.man
+	pltotf.man pooltype.man tftopl.man twill.man \
+	vftovp.man vptovf.man weave.man
 
 if TEX
 man_sources += tex.man
@@ -57,8 +59,10 @@ man_sources += ptex.man
 man1_links += ptex:eptex ptex:euptex ptex:uptex
 man_sources += ppltotf.man ptftopl.man
 man1_links += ppltotf:uppltotf ptftopl:uptftopl
+man_sources += pbibtex.man
+man1_links += pbibtex:upbibtex
 endif PTEX
-EXTRA_DIST += ptex.man ppltotf.man ptftopl.man
+EXTRA_DIST += ptex.man ppltotf.man ptftopl.man pbibtex.man
 
 if LUATEX
 man_sources += luatex.man
@@ -82,7 +86,6 @@ otangle_man_sources = ofm2opl.man opl2ofm.man ovf2ovp.man ovp2ovf.man
 
 if ALEPH
 man_sources += aleph.man
-man1_links += aleph:lamed
 endif ALEPH
 EXTRA_DIST += aleph.man
 

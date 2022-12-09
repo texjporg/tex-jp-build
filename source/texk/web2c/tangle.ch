@@ -45,16 +45,18 @@
 @z
 
 @x [1] Define my_name
-@d banner=='This is TANGLE, Version 4.5'
+@d banner=='This is TANGLE, Version 4.6'
 @y
 @d my_name=='tangle'
-@d banner=='This is TANGLE, Version 4.5'
+@d banner=='This is TANGLE, Version 4.6'
 @z
 
 @x [2] Eliminate the |end_of_TANGLE| label.
-@d end_of_TANGLE = 9999 {go here to wrap it up}
+calls the `|jump_out|' procedure, which goes to the label |end_of_TANGLE|.
 
+@d end_of_TANGLE = 9999 {go here to wrap it up}
 @y
+calls the `|jump_out|' procedure.
 @z
 @x
 label end_of_TANGLE; {go here to finish}
@@ -83,11 +85,12 @@ procedure initialize;
 @x
 @!max_bytes=45000; {|1/ww| times the number of bytes in identifiers,
   strings, and module names; must be less than 65536}
-@!max_toks=50000; {|1/zz| times the number of bytes in compressed \PASCAL\ code;
+@!max_toks=65000; {|1/zz| times the number of bytes in compressed \PASCAL\ code;
   must be less than 65536}
 @!max_names=4000; {number of identifiers, strings, module names;
   must be less than 10240}
 @!max_texts=2000; {number of replacement texts, must be less than 10240}
+@!hash_size=353; {should be prime}
 @y
 @!max_bytes=65535; {|1/ww| times the number of bytes in identifiers,
   strings, and module names; must be less than 65536}
@@ -96,6 +99,7 @@ procedure initialize;
 @!max_names=10239; {number of identifiers, strings, module names;
   must be less than 10240}
 @!max_texts=10239; {number of replacement texts, must be less than 10240}
+@!hash_size=8501; {should be prime}
 @z
 
 @x
@@ -173,6 +177,12 @@ if chg_name then change_file := kpse_open_file(chg_name, kpse_web_format);
 @z
 
 @x [26] Open output files (except for the pool file).
+@ The following code opens |Pascal_file| and |pool|.
+@y
+@ The following code opens |Pascal_file|. Opening |pool| will be deferred
+until section~\&{64}.
+@z
+@x
 rewrite(Pascal_file); rewrite(pool);
 @y
 rewrite (Pascal_file, pascal_name);
@@ -193,6 +203,16 @@ rewrite (Pascal_file, pascal_name);
 @z
 
 @x [34] Fix `jump_out'.
+and jumps out of the program. This is the only non-local |goto| statement
+in \.{TANGLE}. It is used when no recovery from a particular error has
+been provided.
+
+Some \PASCAL\ compilers do not implement non-local |goto| statements.
+@^system dependencies@>
+In such cases the code that appears at label |end_of_TANGLE| should be
+copied into the |jump_out| procedure, followed by a call to a system procedure
+that terminates the program.
+
 @d fatal_error(#)==begin new_line; print(#); error; mark_fatal; jump_out;
   end
 
@@ -201,9 +221,11 @@ procedure jump_out;
 begin goto end_of_TANGLE;
 end;
 @y
+and jumps out of the program.
+
 @d jump_out==uexit(1)
 @d fatal_error(#)==begin new_line; write(stderr, #);
-     error; mark_fatal; uexit(1);
+     error; mark_fatal; jump_out;
   end
 @z
 
@@ -297,11 +319,7 @@ if l-double_chars=2 then {this string is for a single character}
   equiv[p]:=buffer[id_first+1]+@'10000000000
 else  begin
   {Avoid creating empty pool files.}
-  if string_ptr = 256 then begin
-    {Change |".web"| to |".pool"| and use the current directory.}
-    pool_name := basename_change_suffix (web_name, '.web', '.pool');
-    rewritebin (pool, pool_name);
-  end;
+  if string_ptr = 256 then rewritebin (pool, pool_name);
   equiv[p]:=string_ptr+@'10000000000;
   l:=l-double_chars-1;
 @z
@@ -537,15 +555,15 @@ equiv[p]:=accumulator+@'10000000000; {name |p| now is defined to equal |accumula
 @z
 
 @x [173] Add parametric2 macros (macros that use [] to delimit arguments).
-  else @<If the next text is `|(#)==|', call |define_macro|
+  else @<If the next text is `\.{(\#)==}', call |define_macro|
     and |goto continue|@>;
 @y
-  else @<If the next text is `|(#)==|' or |[#]==|, call |define_macro|
+  else @<If the next text is `\.{(\#)==}' or `\.{[\#]==}', call |define_macro|
     and |goto continue|@>;
 @z
 
 @x [174] Add parametric2 macros (macros that use [] to delimit arguments).
-@ @<If the next text is `|(#)==|'...@>=
+@ @<If the next text is `\.{(\#)==}'...@>=
 if next_control="(" then
   begin next_control:=get_next;
   if next_control="#" then
@@ -564,7 +582,7 @@ if next_control="(" then
     end;
   end;
 @y
-@ @<If the next text is `|(#)==|'...@>=
+@ @<If the next text is `\.{(\#)==}'...@>=
 if next_control="(" then
   begin next_control:=get_next;
   if next_control="#" then
@@ -710,20 +728,34 @@ begin
     end; {Else it was a flag; |getopt| has already done the assignment.}
   until getopt_return_val = -1;
 
-  {Now |optind| is the index of first non-option on the command line.}
-  if (optind + 1 <> argc) and (optind + 2 <> argc) then begin
-    write_ln (stderr, my_name, ': Need one or two file arguments.');
-    usage (my_name);
-  end;
+  @<Handle file name arguments@>@;
+end;
 
-  {Supply |".web"| and |".ch"| extensions if necessary.}
-  web_name := extend_filename (cmdline (optind), 'web');
-  if optind + 2 = argc then begin
+@ Now |optind| is the index of first non-option on the command line.
+
+@<Handle file name...@>=
+if (optind + 1 > argc) or (optind + 3 < argc) then begin
+  write_ln (stderr, my_name, ': Need one to three file arguments.');
+  usage (my_name);
+end;
+
+{Supply |".web"| and |".ch"| extensions if necessary.}
+web_name := extend_filename (cmdline (optind), 'web');
+if optind + 2 <= argc then begin
+  {|'-'| is shortcut for an empty changefile.}
+  if strcmp(char_to_string('-'), cmdline (optind + 1)) <> 0 then
     chg_name := extend_filename (cmdline (optind + 1), 'ch');
-  end;
+end;
 
-  {Change |".web"| to |".p"| and use the current directory.}
+if optind + 3 = argc then begin
+  {User has provided an explicit Pascal output file, possibly with path.}
+  pascal_name := extend_filename (cmdline (optind + 2), char_to_string('p'));
+  pool_name := extend_filename (remove_suffix (pascal_name), 'pool');
+end
+else begin
+  {Change |".web"| to |".p"| and |".pool"| and use the current directory.}
   pascal_name := basename_change_suffix (web_name, '.web', '.p');
+  pool_name := basename_change_suffix (web_name, '.web', '.pool');
 end;
 
 @ Here are the options we allow.  The first is one of the standard GNU options.

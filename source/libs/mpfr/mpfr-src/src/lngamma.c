@@ -1,6 +1,6 @@
 /* mpfr_lngamma -- lngamma function
 
-Copyright 2005-2019 Free Software Foundation, Inc.
+Copyright 2005-2022 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
 
 This file is part of the GNU MPFR Library.
@@ -31,7 +31,7 @@ https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
    precision should be >= 4.
 */
 static void
-mpfr_gamma_alpha (mpfr_t s, mpfr_prec_t p)
+mpfr_gamma_alpha (mpfr_ptr s, mpfr_prec_t p)
 {
   MPFR_LOG_FUNC
     (("p=%Pu", p),
@@ -275,7 +275,7 @@ GAMMA_FUNC (mpfr_ptr y, mpfr_srcptr z0, mpfr_rnd_t rnd)
           mpfr_const_euler (g, MPFR_IS_POS(z0) ? MPFR_RNDD : MPFR_RNDU); /* cached */
           mpfr_mul (g, g, z0, MPFR_RNDU);
           mpfr_sub (h, h, g, MPFR_RNDD);
-          mpfr_mul (g, z0, z0, MPFR_RNDU);
+          mpfr_sqr (g, z0, MPFR_RNDU);
           mpfr_add (h, h, g, MPFR_RNDU);
           inex1 = mpfr_prec_round (l, MPFR_PREC(y), rnd);
           inex2 = mpfr_prec_round (h, MPFR_PREC(y), rnd);
@@ -494,7 +494,7 @@ GAMMA_FUNC (mpfr_ptr y, mpfr_srcptr z0, mpfr_rnd_t rnd)
       mpfr_set (v, t, MPFR_RNDN);        /* (1+u)^2, v < 2^(-5) */
       mpfr_add (s, s, v, MPFR_RNDN);     /* (1+u)^15 */
 
-      mpfr_mul (u, u, u, MPFR_RNDN); /* 1/z^2 * (1+u)^3 */
+      mpfr_sqr (u, u, MPFR_RNDN);        /* 1/z^2 * (1+u)^3 */
 
       /* m <= maxm ensures that 2*m*(2*m+1) <= ULONG_MAX */
       maxm = 1UL << (sizeof(unsigned long) * CHAR_BIT / 2 - 1);
@@ -628,7 +628,7 @@ GAMMA_FUNC (mpfr_ptr y, mpfr_srcptr z0, mpfr_rnd_t rnd)
       /* now t: (1+u)^(2k-1) */
       /* instead of computing log(sqrt(2*Pi)/t), we compute
          1/2*log(2*Pi/t^2), which trades a square root for a square */
-      mpfr_mul (t, t, t, MPFR_RNDN); /* (z0*...*(z0+k-1))^2, (1+u)^(4k-1) */
+      mpfr_sqr (t, t, MPFR_RNDN); /* (z0*...*(z0+k-1))^2, (1+u)^(4k-1) */
       mpfr_div (v, v, t, MPFR_RNDN);
       /* 2*Pi/(z0*...*(z0+k-1))^2 (1+u)^(4k+1) */
 #ifdef IS_GAMMA
@@ -736,7 +736,7 @@ mpfr_lngamma (mpfr_ptr y, mpfr_srcptr x, mpfr_rnd_t rnd)
           MPFR_SET_NAN (y);
           MPFR_RET_NAN;
         }
-      else /* lngamma(+/-Inf) = lngamma(nonpositive integer) = +Inf */
+      else /* lngamma(+/-Inf) = lngamma(non-positive integer) = +Inf */
         {
           if (!MPFR_IS_INF (x))
             MPFR_SET_DIVBY0 ();

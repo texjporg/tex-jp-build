@@ -16,7 +16,7 @@ class StaticUnicodeSetsTest : public IntlTest {
     void testSetCoverage();
     void testNonEmpty();
 
-    void runIndexedTest(int32_t index, UBool exec, const char *&name, char *par = 0);
+    void runIndexedTest(int32_t index, UBool exec, const char *&name, char *par = 0) override;
 
   private:
     void assertInSet(const UnicodeString& localeName, const UnicodeString &setName,
@@ -111,8 +111,9 @@ void StaticUnicodeSetsTest::assertInSet(const UnicodeString &localeName, const U
 
 void StaticUnicodeSetsTest::assertInSet(const UnicodeString &localeName, const UnicodeString &setName,
                               const UnicodeSet &set, UChar32 cp) {
-    // If this test case fails, add the specified code point to the corresponding set in
-    // UnicodeSetStaticCache.java and numparse_unisets.cpp
+    // If this test case fails, add the specified code point to the corresponding set in either:
+    // - parseLenients in CLDR root.xml
+    // - harded-coded sets in StaticUnicodeSets.java and static_unicode_sets.cpp
     assertTrue(
             localeName + UnicodeString(u" ") + UnicodeString(cp) + UnicodeString(u" is missing in ") +
             setName, set.contains(cp));

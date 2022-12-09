@@ -1,6 +1,6 @@
 # This file is part of CWEB.
 # It is distributed WITHOUT ANY WARRANTY, express or implied.
-# Version 3.64 --- February 2002
+# Version 4.8 --- June 2022
 
 # Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -13,7 +13,7 @@
 # entire resulting derived work is given a different name and distributed
 # under the terms of a permission notice identical to this one.
 
-# 
+#
 # Read the README file, then edit this file to reflect local conditions
 #
 
@@ -50,7 +50,7 @@ TCHANGES=
 WCHANGES=
 
 # We keep debugging info around, for fun, but most users don't need it
-CFLAGS = -g
+CFLAGS = -g # -Wall -Wextra -Wimplicit-fallthrough=2 # check compiler warnings
 #CFLAGS = -O
 LINKFLAGS = -g
 #LINKFLAGS = -s # for smaller (stripped) executables on many UNIX systems
@@ -63,8 +63,12 @@ RM= /bin/rm
 CP= /bin/cp
 
 # uncomment the second line if you use pdftex to bypass .dvi files
+# uncomment the third line if you use xetex to bypass .dvi files
+# uncomment the forth line if you use hitex for HINT output
 PDFTEX = dvipdfm
 #PDFTEX = pdftex
+#PDFTEX = xetex
+#PDFTEX = hitex
 
 ##########  You shouldn't have to change anything after this point #######
 
@@ -72,14 +76,14 @@ CWEAVE = ./cweave
 CTANGLE = ./ctangle
 SOURCES = cweave.w common.w ctangle.w
 ALL =  common.w ctangle.w cweave.w prod.w \
-	Makefile common.c common.h ctangle.c \
+	Makefile README common.c common.h ctangle.c \
 	cwebman.tex cwebmac.tex comm-vms.ch ctang-vms.ch \
 	cweav-vms.ch comm-man.ch ctang-man.ch cweav-man.ch \
 	comm-pc.ch ctang-pc.ch cweav-pc.ch comm-amiga.ch \
-        comm-bs.ch ctang-bs.ch cweav-bs.ch makefile.bs \
+	comm-bs.ch ctang-bs.ch cweav-bs.ch makefile.bs \
 	comm-ql.ch ctang-ql.ch cweav-ql.ch readme.ql \
 	comm-w32.ch ctang-w32.ch cweav-w32.ch \
-	comm-os2.ch comm-mac.ch cweb.1 cweb.el c++lib.w README
+	comm-os2.ch comm-mac.ch cweb.1 cweb.el c++lib.w iso_types.w
 
 .SUFFIXES: .dvi .tex .w .pdf
 
@@ -105,6 +109,8 @@ ALL =  common.w ctangle.w cweave.w prod.w \
 	case "$(PDFTEX)" in \
 	 dvipdfm ) tex "\let\pdf+ \input $*"; dvipdfm $* ;; \
 	 pdftex ) pdftex $* ;; \
+	 xetex ) xetex $* ;; \
+	 hitex ) hitex $* ;; \
 	esac
 
 all: ctangle cweave
@@ -125,42 +131,42 @@ SAVEctangle.c:
 SAVEcommon.c:
 	$(CP) common.c SAVEcommon.c
 
-common.c: common.w $(CCHANGES)
+common.c: common.w $(CCHANGES) common.h
 	$(CTANGLE) common $(CCHANGES)
 
 common.o: common.c
 	$(CC) $(CFLAGS) -DCWEBINPUTS=\"$(CWEBINPUTS)\" -c common.c
 
 ctangle: ctangle.o common.o
-	$(CC) $(LINKFLAGS) -o ctangle ctangle.o common.o 
+	$(CC) $(LINKFLAGS) -o ctangle ctangle.o common.o
 
-ctangle.c: ctangle.w $(TCHANGES)
+ctangle.c: ctangle.w $(TCHANGES) common.h
 	$(CTANGLE) ctangle $(TCHANGES)
 
 cweave: cweave.o common.o
 	$(CC) $(LINKFLAGS) -o cweave cweave.o common.o
 
-cweave.c: cweave.w $(WCHANGES)
+cweave.c: cweave.w $(WCHANGES) common.h prod.w
 	$(CTANGLE) cweave $(WCHANGES)
 
 doc: $(SOURCES:.w=.dvi)
 
 usermanual: cwebman.tex cwebmac.tex
-	tex cwebman
+	$(PDF)tex cwebman
 
 fullmanual: usermanual $(SOURCES) comm-man.ch ctang-man.ch cweav-man.ch
 	make cweave
 	./cweave common.w comm-man.ch
-	tex common.tex
+	$(PDF)tex common.tex
 	./cweave ctangle.w ctang-man.ch
-	tex ctangle.tex
+	$(PDF)tex ctangle.tex
 	./cweave cweave.w cweav-man.ch
-	tex cweave.tex
+	$(PDF)tex cweave.tex
 
 # be sure to leave ctangle.c and common.c for bootstrapping
 clean:
 	$(RM) -f -r *~ *.o common.tex cweave.tex cweave.c ctangle.tex \
-	  *.log *.dvi *.toc *.idx *.scn *.pdf core cweave ctangle
+	  *.log *.dvi *.toc *.idx *.scn *.pdf *.hnt core cweave ctangle
 
 install: all
 	- mkdir $(DESTDIR)
@@ -180,6 +186,8 @@ install: all
 	- mkdir $(CWEBINPUTS)
 	$(CP) c++lib.w $(CWEBINPUTS)
 	chmod 644 $(CWEBINPUTS)/c++lib.w
+	$(CP) iso_types.w $(CWEBINPUTS)
+	chmod 644 $(CWEBINPUTS)/iso_types.w
 
 floppy: $(ALL) examples
 	bar cvhf /dev/rfd0 $(ALL) examples
@@ -195,3 +203,8 @@ tarfile: $(ALL) examples
 
 tarball:
 	tar zcvhf /tmp/cweb.tgz $(ALL) examples
+
+ctan:
+	git archive -o ~/cweb-4.8.zip --prefix=cweb/ cweb-4.8
+	make PDF=pdf usermanual
+	cd ..; zip -r ~/cweb-4.8.zip cweb/cwebman.pdf

@@ -1,3 +1,44 @@
+2022-11-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* euptex.ch0, euptex.ch1: Adapt to ptex-base.ch.
+	https://github.com/texjporg/tex-jp-build/issues/152
+
+2022-10-24  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* euptex.defines: Add toJIS.
+
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-02-05  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* euptex.defines: Add isterminalUTF8.
+
+2022-01-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* euptex.ch1, pdfstrcmp-eup-post.ch, pdfstrcmp-eup-pre.ch:
+	  Change type of str_pool to unsigned short.
+	  We use only 0--511, and use flag 0x100 for Japanese char.
+	  More details in TUGboat 41(2):329--334, 2020.
+	* euptex.defines: Add multistrlen{short,filename}, fromBUFFshort.
+
+2022-01-10  Karl Berry  <karl@freefriends.org>
+
+	* am/euptex.am: do not silence tangle-sh.
+
+2021-12-07  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* am/euptex.am: Add suppresserrors.ch.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2020-07-19  Karl Berry  <karl@freefriends.org>
+
+	* am/euptex.am (euptex_ch_srcs): add eptexdir/char-warning-eptex.ch.
+
 2019-12-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* am/euptex.am (euptex_CPPFLAGS): append $(ZLIB_INCLUDES).

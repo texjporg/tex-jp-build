@@ -1,0 +1,29 @@
+diff -ur libpaper-1.1.28.orig/src/paperconf.c libpaper-1.1.28/src/paperconf.c
+--- libpaper-1.1.28.orig/src/paperconf.c	2022-09-10 19:16:05.000000000 +0900
++++ libpaper-1.1.28/src/paperconf.c	2022-09-10 19:17:11.000000000 +0900
+@@ -3,9 +3,14 @@
+ #include "config.h"
+ #endif
+ 
++#ifdef HAVE_SYS_PARAM_H
+ #include <sys/param.h>
++#endif
+ 
+ #include <ctype.h>
++#ifdef _MSC_VER
++#include <getopt.h>
++#endif
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -100,6 +105,10 @@
+     const char* progname;
+ 
+     progname = strrchr(*argv, '/');
++#ifdef WIN32
++    if(!progname)
++        progname = strrchr(*argv, '\\');
++#endif
+     if (progname) {
+ 	++progname;
+     } else {

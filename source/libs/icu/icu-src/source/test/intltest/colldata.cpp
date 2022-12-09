@@ -22,6 +22,7 @@
 
 #include "unicode/regex.h"        // TODO: make conditional on regexp being built.
 
+#include "unicode/testlog.h"
 #include "unicode/uniset.h"
 #include "unicode/uset.h"
 #include "unicode/usetiter.h"
@@ -320,7 +321,7 @@ CollData::CollData(UCollator *collator, UErrorCode &status)
     USet *charsToTest = uset_openPattern(test_pattern, 20, &status);
 
     // Han ext. A, Han, Jamo, Hangul, Han Ext. B
-    // i.e. all the characers we handle implicitly
+    // i.e. all the characters we handle implicitly
     U_STRING_DECL(remove_pattern, "[[\\u3400-\\u9FFF][\\u1100-\\u11F9][\\uAC00-\\uD7AF][\\U00020000-\\U0002A6DF]]", 70);
     U_STRING_INIT(remove_pattern, "[[\\u3400-\\u9FFF][\\u1100-\\u11F9][\\uAC00-\\uD7AF][\\U00020000-\\U0002A6DF]]", 70);
     USet *charsToRemove = uset_openPattern(remove_pattern, 70, &status);

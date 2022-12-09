@@ -71,12 +71,12 @@ undergoes any modifications, so that it will be clear which version of
 @^extensions to \MP@>
 @^system dependencies@>
 
-@d default_banner "This is MetaPost, Version 2.00" /* printed when \MP\ starts */
+@d default_banner "This is MetaPost, Version 2.02" /* printed when \MP\ starts */
 @d true 1
 @d false 0
 
 @<Metapost version header@>=
-#define metapost_version "2.00"
+#define metapost_version "2.02"
 
 @ The external library header for \MP\ is |mplib.h|. It contains a
 few typedefs and the header defintions for the externally used
@@ -922,8 +922,8 @@ enum mp_filetype {
   mp_filetype_text              /* first text file for readfrom and writeto primitives */
 };
 typedef char *(*mp_file_finder) (MP, const char *, const char *, int);
-typedef char *(*mp_script_runner) (MP, const char *);
-typedef char *(*mp_text_maker) (MP, const char *, int mode);
+typedef char *(*mp_script_runner) (MP, const char *, size_t);
+typedef char *(*mp_text_maker) (MP, const char *, size_t, int);
 typedef void *(*mp_file_opener) (MP, const char *, const char *, int);
 typedef char *(*mp_file_reader) (MP, void *, size_t *);
 typedef void (*mp_binfile_reader) (MP, void *, void **, size_t *);
@@ -960,25 +960,23 @@ static char *mp_find_file (MP mp, const char *fname, const char *fmode,
 }
 
 @ @c
-static char *mp_run_script (MP mp, const char *str) {
+static char *mp_run_script (MP mp, const char *str, size_t len) {
   (void) mp;
-  return mp_strdup (str);
+  return mp_strldup (str, len);
 }
 
 @ @c
-static char *mp_make_text (MP mp, const char *str, int mode) {
+static char *mp_make_text (MP mp, const char *str, size_t len, int mode) {
   (void) mp;
-  return mp_strdup (str);
+  return mp_strldup (str, len);
 }
 
 @ Because |mp_find_file| is used so early, it has to be in the helpers
 section.
 
 @<Declarations@>=
-static char *mp_find_file (MP mp, const char *fname, const char *fmode,
-                           int ftype);
-static void *mp_open_file (MP mp, const char *fname, const char *fmode,
-                           int ftype);
+static char *mp_find_file (MP mp, const char *fname, const char *fmode, int ftype);
+static void *mp_open_file (MP mp, const char *fname, const char *fmode, int ftype);
 static char *mp_read_ascii_file (MP mp, void *f, size_t * size);
 static void mp_read_binary_file (MP mp, void *f, void **d, size_t * size);
 static void mp_close_file (MP mp, void *f);
@@ -986,8 +984,8 @@ static int mp_eof_file (MP mp, void *f);
 static void mp_flush_file (MP mp, void *f);
 static void mp_write_ascii_file (MP mp, void *f, const char *s);
 static void mp_write_binary_file (MP mp, void *f, void *s, size_t t);
-static char *mp_run_script (MP mp, const char *str);
-static char *mp_make_text (MP mp, const char *str, int mode);
+static char *mp_run_script (MP mp, const char *str, size_t len);
+static char *mp_make_text (MP mp, const char *str, size_t len, int mode);
 
 @ The function to open files can now be very short.
 
@@ -4379,9 +4377,32 @@ Note that the values are |scaled| integers. Hence \MP\ can no longer
 be used after the year 32767.
 
 @c
+#if defined(_MSC_VER)
+#define strtoull _strtoui64
+#endif
 static void mp_fix_date_and_time (MP mp) {
-  time_t aclock = time ((time_t *) 0);
-  struct tm *tmptr = localtime (&aclock);
+  char *source_date_epoch;
+  time_t epoch;
+  char *endptr;
+  struct tm *tmptr;
+  source_date_epoch = getenv("SOURCE_DATE_EPOCH");
+  if (source_date_epoch) {
+    errno = 0;
+    epoch = strtoull(source_date_epoch, &endptr, 10);
+    if (*endptr != '\0' || errno != 0) {
+      FATAL1("invalid epoch-seconds-timezone value for environment variable $SOURCE_DATE_EPOCH: %s",
+              source_date_epoch);
+    }
+/* there is a limit 3001.01.01:2059 for epoch in Microsoft C */
+#if defined(_MSC_VER)
+    if (epoch > 32535291599ULL)
+      epoch = 32535291599ULL;
+#endif
+    tmptr = gmtime (&epoch);
+  } else {
+    epoch = time ((time_t *) 0);
+    tmptr = localtime (&epoch);
+  }
   set_internal_from_number (mp_time, unity_t);
   number_multiply_int (internal_value(mp_time), (tmptr->tm_hour * 60 + tmptr->tm_min));
   set_internal_from_number (mp_hour, unity_t);
@@ -7638,6 +7659,14 @@ void mp_toss_knot (MP mp, mp_knot q) {
     q->next = mp->knot_nodes;
     mp->knot_nodes = q;
     mp->num_knot_nodes++;
+    if (mp->math_mode > mp_math_double_mode) {
+      free_number (q->x_coord);
+      free_number (q->y_coord);
+      free_number (q->left_x);
+      free_number (q->left_y);
+      free_number (q->right_x);
+      free_number (q->right_y);
+    }
     return;
   }
   if (mp->math_mode > mp_math_double_mode) {
@@ -7646,6 +7675,8 @@ void mp_toss_knot (MP mp, mp_knot q) {
     mp_xfree (q);
   }
 }
+
+
 void mp_toss_knot_list (MP mp, mp_knot p) {
   mp_knot q;    /* the node being freed */
   mp_knot r;    /* the next node */
@@ -15832,7 +15863,7 @@ CONTINUE:
     	 set_number_from_scaled (mp->cur_tt, 1);
          goto NOT_FOUND;
     }
-  
+
     if (number_to_scaled (mp->delx) - mp->tol <=
         number_to_scaled (stack_max (x_packet (mp->xy))) - number_to_scaled (stack_min (u_packet (mp->uv))))
       if (number_to_scaled (mp->delx) + mp->tol >=
@@ -18114,9 +18145,11 @@ new level (having, initially, the same properties as the old).
   if ( mp->input_ptr>mp->max_in_stack ) {
     mp->max_in_stack=mp->input_ptr;
     if ( mp->input_ptr==mp->stack_size ) {
-      int l = (mp->stack_size+(mp->stack_size/4));
-      XREALLOC(mp->input_stack, l, in_state_record);
-      mp->stack_size = l;
+        int l = (mp->stack_size+(mp->stack_size/4));
+        /* The mp->stack_size < 1001 condition is necessary to prevent C stack overflow due infinite recursion. */
+        if (l>1000) {fprintf(stderr, "input stack overflow\n");exit(EXIT_FAILURE);}
+        XREALLOC(mp->input_stack, l, in_state_record);
+        mp->stack_size = l;
     }
   }
   mp->input_stack[mp->input_ptr]=mp->cur_input; /* stack the record */
@@ -19979,7 +20012,7 @@ if (s != NULL) {
     } else {
         mp_back_input (mp);
         if (cur_exp_str ()->len > 0) {
-            char *s = mp->run_script(mp,(const char*) cur_exp_str()->str) ;
+            char *s = mp->run_script(mp,(const char*) cur_exp_str()->str, cur_exp_str()->len) ;
             @<Run a script@>
             free(s);
         }
@@ -20125,7 +20158,7 @@ line and preceded by a space or at the beginning of a line.
         }
         /* action */
         {
-            char *s = mp->make_text(mp,ptr,verb) ;
+            char *s = mp->make_text(mp,ptr,size,verb) ;
             @<Run a script@>
             free(s);
         }
@@ -20176,7 +20209,7 @@ line and preceded by a space or at the beginning of a line.
     } else {
         mp_back_input (mp);
         if (cur_exp_str ()->len > 0) {
-            char *s = mp->make_text(mp,(const char*) cur_exp_str()->str,0) ;
+            char *s = mp->make_text(mp,(const char*) cur_exp_str()->str,cur_exp_str()->len,0) ;
             @<Run a script@>
             free(s);
         }
@@ -21136,7 +21169,7 @@ void mp_begin_iteration (MP mp) {
       p->value_mod = mp_suffix_sym;
     }
     mp_get_x_next (mp);
-    if (cur_cmd() == mp_within_token) {
+    if (p->value_mod == mp_expr_sym && cur_cmd() == mp_within_token) {
       @<Set up a picture iteration@>;
     } else {
       @<Check for the assignment in a loop header@>;
@@ -34445,8 +34478,12 @@ void mp_set_text_box (MP mp, mp_text_node p) {
   size_t k, kk; /* current character and character to stop at */
   four_quarters cc;     /* the |char_info| for the current character */
   mp_number h, d;  /* dimensions of the current character */
+  mp_number minus_inf_t; /* check the -inf of height and depth */
   new_number(h);
   new_number(d);
+  new_number(minus_inf_t);
+  number_clone(minus_inf_t, inf_t);
+  number_negate(minus_inf_t);
   set_number_to_zero(p->width);
   set_number_to_neg_inf(p->height);
   set_number_to_neg_inf(p->depth);
@@ -34461,6 +34498,7 @@ void mp_set_text_box (MP mp, mp_text_node p) {
   @<Set the height and depth to zero if the bounding box is empty@>;
   free_number (h);
   free_number (d);
+  free_number (minus_inf_t);
 }
 
 
@@ -34490,7 +34528,10 @@ void mp_set_text_box (MP mp, mp_text_node p) {
 overflow.
 
 @<Set the height and depth to zero if the bounding box is empty@>=
-if (number_to_scaled(p->height) < -number_to_scaled(p->depth)) {
+if (number_equal(p->height,p->depth) && number_equal(p->height,minus_inf_t)) {
+  set_number_to_zero(p->height);
+  set_number_to_zero(p->depth);
+} else if (number_to_scaled(p->height) < -number_to_scaled(p->depth)) {
   set_number_to_zero(p->height);
   set_number_to_zero(p->depth);
 }
@@ -34774,9 +34815,9 @@ extreme cases so it may have to be shortened on some systems.
 
 @<Use |c| to compute the file extension |s|@>=
 {
-  s = xmalloc (12, 1);
-  mp_snprintf (s, 12, ".%i", (int) c);
-  s[7]='\0';
+  s = xmalloc (13, 1);
+  mp_snprintf (s, 13, ".%i", (int) c);
+  s[13]='\0';
 }
 
 

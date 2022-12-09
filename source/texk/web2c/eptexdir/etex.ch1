@@ -16,12 +16,17 @@ last_node_type:=-1; last_node_subtype:=-1;
 @z
 
 @x [17.236]
-@d int_pars=63 {total number of integer parameters}
-@d count_base=int_base+int_pars {256 user \.{\\count} registers}
+@d int_pars=web2c_int_pars {total number of integer parameters}
 @y
-@d tex_int_pars=63 {total number of \TeX's integer parameters}
-@#
-@d etex_int_base=tex_int_pars {base for \eTeX's integer parameters}
+@d etex_int_base=web2c_int_pars {base for \eTeX's integer parameters}
+@z
+
+@x [18]
+  for j:=0 to l-1 do begin
+    buffer[j]:=Lo(so(str_pool[k+j])); buffer2[j]:=Hi(so(str_pool[k+j])); end;
+@y
+  for j:=0 to l-1 do begin
+    buffer[first+j]:=Lo(so(str_pool[k+j])); buffer2[first+j]:=Hi(so(str_pool[k+j])); end;
 @z
 
 @x
@@ -154,6 +159,16 @@ change_box(q);
   link(tail):=list_ptr(p); box(cur_val):=null;
 @y
   link(tail):=list_ptr(p); change_box(null);
+@z
+
+@x [48.1145]
+  pop_nest; w:=-max_dimen;
+  end
+  { |disp_node|-only paragraphs are ignored }
+@y
+  @<Prepare for display after an empty paragraph@>
+  end
+  { |disp_node|-only paragraphs are ignored }
 @z
 
 @x [48.1145]

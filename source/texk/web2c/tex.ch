@@ -1,3 +1,4 @@
+% $Id$
 % tex.ch for C compilation with web2c, derived from various other change files.
 % By Tim Morgan, UC Irvine ICS Department, and many others.
 %
@@ -54,7 +55,7 @@
   \def\?##1]{\hbox to 1in{\hfil##1.\ }}
   }
 @y 83
-  \def\?##1]{\hbox{Changes to \hbox to 1em{\hfil##1}.\ }}
+  \def\?##1]{\hbox{Changes to ##1.\ }}
   }
 \let\maybe=\iffalse
 @z
@@ -72,10 +73,10 @@ a modified \TeX{} version.
 @z
 
 @x [1.2] l.188
-@d banner=='This is TeX, Version 3.14159265' {printed when \TeX\ starts}
+@d banner=='This is TeX, Version 3.141592653' {printed when \TeX\ starts}
 @y
-@d TeX_banner_k=='This is TeXk, Version 3.14159265' {printed when \TeX\ starts}
-@d TeX_banner=='This is TeX, Version 3.14159265' {printed when \TeX\ starts}
+@d TeX_banner_k=='This is TeXk, Version 3.141592653' {printed when \TeX\ starts}
+@d TeX_banner=='This is TeX, Version 3.141592653' {printed when \TeX\ starts}
 @#
 @d banner==TeX_banner
 @d banner_k==TeX_banner_k
@@ -259,7 +260,7 @@ versions of the program.
 @!sup_param_size = 32767;
 
 @!inf_save_size = 600;
-@!sup_save_size = 80000;
+@!sup_save_size = 30000000;
 
 @!inf_stack_size = 200;
 @!sup_stack_size = 30000;
@@ -574,6 +575,7 @@ tini@/
 @!file_line_error_style_p:cinttype; {format messages as file:line:error}
 @!eight_bit_p:cinttype; {make all characters printable by default}
 @!halt_on_error_p:cinttype; {stop at first error}
+@!halting_on_error_p:boolean; {already trying to halt?}
 @!quoted_filename:boolean; {current filename is quoted}
 {Variables for source specials}
 @!src_specials_p : boolean;{Whether |src_specials| are enabled at all}
@@ -785,6 +787,13 @@ if translate_filename then begin
 end;
 @z
 
+@x [5.71] term_input: set limit when fatal_error
+if not input_ln(term_in,true) then fatal_error("End of file on the terminal!");
+@y
+if not input_ln(term_in,true) then begin
+  limit:=0; fatal_error("End of file on the terminal!"); end;
+@z
+
 @x [6.73] l.1732 - Add unspecified_mode.
 @d error_stop_mode=3 {stops at every opportunity to interact}
 @y
@@ -822,11 +831,29 @@ else
 % under Unix.  We call it `uexit' because there's a WEB symbol called
 % `exit' already.  We use a C macro to change `uexit' back to `exit'.
 @x [6.81] l.1852 - Eliminate nonlocal goto, since C doesn't have them.
+@ The |jump_out| procedure just cuts across all active procedure levels and
+goes to |end_of_TEX|. This is the only nontrivial |@!goto| statement in the
+whole program. It is used when there is no recovery from a particular error.
+
+Some \PASCAL\ compilers do not implement non-local |goto| statements.
+@^system dependencies@>
+In such cases the body of |jump_out| should simply be
+`|close_files_and_terminate|;\thinspace' followed by a call on some system
+procedure that quietly terminates the program.
+
 @<Error hand...@>=
 procedure jump_out;
 begin goto end_of_TEX;
 end;
 @y
+@ The |jump_out| procedure just cuts across all active procedure levels.
+The body of |jump_out| simply calls
+`|close_files_and_terminate|;\thinspace' followed by a call on some system
+procedure that quietly terminates the program.
+@^system dependencies@>
+
+@f noreturn==procedure
+
 @d do_final_end==begin
    update_terminal;
    ready_already:=0;
@@ -849,11 +876,16 @@ print_char("."); show_context;
 @y
 print_char("."); show_context;
 if (halt_on_error_p) then begin
-  history:=fatal_error_stop; jump_out;
+  {If |close_files_and_terminate| generates an error, we'll end up back
+   here; just give up in that case. If files are truncated, too bad.}
+  if (halting_on_error_p) then do_final_end; {quit immediately}
+  halting_on_error_p:=true;
+  history:=fatal_error_stop;
+  jump_out;
 end;
 @z
 
-@x [6.84] l.1888 - Implement the switch-to-editor option.
+@x [6.84] l.1904 - Implement the switch-to-editor option.
 line ready to be edited. But such an extension requires some system
 wizardry, so the present implementation simply types out the name of the
 file that should be
@@ -879,14 +911,14 @@ been commented~out.
 @z
 
 @x [6.84] l.1903 - Implement the switch-to-editor option.
-"E": if base_ptr>0 then
+"E": if base_ptr>0 then if input_stack[base_ptr].name_field>=256 then
   begin print_nl("You want to edit file ");
 @.You want to edit file x@>
   slow_print(input_stack[base_ptr].name_field);
   print(" at line "); print_int(line);
   interaction:=scroll_mode; jump_out;
 @y
-"E": if base_ptr>0 then
+"E": if base_ptr>0 then if input_stack[base_ptr].name_field>=256 then
     begin edit_name_start:=str_start[edit_file.name_field];
     edit_name_length:=str_start[edit_file.name_field+1] -
                       str_start[edit_file.name_field];
@@ -1278,26 +1310,29 @@ char_sub_def_min:=256; char_sub_def_max:=-1;
 input and output, establishes the initial values of the date and time.
 @^system dependencies@>
 Since standard \PASCAL\ cannot provide such information, something special
-is needed. The program here simply specifies July 4, 1776, at noon; but
-users probably want a better approximation to the truth.
+is needed. The program here simply assumes that suitable values appear in
+the global variables \\{sys\_time}, \\{sys\_day}, \\{sys\_month}, and
+\\{sys\_year} (which are initialized to noon on 4 July 1776,
+in case the implementor is careless).
 
 @p procedure fix_date_and_time;
-begin time:=12*60; {minutes since midnight}
-day:=4; {fourth day of the month}
-month:=7; {seventh month of the year}
-year:=1776; {Anno Domini}
-end;
+begin sys_time:=12*60;
+sys_day:=4; sys_month:=7; sys_year:=1776;  {self-evident truths}
 @y
-@ The following procedure, which is called just before \TeX\ initializes its
-input and output, establishes the initial values of the date and time.
-It calls a macro-defined |date_and_time| routine.  |date_and_time|
-in turn is a C macro, which calls |get_date_and_time|, passing
-it the addresses of the day, month, etc., so they can be set by the
-routine.  |get_date_and_time| also sets up interrupt catching if that
-is conditionally compiled in the C code.
+@ The following procedure, which is called just before \TeX\ initializes
+its input and output, establishes the initial values of the date and
+time. It calls a |date_and_time| C macro (a.k.a.\ |dateandtime|), which
+calls the C function |get_date_and_time|, passing it the addresses of
+|sys_time|, etc., so they can be set by the routine. |get_date_and_time|
+also sets up interrupt catching if that is conditionally compiled in the
+C code.
+
+We have to initialize the |sys_| variables because that is what gets
+output on the first line of the log file. (New in 2021.)
 @^system dependencies@>
 
-@d fix_date_and_time==date_and_time(time,day,month,year)
+@p procedure fix_date_and_time;
+begin date_and_time(sys_time,sys_day,sys_month,sys_year);
 @z
 
 @x [17.252] l.5420 - hash_extra
@@ -1493,7 +1528,7 @@ aligning:begin print(" while scanning preamble"); info(p):=right_brace_token+"}"
 absorbing:begin print(" while scanning text"); info(p):=right_brace_token+"}";
 @z
 
-@x [25.366]
+@x [25.366] l.7672 - expansion depth overflow
 begin cv_backup:=cur_val; cvl_backup:=cur_val_level; radix_backup:=radix;
 @y
 begin
@@ -1502,11 +1537,28 @@ if expand_depth_count>=expand_depth then overflow("expansion depth",expand_depth
 cv_backup:=cur_val; cvl_backup:=cur_val_level; radix_backup:=radix;
 @z
 
-@x [25.366]
+@x [25.366] l.7678 - expansion depth overflow
 cur_order:=co_backup; link(backup_head):=backup_backup;
 @y
 cur_order:=co_backup; link(backup_head):=backup_backup;
 decr(expand_depth_count);
+@z
+
+% Original report: https://tex.stackexchange.com/questions/609423
+% TeX bug entry: https://tug.org/texmfbug/newbug.html#B155endwrite
+@x [25.369] l.7717 - disallow \noexpand\endwrite
+if t>=cs_token_flag then
+@y
+if (t>=cs_token_flag)and(t<>end_write_token) then
+@z
+
+@x [27.484] l.9495 - set limit when fatal_error
+else fatal_error("*** (cannot \read from terminal in nonstop modes)")
+@y
+else begin
+  limit:=0;
+  fatal_error("*** (cannot \read from terminal in nonstop modes)");
+  end
 @z
 
 @x [28.501] l.9747 - \eof18
@@ -2104,7 +2156,7 @@ slow_print(full_source_filename_stack[in_open]); update_terminal;
 @z
 
 @x [29.537] l.10360 - start_input: don't return filename to string pool.
-if name=str_ptr-1 then {we can conserve string pool space now}
+if name=str_ptr-1 then {conserve string pool space (but see note above)}
   begin flush_string; name:=cur_name;
   end;
 @y
@@ -2147,7 +2199,7 @@ if name=str_ptr-1 then {we can conserve string pool space now}
   {start of |lig_kern| program for left boundary character,
   |non_address| if there is none}
 @!font_bchar:array[internal_font_number] of min_quarterword..non_char;
-  {right boundary character, |non_char| if there is none}
+  {boundary character, |non_char| if there is none}
 @!font_false_bchar:array[internal_font_number] of min_quarterword..non_char;
   {|font_bchar| if it doesn't exist in the font, otherwise |non_char|}
 @y
@@ -2178,7 +2230,7 @@ if name=str_ptr-1 then {we can conserve string pool space now}
   {start of |lig_kern| program for left boundary character,
   |non_address| if there is none}
 @!font_bchar: ^nine_bits;
-  {right boundary character, |non_char| if there is none}
+  {boundary character, |non_char| if there is none}
 @!font_false_bchar: ^nine_bits;
   {|font_bchar| if it doesn't exist in the font, otherwise |non_char|}
 @z
@@ -2930,9 +2982,9 @@ $$\hbox{|@t$v^\prime$@>:=new_trie_op(0,1,min_trie_op)|,\qquad
 @z
 
 @x [43.943] l.18346 - web2c can't parse negative lower bounds in arrays.  Sorry.
-@!init@! trie_op_hash:array[-trie_op_size..trie_op_size] of 0..trie_op_size;
+@!init @!trie_op_hash:array[-trie_op_size..trie_op_size] of 0..trie_op_size;
 @y
-@!init@! trie_op_hash:array[neg_trie_op_size..trie_op_size] of 0..trie_op_size;
+@!init @!trie_op_hash:array[neg_trie_op_size..trie_op_size] of 0..trie_op_size;
 @z
 
 @x [43.943] l.18348 - bigtrie: Larger hyphenation tries.
@@ -3048,7 +3100,7 @@ tini
 @z
 
 @x [43.590] l.18524 - Dynamically allocate & larger tries.
-@!init@!trie_taken:packed array[1..trie_size] of boolean;
+@!init @!trie_taken:packed array[1..trie_size] of boolean;
   {does a family start here?}
 @t\hskip10pt@>@!trie_min:array[ASCII_code] of trie_pointer;
   {the first possible slot for each character}
@@ -3056,7 +3108,7 @@ tini
 @t\hskip10pt@>@!trie_not_ready:boolean; {is the trie still in linked form?}
 tini
 @y
-@!init@!trie_taken: ^boolean;
+@!init @!trie_taken: ^boolean;
   {does a family start here?}
 @t\hskip10pt@>@!trie_min:array[ASCII_code] of trie_pointer;
   {the first possible slot for each character}
@@ -3485,7 +3537,7 @@ format_debug('string pool checksum')(x);
 if x<>@$ then begin {check that strings are the same}
   wake_up_terminal;
   wterm_ln('---! ', stringcast(name_of_file+1),
-           ' made by different executable version');
+           ' made by different executable version, strings are different');
   goto bad_fmt;
 end;
 @<Undump |xord|, |xchr|, and |xprn|@>;
@@ -4272,8 +4324,8 @@ if trie_not_ready then begin {initex without format loaded}
 % running.  The best approximation is to do a core dump, then run the
 % debugger on it later.
 @x [52.1338] l.24411 - Core-dump in debugging mode on 0 input.
-    begin goto breakpoint;@\ {go to every label at least once}
-    breakpoint: m:=0; @{'BREAKPOINT'@}@\
+    begin goto breakpoint;@/ {go to every declared label at least once}
+    breakpoint: m:=0; @{'BREAKPOINT'@}@/
     end
 @y
     dump_core {do something to cause a core dump}
@@ -4423,6 +4475,16 @@ var j:small_number; {write stream number}
 
 @x [54.1376] l.24903 - Add editor-switch variables to globals.
 @* \[54] System-dependent changes.
+This section should be replaced, if necessary, by any special
+modifications of the program
+that are necessary to make \TeX\ work at a particular installation.
+It is usually best to design your change file so that all changes to
+previous sections preserve the section numbering; then everybody's version
+will be consistent with the published program. More extensive changes,
+which introduce new sections, can be inserted here; then only the index
+itself will get a new section number.
+@^system dependencies@>
+
 @y
 @* \[54/web2c] System-dependent changes for Web2c.
 Here are extra variables for Web2c.  (This numbering of the
@@ -4438,9 +4500,15 @@ system-dependent section allows easy integration of Web2c and e-\TeX, etc.)
 @ The |edit_name_start| will be set to point into |str_pool| somewhere after
 its beginning if \TeX\ is supposed to switch to an editor on exit.
 
+Initialize the |stop_at_space| variable for filename parsing.
+
+Initialize the |halting_on_error_p| variable to avoid infloop with
+\.{--halt-on-error}.
+
 @<Set init...@>=
 edit_name_start:=0;
 stop_at_space:=true;
+halting_on_error_p:=false;
 
 @ These are used when we regenerate the representation of the first 256
 strings.
@@ -4598,8 +4666,77 @@ slow_make_string:=t;
 exit:end;
 
 
-@* \[54/ML\TeX] System-dependent changes for ML\TeX.
+@* \[54/web2c] More changes for Web2c.
+% Related to [25.366] expansion depth check
+Sometimes, recursive calls to the |expand| routine may
+cause exhaustion of the run-time calling stack, resulting in
+forced execution stops by the operating system. To diminish the chance
+of this happening, a counter is used to keep track of the recursion
+depth, in conjunction with a constant called |expand_depth|.
 
+This does not catch all possible infinite recursion loops, just the ones
+that exhaust the application calling stack. The actual maximum value of
+|expand_depth| is outside of our control, but the initial setting of
+|10000| should be enough to prevent problems.
+@^system dependencies@>
+
+@<Global...@>=
+expand_depth_count:integer;
+
+@ @<Set init...@>=
+expand_depth_count:=0;
+
+@ % Related to [29.526] expansion depth check
+When |scan_file_name| starts it looks for a |left_brace|
+(skipping \.{\\relax}es, as other \.{\\toks}-like primitives).
+If a |left_brace| is found, then the procedure scans a file
+name contained in a balanced token list, expanding tokens as
+it goes. When the scanner finds the balanced token list, it
+is converted into a string and fed character-by-character to
+|more_name| to do its job the same as in the ``normal'' file
+name scanning.
+
+@p procedure scan_file_name_braced;
+var
+  @!save_scanner_status: small_number; {|scanner_status| upon entry}
+  @!save_def_ref: pointer; {|def_ref| upon entry, important if inside `\.{\\message}}
+  @!save_cur_cs: pointer;
+  @!s: str_number; {temp string}
+  @!p: pointer; {temp pointer}
+  @!i: integer; {loop tally}
+  @!save_stop_at_space: boolean; {this should be in tex.ch}
+  @!dummy: boolean;
+    {Initializing}
+begin save_scanner_status := scanner_status; {|scan_toks| sets |scanner_status| to |absorbing|}
+  save_def_ref := def_ref; {|scan_toks| uses |def_ref| to point to the token list just read}
+  save_cur_cs := cur_cs; {we set |cur_cs| back a few tokens to use in runaway errors}
+    {Scanning a token list}
+  cur_cs := warning_index; {for possible runaway error}
+  {mimick |call_func| from pdfTeX}
+  if scan_toks(false, true) <> 0 then do_nothing; {actually do the scanning}
+  {|s := tokens_to_string(def_ref);|}
+  old_setting := selector; selector:=new_string;
+  show_token_list(link(def_ref),null,pool_size-pool_ptr);
+  selector := old_setting;
+  s := make_string;
+  {turns the token list read in a string to input}
+    {Restoring some variables}
+  delete_token_ref(def_ref); {remove the token list from memory}
+  def_ref := save_def_ref; {and restore |def_ref|}
+  cur_cs := save_cur_cs; {restore |cur_cs|}
+  scanner_status := save_scanner_status; {restore |scanner_status|}
+    {Passing the read string to the input machinery}
+  save_stop_at_space := stop_at_space; {save |stop_at_space|}
+  stop_at_space := false; {set |stop_at_space| to false to allow spaces in file names}
+  begin_name;
+  for i:=str_start[s] to str_start[s+1]-1 do
+    dummy := more_name(str_pool[i]); {add each read character to the current file name}
+  stop_at_space := save_stop_at_space; {restore |stop_at_space|}
+end;
+
+
+@* \[54/ML\TeX] System-dependent changes for ML\TeX.
+@^system dependencies@>
 The boolean variable |mltex_p| is set by web2c according to the given
 command line option (or an entry in the configuration file) before any
 \TeX{} function is called.
@@ -4866,16 +5003,15 @@ if x<>@"4D4C5458 then goto bad_fmt;
 undump_int(x);   {undump |mltex_p| flag into |mltex_enabled_p|}
 if x=1 then mltex_enabled_p:=true
 else if x<>0 then goto bad_fmt;
-
-
-@* \[54] System-dependent changes.
 @z
 
 @x [54.1379] l.24916 - extra routines
 @* \[55] Index.
 @y
 
-@ @<Declare action procedures for use by |main_control|@>=
+@* \[54] System-dependent changes.
+
+@<Declare action procedures for use by |main_control|@>=
 
 procedure insert_src_special;
 var toklist, p, q : pointer;
@@ -4918,75 +5054,6 @@ end;
 @p function get_nullstr: str_number;
 begin
     get_nullstr := "";
-end;
-
-
-@* \[54/web2c] More changes for Web2c.
-% Related to [25.366] expansion depth check
-Sometimes, recursive calls to the |expand| routine may
-cause exhaustion of the run-time calling stack, resulting in
-forced execution stops by the operating system. To diminish the chance
-of this happening, a counter is used to keep track of the recursion
-depth, in conjunction with a constant called |expand_depth|.
-
-This does not catch all possible infinite recursion loops, just the ones
-that exhaust the application calling stack. The actual maximum value of
-|expand_depth| is outside of our control, but the initial setting of
-|10000| should be enough to prevent problems.
-@^system dependencies@>
-
-@<Global...@>=
-expand_depth_count:integer;
-
-@ @<Set init...@>=
-expand_depth_count:=0;
-
-@ % Related to [29.526] expansion depth check
-When |scan_file_name| starts it looks for a |left_brace|
-(skipping \.{\\relax}es, as other \.{\\toks}-like primitives).
-If a |left_brace| is found, then the procedure scans a file
-name contained in a balanced token list, expanding tokens as
-it goes. When the scanner finds the balanced token list, it
-is converted into a string and fed character-by-character to
-|more_name| to do its job the same as in the ``normal'' file
-name scanning.
-
-@p procedure scan_file_name_braced;
-var
-  @!save_scanner_status: small_number; {|scanner_status| upon entry}
-  @!save_def_ref: pointer; {|def_ref| upon entry, important if inside `\.{\\message}}
-  @!save_cur_cs: pointer;
-  @!s: str_number; {temp string}
-  @!p: pointer; {temp pointer}
-  @!i: integer; {loop tally}
-  @!save_stop_at_space: boolean; {this should be in tex.ch}
-  @!dummy: boolean;
-    {Initializing}
-begin save_scanner_status := scanner_status; {|scan_toks| sets |scanner_status| to |absorbing|}
-  save_def_ref := def_ref; {|scan_toks| uses |def_ref| to point to the token list just read}
-  save_cur_cs := cur_cs; {we set |cur_cs| back a few tokens to use in runaway errors}
-    {Scanning a token list}
-  cur_cs := warning_index; {for possible runaway error}
-  {mimick |call_func| from pdfTeX}
-  if scan_toks(false, true) <> 0 then do_nothing; {actually do the scanning}
-  {|s := tokens_to_string(def_ref);|}
-  old_setting := selector; selector:=new_string;
-  show_token_list(link(def_ref),null,pool_size-pool_ptr);
-  selector := old_setting;
-  s := make_string;
-  {turns the token list read in a string to input}
-    {Restoring some variables}
-  delete_token_ref(def_ref); {remove the token list from memory}
-  def_ref := save_def_ref; {and restore |def_ref|}
-  cur_cs := save_cur_cs; {restore |cur_cs|}
-  scanner_status := save_scanner_status; {restore |scanner_status|}
-    {Passing the read string to the input machinery}
-  save_stop_at_space := stop_at_space; {save |stop_at_space|}
-  stop_at_space := false; {set |stop_at_space| to false to allow spaces in file names}
-  begin_name;
-  for i:=str_start[s] to str_start[s+1]-1 do
-    dummy := more_name(str_pool[i]); {add each read character to the current file name}
-  stop_at_space := save_stop_at_space; {restore |stop_at_space|}
 end;
 
 

@@ -276,7 +276,6 @@ UObject *UObjectTest::testClassNoClassID(UObject *obj, const char *className, co
 #include "unicode/msgfmt.h"
 #include "unicode/normlzr.h"
 #include "unicode/normalizer2.h"
-#include "unicode/nounit.h"
 #include "unicode/numfmt.h"
 #include "unicode/parsepos.h"
 #include "unicode/plurrule.h"
@@ -321,7 +320,7 @@ public:
 // Appendable is abstract; we define a subclass to verify that there is no "poor man's RTTI".
 class DummyAppendable : public Appendable {
 public:
-    virtual UBool appendCodeUnit(UChar /*c*/) { return TRUE; }
+    virtual UBool appendCodeUnit(UChar /*c*/) override { return TRUE; }
 };
 
 void UObjectTest::testIDs()
@@ -373,7 +372,6 @@ void UObjectTest::testIDs()
     TESTCLASSID_DEFAULT(Formattable);
 
     TESTCLASSID_FACTORY(MeasureUnit, MeasureUnit::createMeter(status));
-    TESTCLASSID_FACTORY(NoUnit, NoUnit::percent().clone());
     TESTCLASSID_FACTORY(TimeUnit, TimeUnit::createInstance(TimeUnit::UTIMEUNIT_YEAR, status));
     static const UChar SMALL_STR[] = u"QQQ";
     TESTCLASSID_CTOR(CurrencyAmount, (1.0, SMALL_STR, status));

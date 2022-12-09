@@ -142,7 +142,7 @@ public:
     IntlTest();
     // TestLog has a virtual destructor.
 
-    virtual UBool runTest( char* name = NULL, char* par = NULL, char *baseName = NULL); // not to be overidden
+    virtual UBool runTest( char* name = NULL, char* par = NULL, char *baseName = NULL); // not to be overridden
 
     virtual UBool setVerbose( UBool verbose = TRUE );
     virtual UBool setNoErrMsg( UBool no_err_msg = TRUE );
@@ -161,39 +161,41 @@ public:
 
     virtual void log( const UnicodeString &message );
 
-    virtual void logln( const UnicodeString &message );
+    virtual void logln( const UnicodeString &message ) override;
 
     virtual void logln( void );
 
     /**
-     * Replaces isICUVersionAtLeast and isICUVersionBefore
-     * log that an issue is known.
+     * Logs that an issue is known. Can be called multiple times.
      * Usually used this way:
-     * <code>if( ... && logKnownIssue("12345", "some bug")) continue; </code>
-     * @param ticket ticket string, "12345" or "cldrbug:1234"
+     * <code>if( ... && logKnownIssue("ICU-12345", "some bug")) continue; </code>
+     * @param ticket ticket string, "ICU-12345" or "CLDR-1234"
      * @param message optional message string
      * @return true if test should be skipped
      */
     UBool logKnownIssue( const char *ticket, const UnicodeString &message );
     /**
-     * Replaces isICUVersionAtLeast and isICUVersionBefore
-     * log that an issue is known.
+     * Logs that an issue is known. Can be called multiple times.
      * Usually used this way:
-     * <code>if( ... && logKnownIssue("12345", "some bug")) continue; </code>
-     * @param ticket ticket string, "12345" or "cldrbug:1234"
+     * <code>if( ... && logKnownIssue("ICU-12345", "some bug")) continue; </code>
+     * @param ticket ticket string, "ICU-12345" or "CLDR-1234"
      * @return true if test should be skipped
      */
     UBool logKnownIssue( const char *ticket );
     /**
-     * Replaces isICUVersionAtLeast and isICUVersionBefore
-     * log that an issue is known.
+     * Log that an issue is known. Can be called multiple times.
      * Usually used this way:
-     * <code>if( ... && logKnownIssue("12345", "some bug")) continue; </code>
-     * @param ticket ticket string, "12345" or "cldrbug:1234"
+     * <code>if( ... && logKnownIssue("ICU-12345", "some bug")) continue; </code>
+     * @param ticket ticket string, "ICU-12345" or "CLDR-1234"
      * @param message optional message string
      * @return true if test should be skipped
      */
     UBool logKnownIssue( const char *ticket, const char *fmt, ...);
+
+#if !UCONFIG_NO_BREAK_ITERATION
+    UBool skipDictionaryTest();
+    UBool skipLSTMTest();
+#endif /* #if !UCONFIG_NO_BREAK_ITERATION */
 
     virtual void info( const UnicodeString &message );
 
@@ -205,11 +207,11 @@ public:
 
     virtual void err( const UnicodeString &message );
 
-    virtual void errln( const UnicodeString &message );
+    virtual void errln( const UnicodeString &message ) override;
 
     virtual void dataerr( const UnicodeString &message );
 
-    virtual void dataerrln( const UnicodeString &message );
+    virtual void dataerrln( const UnicodeString &message ) override;
 
     void errcheckln(UErrorCode status, const UnicodeString &message );
 
@@ -299,16 +301,32 @@ public:
     UBool assertEquals(const char* message, int32_t expected, int32_t actual);
     UBool assertEquals(const char* message, int64_t expected, int64_t actual);
     UBool assertEquals(const char* message, double expected, double actual);
+    /**
+     * Asserts that two doubles are equal to within a positive delta. Returns
+     * false if they are not.
+     *
+     * NaNs are considered equal: assertEquals(msg, NaN, NaN, *) passes.
+     * Infs are considered equal: assertEquals(msg, inf, inf, *) passes.
+     *
+     * @param message - the identifying message for the AssertionError.
+     * @param expected - expected value.
+     * @param actual - the value to check against expected.
+     * @param delta - the maximum delta for the absolute difference between
+     * expected and actual for which both numbers are still considered equal.
+     */
+    UBool assertEqualsNear(const char* message, double expected, double actual, double delta);
     UBool assertEquals(const char* message, UErrorCode expected, UErrorCode actual);
     UBool assertEquals(const char* message, const UnicodeSet& expected, const UnicodeSet& actual);
     UBool assertEquals(const char* message,
         const std::vector<std::string>& expected, const std::vector<std::string>& actual);
+
 #if !UCONFIG_NO_FORMATTING
     UBool assertEquals(const char* message, const Formattable& expected,
                        const Formattable& actual, UBool possibleDataError=FALSE);
     UBool assertEquals(const UnicodeString& message, const Formattable& expected,
                        const Formattable& actual);
 #endif
+    UBool assertNotEquals(const char* message, int32_t expectedNot, int32_t actual);
     UBool assertTrue(const UnicodeString& message, UBool condition, UBool quiet=FALSE, UBool possibleDataError=FALSE);
     UBool assertFalse(const UnicodeString& message, UBool condition, UBool quiet=FALSE, UBool possibleDataError=FALSE);
     UBool assertSuccess(const UnicodeString& message, UErrorCode ec);
@@ -319,12 +337,27 @@ public:
     UBool assertEquals(const UnicodeString& message, int32_t expected, int32_t actual);
     UBool assertEquals(const UnicodeString& message, int64_t expected, int64_t actual);
     UBool assertEquals(const UnicodeString& message, double expected, double actual);
+    /**
+     * Asserts that two doubles are equal to within a positive delta. Returns
+     * false if they are not.
+     *
+     * NaNs are considered equal: assertEquals(msg, NaN, NaN, *) passes.
+     * Infs are considered equal: assertEquals(msg, inf, inf, *) passes.
+     *
+     * @param message - the identifying message for the AssertionError.
+     * @param expected - expected value.
+     * @param actual - the value to check against expected.
+     * @param delta - the maximum delta between expected and actual for which
+     * both numbers are still considered equal.
+     */
+    UBool assertEqualsNear(const UnicodeString& message, double expected, double actual, double delta);
     UBool assertEquals(const UnicodeString& message, UErrorCode expected, UErrorCode actual);
     UBool assertEquals(const UnicodeString& message, const UnicodeSet& expected, const UnicodeSet& actual);
     UBool assertEquals(const UnicodeString& message,
         const std::vector<std::string>& expected, const std::vector<std::string>& actual);
+    UBool assertNotEquals(const UnicodeString& message, int32_t expectedNot, int32_t actual);
 
-    virtual void runIndexedTest( int32_t index, UBool exec, const char* &name, char* par = NULL ); // overide !
+    virtual void runIndexedTest( int32_t index, UBool exec, const char* &name, char* par = NULL ); // override !
 
     virtual UBool runTestLoop( char* testname, char* par, char *baseName );
 
@@ -385,9 +418,11 @@ public:
 public:
     UBool run_phase2( char* name, char* par ); // internally, supports reporting memory leaks
     static const char* loadTestData(UErrorCode& err);
-    virtual const char* getTestDataPath(UErrorCode& err);
+    virtual const char* getTestDataPath(UErrorCode& err) override;
     static const char* getSourceTestData(UErrorCode& err);
     static char *getUnidataPath(char path[]);
+    UChar *ReadAndConvertFile(const char *fileName, int &ulen, const char *encoding, UErrorCode &status);
+
 
 // static members
 public:

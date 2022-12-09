@@ -1,3 +1,166 @@
+2022-12-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* up{bibtex,dvitype,pltotf,tftopl}.ch, am/uptex.am:
+	Merge change files/binaries for pTeX tools into upTeX tools.
+	Now pTeX tools (pbibtex, pdvitype, ppltotf, ptftopl) run
+	as the compatible mode.
+	* upbibtex.ch: version j0.36-u1.29
+	https://github.com/texjporg/tex-jp-build/issues/32
+	https://github.com/texjporg/tex-jp-build/issues/154
+
+2022-11-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {nissya,sample,skipjfmp,upbibtex-mem,updvitype,yokotate}.test,
+	upbibtex-{longline,openout}-test.pl,
+	tests/uptex[34].{tex,dvi}, tests/uptex[34]a.typ, am/uptex.am:
+	Add tests for pTeX compatible mode of tools for upTeX.
+		upbibtex -kanji=internal=euc :: pbibtex compatible
+		updvitype -kanji=utf8 :: pdvitype compatible
+		uppltotf -kanji=utf8 :: ppltotf compatible
+		uptftopl -kanji=utf8 :: ptftopl compatible
+	https://github.com/texjporg/tex-jp-build/issues/32
+
+2022-11-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex-m.ch: Adapt to ptex-base.ch.
+	https://github.com/texjporg/tex-jp-build/issues/152
+
+2022-10-24  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex-m.ch: Add to pTeX 4.1.0.
+	* uptex.defines: Add toJIS.
+
+2022-09-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upbibtex.ch:
+	Check options before initialization of kpathsearch parameters.
+	This change prevents unwanted looking for texmf.cnf.
+	https://github.com/texjporg/tex-jp-build/issues/145
+	* upbibtex.test, am/uptex.am:
+	Update tests for upBibTeX.
+
+2022-09-01  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* kanji.c: Initialization of infile_enc_auto is moved to ptexenc.
+	This change prevents unwanted looking for texmf.cnf.
+	https://github.com/texjporg/tex-jp-build/pull/144
+
+2022-07-23  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
+	uptex_version.h: upTeX version u1.29.
+	* uptex-m.ch, upbibtex.ch, kanji.c:
+	Update reference of Unicode blocks to
+	"Blocks-15.0.0.txt Date: 2022-01-28, 20:58:00 GMT [KW]".
+	* tests/kcat.tex, tests/upkcat.txt: Update a test.
+
+2022-06-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* kanji.[ch], upbibtex.ch:
+	Support guessing input file encodings.
+	https://github.com/texjporg/tex-jp-build/issues/142
+	* upbibtex.test, am/uptex.am:
+	Add tests for guess encodings & upBibTeX.
+
+2022-05-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upbibtex.ch:
+	Accept multibyte characters by int.to.chr$ and chr.to.int$, i.e.
+	chr is corresponding to one single character multibyte string.
+
+2022-05-07  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upbibtex.ch:
+	Support Latin-1, Latin Extended-A, Greek and Cyrillic on change.case$.
+	Ignore add.period$ after Interrobang ‽.
+	Make is.kanji.str$ false for Ideographic Description Characters.
+
+2022-05-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upbibtex.ch: Fix bug on kpse_set_progname.
+	* upbibtex.test: Update a test.
+
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-02-20  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* upbibtex.ch: Adapt to pbibtex.ch.
+	  https://github.com/texjporg/tex-jp-build/issues/133
+
+2022-02-15  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* uptex-m.ch: Adapt to ptex-base.ch.
+	  More info: https://github.com/texjporg/tex-jp-build/issues/87
+
+2022-02-13  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* upbibtex.ch: Adapt to pbibtex.ch (version number).
+
+2022-02-05  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* uptex.defines: Add isterminalUTF8.
+
+2022-01-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex-m.ch: Adapt to ptex-base.ch fixes.
+
+2022-01-23  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
+	uptex_version.h: upTeX version u1.28.
+	* uptex-m.ch, upbibtex.ch, kanji.c:
+	Update reference of Unicode blocks to
+	"Blocks-14.0.0.txt Date: 2021-01-22, 23:29:00 GMT [KW]".
+	* COPYRIGHT, COPYRIGHT.ja:
+	Update copyright year.
+	* upkcat.test, tests/kcat.tex, tests/upkcat.txt: Add a new test.
+
+2022-01-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* uptex-m.ch: Change type of str_pool to unsigned short.
+	  We use only 0--511, and use flag 0x100 for Japanese char.
+	  More details in TUGboat 41(2):329--334, 2020.
+	* kanji.h: Adapt to arguments of input_line2() in ptexenc-1.4.0
+	  (for upBibTeX).
+	* uptex.defines: Add multistrlen{short,filename}, fromBUFFshort.
+
+2022-01-10  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am: do not silence tangle-sh.
+
+2021-06-29  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* uptex-m.ch: Adapt to pTeX p3.10.0.
+	* uptex.defines: Add toUCS().
+
+2021-06-25  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex—m.ch: Adapt to ptex-base.ch for no re-eval.
+	* tests/test_if.tex: Update.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2020-10-25  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
+	uptex_version.h: upTeX version u1.27.
+
+2020-10-25  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* upbibtex.ch:
+	Make is.kanji.str$ false for Latin, Cyrillic, Greek scripts
+	and CJK symbols.
+	* tests/unibib.{tex,bib,aux,bbl}: Test case.
+	https://github.com/texjporg/tex-jp-build/issues/109
+
+2020-08-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* updvitype.ch: Sync with the change of pdvitype.ch.
+
 2020-02-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* uptex-m.ch, upbibtex.ch, updvitype.ch, uppltotf.ch, uptftopl.ch,
@@ -45,7 +208,7 @@
 2019-05-06  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* uptex-m.ch:
-	Make appropreate comparison of U+0100 by \if.
+	Make appropriate comparison of U+0100 by \if.
 	https://github.com/texjporg/tex-jp-build/issues/68
 	* tests/test_if.tex: Test case.
 

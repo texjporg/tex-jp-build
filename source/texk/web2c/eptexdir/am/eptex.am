@@ -1,6 +1,7 @@
+## $Id$
 ## texk/web2c/eptexdir/am/eptex.am: Makefile fragment for e-pTeX.
 ##
-## Copyright 2015-2019 Karl Berry <tex-live@tug.org>
+## Copyright 2015-2022 Karl Berry <tex-live@tug.org>
 ## Copyright 2011-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 
@@ -36,9 +37,9 @@ eptex-pool.c: eptex.pool eptexd.h $(makecpool_stamp)
 
 # Tangling e-pTeX
 eptex.p eptex.pool: eptex-tangle
-	@$(texmf_tangle) eptex eptex
+	$(texmf_tangle) eptex eptex
 eptex-tangle: tangle$(EXEEXT) eptex.web eptex.ch tangle-sh
-	@$(texmf_tangle) eptex eptex
+	$(texmf_tangle) eptex eptex
 
 # Extract eptex version
 $(srcdir)/eptexdir/eptex_version.h: @MAINTAINER_MODE_TRUE@ eptexdir/eptex.ech
@@ -53,6 +54,9 @@ eptex_web_srcs = \
 	etexdir/etex.ch \
 	etexdir/tex.ch0 \
 	tex.ch \
+	tracingstacklevels.ch \
+	partoken.ch \
+	showstream.ch \
 	zlib-fmt.ch \
 	etexdir/tex.ech
 
@@ -68,6 +72,8 @@ eptex_ch_srcs = \
 	$(eptex_ch_synctex) \
 	eptexdir/fam256.ch \
 	eptexdir/pdfutils.ch \
+	eptexdir/suppresserrors.ch \
+	eptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
 
 EXTRA_DIST += $(eptex_web_srcs) $(eptex_ch_srcs) eptexdir/eptex.defines
@@ -117,3 +123,4 @@ EXTRA_DIST += \
 	eptexdir/tests/pdfprimitive-eptex.log
 DISTCLEANFILES += pdfprimitive-eptex.*
 
+# (end of eptex.am)

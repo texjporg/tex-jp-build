@@ -43,6 +43,9 @@ static void TestCalendarDateParse(void);
 static void TestParseErrorReturnValue(void);
 static void TestFormatForFields(void);
 static void TestForceGannenNumbering(void);
+static void TestMapDateToCalFields(void);
+static void TestNarrowQuarters(void);
+static void TestExtraneousCharacters(void);
 
 void addDateForTest(TestNode** root);
 
@@ -63,6 +66,9 @@ void addDateForTest(TestNode** root)
     TESTCASE(TestParseErrorReturnValue);
     TESTCASE(TestFormatForFields);
     TESTCASE(TestForceGannenNumbering);
+    TESTCASE(TestMapDateToCalFields);
+    TESTCASE(TestNarrowQuarters);
+    TESTCASE(TestExtraneousCharacters);
 }
 /* Testing the DateFormat API */
 static void TestDateFormat()
@@ -194,16 +200,21 @@ static void TestDateFormat()
     }
     /*format using fr */
 
-    u_unescape("10 juil. 1996 \\u00E0 16:05:28 heure d\\u2019\\u00E9t\\u00E9 du Pacifique", temp, 50);
+    u_unescape("10 juil. 1996, 16:05:28 heure d\\u2019\\u00E9t\\u00E9 du Pacifique", temp, 50);
     if(result != NULL) {
         free(result);
         result = NULL;
     }
     result=myDateFormat(fr, d);
-    if(u_strcmp(result, temp)==0)
+    if(u_strcmp(result, temp)==0) {
         log_verbose("PASS: Date Format for french locale successful using udat_format()\n");
-    else
-        log_data_err("FAIL: Date Format for french locale failed using udat_format().\n" );
+    } else {
+        char xbuf[2048];
+        char gbuf[2048];
+        u_austrcpy(xbuf, temp);
+        u_austrcpy(gbuf, result);
+        log_data_err("FAIL: Date Format for french locale failed using udat_format() - expected %s got %s\n", xbuf, gbuf);
+    }
 
     /*format using it */
     u_uastrcpy(temp, "10 lug 1996, 16:05:28");
@@ -235,7 +246,7 @@ static void TestDateFormat()
         log_err("FAIL: Error in parsing using udat_parse(.....) %s\n", myErrorName(status) );
     }
     else
-        log_verbose("PASS: parsing succesful\n");
+        log_verbose("PASS: parsing successful\n");
     /*format it back and check for equality */
 
 
@@ -253,7 +264,7 @@ static void TestDateFormat()
         log_err("FAIL: udat_parse(\"bad string\") passed when it should have failed\n");
     }
     else
-        log_verbose("PASS: parsing succesful\n");
+        log_verbose("PASS: parsing successful\n");
 
 
 
@@ -268,7 +279,7 @@ static void TestDateFormat()
             myErrorName(status) );
     }
     else
-        log_verbose("PASS: creating dateformat using udat_openPattern() succesful\n");
+        log_verbose("PASS: creating dateformat using udat_openPattern() successful\n");
 
 
         /*Testing applyPattern and toPattern */
@@ -346,7 +357,7 @@ static void TestDateFormat()
     if(u_strcmp(myNumformat(numformat1, num), myNumformat(numformat2, num)) !=0)
         log_err("FAIL: error in setNumberFormat or getNumberFormat()\n");
     else
-        log_verbose("PASS:setNumberFormat and getNumberFormat succesful\n");
+        log_verbose("PASS:setNumberFormat and getNumberFormat successful\n");
 
     /*Test getNumberFormat() and adoptNumberFormat() */
     log_verbose("\nTesting the get and adopt NumberFormat properties of date format\n");
@@ -356,7 +367,7 @@ static void TestDateFormat()
     if(u_strcmp(myNumformat(adoptNF, num), myNumformat(numformat2, num)) !=0)
         log_err("FAIL: error in adoptNumberFormat or getNumberFormat()\n");
     else
-        log_verbose("PASS:adoptNumberFormat and getNumberFormat succesful\n");
+        log_verbose("PASS:adoptNumberFormat and getNumberFormat successful\n");
 
     /*try setting the number format to another format */
     numformat1=udat_getNumberFormat(def);
@@ -365,7 +376,7 @@ static void TestDateFormat()
     if(u_strcmp(myNumformat(numformat1, num), myNumformat(numformat2, num)) !=0)
         log_err("FAIL: error in setNumberFormat or getNumberFormat()\n");
     else
-        log_verbose("PASS: setNumberFormat and getNumberFormat succesful\n");
+        log_verbose("PASS: setNumberFormat and getNumberFormat successful\n");
 
 
 
@@ -572,7 +583,7 @@ static void TestRelativeDateFormat()
 /*Testing udat_getSymbols() and udat_setSymbols() and udat_countSymbols()*/
 static void TestSymbols()
 {
-    UDateFormat *def, *fr, *zhChiCal;
+    UDateFormat *def, *fr, *zhChiCal, *esMX;
     UErrorCode status = U_ZERO_ERROR;
     UChar *value=NULL;
     UChar *result = NULL;
@@ -611,7 +622,15 @@ static void TestSymbols()
             myErrorName(status) );
         return;
     }
-
+    /*creating a dateformat with es_MX locale */
+    log_verbose("\ncreating a date format with es_MX locale\n");
+    esMX = udat_open(UDAT_SHORT, UDAT_NONE, "es_MX", NULL, 0, NULL, 0, &status);
+    if(U_FAILURE(status))
+    {
+        log_data_err("error in creating the dateformat using no date, short time, locale es_MX -> %s (Are you missing data?)\n",
+            myErrorName(status) );
+        return;
+    }
 
     /*Testing countSymbols, getSymbols and setSymbols*/
     log_verbose("\nTesting countSymbols\n");
@@ -651,7 +670,7 @@ static void TestSymbols()
         log_err("FAIL: Error in udat_getSymbols().... %s\n", myErrorName(status) );
     }
     else
-        log_verbose("PASS: getSymbols succesful\n");
+        log_verbose("PASS: getSymbols successful\n");
 
     if(u_strcmp(result, pattern)==0)
         log_verbose("PASS: getSymbols retrieved the right value\n");
@@ -676,6 +695,8 @@ static void TestSymbols()
     VerifygetSymbols(def, UDAT_QUARTERS, 3, "4th quarter");
     VerifygetSymbols(fr, UDAT_SHORT_QUARTERS, 1, "T2");
     VerifygetSymbols(def, UDAT_SHORT_QUARTERS, 2, "Q3");
+    VerifygetSymbols(esMX, UDAT_STANDALONE_NARROW_QUARTERS, 1, "2T");
+    VerifygetSymbols(def, UDAT_NARROW_QUARTERS, 2, "3");
     VerifygetSymbols(zhChiCal, UDAT_CYCLIC_YEARS_ABBREVIATED, 0, "\\u7532\\u5B50");
     VerifygetSymbols(zhChiCal, UDAT_CYCLIC_YEARS_NARROW, 59, "\\u7678\\u4EA5");
     VerifygetSymbols(zhChiCal, UDAT_ZODIAC_NAMES_ABBREVIATED, 0, "\\u9F20");
@@ -773,7 +794,7 @@ free(pattern);
         log_err("FAIL: error in retrieving the value using getSymbols i.e roundtrip\n");
 
     if(u_strcmp(result, value)!=0)
-        log_data_err("FAIL: Error in settting and getting symbols\n");
+        log_data_err("FAIL: Error in setting and getting symbols\n");
     else
         log_verbose("PASS: setSymbols successful\n");
 
@@ -796,8 +817,10 @@ free(pattern);
     VerifysetSymbols(fr, UDAT_STANDALONE_NARROW_MONTHS, 2, "M");
     VerifysetSymbols(fr, UDAT_QUARTERS, 0, "1. Quart");
     VerifysetSymbols(fr, UDAT_SHORT_QUARTERS, 1, "QQ2");
+    VerifysetSymbols(fr, UDAT_NARROW_QUARTERS, 1, "!2");
     VerifysetSymbols(fr, UDAT_STANDALONE_QUARTERS, 2, "3rd Quar.");
     VerifysetSymbols(fr, UDAT_STANDALONE_SHORT_QUARTERS, 3, "4QQ");
+    VerifysetSymbols(fr, UDAT_STANDALONE_NARROW_QUARTERS, 3, "!4");
     VerifysetSymbols(zhChiCal, UDAT_CYCLIC_YEARS_ABBREVIATED, 1, "yi-chou");
     VerifysetSymbols(zhChiCal, UDAT_ZODIAC_NAMES_ABBREVIATED, 1, "Ox");
 
@@ -820,6 +843,7 @@ free(pattern);
     udat_close(fr);
     udat_close(def);
     udat_close(zhChiCal);
+    udat_close(esMX);
     if(result != NULL) {
         free(result);
         result = NULL;
@@ -1905,4 +1929,114 @@ static void TestForceGannenNumbering(void) {
         udatpg_close(dtpgen);
     }
 }
+
+typedef struct {
+    UChar               patternChar; // for future use
+    UDateFormatField    dateField;
+    UCalendarDateFields calField;
+} PatternCharToFieldsItem;
+
+static const PatternCharToFieldsItem patCharToFieldsItems[] = {
+    { u'G', UDAT_ERA_FIELD,                 UCAL_ERA },
+    { u'y', UDAT_YEAR_FIELD,                UCAL_YEAR },
+    { u'Y', UDAT_YEAR_WOY_FIELD,            UCAL_YEAR_WOY },
+    { u'Q', UDAT_QUARTER_FIELD,             UCAL_MONTH },
+    { u'H', UDAT_HOUR_OF_DAY0_FIELD,        UCAL_HOUR_OF_DAY },
+    { u'r', UDAT_RELATED_YEAR_FIELD,        UCAL_EXTENDED_YEAR },
+    { u'B', UDAT_FLEXIBLE_DAY_PERIOD_FIELD, UCAL_FIELD_COUNT },
+    { u'$', UDAT_FIELD_COUNT,               UCAL_FIELD_COUNT },
+    { 0xFFFF, (UDateFormatField)-1,         UCAL_FIELD_COUNT }, // patternChar ignored here
+    { (UChar)0, (UDateFormatField)0, (UCalendarDateFields)0 } // terminator
+};
+
+static void TestMapDateToCalFields(void){
+    const PatternCharToFieldsItem* itemPtr;
+    for ( itemPtr=patCharToFieldsItems; itemPtr->patternChar!=(UChar)0; itemPtr++) {
+        UCalendarDateFields calField = udat_toCalendarDateField(itemPtr->dateField);
+        if (calField != itemPtr->calField) {
+            log_err("for pattern char 0x%04X, dateField %d, expect calField %d and got %d\n",
+                    itemPtr->patternChar, itemPtr->dateField, itemPtr->calField, calField);
+        }
+    }
+}
+
+static void TestNarrowQuarters(void) {
+    // Test for rdar://79238094
+    const UChar* testCases[] = {
+        u"en_US", u"QQQQ y",  u"1st quarter 1970",
+        u"en_US", u"QQQ y",   u"Q1 1970",
+        u"en_US", u"QQQQQ y", u"1 1970",
+        u"es_MX", u"QQQQ y",  u"1.er trimestre 1970",
+        u"es_MX", u"QQQ y",   u"T1 1970",
+        u"es_MX", u"QQQQQ y", u"1 1970",
+        u"en_US", u"qqqq",    u"1st quarter",
+        u"en_US", u"qqq",     u"Q1",
+        u"en_US", u"qqqqq",   u"1",
+        u"es_MX", u"qqqq",    u"1.er trimestre",
+        u"es_MX", u"qqq",     u"T1",
+        u"es_MX", u"qqqqq",   u"1T",
+    };
+    
+    UErrorCode err = U_ZERO_ERROR;
+    UChar result[100];
+    UDate parsedDate = 0;
+    UDate expectedFormatParsedDate = 0;
+    UDate expectedStandaloneParsedDate = 0;
+    
+    for (int32_t i = 0; i < UPRV_LENGTHOF(testCases); i += 3) {
+        const UChar* localeID = testCases[i];
+        const UChar* pattern = testCases[i + 1];
+        const UChar* expectedResult = testCases[i + 2];
+        
+        err = U_ZERO_ERROR;
+        
+        UDateFormat* df = udat_open(UDAT_PATTERN, UDAT_PATTERN, austrdup(localeID), u"UTC", 0, pattern, -1, &err);
+        
+        udat_format(df, 0, result, 100, NULL, &err);
+        
+        if (assertSuccess("Formatting date failed", &err)) {
+            assertUEquals("Wrong formatting result", expectedResult, result);
+        }
+        
+        bool patternIsStandaloneQuarter = u_strchr(pattern, u'q') != NULL;
+        
+        parsedDate = udat_parse(df, expectedResult, -1, NULL, &err);
+        if (!patternIsStandaloneQuarter && expectedFormatParsedDate == 0) {
+            expectedFormatParsedDate = parsedDate;
+        } else if (patternIsStandaloneQuarter && expectedStandaloneParsedDate == 0) {
+            expectedStandaloneParsedDate = parsedDate;
+        }
+        
+        if (assertSuccess("Parsing date failed", &err)) {
+            if (patternIsStandaloneQuarter) {
+                assertDoubleEquals("Wrong parsing result", expectedStandaloneParsedDate, parsedDate);
+            } else {
+                assertDoubleEquals("Wrong parsing result", expectedFormatParsedDate, parsedDate);
+            }
+        }
+        
+        udat_close(df);
+    }
+}
+
+static void TestExtraneousCharacters(void) {
+    // regression test for ICU-21802
+    UErrorCode err = U_ZERO_ERROR;
+    UCalendar* cal = ucal_open(u"UTC", -1, "en_US", UCAL_GREGORIAN, &err);
+    UDateFormat* df = udat_open(UDAT_PATTERN, UDAT_PATTERN, "en_US", u"UTC", -1, u"yyyyMMdd", -1, &err);
+    
+    if (assertSuccess("Failed to create date formatter and calendar", &err)) {
+        udat_setLenient(df, false);
+
+        udat_parseCalendar(df, cal, u"2021", -1, NULL, &err);
+        assertTrue("Success parsing '2021'", err == U_PARSE_ERROR);
+        
+        err = U_ZERO_ERROR;
+        udat_parseCalendar(df, cal, u"2021-", -1, NULL, &err);
+        assertTrue("Success parsing '2021-'", err == U_PARSE_ERROR);
+    }
+    udat_close(df);
+    ucal_close(cal);
+}
+
 #endif /* #if !UCONFIG_NO_FORMATTING */

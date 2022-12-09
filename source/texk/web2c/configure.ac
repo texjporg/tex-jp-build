@@ -257,6 +257,7 @@ KPSE_LIBPNG_FLAGS
 KPSE_FREETYPE2_FLAGS
 KPSE_PIXMAN_FLAGS
 KPSE_CAIRO_FLAGS
+KPSE_POTRACE_FLAGS
 KPSE_GMP_FLAGS
 KPSE_MPFR_FLAGS
 KPSE_XPDF_FLAGS
@@ -326,7 +327,7 @@ AC_CONFIG_HEADERS([w2c/c-auto.h:c-auto.in],
 
 AH_TOP([/* w2c/c-auto.h: defines for web2c, as determined by configure.
 
-   Copyright 1994-97, 2008-2012 Karl Berry.
+   Copyright 1994-97, 2008-2021 Karl Berry.
    Copyright 1997-99, 2002, 2005 Olaf Weber.
 
    This program is free software: you can redistribute it and/or modify

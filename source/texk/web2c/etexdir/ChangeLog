@@ -1,3 +1,23 @@
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-01-10  Karl Berry  <karl@freefriends.org>
+
+	* am/etex.am: do not silence tangle-sh.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2021-02-22  Phelype Oleinik  <phe.h.o1@gmail.com>
+
+	* etex.ch: avoid "expansion depth" overflow with \numexpr.
+
+2021-02-13  Karl Berry  <karl@freefriends.org>
+
+	* am/etex.am (etex_ch_srcs): adjust for split enctex changes.
+
 2019-12-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* am/etex.am (etex_CPPFLAGS): append $(ZLIB_INCLUDES).

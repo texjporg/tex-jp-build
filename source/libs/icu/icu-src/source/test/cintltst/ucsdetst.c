@@ -208,7 +208,7 @@ try_le:
 
 
     if (strcmp(name, "UTF-16LE") != 0) {
-        log_err("Enconding detection failure for UTF-16LE: got %s\n", name);
+        log_err("Encoding detection failure for UTF-16LE: got %s\n", name);
     }
 
     if (conf != 100) {
@@ -402,6 +402,7 @@ static void TestBufferOverflow(void) {
     }
 
     for (idx = 0; idx < UPRV_LENGTHOF(testStrings); idx++) {
+        status = U_ZERO_ERROR;
         ucsdet_setText(csd, testStrings[idx], -1, &status);
         match = ucsdet_detect(csd, &status);
 

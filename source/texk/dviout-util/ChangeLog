@@ -1,3 +1,36 @@
+2022-08-30  Karl Berry  <karl@freefriends.org>
+
+	* chkdvifont.man: typo fixes from Hilmar Preu\ss{}e,
+	https://tug.org/pipermail/tex-live/2022-June/048227.html
+
+2022-04-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvispc.c, dd.h:
+	Accept FNTDEF between PRE--BOP and between EOP--BOP.
+	* dvispc.test, tests/fntdef0.tex, tests/fntdef[0123].{dvi,txt},
+	tests/fntdef[03]-dtl,txt, tests/put{,j}.txt, Makefile.am:
+	Add new tests.
+	* configure.ac: Version 20220409.
+	* COPYING: Copyright year.
+	https://github.com/texjporg/tex-jp-build/issues/138
+
+2021-07-18  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvispc.c: Output text files by "wb" mode.
+	(Windows only)
+
+2021-06-27  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.c: Avoid encoding conversion in ASCII range
+	for printing characters with internal-euc/sjis.
+	* dvispc.test, tests/put[j].dump.dvi, tests/put[j].txt,
+	Makefile.am: Another test files.
+
+2021-06-21  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* dvispc.test, chkdvifont.test: Minor adjustments.
+	* tests/jisx0208.{dvi,txt}, Makefile.am: Another test.
+
 2020-05-01  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* Makefile.{am,in}, common.h, dvispc.c, chkdvifont.c:

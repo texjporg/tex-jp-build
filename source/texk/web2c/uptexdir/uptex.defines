@@ -11,14 +11,18 @@
 @define procedure setpriorfileenc;
 @define function isinternalUPTEX;
 @define function isinternalEUC;
+@define function isterminalUTF8;
 
 @define function iskanji1 ();
 @define function is1stchr ();
 @define function ismultichr ();
 
 @define function multistrlen ();
+@define function multistrlenshort ();
+@define function multistrlenfilename ();
 @define function multibytelen ();
 @define function fromBUFF ();
+@define function fromBUFFshort ();
 @define function toBUFF ();
 
 @define function fromDVI ();
@@ -32,6 +36,8 @@
 @define function fromSJIS ();
 @define function fromKUTEN ();
 @define function fromUCS ();
+@define function toJIS ();
+@define function toUCS ();
 
 @define function notkanjicharseq ();
 @define function checkkanji ();

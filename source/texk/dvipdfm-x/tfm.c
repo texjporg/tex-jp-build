@@ -1,6 +1,6 @@
 /* This is dvipdfmx, an eXtended version of dvipdfm by Mark A. Wicks.
 
-    Copyright (C) 2002-2018 by Jin-Hwan Cho and Shunsaku Hirata,
+    Copyright (C) 2002-2021 by Jin-Hwan Cho and Shunsaku Hirata,
     the dvipdfmx project team.
     
     Copyright (C) 1998, 1999 by Mark A. Wicks <mwicks@kettering.edu>
@@ -36,6 +36,7 @@
 #include "dpxutil.h"
 
 #include "tfm.h"
+#include "dvi.h"
 
 #define TFM_FORMAT 1
 #define OFM_FORMAT 2
@@ -242,6 +243,7 @@ lookup_range (const struct range_map *map, int charcode)
 
 #define FONT_DIR_HORIZ 0
 #define FONT_DIR_VERT  1
+#define FONT_DIR_RT    5
 
 struct font_metric
 {
@@ -631,7 +633,16 @@ ofm_get_sizes (FILE *ofm_file, off_t ofm_file_size, struct tfm_font *tfm)
   tfm->nfonparm = get_positive_quad(ofm_file, "OFM", "nfonparm");
   tfm->fontdir  = get_positive_quad(ofm_file, "OFM", "fontdir");
   if (tfm->fontdir) {
-    WARN("I may be interpreting a font direction incorrectly.");
+#ifndef WITHOUT_ASCII_PTEX
+    if (dvi_ptex_with_vert && tfm->fontdir==FONT_DIR_RT && tfm->level==1 && tfm->ec>=0x2E00) {
+      /* interpret FONTDIR RT as pTeX vertical writing */
+      if (dpx_conf.verbose_level > 0)
+        WARN("I will interpret a font direction as pTeX vertical writing.");
+    } else
+#endif /* !WITHOUT_ASCII_PTEX */
+    {
+      WARN("I may be interpreting a font direction incorrectly.");
+    }
   }
   if (tfm->level == 0) {
     ofm_check_size_one(tfm, ofm_file_size);
@@ -870,8 +881,8 @@ tfm_open (const char *tfm_name, int must_exist)
    char *ofm_name, *suffix;
 
    suffix = strrchr(tfm_name, '.');
-   if (!suffix || (strcmp(suffix, ".tfm") != 0 &&
-		   strcmp(suffix, ".ofm") != 0)) {
+   if (!suffix || (strcasecmp(suffix, ".tfm") != 0 &&
+                   strcasecmp(suffix, ".ofm") != 0)) {
      ofm_name = NEW(strlen(tfm_name) + strlen(".ofm") + 1, char);
      strcpy(ofm_name, tfm_name);
      strcat(ofm_name, ".ofm");
@@ -882,11 +893,15 @@ tfm_open (const char *tfm_name, int must_exist)
        (file_name = kpse_find_file(ofm_name, kpse_ofm_format, 0)) != NULL) {
      format = OFM_FORMAT;
    } else if ((file_name =
-	       kpse_find_file(tfm_name, kpse_tfm_format, 0)) != NULL) {
+               kpse_find_file(tfm_name, kpse_tfm_format, 0)) != NULL) {
      format = TFM_FORMAT;
    } else if ((file_name =
-	       kpse_find_file(tfm_name, kpse_ofm_format, 0)) != NULL) {
-     format = OFM_FORMAT;
+               kpse_find_file(tfm_name, kpse_ofm_format, 0)) != NULL) {
+     suffix = strrchr(file_name, '.');
+     if (suffix && strcasecmp(suffix, ".ofm") == 0)
+       format = OFM_FORMAT;
+     else
+       format = TFM_FORMAT;
    }
    if (ofm_name)
      RELEASE(ofm_name);

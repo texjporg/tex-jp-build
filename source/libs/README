@@ -12,58 +12,61 @@ See also comments in ../texk/README.
 cairo 1.16.0 - checked 20oct18
   http://cairographics.org/releases/
 
-freetype2 2.10.2 - checked 10may20
-  http://savannah.nongnu.org/download/freetype/
+freetype2 2.12.1 - checked 07may22
+  http://download.savannah.gnu.org/releases/freetype/
 
-gd 2.3.0 - checked 10apr20
+gd 2.3.3 - checked 13sep21
   https://github.com/libgd/libgd/releases
 
-gmp 6.2.0 - checked 20jan20
+gmp 6.2.1 - checked 15nov20
   http://ftp.gnu.org/gnu/gmp/
 
 graphite2 1.3.14 - checked 10apr20
   http://sourceforge.net/projects/silgraphite/files/graphite2/
   (requires C++11)
 
-harfbuzz 2.6.7 - checked 04jun20
-  https://github.com/harfbuzz/harfbuzz/releases/download/2.6.7/
+harfbuzz 5.3.1 - checked 20oct22
+  https://github.com/harfbuzz/harfbuzz/releases/tag/5.3.1
 
-icu 63.1 - checked 8jan19
-  http://download.icu-project.org/files/icu4c/
+icu 70.1 - checked 16jan22
+  https://github.com/unicode-org/icu/releases/
 
-libpaper 1.1.24+nmu2 - checked 24oct13
-  ftp://ftp.de.debian.org/debian/pool/main/libp/libpaper/
+libpaper 1.1.28 - checked 10sep22
+  http://ftp.debian.org/debian/pool/main/libp/libpaper/
 
-libpng 1.6.37 - checked 03may19
+libpng 1.6.39 - checked 11nov22
   https://sourceforge.net/projects/libpng/files/ - used by many
 
 lua 5.2.4 - checked 11mar15
   http://www.lua.org/ftp/
 
-lua 5.3.5 - checked 21jul18
+lua 5.3.6 - checked 04oct20
   http://www.lua.org/ftp/
 
 luajit 2.1.0-beta3 - checked 20jun17
   http://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz
 
-mpfr 4.0.2 - checked 1jan19
+mpfr 4.1.1 - checked 18nov22
   http://ftp.gnu.org/gnu/mpfr/
 
-pixman 0.40.0 - checked 21apr20
+pixman 0.42.2 - checked 03nov22
   http://cairographics.org/releases/
+
+potrace 1.16 - checked 29aug22
+  http://potrace.sourceforge.net
 
 pplib 2.05.0 - checked 21apr20
   https://github.com/contextgarden/pplib
 
-teckit 2.5.10 - checked 06may20
-  https://github.com/silnrsi/teckit/archive/2.5.10.tar.gz
+teckit 2.5.11 - checked 09nov21
+  https://github.com/silnrsi/teckit/archive/2.5.11.tar.gz
 
-xpdf 4.02 - checked 29sep19
+xpdf 4.04 - checked 24apr22
   http://www.xpdfreader.com/download.html
   with modifications for pdftex
 
-zlib 1.2.11 - checked 15jan17
+zlib 1.2.13 - checked 15oct22
   http://www.zlib.net/ - used by many
 
-zziplib 0.13.69 - checked 18mar18
-  https://github.com/gdraheim/zziplib/archive/v0.13.69.tar.gz
+zziplib 0.13.72 - checked 10sep22
+  https://github.com/gdraheim/zziplib/releases

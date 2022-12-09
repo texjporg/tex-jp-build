@@ -14,6 +14,7 @@ extern boolean isUTF8(int length, int nth, int c);
 
 extern int UTF8length(int first_byte);
 extern int UTF8Slength(unsigned char *buff, int buff_len);
+extern int UTF8Slengthshort(unsigned short *buff, int buff_len);
 extern long UTF8StoUCS(unsigned char *s);
 extern long PTENCDLL UCStoUTF8(long ucs);
 
@@ -25,7 +26,12 @@ extern long UPTEXtoUCS(long uptex);
 #define BYTE2(x) (((x)>>16) & 0xff)
 #define BYTE3(x) (((x)>> 8) & 0xff)
 #define BYTE4(x) ( (x)      & 0xff)
- 
+
+/* used only for debug */
+#ifdef DEBUG
+extern int UCStoUTF8S(long ucs, unsigned char *s);
+#endif
+
 
 /* UTF-8 -> UCS */
 #define UTF8BtoUCS(a,b)   ((((a)&0x1f) << 6) | ((b)&0x3f))

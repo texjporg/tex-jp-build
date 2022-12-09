@@ -1,4 +1,4 @@
-.TH WEAVE 1 "16 June 2015" "Web2C @VERSION@"
+.TH WEAVE 1 "02 March 2022" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF Metafont
@@ -18,10 +18,11 @@
 .SH NAME
 weave \- translate WEB to TeX
 .SH SYNOPSIS
-.B weave
-.RB [ \-x ]
-.IR webfile [ \fB.web\fP ]
-.RI [ changefile [ \fB.ch\fP ]]
+.PP
+\f[B]weave\f[R] [\f[B]-x\f[R]]
+\f[I]webfile\f[R][\f[B].web\f[R]]
+[{\f[I]changefile\f[R][\f[B].ch\f[R]]|\f[B]-\f[R]}
+[\f[I]outfile\f[R][\f[B].tex\f[R]]]]
 .\"=====================================================================
 .SH DESCRIPTION
 This manual page is not meant to be exhaustive.  The complete
@@ -49,7 +50,8 @@ are redefined.)
 .PP
 The output \*(TX file name is formed by adding
 .B .tex
-to the root of the \*(WB file name.
+to the root of the \*(WB file name or from the third argument.
+In this case you can specify '-' as an empty change file.
 .PP
 There are several macros
 that probably should be redefined by
@@ -68,7 +70,7 @@ for the details of the searching.
 .\"=====================================================================
 .SH FILES
 .TP \w'@@'u+2n
-.I $TEXMFMAIN/tex/plain/base/webmac.tex
+.I $TEXMFMAIN/tex/plain/knuth-lib/webmac.tex
 \*(TX macros used by
 .B weave
 output.

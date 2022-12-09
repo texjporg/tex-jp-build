@@ -67,6 +67,7 @@ void UnicodeStringTest::runIndexedTest( int32_t index, UBool exec, const char* &
     TESTCASE_AUTO(TestWCharPointers);
     TESTCASE_AUTO(TestNullPointers);
     TESTCASE_AUTO(TestUnicodeStringInsertAppendToSelf);
+    TESTCASE_AUTO(TestLargeAppend);
     TESTCASE_AUTO_END;
 }
 
@@ -300,7 +301,7 @@ UnicodeStringTest::TestCompare()
         test3.compare(0, 14, test2) != 0 ||
         test4.compare(12, 14, test2) != 0 ||
         test3.compare(0, 18, test1) <=0  )
-        errln("compare(offset, length, UnicodeString) failes");
+        errln("compare(offset, length, UnicodeString) fails");
 
     // test compare(UChar*)
     if (test2.compare(uniChars) != 0 || test3.compare(uniChars) <= 0 || test4.compare(uniChars) >= 0)
@@ -1344,6 +1345,12 @@ void UnicodeStringTest::TestUnescape(void) {
     if (!UNICODE_STRING("wrong \\u sequence", 17).unescape().isEmpty()) {
         errln("FAIL: unescaping of a string with an illegal escape sequence did not return an empty string");
     }
+
+    // ICU-21648 limit backslash-uhhhh escapes to ASCII hex digits
+    UnicodeString euro = UnicodeString(u"\\u20aC").unescape();
+    assertEquals("ASCII Euro", u"€", euro);
+    UnicodeString nonASCIIEuro = UnicodeString(u"\\u୨෦ａＣ").unescape();
+    assertTrue("unescape() accepted non-ASCII digits", nonASCIIEuro.isEmpty());
 }
 
 /* test code point counting functions --------------------------------------- */
@@ -1646,6 +1653,16 @@ UnicodeStringTest::TestBogus() {
     if(test1>=test2 || !(test2>test1) || test1.compare(test2)>=0 || !(test2.compare(test1)>0)) {
         errln("bogus<empty failed");
     }
+
+    // test that copy constructor of bogus is bogus & clone of bogus is nullptr
+    {
+        test3.setToBogus();
+        UnicodeString test3Copy(test3);
+        UnicodeString *test3Clone = test3.clone();
+        assertTrue(WHERE, test3.isBogus());
+        assertTrue(WHERE, test3Copy.isBogus());
+        assertTrue(WHERE, test3Clone == nullptr);
+    }
 }
 
 // StringEnumeration ------------------------------------------------------- ***
@@ -1665,11 +1682,11 @@ class TestEnumeration : public StringEnumeration {
 public:
     TestEnumeration() : i(0) {}
 
-    virtual int32_t count(UErrorCode& /*status*/) const {
+    virtual int32_t count(UErrorCode& /*status*/) const override {
         return UPRV_LENGTHOF(testEnumStrings);
     }
 
-    virtual const UnicodeString *snext(UErrorCode &status) {
+    virtual const UnicodeString *snext(UErrorCode &status) override {
         if(U_SUCCESS(status) && i<UPRV_LENGTHOF(testEnumStrings)) {
             unistr=UnicodeString(testEnumStrings[i++], "");
             return &unistr;
@@ -1678,14 +1695,14 @@ public:
         return NULL;
     }
 
-    virtual void reset(UErrorCode& /*status*/) {
+    virtual void reset(UErrorCode& /*status*/) override {
         i=0;
     }
 
     static inline UClassID getStaticClassID() {
         return (UClassID)&fgClassID;
     }
-    virtual UClassID getDynamicClassID() const {
+    virtual UClassID getDynamicClassID() const override {
         return getStaticClassID();
     }
 
@@ -1860,7 +1877,7 @@ class TestCheckedArrayByteSink : public CheckedArrayByteSink {
 public:
     TestCheckedArrayByteSink(char* outbuf, int32_t capacity)
             : CheckedArrayByteSink(outbuf, capacity), calledFlush(FALSE) {}
-    virtual void Flush() { calledFlush = TRUE; }
+    virtual void Flush() override { calledFlush = TRUE; }
     UBool calledFlush;
 };
 
@@ -2075,7 +2092,7 @@ UnicodeStringTest::doTestAppendable(UnicodeString &dest, Appendable &app) {
 class SimpleAppendable : public Appendable {
 public:
     explicit SimpleAppendable(UnicodeString &dest) : str(dest) {}
-    virtual UBool appendCodeUnit(UChar c) { str.append(c); return TRUE; }
+    virtual UBool appendCodeUnit(UChar c) override { str.append(c); return TRUE; }
     SimpleAppendable &reset() { str.remove(); return *this; }
 private:
     UnicodeString &str;
@@ -2309,4 +2326,65 @@ void UnicodeStringTest::TestUnicodeStringInsertAppendToSelf() {
     sub = str.tempSubString(1, 3);
     str.insert(2, sub);
     assertEquals("", u"abbcdcde", str);
+}
+
+void UnicodeStringTest::TestLargeAppend() {
+    if(quick) return;
+
+    IcuTestErrorCode status(*this, "TestLargeAppend");
+    // Make a large UnicodeString
+    int32_t len = 0xAFFFFFF;
+    UnicodeString str;
+    char16_t *buf = str.getBuffer(len);
+    // A fast way to set buffer to valid Unicode.
+    // 4E4E is a valid unicode character
+    uprv_memset(buf, 0x4e, len * 2);
+    str.releaseBuffer(len);
+    UnicodeString dest;
+    // Append it 16 times
+    // 0xAFFFFFF times 16 is 0xA4FFFFF1,
+    // which is greater than INT32_MAX, which is 0x7FFFFFFF.
+    int64_t total = 0;
+    for (int32_t i = 0; i < 16; i++) {
+        dest.append(str);
+        total += len;
+        if (total <= INT32_MAX) {
+            assertFalse("dest is not bogus", dest.isBogus());
+        } else {
+            assertTrue("dest should be bogus", dest.isBogus());
+        }
+    }
+    dest.remove();
+    total = 0;
+    for (int32_t i = 0; i < 16; i++) {
+        dest.append(str);
+        total += len;
+        if (total + len <= INT32_MAX) {
+            assertFalse("dest is not bogus", dest.isBogus());
+        } else if (total <= INT32_MAX) {
+            // Check that a string of exactly the maximum size works
+            UnicodeString str2;
+            int32_t remain = static_cast<int32_t>(INT32_MAX - total);
+            char16_t *buf2 = str2.getBuffer(remain);
+            if (buf2 == nullptr) {
+                // if somehow memory allocation fail, return the test
+                return;
+            }
+            uprv_memset(buf2, 0x4e, remain * 2);
+            str2.releaseBuffer(remain);
+            dest.append(str2);
+            total += remain;
+            assertEquals("When a string of exactly the maximum size works", (int64_t)INT32_MAX, total);
+            assertEquals("When a string of exactly the maximum size works", INT32_MAX, dest.length());
+            assertFalse("dest is not bogus", dest.isBogus());
+
+            // Check that a string size+1 goes bogus
+            str2.truncate(1);
+            dest.append(str2);
+            total++;
+            assertTrue("dest should be bogus", dest.isBogus());
+        } else {
+            assertTrue("dest should be bogus", dest.isBogus());
+        }
+    }
 }

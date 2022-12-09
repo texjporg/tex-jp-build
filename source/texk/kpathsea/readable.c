@@ -42,7 +42,7 @@ READABLE(kpathsea kpse, const_string fn, unsigned int st)
 {
   wchar_t *fnw;
   unsigned char *fnn;
-  unsigned char *p;
+  unsigned char *p = NULL;
   size_t len = strlen(fn);
 
   fnn = xmalloc(len + 10);
@@ -51,10 +51,36 @@ READABLE(kpathsea kpse, const_string fn, unsigned int st)
   Windows, if it really exists and input name is given in
   full-absolute path in a command line.
   /../, /./, \..\, \.\ should be excluded (2020/06/06)
+  More than one adjacent directory separators should be
+  excluded. (2020/10/24)
+  The "nul" device should be excluded. (2021/04/07).
 */
-  p = strstr(fn, ".\\");
+  if (stricmp(fn + len - 3, "nul") == 0)
+    p = (unsigned char *)fn;
+  else if (stricmp(fn + len - 4, "nul:") == 0)
+    p = (unsigned char *)fn;
+  else if (stricmp(fn + len - 7, "nul.tex") == 0)
+    p = (unsigned char *)fn;
+  else if (stricmp(fn + len - 8, "nul:.tex") == 0)
+    p = (unsigned char *)fn;
+
+  if (!p) {
+    p = strstr(fn, ".\\");
+  }
   if (!p) {
     p = strstr(fn, "./");
+  }
+  if (!p && len > 2) {
+    p = strstr(fn + 2, "//");
+  }
+  if (!p && len > 2) {
+    p = strstr(fn + 2, "\\\\");
+  }
+  if (!p && len > 2) {
+    p = strstr(fn + 2, "\\/");
+  }
+  if (!p && len > 2) {
+    p = strstr(fn + 2, "/\\");
   }
   if (!p && len > 2 && ((fn[0] == '/' && fn[1] == '/') ||
       (fn[0] == '\\' && fn[1] == '\\' && fn[2] != '?'))) {

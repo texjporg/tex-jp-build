@@ -1,6 +1,6 @@
 /* mpfr_pow_si -- power function x^y with y a signed int
 
-Copyright 2001-2019 Free Software Foundation, Inc.
+Copyright 2001-2022 Free Software Foundation, Inc.
 Contributed by the AriC and Caramba projects, INRIA.
 
 This file is part of the GNU MPFR Library.
@@ -20,7 +20,7 @@ along with the GNU MPFR Library; see the file COPYING.LESSER.  If not, see
 https://www.gnu.org/licenses/ or write to the Free Software Foundation, Inc.,
 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA. */
 
-#define MPFR_NEED_LONGLONG_H
+#define MPFR_NEED_LONGLONG_H  /* for MPFR_INT_CEIL_LOG2 */
 #include "mpfr-impl.h"
 
 /* The computation of y = pow_si(x,n) is done by
@@ -75,7 +75,7 @@ mpfr_pow_si (mpfr_ptr y, mpfr_srcptr x, long int n, mpfr_rnd_t rnd)
            *
            * Some systems (apparently alpha-freebsd) abort with
            * LONG_MIN / 1, and LONG_MIN / -1 is undefined.
-           * http://www.freebsd.org/cgi/query-pr.cgi?pr=72024
+           * https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=72024
            *
            * Proof of the overflow checking. The expressions below are
            * assumed to be on the rational numbers, but the word "overflow"
@@ -149,8 +149,7 @@ mpfr_pow_si (mpfr_ptr y, mpfr_srcptr x, long int n, mpfr_rnd_t rnd)
         MPFR_ZIV_DECL (loop);
 
         abs_n = - (unsigned long) n;
-        count_leading_zeros (size_n, (mp_limb_t) abs_n);
-        size_n = GMP_NUMB_BITS - size_n;
+        size_n = mpfr_nbits_ulong (abs_n);
 
         /* initial working precision */
         Ny = MPFR_PREC (y);

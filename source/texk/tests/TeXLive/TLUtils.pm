@@ -1,11 +1,13 @@
 # TeXLive::TLUtils.pm - the inevitable utilities for TeX Live.
-# Copyright 2007-2020 Norbert Preining, Reinhard Kotucha
+# Copyright 2007-2022 Norbert Preining, Reinhard Kotucha
 # This file is licensed under the GNU General Public License version 2
 # or any later version.
 
+use strict; use warnings;
+
 package TeXLive::TLUtils;
 
-my $svnrev = '$Revision: 54629 $';
+my $svnrev = '$Revision: 64503 $';
 my $_modulerevision = ($svnrev =~ m/: ([0-9]+) /) ? $1 : "unknown";
 sub module_revision { return $_modulerevision; }
 
@@ -13,7 +15,7 @@ sub module_revision { return $_modulerevision; }
 
 =head1 NAME
 
-C<TeXLive::TLUtils> - utilities used in TeX Live infrastructure
+C<TeXLive::TLUtils> - TeX Live infrastructure miscellany
 
 =head1 SYNOPSIS
 
@@ -37,8 +39,11 @@ C<TeXLive::TLUtils> - utilities used in TeX Live infrastructure
   TeXLive::TLUtils::xchdir($dir);
   TeXLive::TLUtils::wsystem($msg,@args);
   TeXLive::TLUtils::xsystem(@args);
-  TeXLive::TLUtils::run_cmd($cmd);
+  TeXLive::TLUtils::run_cmd($cmd [, @envvars ]);
   TeXLive::TLUtils::system_pipe($prog, $infile, $outfile, $removeIn, @args);
+  TeXLive::TLUtils::diskfree($path);
+  TeXLive::TLUtils::get_user_home();
+  TeXLive::TLUtils::expand_tilde($str);
 
 =head2 File utilities
 
@@ -70,7 +75,7 @@ C<TeXLive::TLUtils> - utilities used in TeX Live infrastructure
   TeXLive::TLUtils::create_language_def($tlpdb,$dest,$localconf);
   TeXLive::TLUtils::create_language_lua($tlpdb,$dest,$localconf);
   TeXLive::TLUtils::time_estimate($totalsize, $donesize, $starttime)
-  TeXLive::TLUtils::install_packages($from_tlpdb,$media,$to_tlpdb,$what,$opt_src, $opt_doc)>);
+  TeXLive::TLUtils::install_packages($from_tlpdb,$media,$to_tlpdb,$what,$opt_src, $opt_doc, $retry, $continue);
   TeXLive::TLUtils::do_postaction($how, $tlpobj, $do_fileassocs, $do_menu, $do_desktop, $do_script);
   TeXLive::TLUtils::announce_execute_actions($how, @executes, $what);
   TeXLive::TLUtils::add_symlinks($root, $arch, $sys_bin, $sys_man, $sys_info);
@@ -111,7 +116,7 @@ C<TeXLive::TLUtils> - utilities used in TeX Live infrastructure
   TeXLive::TLUtils::report_tlpdb_differences(\%ret);
   TeXLive::TLUtils::tlnet_disabled_packages($root);
   TeXLive::TLUtils::mktexupd();
-  TeXLive::TLUtils::setup_sys_user_mode($optsref,$tmfc, $tmfsc, $tmfv, $tmfsv);
+  TeXLive::TLUtils::setup_sys_user_mode($prg,$optsref,$tmfc,$tmfsc,$tmfv,$tmfsv);
   TeXLive::TLUtils::prepend_own_path();
   TeXLive::TLUtils::repository_to_array($str);
 
@@ -127,15 +132,53 @@ C<TeXLive::TLUtils> - utilities used in TeX Live infrastructure
 
 # avoid -warnings.
 our $PERL_SINGLE_QUOTE; # we steal code from Text::ParseWords
-use vars qw(
-  $::LOGFILE $::LOGFILENAME @::LOGLINES 
-    @::debug_hook @::ddebug_hook @::dddebug_hook @::info_hook 
-    @::install_packages_hook @::warn_hook
-  $TeXLive::TLDownload::net_lib_avail
-    $::checksum_method $::gui_mode $::machinereadable $::no_execute_actions
-    $::regenerate_all_formats
-  $JSON::false $JSON::true
-);
+
+# We use myriad global and package-global variables, unfortunately.
+# To avoid "used only once" warnings, we must use the variable names again.
+# 
+# This ugly repetition in the BEGIN block works with all Perl versions.
+BEGIN {
+  $::LOGFILE = $::LOGFILE;
+  $::LOGFILENAME = $::LOGFILENAME;
+  @::LOGLINES = @::LOGLINES;
+  @::debug_hook = @::debug_hook;
+  @::ddebug_hook = @::ddebug_hook;
+  @::dddebug_hook = @::dddebug_hook;
+  @::info_hook = @::info_hook;
+  @::install_packages_hook = @::install_packages_hook;
+  @::installation_failed_packages = @::installation_failed_packages;
+  @::warn_hook = @::warn_hook;
+  $::checksum_method = $::checksum_method;
+  $::gui_mode = $::gui_mode;
+  $::machinereadable = $::machinereadable;
+  $::no_execute_actions = $::no_execute_actions;
+  $::regenerate_all_formats = $::regenerate_all_formats;
+  #
+  $JSON::false = $JSON::false;
+  $JSON::true = $JSON::true;
+  #
+  $TeXLive::TLDownload::net_lib_avail = $TeXLive::TLDownload::net_lib_avail;
+}
+      
+## A cleaner way is to use the "package PKGNAME BLOCK" syntax:
+## when providing a block to the package command, the scope is
+## limited to that block, so the current real package ends up unaffected.
+## Example in first reply to: https://perlmonks.org/?node_id=11139324
+## (Other solutions are also given there, but they don't work well in
+## our context here, although we use them elsewhere.)
+## 
+## Unfortunately the package BLOCK syntax was invented for perl 5.14.0,
+## ca.2011, and OpenCSW on Solaris 10 only provides an older Perl. If we
+## ever drop Solaris 10 support, we can replace the above with this.
+## 
+#package main {
+#  our ($LOGFILE, $LOGFILENAME, @LOGLINES,
+#    @debug_hook, @ddebug_hook, @dddebug_hook, @info_hook,
+#    @install_packages_hook, @warn_hook,
+#    $checksum_method, $gui_mode, $machinereadable,
+#    $no_execute_actions, $regenerate_all_formats); }
+#package JSON { our ($false, $true); }
+#package TeXLive::TLDownload { our $net_lib_avail; }
 
 BEGIN {
   use Exporter ();
@@ -192,6 +235,9 @@ BEGIN {
     &xsystem
     &run_cmd
     &system_pipe
+    &diskfree
+    &get_user_home
+    &expand_tilde
     &announce_execute_actions
     &add_symlinks
     &remove_symlinks
@@ -224,7 +270,6 @@ BEGIN {
 use Cwd;
 use Getopt::Long;
 use File::Temp;
-use File::Copy qw//;
 
 use TeXLive::TLConfig;
 
@@ -246,6 +291,12 @@ as argument.
 The result is stored in a global variable C<$::_platform_>, and
 subsequent calls just return that value.
 
+As of 2021, C<config.guess> unfortunately requires a shell that
+understands the C<$(...)> construct. This means that on old-enough
+systems, such as Solaris, we have to look for a shell. We use the value
+of the C<CONFIG_SHELL> environment variable if it is set, else
+C</bin/ksh> if it exists, else C</bin/bash> if it exists, else give up.
+
 =cut
 
 sub platform {
@@ -255,12 +306,58 @@ sub platform {
     } else {
       my $config_guess = "$::installerdir/tlpkg/installer/config.guess";
 
+      # For example, if the disc or reader has hardware problems.
+      die "$0: config.guess script does not exist, goodbye: $config_guess"
+        if ! -r $config_guess;
+
       # We cannot rely on #! in config.guess but have to call /bin/sh
       # explicitly because sometimes the 'noexec' flag is set in
       # /etc/fstab for ISO9660 file systems.
-      chomp (my $guessed_platform = `/bin/sh '$config_guess'`);
+      # 
+      # In addition, config.guess was (unnecessarily) changed in 2020 by
+      # to use $(...) instead of `...`, although $(...) is not supported
+      # by Solaris /bin/sh (and others). The maintainers have declined
+      # to revert the change, so now every caller of config.guess must
+      # laboriously find a usable shell. Sigh.
+      # 
+      my $config_shell = $ENV{"CONFIG_SHELL"} || "/bin/sh";
+      #
+      # check if $(...) is supported:
+      my $paren_cmdout = `'$config_shell' -c 'echo \$(echo foo)' 2>/dev/null`;
+      #warn "paren test out: `$paren_cmdout'.\n";
+      #
+      # The echo command might output a newline (maybe CRLF?) even if
+      # the $(...) fails, so don't just check for non-empty output.
+      # Maybe checking exit status would be better, but maybe not.
+      # 
+      if (length ($paren_cmdout) <= 2) {
+        # if CONFIG_SHELL is set to something bad, give up.
+        if ($ENV{"CONFIG_SHELL"}) {
+          die <<END_BAD_CONFIG_SHELL;
+$0: the CONFIG_SHELL environment variable is set to $ENV{CONFIG_SHELL}
+  but this cannot execute \$(...) shell constructs,
+  which is required. Set CONFIG_SHELL to something that works.
+END_BAD_CONFIG_SHELL
 
-      # For example, if the disc or reader has hardware problems.
+        } elsif (-x "/bin/ksh") {
+          $config_shell = "/bin/ksh";
+
+        } elsif (-x "/bin/bash") {
+          $config_shell = "/bin/bash";
+
+        } else {
+          die <<END_NO_PAREN_CMDS_SHELL
+$0: can't find shell to execute $config_guess
+  (which gratuitously requires support for \$(...) command substitution).
+  Tried $config_shell, /bin/ksh, bin/bash.
+  Set the environment variable CONFIG_SHELL to specify explicitly.
+END_NO_PAREN_CMDS_SHELL
+        }
+      }
+      #warn "executing config.guess with $config_shell\n";
+      chomp (my $guessed_platform = `'$config_shell' '$config_guess'`);
+
+      # If we didn't get anything usable, give up.
       die "$0: could not run $config_guess, cannot proceed, sorry"
         if ! $guessed_platform;
 
@@ -273,19 +370,23 @@ sub platform {
 
 =item C<platform_name($canonical_host)>
 
-Convert ORIG_PLATFORM, a canonical host name as returned by
-C<config.guess>, into a TeX Live platform name.
+Convert the C<$canonical_host> argument, a system description as
+returned by C<config.guess>, into a TeX Live platform name, that is, a
+name used as a subdirectory of our C<bin/> dir. Our names have the
+form CPU-OS, for example, C<x86_64-linux>.
 
-CPU type is determined by a regexp, and any C</^i.86/> name is replaced
-by C<i386>.
-
-For the OS value we need a list because what's returned is not likely to
+We need this because what's returned from C<config.,guess> does not
 match our historical names, e.g., C<config.guess> returns C<linux-gnu>
-but we need C<linux>. This list contains old OSs which are not currently
-supported, just in case.
+but we need C<linux>.
 
-If a particular platform is not found in this list we use the regexp
-C</.*-(.*$)/> as a last resort and hope it provides something useful.
+The C<CPU> part of our name is always taken from the argument, with
+various transformation.
+
+For the C<OS> part, if the environment variable C<TEXLIVE_OS_NAME> is
+set, it is used as-is. Otherwise we do our best to figure it out.
+
+This function still handles old systems which are no longer supported,
+just in case.
 
 =cut
 
@@ -294,6 +395,8 @@ sub platform_name {
   my $guessed_platform = $orig_platform;
 
   # try to parse out some bsd variants that use amd64.
+  # We throw away everything after the "bsd" to elide version numbers,
+  # as in amd64-unknown-midnightbsd1.2.
   $guessed_platform =~ s/^x86_64-(.*-k?)(free|net)bsd/amd64-$1$2bsd/;
   my $CPU; # CPU type as reported by config.guess.
   my $OS;  # O/S type as reported by config.guess.
@@ -310,16 +413,20 @@ sub platform_name {
     $CPU = $guessed_platform =~ /hf$/ ? "armhf" : "armel";
   }
 
-  my @OSs = qw(aix cygwin darwin dragonfly freebsd hpux irix
-               kfreebsd linux netbsd openbsd solaris);
-  for my $os (@OSs) {
-    # Match word boundary at the beginning of the os name so that
-    #   freebsd and kfreebsd are distinguished.
-    # Do not match word boundary at the end of the os so that
-    #   solaris2 is matched.
-    $OS = $os if $guessed_platform =~ /\b$os/;
-  }
-  
+  if ($ENV{"TEXLIVE_OS_NAME"}) {
+    $OS = $ENV{"TEXLIVE_OS_NAME"};
+  } else {
+    my @OSs = qw(aix cygwin darwin dragonfly freebsd hpux irix
+                 kfreebsd linux midnightbsd netbsd openbsd solaris);
+    for my $os (@OSs) {
+      # Match word boundary at the beginning of the os name so that
+      #   freebsd and kfreebsd are distinguished.
+      # Do not match word boundary at the end of the os so that
+      #   solaris2 is matched.
+      $OS = $os if $guessed_platform =~ /\b$os/;
+    }
+  }  
+
   if (! $OS) {
     warn "$0: could not guess OS from config.guess string: $orig_platform";
     $OS = "unknownOS";
@@ -335,29 +442,30 @@ sub platform_name {
   
   if ($OS eq "darwin") {
     # We have two versions of Mac binary sets.
-    # 10.10/Yosemite and newer (Yosemite specially left over):
-    #   -> x86_64-darwin [MacTeX]
-    # 10.6/Snow Leopard through 10.10/Yosemite:
-    #   -> x86_64-darwinlegacy if 64-bit
+    # 10.x and newer -> universal-darwin [MacTeX]
+    # 10.6/Snow Leopard through 10.x -> x86_64-darwinlegacy, if 64-bit.
+    # x changes every year. As of TL 2021 (Big Sur) Apple started with 11.x.
     #
     # (BTW, uname -r numbers are larger by 4 than the Mac minor version.
     # We don't use uname numbers here.)
     #
     # this changes each year, per above:
-    my $mactex_darwin = 13;  # lowest minor rev supported by x86_64-darwin.
+    my $mactex_darwin = 14;  # lowest minor rev supported by universal-darwin.
     #
     # Most robust approach is apparently to check sw_vers (os version,
     # returns "10.x" values), and sysctl (processor hardware).
     chomp (my $sw_vers = `sw_vers -productVersion`);
     my ($os_major,$os_minor) = split (/\./, $sw_vers);
-    if ($os_major != 10) {
+    if ($os_major < 10) {
       warn "$0: only MacOSX is supported, not $OS $os_major.$os_minor "
            . " (from sw_vers -productVersion: $sw_vers)\n";
       return "unknownmac-unknownmac";
     }
-    if ($os_minor >= $mactex_darwin) {
-      ; # current version, default is ok (x86_64-darwin).
-    } elsif ($os_minor >= 6 && $os_minor < $mactex_darwin) {
+    # have to refine after all 10.x become "legacy".
+    if ($os_major >= 11 || $os_minor >= $mactex_darwin) {
+      $CPU = "universal";
+      $OS = "darwin";
+    } elsif ($os_major == 10 && 6 <= $os_minor && $os_minor < $mactex_darwin){
       # in between, x86 hardware only.  On 10.6 only, must check if 64-bit,
       # since if later than that, always 64-bit.
       my $is64 = $os_minor == 6
@@ -397,9 +505,10 @@ sub platform_desc {
     'alpha-linux'      => 'GNU/Linux on DEC Alpha',
     'amd64-freebsd'    => 'FreeBSD on x86_64',
     'amd64-kfreebsd'   => 'GNU/kFreeBSD on x86_64',
+    'amd64-midnightbsd'=> 'MidnightBSD on x86_64',
     'amd64-netbsd'     => 'NetBSD on x86_64',
     'armel-linux'      => 'GNU/Linux on ARM',
-    'armhf-linux'      => 'GNU/Linux on ARMv6/RPi',
+    'armhf-linux'      => 'GNU/Linux on RPi(32-bit) and ARMv7',
     'hppa-hpux'        => 'HP-UX',
     'i386-cygwin'      => 'Cygwin on Intel x86',
     'i386-darwin'      => 'MacOSX legacy (10.5-10.6) on Intel x86',
@@ -417,10 +526,9 @@ sub platform_desc {
     'powerpc-linux'    => 'GNU/Linux on PowerPC',
     'sparc-linux'      => 'GNU/Linux on Sparc',
     'sparc-solaris'    => 'Solaris on Sparc',
-    'universal-darwin' => 'MacOSX universal binaries',
+    'universal-darwin' => 'MacOSX current (10.14-) on ARM/x86_64',
     'win32'            => 'Windows',
     'x86_64-cygwin'    => 'Cygwin on x86_64',
-    'x86_64-darwin'       => 'MacOSX current (10.13-) on x86_64',
     'x86_64-darwinlegacy' => 'MacOSX legacy (10.6-) on x86_64',
     'x86_64-dragonfly' => 'DragonFlyBSD on x86_64',
     'x86_64-linux'     => 'GNU/Linux on x86_64',
@@ -436,6 +544,7 @@ sub platform_desc {
     return "$platform_name{$platform}";
   } else {
     my ($CPU,$OS) = split ('-', $platform);
+    $OS = "" if ! defined $OS; # e.g., -force-platform foo
     return "$CPU with " . ucfirst "$OS";
   }
 }
@@ -544,7 +653,7 @@ and thus honors various env variables like  C<TMPDIR>, C<TMP>, and C<TEMP>.
 
 sub initialize_global_tmpdir {
   $::tl_tmpdir = File::Temp::tempdir(CLEANUP => 1);
-  ddebug("initialize_global_tmpdir: creating global tempdir $::tl_tmpdir\n");
+  ddebug("TLUtils::initialize_global_tmpdir: creating global tempdir $::tl_tmpdir\n");
   return ($::tl_tmpdir);
 }
 
@@ -558,7 +667,7 @@ is terminated.
 sub tl_tmpdir {
   initialize_global_tmpdir() if (!defined($::tl_tmpdir));
   my $tmp = File::Temp::tempdir(DIR => $::tl_tmpdir, CLEANUP => 1);
-  ddebug("tl_tmpdir: creating tempdir $tmp\n");
+  ddebug("TLUtils::tl_tmpdir: creating tempdir $tmp\n");
   return ($tmp);
 }
 
@@ -573,7 +682,7 @@ Arguments are passed on to C<File::Temp::tempfile>.
 sub tl_tmpfile {
   initialize_global_tmpdir() if (!defined($::tl_tmpdir));
   my ($fh, $fn) = File::Temp::tempfile(@_, DIR => $::tl_tmpdir, UNLINK => 1);
-  ddebug("tl_tempfile: creating tempfile $fn\n");
+  ddebug("TLUtils::tl_tempfile: creating tempfile $fn\n");
   return ($fh, $fn);
 }
 
@@ -629,16 +738,36 @@ sub xsystem {
   return $retval;
 }
 
-=item C<run_cmd($cmd)>
+=item C<run_cmd($cmd, @envvars)>
 
 Run shell command C<$cmd> and captures its output. Returns a list with CMD's
 output as the first element and the return value (exit code) as second.
+
+If given, C<@envvars> is a list of environment variable name / value
+pairs set in C<%ENV> for the call and reset to their original value (or
+unset if not defined initially).
 
 =cut
 
 sub run_cmd {
   my $cmd = shift;
+  my %envvars = @_;
+  my %envvarsSetState;
+  my %envvarsValue;
+  for my $k (keys %envvars) {
+    $envvarsSetState{$k} = exists $ENV{$k};
+    $envvarsValue{$k} = $ENV{$k};
+    $ENV{$k} = $envvars{$k};
+  }
   my $output = `$cmd`;
+  for my $k (keys %envvars) {
+    if ($envvarsSetState{$k}) {
+      $ENV{$k} = $envvarsValue{$k};
+    } else {
+      delete $ENV{$k};
+    }
+  }
+
   $output = "" if ! defined ($output);  # don't return undef
 
   my $retval = $?;
@@ -650,8 +779,8 @@ sub run_cmd {
 
 =item C<system_pipe($prog, $infile, $outfile, $removeIn, @extraargs)>
 
-Runs C<$prog> with C<@extraargs> redirecting stdin from C<$infile>, stdout to C<$outfile>.
-Removes C<$infile> if C<$removeIn> is true.
+Runs C<$prog> with C<@extraargs> redirecting stdin from C<$infile>,
+stdout to C<$outfile>. Removes C<$infile> if C<$removeIn> is true.
 
 =cut
 
@@ -678,6 +807,119 @@ sub system_pipe {
     }
     return 1;
   }
+}
+
+=item C<diskfree($path)>
+
+If a POSIX compliant C<df> program is found, returns the number of Mb
+free at C<$path>, otherwise C<-1>. If C<$path> does not exist, check
+upwards for two levels for an existing parent, and if found, use it for
+computing the disk space.
+
+=cut
+
+sub diskfree {
+  my $td = shift;
+  my ($output, $retval);
+  if (win32()) {
+    # the powershell one-liner only works from win8 on.
+    my @winver = Win32::GetOSVersion();
+    if ($winver[1]<=6 && $winver[2]<=1) {
+      return -1;
+    }
+    my $avl;
+    if ($td =~ /^[a-zA-Z]:/) {
+      my $drv = substr($td,0,1);
+      # ea ignore: error action ignore: no output at all
+      my $cmd = "powershell -nologo -noninteractive -noprofile -command " .
+       "\"get-psdrive -name $drv -ea ignore |select-object free |format-wide\"";
+      ($output, $retval) = run_cmd($cmd);
+      # ignore exit code, just parse the output, which should
+      # consist of empty lines and a number surrounded by spaces
+      my @lines = split(/\r*\n/, $output);
+      foreach (@lines) {
+        chomp $_;
+        if ($_ !~ /^\s*$/) {
+          $_ =~ s/^\s*//;
+          $_ =~ s/\s*$//;
+          $avl = $_;
+          last;
+        }
+      }
+      if ($avl !~ /^[0-9]+$/) {
+        return (-1);
+      } else {
+        return (int($avl/(1024*1024)));
+      }
+    } else {
+      # maybe UNC drive; do not try to handle this
+      return -1;
+    }
+  }
+  # now windows case has been taken care of
+  return (-1) if (! $::progs{"df"});
+  # drop final /
+  $td =~ s!/$!!;
+  if (! -e $td) {
+    my $ptd = dirname($td);
+    if (-e $ptd) {
+      $td = $ptd;
+    } else {
+      my $pptd = dirname($ptd);
+      if (-e $pptd) {
+        $td = $pptd;
+      }
+    }
+  }
+  $td .= "/" if ($td !~ m!/$!);
+  return (-1) if (! -e $td);
+  debug("checking diskfree() in $td\n");
+  ($output, $retval) = run_cmd("df -P \"$td\"", POSIXLY_CORRECT => 1);
+  if ($retval == 0) {
+    # Output format should be this:
+    # Filesystem      512-blocks       Used  Available Capacity Mounted on
+    # /dev/sdb3       6099908248 3590818104 2406881416      60% /home
+    my ($h,$l) = split(/\n/, $output);
+    my ($fs, $nrb, $used, $avail, @rest) = split(' ', $l);
+    debug("diskfree: used=$used (512-block), avail=$avail (512-block)\n");
+    # $avail is in 512-byte blocks, so we need to divide by 2*1024 to
+    # obtain Mb. Require that at least 100M remain free.
+    return (int($avail / 2048));
+  } else {
+    # error in running df -P for whatever reason
+    return (-1);
+  }
+}
+
+=item C<get_user_home()>
+
+Returns the current user's home directory (C<$HOME> on Unix,
+C<$USERPROFILE> on Windows, and C<~> if none of the two are
+set. Save in package variable C<$user_home_dir> after computing.
+
+=cut
+
+# only search for home directory once, and save expansion here
+my $user_home_dir;
+
+sub get_user_home {
+  return $user_home_dir if ($user_home_dir);
+  $user_home_dir = getenv (win32() ? 'USERPROFILE' : 'HOME') || '~';
+  return $user_home_dir;
+}
+
+=item C<expand_tilde($str)>
+
+Expands initial C<~> with the user's home directory in C<$str> if
+available, else leave C<~> in place.
+
+=cut
+
+sub expand_tilde {
+  my $str = shift;
+  my $h = get_user_home();
+  $str =~ s/^~/$h/;
+  return $str;
 }
 
 =back
@@ -904,7 +1146,7 @@ sub mkdirhier {
     # from the UNC path, since (! -d //servername/) tests true
     $subdir = $& if ( win32() && ($tree =~ s!^//[^/]+/!!) );
 
-    @dirs = split (/[\/\\]/, $tree);
+    my @dirs = split (/[\/\\]/, $tree);
     for my $dir (@dirs) {
       $subdir .= "$dir/";
       if (! -d $subdir) {
@@ -1121,14 +1363,14 @@ time stamps are preserved and symlinks are created on Unix systems. On
 Windows, C<(-l $file)> will never return 'C<true>' and so symlinks will
 be (uselessly) copied as regular files.
 
-If the argument is C<"-L"> and C<$file> is a symlink, the link is
+If the first argument is C<"-L"> and C<$file> is a symlink, the link is
 dereferenced before the copying is done. (If both C<"-f"> and C<"-L">
-are desired, they must be given in that order, although the current code
-has no need to do this.)
+are desired, they must be given in that order, although the codebase
+currently has no need to do this.)
 
-C<copy> invokes C<mkdirhier> if target directories do not exist.  Files
-have mode C<0777> if they are executable and C<0666> otherwise, with
-the set bits in I<umask> cleared in each case.
+C<copy> invokes C<mkdirhier> if target directories do not exist. Files
+start with mode C<0777> if they are executable and C<0666> otherwise,
+with the set bits in I<umask> cleared in each case.
 
 C<$file> can begin with a C<file:/> prefix.
 
@@ -1216,11 +1458,11 @@ sub copy {
 
     chmod ($mode, $outfile) || warn "chmod($mode,$outfile) failed: $!";
 
-    while ($read = sysread (IN, $buffer, $blocksize)) {
+    while (my $read = sysread (IN, $buffer, $blocksize)) {
       die "read($infile) failed: $!" unless defined $read;
       $offset = 0;
       while ($read) {
-        $written = syswrite (OUT, $buffer, $read, $offset);
+        my $written = syswrite (OUT, $buffer, $read, $offset);
         die "write($outfile) failed: $!" unless defined $written;
         $read -= $written;
         $offset += $written;
@@ -1458,7 +1700,7 @@ sub time_estimate {
     $min %= 60;
   }
   my $sec = $remsecs % 60;
-  $remtime = sprintf("%02d:%02d", $min, $sec);
+  my $remtime = sprintf("%02d:%02d", $min, $sec);
   if ($hour) {
     $remtime = sprintf("%02d:$remtime", $hour);
   }
@@ -1469,29 +1711,36 @@ sub time_estimate {
     $tmin %= 60;
   }
   my $tsec = $esttotalsecs % 60;
-  $tottime = sprintf("%02d:%02d", $tmin, $tsec);
+  my $tottime = sprintf("%02d:%02d", $tmin, $tsec);
   if ($thour) {
     $tottime = sprintf("%02d:$tottime", $thour);
   }
   return($remtime, $tottime);
 }
 
-
-=item C<install_packages($from_tlpdb, $media, $to_tlpdb, $what, $opt_src, $opt_doc)>
+
+=item C<install_packages($from_tlpdb, $media, $to_tlpdb, $what, $opt_src, $opt_doc, $retry, $continue)>
 
 Installs the list of packages found in C<@$what> (a ref to a list) into
 the TLPDB given by C<$to_tlpdb>. Information on files are taken from
 the TLPDB C<$from_tlpdb>.
 
-C<$opt_src> and C<$opt_doc> specify whether srcfiles and docfiles should be
-installed (currently implemented only for installation from uncompressed media).
+C<$opt_src> and C<$opt_doc> specify whether srcfiles and docfiles should
+be installed (currently implemented only for installation from
+uncompressed media).
+
+If C<$retry> is trueish, retry failed packages a second time.
+
+If C<$continue> is trueish, installation failure of non-critical packages
+will be ignored (success is returned).
 
 Returns 1 on success and 0 on error.
 
 =cut
 
 sub install_packages {
-  my ($fromtlpdb,$media,$totlpdb,$what,$opt_src,$opt_doc) = @_;
+  my ($fromtlpdb,$media,$totlpdb,$what,
+      $opt_src,$opt_doc,$opt_retry,$opt_continue) = @_;
   my $container_src_split = $fromtlpdb->config_src_container;
   my $container_doc_split = $fromtlpdb->config_doc_container;
   my $root = $fromtlpdb->root;
@@ -1503,6 +1752,10 @@ sub install_packages {
   my $totalsize = 0;
   my $donesize = 0;
   my %tlpsizes;
+  debug("TLUtils::install_packages: fromtlpdb.root=$root, media=$media,"
+        . " totlpdb.root=" . $totlpdb->root
+        . " what=$what ($totalnr), opt_src=$opt_src, opt_doc=$opt_doc\n");
+
   foreach my $p (@packs) {
     $tlpobjs{$p} = $fromtlpdb->get_package($p);
     if (!defined($tlpobjs{$p})) {
@@ -1542,10 +1795,17 @@ sub install_packages {
       &$h($n,$totalnr);
     }
     # push $package to @packs_again if download failed
+    # (and not installing from disk).
     if (!$fromtlpdb->install_package($package, $totlpdb)) {
-      tlwarn("TLUtils::install_packages: Failed to install $package\n"
-             ."Will be retried later.\n");
-      push @packs_again, $package;
+      tlwarn("TLUtils::install_packages: Failed to install $package\n");
+      if ($opt_retry) {
+        tlwarn("                           $package will be retried later.\n");
+        push @packs_again, $package;
+      } else {
+        # return false as soon as one package failed, since we won't
+        # be trying again.
+        return 0;
+      }
     } else {
       $donesize += $tlpsizes{$package};
     }
@@ -1557,14 +1817,21 @@ sub install_packages {
     info("$infostr\n");
     # return false if download failed again
     if (!$fromtlpdb->install_package($package, $totlpdb)) {
-      return 0;
+      if ($opt_continue) {
+        push @::installation_failed_packages, $package;
+        tlwarn("Failed to install $package, but continuing anyway!\n");
+      } else {
+        return 0;
+      }
     }
     $donesize += $tlpsizes{$package};
   }
   my $totaltime = time() - $starttime;
-  my $totmin = int ($totaltime/60);
+  my $tothour = int ($totaltime/3600);
+  my $totmin = (int ($totaltime/60)) % 60;
   my $totsec = $totaltime % 60;
-  info(sprintf("Time used for installing the packages: %02d:%02d\n",
+  my $hrstr = ($tothour > 0 ? "$tothour:" : "");
+  info(sprintf("Time used for installing the packages: $hrstr%02d:%02d\n",
        $totmin, $totsec));
   $totlpdb->save;
   return 1;
@@ -1677,7 +1944,7 @@ sub _do_postaction_filetype {
   }
   my $cmd = $keyval{'cmd'};
 
-  my $texdir = `kpsewhich -var-value=SELFAUTOPARENT`;
+  my $texdir = `kpsewhich -var-value=TEXMFROOT`;
   chomp($texdir);
   my $texdir_bsl = conv_to_w32_path($texdir);
   $cmd =~ s!^("?)TEXDIR/!$1$texdir/!g;
@@ -1752,7 +2019,7 @@ sub _do_postaction_script {
   if (win32() && defined($keyval{'filew32'})) {
     $file = $keyval{'filew32'};
   }
-  my $texdir = `kpsewhich -var-value=SELFAUTOPARENT`;
+  my $texdir = `kpsewhich -var-value=TEXMFROOT`;
   chomp($texdir);
   my @syscmd;
   if ($file =~ m/\.pl$/i) {
@@ -1827,7 +2094,7 @@ sub _do_postaction_shortcut {
 
   &log("postaction $how shortcut for " . $tlpobj->name . "\n");
   if ($how eq "install") {
-    my $texdir = `kpsewhich -var-value=SELFAUTOPARENT`;
+    my $texdir = `kpsewhich -var-value=TEXMFROOT`;
     chomp($texdir);
     my $texdir_bsl = conv_to_w32_path($texdir);
     $icon =~ s!^TEXDIR/!$texdir/!;
@@ -1981,8 +2248,8 @@ sub add_link_dir_dir {
     return 0;
   }
   if (-w $to) {
-    debug ("linking files from $from to $to\n");
-    chomp (@files = `ls "$from"`);
+    debug ("TLUtils::add_link_dir_dir: linking from $from to $to\n");
+    chomp (my @files = `ls "$from"`);
     my $ret = 1;
     for my $f (@files) {
       # don't make a system-dir link to our special "man" link.
@@ -2017,13 +2284,13 @@ sub add_link_dir_dir {
 sub remove_link_dir_dir {
   my ($from, $to) = @_;
   if ((-d "$to") && (-w "$to")) {
-    debug("removing links from $from to $to\n");
-    chomp (@files = `ls "$from"`);
+    debug("TLUtils::remove_link_dir_dir: removing links from $from to $to\n");
+    chomp (my @files = `ls "$from"`);
     my $ret = 1;
     foreach my $f (@files) {
       next if (! -r "$to/$f");
       if ($f eq "man") {
-        debug("not considering man in $to, it should not be from us!\n");
+        debug("TLUtils::remove_link_dir_dir: not considering man in $to, it should not be from us!\n");
         next;
       }
       if ((-l "$to/$f") &&
@@ -2031,7 +2298,7 @@ sub remove_link_dir_dir {
         $ret = 0 unless unlink("$to/$f");
       } else {
         $ret = 0;
-        tlwarn ("not removing $to/$f, not a link or wrong destination!\n");
+        tlwarn ("TLUtils::remove_link_dir_dir: not removing $to/$f, not a link or wrong destination!\n");
       }
     }
     # try to remove the destination directory, it might be empty and
@@ -2039,7 +2306,7 @@ sub remove_link_dir_dir {
     # `rmdir "$to" 2>/dev/null`;
     return $ret;
   } else {
-    tlwarn ("destination $to not writable, no removal of links done!\n");
+    tlwarn ("TLUtils::remove_link_dir_dir: destination $to not writable, no removal of links done!\n");
     return 0;
   }
 }
@@ -2069,7 +2336,7 @@ sub add_remove_symlinks {
 
   # man
   my $top_man_dir = "$Master/texmf-dist/doc/man";
-  debug("$mode symlinks for man pages to $sys_man from $top_man_dir\n");
+  debug("TLUtils::add_remove_symlinks: $mode symlinks for man pages to $sys_man from $top_man_dir\n");
   if (! -d $top_man_dir) {
     ; # better to be silent?
     #info("skipping add of man symlinks, no source directory $top_man_dir\n");
@@ -2099,7 +2366,7 @@ sub add_remove_symlinks {
         }
         #`rmdir "$sys_man" 2>/dev/null` if ($mode eq "remove");
       } else {
-        tlwarn("man symlink destination ($sys_man) not writable, "
+        tlwarn("TLUtils::add_remove_symlinks: man symlink destination ($sys_man) not writable, "
           . "cannot $mode symlinks.\n");
         $errors++;
       }
@@ -2108,7 +2375,7 @@ sub add_remove_symlinks {
   
   # we collected errors in $errors, so return the negation of it
   if ($errors) {
-    info("$mode of symlinks had $errors error(s), see messages above.\n");
+    info("TLUtils::add_remove_symlinks: $mode of symlinks had $errors error(s), see messages above.\n");
     return $F_ERROR;
   } else {
     return $F_OK;
@@ -2194,9 +2461,11 @@ for newly-downloaded files; see the calls in the C<unpack> routine
 
 sub check_file_and_remove {
   my ($xzfile, $checksum, $checksize) = @_;
-  debug("check_file $xzfile, $checksum, $checksize\n");
+  my $fn_name = (caller(0))[3];
+  debug("$fn_name $xzfile, $checksum, $checksize\n");
+
   if (!$checksum && !$checksize) {
-    tlwarn("TLUtils::check_file: neither checksum nor checksize " .
+    tlwarn("$fn_name: neither checksum nor checksize " .
            "available for $xzfile, cannot check integrity"); 
     return;
   }
@@ -2211,19 +2480,20 @@ sub check_file_and_remove {
   if ($checksum && ($checksum ne "-1") && $::checksum_method) {
     my $tlchecksum = TeXLive::TLCrypto::tlchecksum($xzfile);
     if ($tlchecksum ne $checksum) {
-      tlwarn("TLUtils::check_file: checksums differ for $xzfile:\n");
-      tlwarn("TLUtils::check_file:   tlchecksum=$tlchecksum, arg=$checksum\n");
+      tlwarn("$fn_name: checksums differ for $xzfile:\n");
+      tlwarn("$fn_name:   tlchecksum=$tlchecksum, arg=$checksum\n");
+      tlwarn("$fn_name: backtrace:\n" . backtrace());
       # on Windows passing a pattern creates the tmpdir in PWD
       # which means that it will be tried to be created on the DVD
       # $check_file_tmpdir = File::Temp::tempdir("tlcheckfileXXXXXXXX");
       $check_file_tmpdir = File::Temp::tempdir();
-      tlwarn("TLUtils::check_file:   removing $xzfile, "
+      tlwarn("$fn_name:   removing $xzfile, "
              . "but saving copy in $check_file_tmpdir\n");
       copy($xzfile, $check_file_tmpdir);
       unlink($xzfile);
       return;
     } else {
-      debug("TLUtils::check_file: checksums for $xzfile agree\n");
+      debug("$fn_name: checksums for $xzfile agree\n");
       # if we have checked the checksum, we don't need to check the size, too
       return;
     }
@@ -2231,13 +2501,13 @@ sub check_file_and_remove {
   if ($checksize && ($checksize ne "-1")) {
     my $filesize = (stat $xzfile)[7];
     if ($filesize != $checksize) {
-      tlwarn("TLUtils::check_file: removing $xzfile, sizes differ:\n");
-      tlwarn("TLUtils::check_file:   tlfilesize=$filesize, arg=$checksize\n");
+      tlwarn("$fn_name: removing $xzfile, sizes differ:\n");
+      tlwarn("$fn_name:   tlfilesize=$filesize, arg=$checksize\n");
       if (!defined($check_file_tmpdir)) {
         # the tmpdir should always be undefined, since we shouldn't get
         # here if the checksums failed, but test anyway.
         $check_file_tmpdir = File::Temp::tempdir("tlcheckfileXXXXXXXX");
-        tlwarn("TLUtils::check_file:  saving copy in $check_file_tmpdir\n");
+        tlwarn("$fn_name:  saving copy in $check_file_tmpdir\n");
         copy($xzfile, $check_file_tmpdir);
       }
       unlink($xzfile);
@@ -2372,7 +2642,7 @@ sub untar {
   # quoting issues.
   # so fall back on chdir in Perl.
   #
-  debug("unpacking $tarfile in $targetdir\n");
+  debug("TLUtils::untar: unpacking $tarfile in $targetdir\n");
   my $cwd = cwd();
   chdir($targetdir) || die "chdir($targetdir) failed: $!";
 
@@ -2488,6 +2758,8 @@ sub setup_programs {
     # tar needs to be provided by the system, we not even check!
     $::progs{'tar'} = "tar";
 
+    setup_one("unix", "df", undef, "-P .", 0);
+
     if (!defined($platform) || ($platform eq "")) {
       # we assume that we run from uncompressed media, so we can call
       # platform() and thus also the config.guess script but we have to
@@ -2505,6 +2777,37 @@ sub setup_programs {
     push @working_downloaders, $dltype if 
       setup_one(($isWin ? "w32" : "unix"), $defprog,
                  "$bindir/$dltype/$defprog.$platform", "--version", $tlfirst);
+  }
+  # check for curl special stuff on MacOS
+  if (member("curl", @working_downloaders) && platform() =~ m/darwin/) {
+    # copied from platform_name
+    chomp (my $sw_vers = `sw_vers -productVersion`);
+    my ($os_major,$os_minor) = split (/\./, $sw_vers);
+    if ($os_major == 10 && ($os_minor == 13 || $os_minor == 14)) {
+      my @curlargs = @{$TeXLive::TLConfig::FallbackDownloaderArgs{'curl'}};
+      # can't push new arg at end of list because builtin list ends with
+      # -o to set the output file.
+      unshift (@curlargs, '--cacert', "$::installerdir/tlpkg/installer/curl/curl-ca-bundle.crt");
+      $TeXLive::TLConfig::FallbackDownloaderArgs{'curl'} = \@curlargs;
+      debug("TLUtils::setup_programs: curl on old darwin, final curl args: @{$TeXLive::TLConfig::FallbackDownloaderArgs{'curl'}}\n");
+    }
+  }
+  # check for wget/ssl support
+  if (member("wget", @working_downloaders)) {
+    debug("TLUtils::setup_programs: checking for ssl enabled wget\n");
+    my @lines = `$::progs{'wget'} --version 2>&1`;
+    if (grep(/\+ssl/, @lines)) {
+      $::progs{'options'}{'wget-ssl'} = 1;
+      my @wgetargs = @{$TeXLive::TLConfig::FallbackDownloaderArgs{'wget'}};
+      # can't push new arg at end of list because builtin list ends with
+      # -O to set the output file.
+      unshift (@wgetargs, '--no-check-certificate');
+      $TeXLive::TLConfig::FallbackDownloaderArgs{'wget'} = \@wgetargs;
+      debug("TLUtils::setup_programs: wget has ssl, final wget args: @{$TeXLive::TLConfig::FallbackDownloaderArgs{'wget'}}\n");
+    } else {
+      debug("TLUtils::setup_programs: wget without ssl support found\n");
+      $::progs{'options'}{'wget-ssl'} = 0;
+    }
   }
   $::progs{'working_downloaders'} = [ @working_downloaders ];
   my @working_compressors;
@@ -2559,11 +2862,11 @@ END_COMPRESSOR_BAD
 
   if ($::opt_verbosity >= 2) {
     require Data::Dumper;
-    use vars qw($Data::Dumper::Indent $Data::Dumper::Sortkeys
-                $Data::Dumper::Purity); # -w pain
-    $Data::Dumper::Indent = 1;
-    $Data::Dumper::Sortkeys = 1;  # stable output
-    $Data::Dumper::Purity = 1; # recursive structures must be safe
+    # avoid spurious "used only once" warnings due to require
+    # (warnings restored at end of scope). https://perlmonks.org/?node_id=3333
+    no warnings 'once';
+    local $Data::Dumper::Sortkeys = 1;  # stable output
+    local $Data::Dumper::Purity = 1;    # reconstruct recursive structures
     print STDERR "DD:dumping ";
     print STDERR Data::Dumper->Dump([\%::progs], [qw(::progs)]);
   }
@@ -2634,6 +2937,10 @@ sub setup_windows_tl_one {
 #   . if the copy is -x and executable, use it
 sub setup_unix_tl_one {
   my ($p, $def, $arg) = @_;
+  if (!$def) {
+    debug("(unix) no default program for $p, no setup done\n");
+    return(1);
+  }
   our $tmp;
   debug("(unix) trying to set up $p, default $def, arg $arg\n");
   if (-r $def) {
@@ -2728,7 +3035,7 @@ sub download_file {
       return \*RETFH;
     } else {
       if (-r $filetoopen) {
-        copy ($filetoopen, $par);
+        copy ("-f", "-L", $filetoopen, $dest);
         return 1;
       }
       return 0;
@@ -2888,7 +3195,7 @@ Return C</dev/null> on Unix and C<nul> on Windows.
 =cut
 
 sub nulldev {
-  return (&win32)? 'nul' : '/dev/null';
+  return (&win32()) ? 'nul' : '/dev/null';
 }
 
 =item C<get_full_line ($fh)>
@@ -3179,7 +3486,7 @@ sub _create_config_files {
   }
   if ($usermode && -e $dest) {
     tlwarn("Updating $dest, backup copy in $dest.backup\n");
-    File::Copy::copy($dest, "$dest.backup");
+    copy("-f", $dest, "$dest.backup");
   }
   open(OUTFILE,">$dest")
     or die("Cannot open $dest for writing: $!");
@@ -3405,8 +3712,8 @@ package.
 =cut
 
 sub debug {
-  my $str = "D:" . join("", @_);
   return if ($::opt_verbosity < 1);
+  my $str = "D:" . join("", @_);
   logit(\*STDERR, 1, $str);
   for my $i (@::debug_hook) {
     &{$i}($str);
@@ -3426,8 +3733,8 @@ each package, in addition to the first level.
 =cut
 
 sub ddebug {
-  my $str = "DD:" . join("", @_);
   return if ($::opt_verbosity < 2);
+  my $str = "DD:" . join("", @_);
   logit(\*STDERR, 2, $str);
   for my $i (@::ddebug_hook) {
     &{$i}($str);
@@ -3450,8 +3757,8 @@ debugging those parts of the code, it just gets in the way.
 =cut
 
 sub dddebug {
-  my $str = "DDD:" . join("", @_);
   return if ($::opt_verbosity < 3);
+  my $str = "DDD:" . join("", @_);
   logit(\*STDERR, 3, $str);
   for my $i (@::dddebug_hook) {
     &{$i}($str);
@@ -3554,7 +3861,7 @@ Return call(er) stack, as a string.
 sub backtrace {
   my $ret = "";
 
-  my ($line, $subr);
+  my ($filename, $line, $subr);
   my $stackframe = 1;  # skip ourselves
   while ((undef,$filename,$line,$subr) = caller ($stackframe)) {
     # the undef is for the package, which is already included in $subr.
@@ -3891,26 +4198,84 @@ Return a particular mirror given by the generic CTAN auto-redirecting
 default (specified in L<$TLConfig::TexLiveServerURL>) if we get a
 response, else the empty string.
 
-Neither C<TL_DOWNLOAD_PROGRAM> nor <TL_DOWNLOAD_ARGS> is honored (see
-L<download_file>), since certain options have to be set to do the job
-and the program has to be C<wget> since we parse the output.
+Use C<curl> if it is listed as a C<working_downloader>, else C<wget>,
+else give up. We can't support arbitrary downloaders here, as we do for
+regular package downloads, since certain options have to be set and the
+output has to be parsed.
+
+We try invoking the program three times (hardwired).
 
 =cut
 
 sub query_ctan_mirror {
+  my @working_downloaders = @{$::progs{'working_downloaders'}};
+  ddebug("query_ctan_mirror: working_downloaders: @working_downloaders\n");
+  if (TeXLive::TLUtils::member("curl", @working_downloaders)) {
+    return query_ctan_mirror_curl();
+  } elsif (TeXLive::TLUtils::member("wget", @working_downloaders)) {
+    if ($::progs{'options'}{'wget-ssl'}) {
+      # we need ssl enabled wget to query ctan
+      return query_ctan_mirror_wget();
+    } else {
+      tlwarn(<<END_NO_SSL);
+TLUtils::query_ctan_mirror: neither curl nor an ssl-enabled wget is
+  available, so no CTAN mirror can be resolved via https://mirror.ctan.org.
+
+  Please install curl or ssl-enabled wget; otherwise, please pick an
+  http (not https) mirror from the list at https://ctan.org/mirrors/mirmon.
+
+  To report a bug about this, please rerun your command with -vv and
+  include the resulting output with the report.
+END_NO_SSL
+      return;
+    }
+  } else {
+    return;
+  }
+}
+
+# curl will follow the redirect chain for us.
+# 
+sub query_ctan_mirror_curl {
+  my $max_trial = 3;
+  my $warg = (win32() ? '-w "%{url_effective}" ' : "-w '%{url_effective}' ");
+  for (my $i = 1; $i <= $max_trial; $i++) {
+    # -L -> follow redirects
+    # -s -> silent
+    # -w -> what to output after completion
+    my $cmd = "$::progs{'curl'} -Ls "
+              . "-o " . nulldev() . " "
+              . $warg
+              . "--connect-timeout $NetworkTimeout "
+              . "--max-time $NetworkTimeout "
+              . $TeXLiveServerURL;
+    ddebug("query_ctan_mirror_curl: cmd: $cmd\n");
+    my $url = `$cmd`;
+    if (length $url) {
+      # remove trailing slashes
+      $url =~ s,/*$,,;
+      ddebug("query_ctan_mirror_curl: returning url: $url\n");
+      return $url;
+    }
+    sleep(1);
+  }
+  return;
+}
+
+sub query_ctan_mirror_wget {
   my $wget = $::progs{'wget'};
   if (!defined ($wget)) {
-    tlwarn("query_ctan_mirror: Programs not set up, trying wget\n");
+    tlwarn("query_ctan_mirror_wget: Programs not set up, trying wget\n");
     $wget = "wget";
   }
 
   # we need the verbose output, so no -q.
   # do not reduce retries here, but timeout still seems desirable.
   my $mirror = $TeXLiveServerURL;
-  my $cmd = "$wget $mirror --timeout=$NetworkTimeout -O "
-            . (win32() ? "nul" : "/dev/null") . " 2>&1";
+  my $cmd = "$wget $mirror --timeout=$NetworkTimeout "
+            . "-O " . nulldev() . " 2>&1";
+  ddebug("query_ctan_mirror_wget: cmd is $cmd\n");
 
-  #
   # since we are reading the output of wget to find a mirror
   # we have to make sure that the locale is unset
   my $saved_lcall;
@@ -3928,6 +4293,7 @@ sub query_ctan_mirror {
     foreach (@out) {
       if (m/^Location: (\S*)\s*.*$/) {
         (my $mhost = $1) =~ s,/*$,,;  # remove trailing slashes since we add it
+        ddebug("query_ctan_mirror_wget: returning url: $mhost\n");
         return $mhost;
       }
     }
@@ -3968,9 +4334,9 @@ sub check_on_working_mirror {
   # so try wget and only check for the return value
   # please KEEP the / after $mirror, some ftp mirrors do give back
   # an error if the / is missing after ../CTAN/
-  my $cmd = "$wget $mirror/ --timeout=$NetworkTimeout -O "
-            . (win32() ? "nul" : "/dev/null")
-            . " 2>" . (win32() ? "nul" : "/dev/null");
+  my $cmd = "$wget $mirror/ --timeout=$NetworkTimeout -O -"
+            . "  >" . (TeXLive::TLUtils::nulldev())
+            . " 2>" . (TeXLive::TLUtils::nulldev());
   my $ret = system($cmd);
   # if return value is not zero it is a failure, so switch the meanings
   return ($ret ? 0 : 1);
@@ -3991,9 +4357,10 @@ sub check_on_working_mirror {
 
 sub give_ctan_mirror_base {
   # only one backbone has existed for a while (2018).
-  my @backbone = qw!http://www.ctan.org/tex-archive!;
+  my @backbone = qw!https://www.ctan.org/tex-archive!;
 
   # start by selecting a mirror and test its operationality
+  ddebug("give_ctan_mirror_base: calling query_ctan_mirror\n");
   my $mirror = query_ctan_mirror();
   if (!defined($mirror)) {
     # three times calling mirror.ctan.org did not give anything useful,
@@ -4120,6 +4487,7 @@ Returns the local file name if succeeded, otherwise undef.
 
 sub download_to_temp_or_file {
   my $url = shift;
+  my $ret;
   my ($url_fh, $url_file);
   if ($url =~ m,^(https?|ftp|file)://, || $url =~ m!$SshURIRegex!) {
     ($url_fh, $url_file) = tl_tmpfile();
@@ -4147,6 +4515,7 @@ Compare the two passed L<TLPOBJ> objects.  Returns a hash:
   $ret{'revision'}  = "revA:revB" # if revisions differ
   $ret{'removed'}   = \[ list of files removed from A to B ]
   $ret{'added'}     = \[ list of files added from A to B ]
+  $ret{'fmttriggers'} = 1 if the fmttriggers have changed
 
 =cut
 
@@ -4176,6 +4545,51 @@ sub compare_tlpobjs {
   my @add = sort keys %added;
   $ret{'removed'} = \@rem if @rem;
   $ret{'added'} = \@add if @add;
+
+  # changed dependencies should not trigger a change without a
+  # change in revision, so for now (until we find a reason why
+  # we need to) we don't check.
+  # OTOH, execute statements like
+  #   execute AddFormat name=aleph engine=aleph options=*aleph.ini fmttriggers=cm,hyphen-base,knuth-lib,plain
+  # might change due to changes in the fmttriggers variables.
+  # Again, name/engine/options are only defined in the package's
+  # tlpsrc file, so changes here will trigger revision changes,
+  # but fmttriggers are defined outside the tlpsrc and thus do
+  # not trigger an automatic revision change. Check for that!
+  # No need to record actual changes, just record that it has changed.
+  my %triggersA;
+  my %triggersB;
+  # we sort executes after format/engine like fmtutil does, since this
+  # should be unique
+  for my $e ($tlpA->executes) {
+    if ($e =~ m/AddFormat\s+(.*)\s*/) {
+      my %r = parse_AddFormat_line("$1");
+      if (defined($r{"error"})) {
+        die "$r{'error'} when comparing packages $tlpA->name execute $e";
+      }
+      for my $t (@{$r{'fmttriggers'}}) {
+        $triggersA{"$r{'name'}:$r{'engine'}:$t"} = 1;
+      }
+    }
+  }
+  for my $e ($tlpB->executes) {
+    if ($e =~ m/AddFormat\s+(.*)\s*/) {
+      my %r = parse_AddFormat_line("$1");
+      if (defined($r{"error"})) {
+        die "$r{'error'} when comparing packages $tlpB->name execute $e";
+      }
+      for my $t (@{$r{'fmttriggers'}}) {
+        $triggersB{"$r{'name'}:$r{'engine'}:$t"} = 1;
+      }
+    }
+  }
+  for my $t (keys %triggersA) {
+    delete($triggersA{$t});
+    delete($triggersB{$t});
+  }
+  if (keys(%triggersA) || keys(%triggersB)) {
+    $ret{'fmttrigger'} = 1;
+  }
 
   return %ret;
 }
@@ -4442,7 +4856,7 @@ sub mktexupd {
         foreach my $db (@texmfdbs) {
           $db=substr($db, -1) if ($db=~m|/$|); # strip leading /
           $db = lc($db) if win32();
-          $up = (win32() ? lc($path) : $path);
+          my $up = (win32() ? lc($path) : $path);
           if (substr($up, 0, length("$db/")) eq "$db/") {
             # we appended a / because otherwise "texmf" is recognized as a
             # substring of "texmf-dist".
@@ -4473,7 +4887,16 @@ sub mktexupd {
 }
 
 
-=item C<check_sys_user_mode($user,$sys,$tmfc, $tmfsc, $tmfv, $tmfsv)>
+=item C<setup_sys_user_mode($prg, $optsref, $tmfc, $tmfsc, $tmfv, $tmfsv)>
+
+Return two-element list C<($texmfconfig,$texmfvar)> specifying which
+directories to use, either user or sys.  If C<$optsref->{'sys'}>  is
+true, we are in sys mode; else if C<$optsref->{'user'}> is set, we are
+in user mode; else a fatal error.
+
+If C<$prg> eq C<"mktexfmt">, and C<$TEXMFSYSVAR/web2c> is writable, use
+it instead of C<$TEXMFVAR>, even if we are in user mode. C<$TEXMFCONFIG>
+is not switched, however.
 
 =cut
 
@@ -4501,7 +4924,8 @@ sub setup_sys_user_mode {
       exit(1);
     }
     if (!$optsref->{'sys'}) {
-      print STDERR "$prg [WARNING]: hidden sys mode found, switching to sys mode.\n" if (!$optsref->{'quiet'});
+      print STDERR "$prg [WARNING]: hidden sys mode found, switching to sys mode.\n"
+        if (!$optsref->{'quiet'});
       $optsref->{'sys'} = 1;
     }
   }
@@ -4511,16 +4935,42 @@ sub setup_sys_user_mode {
     # we are running as updmap-sys, make sure that the right tree is used
     $texmfconfig = $TEXMFSYSCONFIG;
     $texmfvar    = $TEXMFSYSVAR;
+    &debug("TLUtils::setup_sys_user_mode: sys mode\n");
+
   } elsif ($optsref->{'user'}) {
     $texmfconfig = $TEXMFCONFIG;
     $texmfvar    = $TEXMFVAR;
+    &debug("TLUtils::setup_sys_user_mode: user mode\n");
+
+    # mktexfmt is run (accidentally or on purpose) by a user with
+    # missing formats; we want to put the resulting format dumps in
+    # TEXMFSYSVAR if possible, so that future format updates will just
+    # work. Until 2021, they were put in TEXMFVAR, causing problems.
+    # 
+    # We only do this for mktexfmt, not fmtutil; if fmtutil is called
+    # explicitly with fmtutil -user, ok, do what they said to do.
+    #
+    if ($prg eq "mktexfmt") {
+      my $switchit = 0;
+      if (-d "$TEXMFSYSVAR/web2c") {
+        $switchit = 1 if (-w "$TEXMFSYSVAR/web2c");
+      } elsif (-d $TEXMFSYSVAR && -w $TEXMFSYSVAR) {
+        $switchit = 1;
+      }
+      if ($switchit) {
+        $texmfvar = $TEXMFSYSVAR;
+        &ddebug("  switched to $texmfvar for mktexfmt\n");
+      }
+    }
   } else {
-    print STDERR "" .
+    print STDERR
       "$prg [ERROR]: Either -sys or -user mode is required.\n" .
       "$prg [ERROR]: In nearly all cases you should use $prg -sys.\n" .
       "$prg [ERROR]: For special cases see https://tug.org/texlive/scripts-sys-user.html\n" ;
     exit(1);
   }
+
+  &debug("  returning: ($texmfconfig,$texmfvar)\n");
   return ($texmfconfig, $texmfvar);
 }
 

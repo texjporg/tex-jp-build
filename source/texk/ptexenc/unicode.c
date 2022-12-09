@@ -43,18 +43,21 @@ int UTF8length(int first_byte)
 
 
 /* with strict range check */
-int UTF8Slength(unsigned char *buff, int buff_len)
-{
-    int i, len;
-
-    len = UTF8length(buff[0]);
-    if (len < 0) return -2; /* illegal */
-    if (len > buff_len) return -3; /* overflow */
-    for (i=0; i<len; i++) {
-        if (!isUTF8(len, 1+i, buff[i])) return -1; /* not UTF-8 */
-    }
-    return len;
+#define DEFINE_UTF8SLENGTH(SUFF,TYPE) \
+int UTF8Slength ## SUFF(TYPE *buff, int buff_len) \
+{ \
+    int i, len; \
+    len = UTF8length(buff[0]); \
+    if (len < 0) return -2; /* illegal */ \
+    if (len > buff_len) return -3; /* overflow */ \
+    for (i=0; i<len; i++) { \
+        if (!isUTF8(len, 1+i, buff[i])) return -1; /* not UTF-8 */ \
+    } \
+    return len; \
 }
+
+DEFINE_UTF8SLENGTH(, unsigned char)
+DEFINE_UTF8SLENGTH(short, unsigned short)
 
 
 /* WITHOUT strict range check */
@@ -69,7 +72,8 @@ long UTF8StoUCS(unsigned char *s)
     }
 }
 
-#if 0 /* not used */
+/* used only for debug */
+#ifdef DEBUG
 int UCStoUTF8S(long ucs, unsigned char *s)
 {
     if (ucs < 0x80) {
@@ -93,7 +97,7 @@ int UCStoUTF8S(long ucs, unsigned char *s)
     }
     return 0; /* unsupported */
 }
-#endif /* 0 */
+#endif /* DEBUG */
 
 
 long UCStoUTF8(long ucs)

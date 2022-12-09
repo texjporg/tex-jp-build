@@ -34,7 +34,6 @@
 #include "uresimp.h"
 
 static void TestOpenDirect(void);
-static void TestOpenDirectFillIn(void);
 static void TestFallback(void);
 static void TestTable32(void);
 static void TestFileStream(void);
@@ -112,7 +111,6 @@ void addResourceBundleTest(TestNode** root)
 #if !UCONFIG_NO_FILE_IO && !UCONFIG_NO_LEGACY_CONVERSION
     addTest(root, &TestConstruction1, "tsutil/crestst/TestConstruction1");
     addTest(root, &TestOpenDirect, "tsutil/crestst/TestOpenDirect");
-    addTest(root, &TestOpenDirectFillIn, "tsutil/crestst/TestOpenDirectFillIn");
     addTest(root, &TestResourceBundles, "tsutil/crestst/TestResourceBundles");
     addTest(root, &TestTable32, "tsutil/crestst/TestTable32");
     addTest(root, &TestFileStream, "tsutil/crestst/TestFileStream");
@@ -149,6 +147,15 @@ void TestAliasConflict(void) {
 
 void TestResourceBundles()
 {
+    // The test expectation only works if the default locale is not one of the
+    // locale bundle in the testdata which have those info. Therefore, we skip
+    // the test if the default locale is te, sh, mc, or them with subtags.
+    if (    uprv_strncmp(uloc_getDefault(), "te", 2) == 0 ||
+            uprv_strncmp(uloc_getDefault(), "sh", 2) == 0 ||
+            uprv_strncmp(uloc_getDefault(), "mc", 2) == 0) {
+        return;
+    }
+
     UErrorCode status = U_ZERO_ERROR;
     loadTestData(&status);
     if(U_FAILURE(status)) {
@@ -487,7 +494,7 @@ static void TestFallback()
 
 static void
 TestOpenDirect(void) {
-    UResourceBundle *idna_rules, *casing, *te_IN, *ne, *item;
+    UResourceBundle *idna_rules, *casing, *te_IN, *ne, *item, *defaultLocale;
     UErrorCode errorCode;
 
     /*
@@ -595,16 +602,19 @@ TestOpenDirect(void) {
     ures_close(casing);
 
     /*
-     * verify that ures_open("ne") finds the root bundle but
-     * ures_openDirect("ne") does not
+     * verify that ures_open("ne") finds the root bundle or default locale
+     * bundle but ures_openDirect("ne") does not.
      */
     errorCode=U_ZERO_ERROR;
     ne=ures_open("testdata", "ne", &errorCode);
     if(U_FAILURE(errorCode)) {
         log_data_err("ures_open(\"ne\") failed (expected to get root): %s\n", u_errorName(errorCode));
     }
-    if(errorCode!=U_USING_DEFAULT_WARNING || 0!=uprv_strcmp("root", ures_getLocale(ne, &errorCode))) {
-        log_err("ures_open(\"ne\") found something other than \"root\" - %s\n", u_errorName(errorCode));
+    if(    errorCode!=U_USING_DEFAULT_WARNING ||
+           (0!=uprv_strcmp("root", ures_getLocale(ne, &errorCode)) &&
+            0!=uprv_strcmp(uloc_getDefault(), ures_getLocale(ne, &errorCode)))) {
+        log_err("ures_open(\"ne\") found something other than \"root\" "
+                "or default locale \"%s\" - %s\n", uloc_getDefault(), u_errorName(errorCode));
     }
     ures_close(ne);
 
@@ -629,47 +639,12 @@ TestOpenDirect(void) {
         ures_close(item);
     }
     ures_close(te_IN);
-}
 
-static void
-TestOpenDirectFillIn(void) {
-    // Test that ures_openDirectFillIn() opens a stack allocated resource bundle, similar to ures_open().
-    // Since ures_openDirectFillIn is just a wrapper function, this is just a very basic test copied from
-    // the TestOpenDirect test above.
-    UErrorCode errorCode = U_ZERO_ERROR;
-    UResourceBundle *item;
-    UResourceBundle idna_rules;
-    ures_initStackObject(&idna_rules);
-
-    ures_openDirectFillIn(&idna_rules, loadTestData(&errorCode), "idna_rules", &errorCode);
-    if(U_FAILURE(errorCode)) {
-        log_data_err("ures_openDirectFillIn(\"idna_rules\") failed: %s\n", u_errorName(errorCode));
-        return;
-    }
-
-    if(0!=uprv_strcmp("idna_rules", ures_getLocale(&idna_rules, &errorCode))) {
-        log_err("ures_openDirectFillIn(\"idna_rules\").getLocale()!=idna_rules\n");
-    }
-    errorCode=U_ZERO_ERROR;
-
-    /* try an item in idna_rules, must work */
-    item=ures_getByKey(&idna_rules, "UnassignedSet", NULL, &errorCode);
-    if(U_FAILURE(errorCode)) {
-        log_err("translit_index.getByKey(local key) failed: %s\n", u_errorName(errorCode));
-        errorCode=U_ZERO_ERROR;
-    } else {
-        ures_close(item);
-    }
-
-    /* try an item in root, must fail */
-    item=ures_getByKey(&idna_rules, "ShortLanguage", NULL, &errorCode);
-    if(U_FAILURE(errorCode)) {
-        errorCode=U_ZERO_ERROR;
-    } else {
-        log_err("idna_rules.getByKey(root key) succeeded!\n");
-        ures_close(item);
-    }
-    ures_close(&idna_rules);
+    // ICU-21705
+    // Verify that calling ures_openDirect() with a NULL localeID doesn't crash or assert.
+    errorCode = U_ZERO_ERROR;
+    defaultLocale = ures_openDirect(NULL, NULL, &errorCode);
+    ures_close(defaultLocale);
 }
 
 static int32_t

@@ -8,10 +8,15 @@
 
 @define function getencstring;
 @define function setencstring ();
+@define function isinternalUPTEX;
+@define function isterminalUTF8;
 
 @define function iskanji1 ();
 @define function multistrlen ();
+@define function multistrlenshort ();
+@define function multistrlenfilename ();
 @define function fromBUFF ();
+@define function fromBUFFshort ();
 @define function toBUFF ();
 
 @define function fromDVI ();
@@ -28,6 +33,8 @@
 @define function fromSJIS ();
 @define function fromKUTEN ();
 @define function UCStoUTF8 ();
+@define function fromUCS ();
+@define function toJIS ();
 @define function toUCS ();
 
 @define function notkanjicharseq ();

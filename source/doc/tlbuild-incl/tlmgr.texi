@@ -60,8 +60,8 @@ with @code{tlmgr}:
 @item @code{tlmgr option repository ctan}
 @anchor{tlmgr @code{tlmgr option repository ctan}}
 
-@item @code{tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet}
-@anchor{tlmgr @code{tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet}}
+@item @code{tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet}
+@anchor{tlmgr @code{tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet}}
 
 Tell @code{tlmgr} to use a nearby CTAN mirror for future updates; useful if
 you installed TeX Live from the DVD image and want to have continuing
@@ -154,8 +154,8 @@ Equivalent ways of specifying a local directory.
 @item @code{ctan}
 @anchor{tlmgr @code{ctan}}
 
-@item @code{http://mirror.ctan.org/systems/texlive/tlnet}
-@anchor{tlmgr @code{http://mirror.ctan.org/systems/texlive/tlnet}}
+@item @code{https://mirror.ctan.org/systems/texlive/tlnet}
+@anchor{tlmgr @code{https://mirror.ctan.org/systems/texlive/tlnet}}
 
 Pick a CTAN mirror automatically, trying for one that is both nearby and
 up-to-date. The chosen mirror is used for the entire download. The bare
@@ -243,6 +243,14 @@ necessarily completely translated) are: @w{English (en, default)},
 (zh_CN)}, and @w{traditional Chinese (zh_TW)}.
 
 tlshell shares its message catalog with tlmgr.
+
+@item @strong{--command-logfile} @emph{file}
+@anchor{tlmgr @strong{--command-logfile} @emph{file}}
+
+@code{tlmgr} logs the output of all programs invoked (mktexlr, mtxrun, fmtutil,
+updmap) to a separate log file, by default
+@code{TEXMFSYSVAR/web2c/tlmgr-commands.log}.  This option allows you to specify a
+different file for the log.
 
 @item @strong{--debug-translation}
 @anchor{tlmgr @strong{--debug-translation}}
@@ -831,22 +839,37 @@ is available in a remote repository using
 @item @strong{--data @code{item1,item2,...}}
 @anchor{tlmgr @strong{--data @code{item1@comma{}item2@comma{}...}}}
 
-If the option @code{--data} is given, its argument must be a comma separated
-list of field names from: @code{name}, @code{category}, @code{localrev}, @code{remoterev},
-@code{shortdesc}, @code{longdesc}, @code{installed}, @code{size}, @code{relocatable}, @code{depends},
-@code{cat-version}, @code{cat-date}, or @code{cat-license}. In this case the requested
-packages' information is listed in CSV format one package per line, and the
-column information is given by the @code{itemN}. The @code{depends} column contains
-the name of all dependencies separated by @code{:}.
+If the option @code{--data} is given, its argument must be a comma or colon 
+separated list of field names from: @code{name}, @code{category}, @code{localrev},
+@code{remoterev}, @code{shortdesc}, @code{longdesc}, @code{installed}, @code{size},
+@code{relocatable}, @code{depends}, @code{cat-version}, @code{cat-date}, @code{cat-license},
+plus various @code{cat-contact-*} fields (see below).
+
+The @code{cat-*} fields all come from the TeX Catalogue
+(@url{https://ctan.org/pkg/catalogue}). For each, there are two more
+variants with prefix @code{l} and @code{r}, e.g., @code{lcat-version} and
+@code{rcat-version}, which indicate the local and remote information,
+respectively. The variants without @code{l} and @code{r} show the most current
+one, which is normally the remote value.
+
+The requested packages' information is listed in CSV format, one package
+per line, and the column information is given by the @code{itemN}. The
+@code{depends} column contains the names of all the dependencies separated
+by @code{:} characters.
+
+At this writing, the @code{cat-contact-*} fields include: @code{home},
+@code{repository}, @code{support}, @code{bugs}, @code{announce}, @code{development}. Each
+may be empty or a url value. A brief description is on the CTAN upload
+page for new packages: @url{https://ctan.org/upload}.
 
 @item @strong{--json}
 @anchor{tlmgr @strong{--json} 1}
 
-In case @code{--json} is specified, the output is a
-JSON encoded array where each array element is the JSON representation of
-a single @code{TLPOBJ} but with additional information. For details see
-@code{tlpkg/doc/JSON-formats.txt}, format definition: @code{TLPOBJINFO}.
-If both @code{--json} and @code{--data} are given, @code{--json} takes precedence.
+In case @code{--json} is specified, the output is a JSON encoded array where
+each array element is the JSON representation of a single @code{TLPOBJ} but
+with additional information. For details see
+@code{tlpkg/doc/JSON-formats.txt}, format definition: @code{TLPOBJINFO}. If both
+@code{--json} and @code{--data} are given, @code{--json} takes precedence.
 
 @end table
 
@@ -1029,7 +1052,7 @@ get further updates from the Internet, after originally installing from
 DVD.  To do this, you can run
 
 @verbatim
- tlmgr option repository http://mirror.ctan.org/systems/texlive/tlnet
+ tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet
 @end verbatim
 
 The @code{install-tl} documentation has more information about the possible
@@ -1363,9 +1386,10 @@ written to the terminal.
 
 @end table
 
-This action does not automatically remove symlinks to executables from
-system directories; you need to run @code{tlmgr path remove} (@ref{tlmgr path,, path})
-yourself if you are using this feature and want stale symlinks removed.
+Except with @code{--all}, this @code{remove} action does not automatically
+remove symlinks to executables from system directories; you need to run
+@code{tlmgr path remove} (@ref{tlmgr path,, path}) yourself if you remove an individual
+package with a symlink in a system directory.
 
 @node tlmgr repository
 @appendixsubsec repository
@@ -1842,12 +1866,12 @@ If the package on the server is older than the package already installed
 (e.g., if the selected mirror is out of date), @code{tlmgr} does not
 downgrade.  Also, packages for uninstalled platforms are not installed.
 
-@code{tlmgr} saves a copy of the @code{texlive.tlpdb} file used for an update
-with a suffix representing the repository url, as in
-@code{tlpkg/texlive.tlpdb.}@emph{long-hash-string}.  These can be useful for
-fallback information, but if you don't like them accumulating (e.g.,
-@code{mirror.ctan.org} resolves to many different hosts, each resulting in
-a possibly different hash), it's harmless to delete them.
+@code{tlmgr} saves one copy of the main @code{texlive.tlpdb} file used for an
+update with a suffix representing the repository url, as in
+@code{tlpkg/texlive.tlpdb.main.}@emph{long-hash-string}. Thus, even when many
+mirrors are used, only one main @code{tlpdb} backup is kept. For non-main
+repositories, which do not generally have (m)any mirrors, no pruning of
+backups is done.
 
 This action does not automatically add or remove new symlinks in system
 directories; you need to run @code{tlmgr} @ref{tlmgr path,, path} yourself if you are using
@@ -1879,59 +1903,56 @@ where the spaces are optional but the @code{=} is required.
 The allowed keys are:
 
 @table @asis
-@item @code{auto-remove}, value 0 or 1 (default 1), same as command-line option.
-@anchor{tlmgr @code{auto-remove}@comma{} value 0 or 1 (default 1)@comma{} same as command-line option.}
+@item @code{auto-remove =} 0 or 1 (default 1), same as command-line option.
+@anchor{tlmgr @code{auto-remove =} 0 or 1 (default 1)@comma{} same as command-line option.}
 
-@item @code{gui-expertmode}, value 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.
-@anchor{tlmgr @code{gui-expertmode}@comma{} value 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.}
+@item @code{gui-expertmode =} 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.
+@anchor{tlmgr @code{gui-expertmode =} 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.}
 
-@item @code{gui-lang} @emph{llcode}, with a language code value as with the command-line option.
-@anchor{tlmgr @code{gui-lang} @emph{llcode}@comma{} with a language code value as with the command-line option.}
+@item @code{gui-lang =} @emph{llcode}, with a language code value as with the command-line option.
+@anchor{tlmgr @code{gui-lang =} @emph{llcode}@comma{} with a language code value as with the command-line option.}
 
-@item @code{no-checksums}, value 0 or 1 (default 0, see below).
-@anchor{tlmgr @code{no-checksums}@comma{} value 0 or 1 (default 0@comma{} see below).}
+@item @code{no-checksums =} 0 or 1 (default 0, see below).
+@anchor{tlmgr @code{no-checksums =} 0 or 1 (default 0@comma{} see below).}
 
-@item @code{persistent-downloads}, value 0 or 1 (default 1), same as command-line option.
-@anchor{tlmgr @code{persistent-downloads}@comma{} value 0 or 1 (default 1)@comma{} same as command-line option.}
+@item @code{persistent-downloads =} 0 or 1 (default 1), same as command-line option.
+@anchor{tlmgr @code{persistent-downloads =} 0 or 1 (default 1)@comma{} same as command-line option.}
 
-@item @code{require-verification}, value 0 or 1 (default 0), same as command-line option.
-@anchor{tlmgr @code{require-verification}@comma{} value 0 or 1 (default 0)@comma{} same as command-line option.}
+@item @code{require-verification =} 0 or 1 (default 0), same as command-line option.
+@anchor{tlmgr @code{require-verification =} 0 or 1 (default 0)@comma{} same as command-line option.}
 
-@item @code{update-exclude}, value: comma-separated list of packages (no space allowed). Same as the command line option @code{--exclude} for the action @code{update}.
-@anchor{tlmgr @code{update-exclude}@comma{} value: comma-separated list of packages (no space allowed). Same as the command line option @code{--exclude} for the action @code{update}.}
+@item @code{tkfontscale =} @emph{floating-point number} (default 1.0); scaling factor for fonts in the Tk-based frontends.
+@anchor{tlmgr @code{tkfontscale =} @emph{floating-point number} (default 1.0); scaling factor for fonts in the Tk-based frontends.}
 
-@item @code{verify-downloads}, value 0 or 1 (default 1), same as command-line option.
-@anchor{tlmgr @code{verify-downloads}@comma{} value 0 or 1 (default 1)@comma{} same as command-line option.}
+@item @code{update-exclude =} @emph{comma-separated list of packages} (no spaces allowed). Same as the command line option @code{--exclude} for the @code{update} action.
+@anchor{tlmgr @code{update-exclude =} @emph{comma-separated list of packages} (no spaces allowed). Same as the command line option @code{--exclude} for the @code{update} action.}
+
+@item @code{verify-downloads =} 0 or 1 (default 1), same as command-line option.
+@anchor{tlmgr @code{verify-downloads =} 0 or 1 (default 1)@comma{} same as command-line option.}
 
 @end table
 
 The system-wide config file can contain one additional key:
 
 @table @asis
-@item @code{allowed-actions} @emph{action1} [,@emph{action},...] The value is a comma-separated list of @code{tlmgr} actions which are allowed to be executed when @code{tlmgr} is invoked in system mode (that is, without @code{--usermode}).
-@anchor{tlmgr @code{allowed-actions} @emph{action1} [@comma{}@emph{action}@comma{}...] The value is a comma-separated list of @code{tlmgr} actions which are allowed to be executed when @code{tlmgr} is invoked in system mode (that is@comma{} without @code{--usermode}).}
-
-This allows distributors to include the @code{tlmgr} in their packaging, but
-allow only a restricted set of actions that do not interfere with their
-distro package manager.  For native TeX Live installations, it doesn't
-make sense to set this.
+@item @code{allowed-actions =} @emph{action1}[,@emph{action2},...] The value is a comma-separated list (no spaces) of @code{tlmgr} actions which are allowed to be executed when @code{tlmgr} is invoked in system mode (that is, without @code{--usermode}). This allows distributors to include @code{tlmgr} in their packaging, but allow only a restricted set of actions that do not interfere with their distro package manager. For native TeX Live installations, it doesn't make sense to set this.
+@anchor{tlmgr @code{allowed-actions =} @emph{action1}[@comma{}@emph{action2}@comma{}...] The value is a comma-separated list (no spaces) of @code{tlmgr} actions which are allowed to be executed when @code{tlmgr} is invoked in system mode (that is@comma{} without @code{--usermode}). This allows distributors to include @code{tlmgr} in their packaging@comma{} but allow only a restricted set of actions that do not interfere with their distro package manager. For native TeX Live installations@comma{} it doesn't make sense to set this.}
 
 @end table
 
-The @code{no-checksums} key needs more explanation.  By default, package
-checksums computed and stored on the server (in the TLPDB) are compared
-to checksums computed locally after downloading.  @code{no-checksums}
-disables this process.
-
-The checksum algorithm is SHA-512.  Your system must have one of (looked
-for in this order) the Perl @code{Digest::SHA} module, the @code{openssl}
-program (@url{https://openssl.org}), the @code{sha512sum} program (from GNU
-Coreutils, @url{https://www.gnu.org/software/coreutils}), or finally the
-@code{shasum} program (just to support old Macs).  If none of these are
-available, a warning is issued and @code{tlmgr} proceeds without checking
-checksums.  (Incidentally, other SHA implementations, such as the pure
-Perl and pure Lua modules, are much too slow to be usable in our
-context.)  @code{no-checksums} avoids the warning.
+Finally, the @code{no-checksums} key needs more explanation. By default,
+package checksums computed and stored on the server (in the TLPDB) are
+compared to checksums computed locally after downloading.
+@code{no-checksums} disables this process. The checksum algorithm is
+SHA-512. Your system must have one of (looked for in this order) the
+Perl @code{Digest::SHA} module, the @code{openssl} program
+(@url{https://openssl.org}), the @code{sha512sum} program (from GNU Coreutils,
+@url{https://www.gnu.org/software/coreutils}), or finally the @code{shasum}
+program (just to support old Macs). If none of these are available, a
+warning is issued and @code{tlmgr} proceeds without checking checksums.
+@code{no-checksums} avoids the warning. (Incidentally, other SHA
+implementations, such as the pure Perl and pure Lua modules, are much
+too slow to be usable in our context.)
 
 @node tlmgr CRYPTOGRAPHIC VERIFICATION
 @appendixsec CRYPTOGRAPHIC VERIFICATION
@@ -2082,7 +2103,6 @@ just as in normal mode.
 
 In user mode, these actions operate only on the user tree's
 configuration files and/or @code{texlive.tlpdb}.
-creates configuration files in user tree
 
 @node tlmgr MULTIPLE REPOSITORIES
 @appendixsec MULTIPLE REPOSITORIES
@@ -2738,5 +2758,5 @@ This script and its documentation were written for the TeX Live
 distribution (@url{https://tug.org/texlive}) and both are licensed under the
 GNU General Public License Version 2 or later.
 
-$Id: tlmgr.pl 54118 2020-03-05 22:27:22Z karl $
+$Id: tlmgr.pl 62273 2022-02-28 08:52:17Z preining $
 

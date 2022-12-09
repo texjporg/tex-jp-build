@@ -17,7 +17,7 @@ public:
     LocaleDisplayNamesTest();
     virtual ~LocaleDisplayNamesTest();
 
-    void runIndexedTest(int32_t index, UBool exec, const char* &name, char* par = NULL);
+    void runIndexedTest(int32_t index, UBool exec, const char* &name, char* par = NULL) override;
 
 #if !UCONFIG_NO_FORMATTING
     /**
@@ -38,6 +38,7 @@ public:
     void TestUldnDisplayContext(void);
     void TestUldnWithGarbage(void);
     void TestSubstituteHandling(void);
+    void TestNumericRegionID(void);
 
     void VerifySubstitute(LocaleDisplayNames* ldn);
     void VerifyNoSubstitute(LocaleDisplayNames* ldn);

@@ -8,6 +8,7 @@ cd source && mkdir -p Work && cd Work
 # on build source top directory.
 # in web2c, we only make:
 # (e|u)ptex, (u)pmpost, cweave, tie, and (c)tangle.
+# [NOTE] We build "raw" etex, which is disabled in TL.
 # [TODO] How to build omegaware and omegafonts?
 ../Build --no-clean \
   --disable-all-pkgs \
@@ -22,23 +23,27 @@ cd source && mkdir -p Work && cd Work
   --enable-dvidvi \
   --enable-seetexk \
   --enable-web2c \
+  --enable-etex \
   --enable-ptex \
   --enable-eptex \
   --enable-uptex \
   --enable-euptex \
   --enable-pmp \
   --enable-upmp \
-  --disable-web-progs \
+  --enable-web-progs \
+  --enable-bibtex-x \
   --disable-tex \
   --disable-mf \
   --disable-mflua \
   --disable-mfluajit \
   --disable-mp \
-  --disable-pdftex \
   --disable-luatex \
-  --disable-luatex53 \
   --disable-luajittex \
+  --disable-luahbtex \
+  --disable-luajithbtex \
+  --disable-pdftex \
   --disable-xetex \
+  --disable-hitex \
   --disable-aleph \
   --without-mf-x-toolkit \
   --with-gnu-ld \

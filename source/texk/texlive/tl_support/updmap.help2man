@@ -6,9 +6,11 @@
 # do not fill the long TEXMF* tables.
 
 [NAME]
-updmap \- manage TeX font maps, per-user
+updmap \- manage TeX font maps
 .br
 updmap-sys \- manage TeX font maps, system-wide
+.br
+updmap-user \- manage TeX font maps, per-user
 
 /Adapt the font and file/
 .nf
@@ -93,7 +95,7 @@ Loads \fIpsfonts_t1\&.map\fP instead
 of \fIpsfonts\&.map\fP\&.
 .IP "\fIconfig\&.pdf\fP"
 Loads \fIpsfonts_t1\&.map\fP instead
-of \fIpsfonts\&.map\fP and has additional optimizations for PDF generation\&.
+of \fIpsfonts\&.map\fP and has additional settings for PDF generation\&.
 .IP "\fIconfig\&.pk\fP"
 Loads \fIpsfonts_pk\&.map\fP instead
 of \fIpsfonts\&.map\fP\&.

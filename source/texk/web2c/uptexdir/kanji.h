@@ -44,6 +44,9 @@ extern void init_default_kanji_select (void);
 #define initkanji() init_default_kanji_select()
 /* for upDVItype */
 #define setpriorfileenc() set_prior_file_enc()
+/* for upBibTeX */
+#define enableguessfileenc()  set_guess_file_enc(1)
+#define disableguessfileenc() set_guess_file_enc(0)
 
 /* number of rest of multi-char for kcode_pos */
 #define nrestmultichr(x)  ( (x)!=0 ? ((x) / 8) + 2 - ((x) % 8) : -1 )
@@ -59,9 +62,9 @@ extern void init_default_kanji_select (void);
 #endif /* !PRESERVE_FPUTS */
 
 #ifdef UPBIBTEX
-#define inputline2(fp,buff,pos,size,ptr) input_line2(fp,buff,pos,size,ptr)
+#define inputline2(fp,buff,pos,size,ptr) input_line2(fp,buff,NULL,pos,size,ptr)
 #else
-#define inputline2(fp,buff,pos,size) input_line2(fp,buff,pos,size,NULL)
+#define inputline2(fp,buff,pos,size) input_line2(fp,buff,NULL,pos,size,NULL)
 #endif
 
 extern void init_kanji (const_string file_str, const_string internal_str);

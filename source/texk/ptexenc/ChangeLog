@@ -1,3 +1,64 @@
+2022-09-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptexenc.c: Skip guessing file encoding if input is from pipe.
+	https://github.com/texjporg/tex-jp-build/issues/148
+
+2022-09-01  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptexenc.c: Initialize infile_enc_auto only when this variable
+	is first used (input_line2).
+	https://github.com/texjporg/tex-jp-build/pull/144
+
+2022-06-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptexenc.c, unicode.c, ptexenc/ptexenc.h, ptexenc/unicode.h:
+	Add new functions ptenc_guess_enc() and set_guess_file_enc()
+	to support guessing input file encodings.
+	https://github.com/texjporg/tex-jp-build/issues/142
+	* version.ac: Bump to 1.4.2/dev.
+
+2022-03-21  Karl Berry  <karl@tug.org>
+
+	* TL'22 release.
+
+2022-02-05  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptexenc.c, ptexenc/ptexenc.h: Add is_terminalUTF8.
+
+2022-01-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptexenc.c, ptexenc/ptexenc.h, unicode.c, ptexenc/unicode.h:
+	Distinguish 8-bit characters and Japanese characters by using
+	flag 0x100 for Japanese char.
+	* version.ac: Bump to 1.4.0.
+
+2022-01-18  Karl Berry  <karl@tug.org>
+
+	* version.ac: remove /dev, for TL22.
+
+2021-06-29  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* kanjicnv.c, ptexenc/kanjicnv.h: Always return 0 for
+	invalid code conversions between JIS/EUC/SJIS/KUTEN/UCS.
+	* jisx0208.h: Remove unused entry of UnicodeTbl.
+
+2021-06-25  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* unicode-jp.c: changed the returned value of UCS2toJISnative(0)
+	from 0x222F to 0 to indicate that it is invalid.
+
+2021-04-17  Karl Berry  <karl@tug.org>
+
+	* version.ac: now 1.3.11/dev since TL21 is released.
+
+2021-03-23  Karl Berry  <karl@tug.org>
+
+	* TL'21.
+
+2021-02-17  Karl Berry  <karl@tug.org>
+
+	* version.ac: remove /dev for 1.3.9, for TL21.
+
 2020-05-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* ptexenc.c: Fix a bug of end of line in input_line2().

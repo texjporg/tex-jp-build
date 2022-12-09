@@ -4,8 +4,8 @@
 % If you modify this original file, YOUR CHANGES WILL BE LOST when it is
 % updated.  Instead, put your changes -- and only your changes, not an
 % entire copy! -- in ../../texmf.cnf.  That is, if this file is
-% installed in /some/path/to/texlive/2020/texmf-dist/web2c/texmf.cnf,
-% add your custom settings to /some/path/to/texlive/2020/texmf.cnf.
+% installed in /some/path/to/texlive/2022/texmf-dist/web2c/texmf.cnf,
+% put your custom settings in /some/path/to/texlive/2022/texmf.cnf.
 % (Below, we use YYYY in place of the specific year.)
 % 
 % What follows is a super-summary of what this .cnf file can
@@ -84,10 +84,10 @@ TEXMFSYSCONFIG = $TEXMFROOT/texmf-config
 TEXMFHOME = ~/texmf
 
 % TEXMFVAR, where texconfig/updmap/fmtutil store cached runtime data.
-TEXMFVAR = ~/.texlive2020/texmf-var
+TEXMFVAR = ~/.texlive2022/texmf-var
 
 % TEXMFCONFIG, where texconfig/updmap/fmtutil store configuration data.
-TEXMFCONFIG = ~/.texlive2020/texmf-config
+TEXMFCONFIG = ~/.texlive2022/texmf-config
 
 % This is the value manipulated by tlmgr's auxtrees subcommand in the
 % root texmf.cnf. Kpathsea warns about a literally empty string for a
@@ -196,15 +196,15 @@ TEXINPUTS.latex-dev     = $TEXMFDOTDIR;$TEXMF/tex/{latex-dev,latex,generic,}//
 TEXINPUTS.latex209      = $TEXMFDOTDIR;$TEXMF/tex/{latex209,generic,latex,}//
 TEXINPUTS.olatex        = $TEXMFDOTDIR;$TEXMF/tex/{latex,generic,}//
 
+% e-TeX.
+TEXINPUTS.elatex        = $TEXMFDOTDIR;$TEXMF/tex/{latex,generic,}//
+TEXINPUTS.etex          = $TEXMFDOTDIR;$TEXMF/tex/{plain,generic,latex,}//
+
 % MLTeX.
 TEXINPUTS.frlatex       = $TEXMFDOTDIR;$TEXMF/tex/{french,latex,generic,}//
 TEXINPUTS.frtex         = $TEXMFDOTDIR;$TEXMF/tex/{french,plain,generic,latex,}//
 TEXINPUTS.mllatex       = $TEXMFDOTDIR;$TEXMF/tex/{latex,generic,}//
 TEXINPUTS.mltex         = $TEXMFDOTDIR;$TEXMF/tex/{plain,generic,latex,}//
-
-% e-TeX.
-TEXINPUTS.elatex        = $TEXMFDOTDIR;$TEXMF/tex/{latex,generic,}//
-TEXINPUTS.etex          = $TEXMFDOTDIR;$TEXMF/tex/{plain,generic,latex,}//
 
 % pdfTeX.
 TEXINPUTS.pdfcslatex    = $TEXMFDOTDIR;$TEXMF/tex/{cslatex,csplain,latex,generic,}//
@@ -268,25 +268,25 @@ TEX.pmpost = eptex
 TEXINPUTS.ptex-ng   = $TEXMFDOTDIR;$TEXMF/tex/{uptex,ptex,plain,generic,latex,}//
 TEXINPUTS.platex-ng = $TEXMFDOTDIR;$TEXMF/tex/{uplatex,platex,latex,generic,}//
 
-% (e)up(La)TeX, and for upmpost
+% (e)up(La)TeX, and for upmpost.
 TEXINPUTS.uplatex     = $TEXMFDOTDIR;$TEXMF/tex/{uplatex,platex,latex,generic,}//
 TEXINPUTS.uplatex-dev = $TEXMFDOTDIR;$TEXMF/tex/{latex-dev,uplatex,platex,latex,generic,}//
 TEXINPUTS.uptex   = $TEXMFDOTDIR;$TEXMF/tex/{uptex,ptex,plain,generic,latex,}//
 TEXINPUTS.euptex  = $TEXMFDOTDIR;$TEXMF/tex/{uptex,ptex,plain,generic,latex,}//
 TEX.upmpost = euptex
 
-% pBibTeX bibliographies and style files.
-BIBINPUTS.pbibtex       = $TEXMFDOTDIR;$TEXMF/{pbibtex,bibtex}/bib//
-BSTINPUTS.pbibtex       = $TEXMFDOTDIR;$TEXMF/{pbibtex,bibtex}/bst//
-
-% upBibTeX bibliographies and style files.
-BIBINPUTS.upbibtex      = $TEXMFDOTDIR;$TEXMF/{upbibtex,pbibtex,bibtex}/bib//
-BSTINPUTS.upbibtex      = $TEXMFDOTDIR;$TEXMF/{upbibtex,pbibtex,bibtex}/bst//
-
 % ConTeXt.
 TEXINPUTS.context       = $TEXMFDOTDIR;$TEXMF/tex/{context,plain,generic,}//
 
-% jadetex.
+% OpTeX.
+TEXINPUTS.optex         = $TEXMFDOTDIR;$TEXMF/tex/{optex,plain,generic,}//
+
+% HiTeX.
+TEXINPUTS.hilatex       = $TEXMFDOTDIR;$TEXMF/tex/{hilatex,latex,hitex,generic,}//
+TEXINPUTS.hilatex-dev   = $TEXMFDOTDIR;$TEXMF/tex/{latex-dev,hilatex,latex,hitex,generic,}//
+TEXINPUTS.hitex         = $TEXMFDOTDIR;$TEXMF/tex/{hitex,plain,generic,latex,}//
+
+% JadeTeX.
 TEXINPUTS.jadetex       = $TEXMFDOTDIR;$TEXMF/tex/{jadetex,latex,generic,latex,}//
 TEXINPUTS.pdfjadetex    = $TEXMFDOTDIR;$TEXMF/tex/{jadetex,latex,generic,latex,}//
 
@@ -302,9 +302,6 @@ TEXINPUTS.frpdftex      = $TEXMFDOTDIR;$TEXMF/tex/{french,plain,generic,latex,}/
 
 % Earlier entries override later ones, so put this generic one last.
 TEXINPUTS               = $TEXMFDOTDIR;$TEXMF/tex/{$progname,generic,latex,}//
-
-% ttf2tfm.
-TTF2TFMINPUTS =                 $TEXMFDOTDIR;$TEXMF/ttf2pk//
 
 % Metafont, MetaPost inputs.
 MFINPUTS = $TEXMFDOTDIR;$TEXMF/metafont//;{$TEXMF/fonts,$VARTEXFONTS}/source//
@@ -366,6 +363,14 @@ BSTINPUTS = $TEXMFDOTDIR;$TEXMF/bibtex/{bst,csf}//
 % MlBibTeX.
 MLBIBINPUTS = $TEXMFDOTDIR;$TEXMF/bibtex/bib/{mlbib,}//
 MLBSTINPUTS = $TEXMFDOTDIR;$TEXMF/bibtex/{mlbst,bst}//
+
+% pBibTeX bibliographies and style files.
+BIBINPUTS.pbibtex       = $TEXMFDOTDIR;$TEXMF/{pbibtex,bibtex}/bib//
+BSTINPUTS.pbibtex       = $TEXMFDOTDIR;$TEXMF/{pbibtex,bibtex}/bst//
+
+% upBibTeX bibliographies and style files.
+BIBINPUTS.upbibtex      = $TEXMFDOTDIR;$TEXMF/{upbibtex,pbibtex,bibtex}/bib//
+BSTINPUTS.upbibtex      = $TEXMFDOTDIR;$TEXMF/{upbibtex,pbibtex,bibtex}/bst//
 
 % .ris and .bltxml bibliography formats.
 RISINPUTS = $TEXMFDOTDIR;$TEXMF/biber/ris//
@@ -481,6 +486,9 @@ TEX4HTINPUTS = $TEXMFDOTDIR;$TEXMF/tex4ht/base//;$TEXMF/tex4ht/ht-fonts/{$TEX4HT
 % TeXworks editor configuration and settings
 TW_LIBPATH = $TEXMFCONFIG/texworks
 TW_INIPATH = $TW_LIBPATH
+
+% ttf2tfm.
+TTF2TFMINPUTS = $TEXMFDOTDIR;$TEXMF/ttf2pk//
 
 % For security, do not look in . for dvipdfmx.cfg, since the D option
 % would allow command execution.
@@ -764,9 +772,7 @@ texmf_casefold_search = 1
 %  Part 3: Array and other sizes for TeX, Metafont, etc.
 %
 % If you want to change some of these sizes only for a certain TeX
-% variant, the usual dot notation works, e.g.,
-% main_memory.hugetex = 20000000
-%
+% variant, the usual dot notation works, as shown below for ConTeXt.
 % If a change here appears to be ignored, try redumping the format file.
 
 % Memory. Must be less than 8,000,000 total.
@@ -779,9 +785,6 @@ texmf_casefold_search = 1
 %
 % To increase space for boxes (as might be needed by, e.g., PiCTeX),
 % increase extra_mem_bot.
-%
-% For some xy-pic samples, you may need as much as 700000 words of memory.
-% For the vast majority of documents, 60000 or less will do.
 %
 main_memory = 5000000 % words of inimemory available; also applies to inimf&mp
 extra_mem_top = 0     % extra high memory for chars, tokens, etc.
@@ -809,8 +812,10 @@ pool_size = 6250000
 string_vacancies = 90000
 % Maximum number of strings.
 max_strings = 500000
-% min pool space left after loading .fmt
+% Min pool space left after loading .fmt.
 pool_free = 47500
+% Ensure at least this many strings are free after loading .fmt.
+strings_free = 100
 
 % Buffer size.  TeX uses the buffer to contain input lines, but macro
 % expansion works by writing material into the buffer and reparsing the
@@ -823,21 +828,31 @@ buf_size = 200000
 % for all known free hyphenation patterns to be loaded simultaneously
 % (as TeX Live does).
 %
-trie_size = 1000000
+trie_size = 1100000
 
-hyph_size = 8191        % prime number of hyphenation exceptions, >610, <32767.
+hyph_size = 8191        % prime number of hyphenation exceptions, >610, <65535
                         % http://primes.utm.edu/curios/page.php/8191.html
-nest_size = 500         % simultaneous semantic levels (e.g., groups)
+                        % dynamically increased as necessary, so not important.
+nest_size = 1000        % simultaneous semantic levels (e.g., groups)
 max_in_open = 15        % simultaneous input files and error insertions, 
                         % also applies to MetaPost
-param_size = 10000      % simultaneous macro parameters, also applies to MP
-save_size  = 100000     % for saving values outside current group
-stack_size = 5000       % simultaneous input sources
+param_size = 20000      % simultaneous macro parameters, also applies to MP
+save_size  = 200000     % for saving values outside current group
+stack_size = 10000      % simultaneous input sources
+
+% Limit on recursive expansion calls so TeX has a chance to quit nicely
+% before stack space runs out. The default is 10000. Normally there is no
+% reason to change it. The web2c manual has a bit more about this.
+%expand_depth = 10000
 
 % These are Omega-specific.
 ocp_buf_size = 500000   % character buffers for ocp filters.
 ocp_stack_size = 10000  % stacks for ocp computations.
 ocp_list_size = 1000    % control for multiple ocps.
+
+% For pdftex and luatex: default resolution for bitmaps;
+% commonly set via \pdfpkresolution when needed to be changed.
+%pk_dpi = 72
 
 % These work best if they are the same as the I/O buffer size, but it
 % doesn't matter much.  Must be a multiple of 8.
@@ -849,6 +864,7 @@ gf_buf_size = 16384  % MF
 % 30 < half_error_line < error_line - 15;
 % 60 <= max_print_line;
 % These apply to TeX, Metafont, and MetaPost.
+% "max_print_line" applies to BibTeX family.
 error_line = 79
 half_error_line = 50
 max_print_line = 79
@@ -872,8 +888,14 @@ max_rows.gftype = 8191
 max_cols.gftype = 8191
 
 % Guess input encoding (SJIS vs. Unicode, etc.) in pTeX and friends?
-% Default is 1, to guess. Used on Windows only.
-guess_input_kanji_encoding = 1
+% Default is 1 for (e)p(la)tex, pbibtex & mendex, to guess.
+guess_input_kanji_encoding = 0
+guess_input_kanji_encoding.ptex = 1
+guess_input_kanji_encoding.eptex = 1
+guess_input_kanji_encoding.platex = 1
+guess_input_kanji_encoding.platex-dev = 1
+guess_input_kanji_encoding.pbibtex = 1
+guess_input_kanji_encoding.mendex = 1
 
 % command_line_encoding
 %
@@ -886,6 +908,7 @@ guess_input_kanji_encoding = 1
 % ignored. If file names in sources and DVI or XDV files are ASCII
 % only, the value of command_line_encoding is irrelevant.
 % If command_line_encoding = utf8 or command_line_encoding = utf-8,
+% characters on a command line in cmd.exe are assumed to be Unicode and
 % file names in sources and DVI or XDV files are assumed to be UTF-8.
 % Default is utf-8, from 2019-07-24, to assume UTF-8 file names.
 % In order to switch off the function, define an environment variable:

@@ -1,11 +1,12 @@
 # TeXLive::TLConfig.pm - module exporting configuration values
-# Copyright 2007-2020 Norbert Preining
+# Copyright 2007-2022 Norbert Preining
 # This file is licensed under the GNU General Public License version 2
 # or any later version.
 
+use strict; use warnings;
 package TeXLive::TLConfig;
 
-my $svnrev = '$Revision: 54123 $';
+my $svnrev = '$Revision: 63068 $';
 my $_modulerevision = ($svnrev =~ m/: ([0-9]+) /) ? $1 : "unknown";
 sub module_revision { return $_modulerevision; }
 
@@ -34,10 +35,12 @@ BEGIN {
     $BlockSize
     $Archive
     $TeXLiveServerURL
+    $TeXLiveServerURLRegexp
     $TeXLiveServerPath
     $TeXLiveURL
     @CriticalPackagesList
     $CriticalPackagesRegexp
+    @InstallExtraRequiredPackages
     $WindowsMainMenuName
     $RelocPrefix
     $RelocTree
@@ -58,12 +61,12 @@ BEGIN {
 
 # the year of our release, will be used in the location of the
 # network packages, and in menu names, and other places.
-$ReleaseYear = 2020;
+our $ReleaseYear = 2022;
 
 # users can upgrade from this year to the current year; might be the
 # same as the release year, or any number of releases earlier.
 # Generally not tested, but should be.
-$MinRelease = 2016;
+our $MinRelease = 2016;
 
 # Meta Categories do not ship files, but only call for other packages.
 our @MetaCategories = qw/Collection Scheme/;
@@ -100,7 +103,8 @@ our $MaxLWPErrors = 5;
 our $MaxLWPReinitCount = 10;
 
 our $Archive = "archive";
-our $TeXLiveServerURL = "http://mirror.ctan.org";
+our $TeXLiveServerURL = "https://mirror.ctan.org";
+our $TeXLiveServerURLRegexp = 'https?://mirror\.ctan\.org';
 # from 2009 on we try to put them all into tlnet directly without any
 # release year since we hope that we can switch over to 2010 on the fly
 # our $TeXLiveServerPath = "systems/texlive/tlnet/$ReleaseYear";
@@ -118,13 +122,24 @@ if ($^O =~ /^MSWin/i) {
   $CriticalPackagesRegexp = '^(texlive\.infra|tlperl\.win32$)';
 }
 
+
+# Extra package that are required for installation and installed
+# during the first run of the installer.
+# texlive-scripts are necessary for mktexlsr, updmap, fmtutil, ...
+# the installation cannot continue without those
+our @InstallExtraRequiredPackages = qw/texlive-scripts kpathsea hyphen-base/;
+if ($^O =~ /^MSWin/i) {
+  push @InstallExtraRequiredPackages, "luatex";
+}
+
 #
 our @AcceptedFallbackDownloaders = qw/curl wget/;
 our %FallbackDownloaderProgram = ( 'wget' => 'wget', 'curl' => 'curl');
 our %FallbackDownloaderArgs = (
-  'curl' => ['--user-agent', 'texlive/curl', '--retry', '4', '--retry-delay', '5',
-             '--fail', '--location',
-             '--connect-timeout', "$NetworkTimeout", '--silent', '--output'],
+  'curl' => ['--user-agent', 'texlive/curl',
+             '--retry', '4', '--retry-delay', '4',
+             '--connect-timeout', "$NetworkTimeout", 
+             '--fail', '--location', '--silent', '--output'],
   'wget' => ['--user-agent=texlive/wget', '--tries=4',
              "--timeout=$NetworkTimeout", '-q', '-O'],
 );
@@ -273,7 +288,7 @@ our $ChecksumExtension = "sha512";
 
 =head1 NAME
 
-C<TeXLive::TLConfig> -- TeX Live Configuration module
+C<TeXLive::TLConfig> -- TeX Live configuration parameters
 
 =head1 SYNOPSIS
 
@@ -284,12 +299,12 @@ C<TeXLive::TLConfig> -- TeX Live Configuration module
 The L<TeXLive::TLConfig> module contains definitions of variables 
 configuring all of TeX Live.
 
-=over 4
-
-=head1 EXPORTED VARIABLES
+=head2 EXPORTED VARIABLES
 
 All of the following variables are pulled into the callers namespace,
 i.e., are declared with C<EXPORT> (and C<EXPORT_OK>).
+
+=over 4
 
 =item C<@TeXLive::TLConfig::MetaCategories>
 
@@ -340,10 +355,11 @@ The assumed block size, currently 4k.
 These values specify where to find packages.
 
 =item C<$TeXLive::TLConfig::TeXLiveServerURL>
+=item C<$TeXLive::TLConfig::TeXLiveServerURLRegexp>
 =item C<$TeXLive::TLConfig::TeXLiveServerPath>
 
 C<TeXLiveURL> is concatenated from these values, with a string between.
-The defaults are respectively, C<http://mirror.ctan.org> and
+The defaults are respectively, C<https://mirror.ctan.org> and
 C<systems/texlive/tlnet/>.
 
 =item C<@TeXLive::TLConfig::CriticalPackagesList>
@@ -351,6 +367,12 @@ C<systems/texlive/tlnet/>.
 
 A list of all those packages which we do not update regularly since they
 are too central, currently texlive.infra and (for Windows) tlperl.win32.
+
+=item C<@TeXLive::TLConfig::InstallExtraRequiredPackages>
+
+A list of packages that are required in addition to those from
+C<@CriticalPackagesList> for the installer to be able to conclude
+installation.
 
 =item C<$TeXLive::TLConfig::RelocTree>
 
@@ -372,7 +394,7 @@ C<Master/tlpkg/doc/>.
 =head1 AUTHORS AND COPYRIGHT
 
 This script and its documentation were written for the TeX Live
-distribution (L<http://tug.org/texlive>) and both are licensed under the
+distribution (L<https://tug.org/texlive>) and both are licensed under the
 GNU General Public License Version 2 or later.
 
 =cut
