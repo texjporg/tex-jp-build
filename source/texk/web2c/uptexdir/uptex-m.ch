@@ -46,6 +46,7 @@
 % (2020-10-25) TTK  upTeX u1.27
 % (2022-01-23) TTK  upTeX u1.28
 % (2022-07-23) TTK  upTeX u1.29
+% (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
 
 @x upTeX: banner
   {printed when \pTeX\ starts}
