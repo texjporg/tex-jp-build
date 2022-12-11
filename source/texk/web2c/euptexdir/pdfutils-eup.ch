@@ -1,3 +1,37 @@
+%% Support for some primitives defined in pdfTeX
+%%
+%% \pdfstrcmp: need for LaTeX3
+%%   In comparison, Japanese characters will be always encoded in UTF-8.
+%%
+%% \pdffilemoddate and co.: for standalone package
+%%   (\pdfcreationdate, \pdffilemoddate, \pdffilesize)
+%%
+%% \pdfsavepos and co.
+%%   (\pdfsavepos, \pdfpage{width,height}, \pdflast{x,y}pos)
+%%
+%% \pdffiledump: for bmpsize package by Heiko Oberdiek
+%%
+%% \pdfshellescape: by doraTeX's request
+%%
+%% \pdfmdfivesum: by Akira's request
+%%   As \pdfstrcmp, Japanese characters will be always encoded in UTF-8 in
+%%   \pdfmdfivesum {...}. (no conversion for \pdfmdfivesum file <filename>)
+%%
+%% \pdfprimitive and \ifpdfprimitive: for LaTeX3 (2015/07/15)
+%%
+%% \pdfuniformdeviate and co.:
+%%  (\pdfnormaldeviate, \pdfrandomseed, \pdfsetrandomseed)
+%%
+%% \pdfelapsedtime and \pdfresettimer
+%%
+%% \expanded
+%%
+%% \ifincsname
+%%
+%% \Uchar, \Ucharcat
+%%
+%% \vadjust pre (2021-07-01)
+
 @x
 @* \[8] Packed data.
 @y
@@ -364,6 +398,7 @@ end;
 @* \[8] Packed data.
 @z
 
+% [10] \vadjust pre
 @x
 @d adjust_ptr(#)==mem[#+1].int
   {vertical list to be moved out of horizontal list}
@@ -377,6 +412,7 @@ end;
   {vertical list to be moved out of horizontal list}
 @z
 
+% [11] \vadjust pre
 @x
 @d hi_mem_stat_min==mem_top-13 {smallest statically allocated word in
   the one-word |mem|}
@@ -396,6 +432,7 @@ end;
 @* \[12] Displaying boxes.
 @z
 
+% [12] \vadjust pre
 @x
 @ @<Display adjustment |p|@>=
 begin print_esc("vadjust"); node_list_display(adjust_ptr(p)); {recursive call}
@@ -407,7 +444,7 @@ node_list_display(adjust_ptr(p)); {recursive call}
 end
 @z
 
-@x
+@x \[if]pdfprimitive
 @d frozen_special=frozen_control_sequence+10
   {permanent `\.{\\special}'}
 @d frozen_null_font=frozen_control_sequence+11
@@ -431,7 +468,7 @@ end
 @d dimen_pars=25 {total number of dimension parameters}
 @z
 
-@x
+@x \pdfpage{width,height}
 @d emergency_stretch==dimen_par(emergency_stretch_code)
 @y
 @d emergency_stretch==dimen_par(emergency_stretch_code)
@@ -439,7 +476,7 @@ end
 @d pdf_page_height==dimen_par(pdf_page_height_code)
 @z
 
-@x
+@x \pdfpage{width,height}
 emergency_stretch_code:print_esc("emergencystretch");
 @y
 emergency_stretch_code:print_esc("emergencystretch");
@@ -447,7 +484,7 @@ pdf_page_width_code:    print_esc("pdfpagewidth");
 pdf_page_height_code:   print_esc("pdfpageheight");
 @z
 
-@x
+@x \[if]pdfprimitive
 @!cs_count:integer; {total number of known identifiers}
 @y
 @!cs_count:integer; {total number of known identifiers}
@@ -473,7 +510,7 @@ pdf_page_height_code:   print_esc("pdfpageheight");
 @!prim_used:pointer; {allocation pointer for |prim|}
 @z
 
-@x
+@x \[if]pdfprimitive
 @ @<Set init...@>=
 no_new_control_sequence:=true; {new identifiers are usually forbidden}
 @y
@@ -483,7 +520,7 @@ prim_next(0):=0; prim_text(0):=0;
 for k:=1 to prim_size do prim[k]:=prim[0];
 @z
 
-@x
+@x \[if]pdfprimitive
 text(frozen_dont_expand):="notexpanded:";
 @.notexpanded:@>
 @y
@@ -496,7 +533,7 @@ eq_level(frozen_primitive):=level_one;
 text(frozen_primitive):="pdfprimitive";
 @z
 
-@x
+@x \[if]pdfprimitive
 @ Single-character control sequences do not need to be looked up in a hash
 table, since we can use the character code itself as a direct address.
 @y
@@ -563,7 +600,7 @@ for k:=j+1 to j+l-1 do
 table, since we can use the character code itself as a direct address.
 @z
 
-@x
+@x print_cs: \pdfprimitive
 else  begin l:=text(p);
 @y
 else  begin
@@ -579,7 +616,7 @@ else if (p>=prim_eqtb_base)and(p<frozen_null_font) then
 else print_esc(text(p));
 @z
 
-@x
+@x \[if]pdfprimitive
 @p @!init procedure primitive(@!s:str_number;@!c:quarterword;@!o:halfword);
 var k:pool_pointer; {index into |str_pool|}
 @y
@@ -588,7 +625,7 @@ var k:pool_pointer; {index into |str_pool|}
 @!prim_val:integer; {needed to fill |prim_eqtb|}
 @z
 
-@x
+@x \[if]pdfprimitive
 begin if s<256 then cur_val:=s+single_base
 @y
 begin if s<256 then begin
@@ -597,7 +634,7 @@ begin if s<256 then begin
 end
 @z
 
-@x
+@x \[if]pdfprimitive
   flush_string; text(cur_val):=s; {we don't want to have the string twice}
   end;
 eq_level(cur_val):=level_one; eq_type(cur_val):=c; equiv(cur_val):=o;
@@ -615,20 +652,20 @@ end;
 tini
 @z
 
-@x
+@x \[if]pdfprimitive
 ignore_spaces: print_esc("ignorespaces");
 @y
 ignore_spaces: if chr_code=0 then print_esc("ignorespaces") else print_esc("pdfprimitive");
 @z
 
-@x
+@x \[if]pdfprimitive
 no_expand: print_esc("noexpand");
 @y
 no_expand: if chr_code=0 then print_esc("noexpand")
    else print_esc("pdfprimitive");
 @z
 
-@x
+@x \ifincsname
 var t:halfword; {token that is being ``expanded after''}
 @!p,@!q,@!r:pointer; {for list manipulation}
 @y
@@ -760,7 +797,7 @@ is_in_csname := b;
 @<Look up the characters of list |r| in the hash table, and set |cur_cs|@>;
 @z
 
-@x
+@x scan_keyword
 @!k:pool_pointer; {index into |str_pool|}
 begin p:=backup_head; link(p):=null; k:=str_start[s];
 @y
@@ -770,14 +807,14 @@ begin p:=backup_head; link(p):=null; k:=str_start[s];
 save_cur_cs:=cur_cs;
 @z
 
-@x
+@x scan_keyword
     scan_keyword:=false; return;
 @y
     cur_cs:=save_cur_cs;
     scan_keyword:=false; return;
 @z
 
-@x
+@x \[if]pdfprimitive : scan_something_internal
 procedure scan_something_internal(@!level:small_number;@!negative:boolean);
   {fetch an internal parameter}
 label exit;
@@ -787,13 +824,13 @@ procedure scan_something_internal(@!level:small_number;@!negative:boolean);
 label exit, restart;
 @z
 
-@x
+@x \[if]pdfprimitive : scan_something_internal
 begin m:=cur_chr;
 @y
 begin restart: m:=cur_chr;
 @z
 
-@x
+@x \[if]pdfprimitive : scan_something_internal
 last_item: @<Fetch an item in the current node, if appropriate@>;
 @y
 last_item: @<Fetch an item in the current node, if appropriate@>;
@@ -824,7 +861,7 @@ ignore_spaces: {trap unexpandable primitives}
 @d eTeX_int=random_seed_code+1 {first of \eTeX\ codes for integers}
 @z
 
-@x
+@x \[if]pdfprimitive: scan_int
 @p procedure scan_int; {sets |cur_val| to an integer}
 label done;
 @y
@@ -832,7 +869,7 @@ label done;
 label done, restart;
 @z
 
-@x
+@x \[if]pdfprimitive: scan_int
 if cur_tok=alpha_token then @<Scan an alphabetic character code into |cur_val|@>
 @y
 restart:
@@ -841,7 +878,7 @@ else if cur_tok=cs_token_flag+frozen_primitive then
   @<Reset |cur_tok| for unexpandable primitives, goto restart@>
 @z
 
-@x
+@x \Ucharcat: str_toks_cat
 function str_toks(@!b:pool_pointer):pointer;
 @y
 function str_toks_cat(@!b:pool_pointer;@!cat:small_number):pointer;
@@ -1174,7 +1211,7 @@ Ucharcat_convert_code:
 if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
 @z
 
-@x
+@x e-pTeX: if primitives - leave room for \ifincsname
 @d if_tdir_code=if_case_code+4 { `\.{\\iftdir}' }
 @y
 @d if_in_csname_code=20 { `\.{\\ifincsname}';  |if_font_char_code| + 1 }
@@ -1183,14 +1220,14 @@ if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
 @d if_tdir_code=if_pdfprimitive_code+1 { `\.{\\iftdir}' }
 @z
 
-@x
+@x \[if]pdfprimitive
   if_mbox_code:print_esc("ifmbox");
 @y
   if_mbox_code:print_esc("ifmbox");
   if_pdfprimitive_code:print_esc("ifpdfprimitive");
 @z
 
-@x
+@x \ifincsname
 var b:boolean; {is the condition true?}
 @!r:"<"..">"; {relation to be evaluated}
 @y
@@ -1199,7 +1236,7 @@ var b:boolean; {is the condition true?}
 @!r:"<"..">"; {relation to be evaluated}
 @z
 
-@x
+@x \[if]pdfprimitive
 if_void_code, if_hbox_code, if_vbox_code, if_tbox_code, if_ybox_code, if_dbox_code, if_mbox_code:
   @<Test box register status@>;
 @y
@@ -1228,6 +1265,7 @@ if_pdfprimitive_code: begin
 @<Calculate DVI page dimensions and margins@>;
 @z
 
+% [33] \vadjust pre
 @x
 if adjust_tail<>null then link(adjust_tail):=null;
 @y
@@ -1235,12 +1273,14 @@ if adjust_tail<>null then link(adjust_tail):=null;
 if pre_adjust_tail<>null then link(pre_adjust_tail):=null;
 @z
 
+% [33] \vadjust pre
 @x
   ins_node,mark_node,adjust_node: if adjust_tail<>null then
 @y
   ins_node,mark_node,adjust_node: if (adjust_tail<>null) or (pre_adjust_tail<> null) then
 @z
 
+% [33] \vadjust pre
 @x
 to make a deletion.
 @^inner loop@>
@@ -1266,6 +1306,7 @@ pre_adjust_tail := null;
 end
 @z
 
+% [33] \vadjust pre
 @x
 @<Transfer node |p| to the adjustment list@>=
 begin while link(q)<>p do q:=link(q);
@@ -1292,12 +1333,14 @@ else  begin link(adjust_tail):=p; adjust_tail:=p; p:=link(p);
 link(q):=p; p:=q;
 @z
 
+% [37] \vadjust pre
 @x
 @d align_stack_node_size=5 {number of |mem| words to save alignment states}
 @y
 @d align_stack_node_size=6 {number of |mem| words to save alignment states}
 @z
 
+% [37] \vadjust pre
 @x
 @!cur_head,@!cur_tail:pointer; {adjustment list pointers}
 @y
@@ -1305,6 +1348,7 @@ link(q):=p; p:=q;
 @!cur_pre_head,@!cur_pre_tail:pointer; {pre-adjustment list pointers}
 @z
 
+% [37] \vadjust pre
 @x
 cur_head:=null; cur_tail:=null;
 @y
@@ -1312,6 +1356,7 @@ cur_head:=null; cur_tail:=null;
 cur_pre_head:=null; cur_pre_tail:=null;
 @z
 
+% [37] procedure |push_alignment|: \vadjust pre
 @x
 info(p+4):=cur_head; link(p+4):=cur_tail;
 align_ptr:=p;
@@ -1324,6 +1369,7 @@ cur_head:=get_avail;
 cur_pre_head:=get_avail;
 @z
 
+% [37] procedure |pop_alignment|: \vadjust pre
 @x
 begin free_avail(cur_head);
 p:=align_ptr;
@@ -1336,6 +1382,7 @@ cur_tail:=link(p+4); cur_head:=info(p+4);
 cur_pre_tail:=link(p+5); cur_pre_head:=info(p+5);
 @z
 
+% [37] \vadjust pre
 @x
 cur_align:=link(preamble); cur_tail:=cur_head; init_span(cur_align);
 @y
@@ -1343,6 +1390,7 @@ cur_align:=link(preamble); cur_tail:=cur_head; cur_pre_tail:=cur_pre_head;
 init_span(cur_align);
 @z
 
+% [37] \vadjust pre + pTeX
 @x
   begin adjust_tail:=cur_tail; adjust_hlist(head,false);
 @y
@@ -1350,6 +1398,7 @@ init_span(cur_align);
   adjust_hlist(head,false);
 @z
 
+% [37] \vadjust pre
 @x
   cur_tail:=adjust_tail; adjust_tail:=null;
 @y
@@ -1357,6 +1406,7 @@ init_span(cur_align);
   cur_pre_tail:=pre_adjust_tail; pre_adjust_tail:=null;
 @z
 
+% [37] \vadjust pre
 @x
   pop_nest; append_to_vlist(p);
   if cur_head<>cur_tail then
@@ -1371,6 +1421,7 @@ init_span(cur_align);
       append_list(cur_head)(cur_tail);
 @z
 
+% [39] \vadjust pre
 @x
 @ @<Append the new box to the current vertical list...@>=
 append_to_vlist(just_box);
@@ -1389,6 +1440,7 @@ if adjust_head <> adjust_tail then
 adjust_tail := null
 @z
 
+% [39] \vadjust pre
 @x
 adjust_tail:=adjust_head; just_box:=hpack(q,cur_width,exactly);
 @y
@@ -1397,7 +1449,7 @@ pre_adjust_tail := pre_adjust_head;
 just_box:=hpack(q,cur_width,exactly);
 @z
 
-@x
+@x \[if]pdfprimitive: main_loop
 any_mode(ignore_spaces): begin @<Get the next non-blank non-call...@>;
   goto reswitch;
   end;
@@ -1426,6 +1478,7 @@ any_mode(ignore_spaces): begin
   end;
 @z
 
+% [47] \vadjust pre
 @x
   if abs(mode)=vmode then
     begin append_to_vlist(cur_box);
@@ -1455,6 +1508,7 @@ any_mode(ignore_spaces): begin
     end
 @z
 
+% [47] \vadjust pre + pTeX
 @x
 adjusted_hbox_group: begin adjust_hlist(head,false);
   adjust_tail:=adjust_head; package(0);
@@ -1464,6 +1518,7 @@ adjusted_hbox_group: begin adjust_hlist(head,false);
   pre_adjust_tail:=pre_adjust_head; package(0);
 @z
 
+% [47] \vadjust pre
 @x
 saved(0):=cur_val; incr(save_ptr);
 @y
@@ -1475,12 +1530,14 @@ else
 save_ptr := save_ptr + 2;
 @z
 
+% [47] \vadjust pre
 @x
   d:=split_max_depth; f:=floating_penalty; unsave; decr(save_ptr);
 @y
   d:=split_max_depth; f:=floating_penalty; unsave; save_ptr := save_ptr - 2;
 @z
 
+% [47] \vadjust pre + pTeX
 @x
       r:=get_node(small_node_size); type(r):=adjust_node;@/
       subtype(r):=0; {the |subtype| is not used}
@@ -1491,6 +1548,7 @@ save_ptr := save_ptr + 2;
       adjust_ptr(r):=list_ptr(p); delete_glue_ref(q);
 @z
 
+% [48] \vadjust pre
 @x
 @!t:pointer; {tail of adjustment list}
 @y
@@ -1498,6 +1556,7 @@ save_ptr := save_ptr + 2;
 @!pre_t:pointer; {tail of pre-adjustment list}
 @z
 
+% [48] \vadjust pre
 @x
 adjust_tail:=adjust_head; b:=hpack(p,natural); p:=list_ptr(b);
 t:=adjust_tail; adjust_tail:=null;@/
@@ -1508,6 +1567,7 @@ t:=adjust_tail; adjust_tail:=null;@/
 pre_t:=pre_adjust_tail; pre_adjust_tail:=null;@/
 @z
 
+% [48] \vadjust pre
 @x
 if t<>adjust_head then {migrating material comes after equation number}
   begin link(tail):=link(adjust_head); tail:=t;
@@ -1521,14 +1581,14 @@ if pre_t<>pre_adjust_head then
   end;
 @z
 
-@x
+@x \[if]pdfprimitive: dump prim table
 @<Dump the hash table@>=
 @y
 @<Dump the hash table@>=
 for p:=0 to prim_size do dump_hh(prim[p]);
 @z
 
-@x
+@x \[if]pdfprimitive: undump prim table
 @ @<Undump the hash table@>=
 @y
 @ @<Undump the hash table@>=
@@ -1571,7 +1631,7 @@ set_random_seed_code: @<Implement \.{\\pdfsetrandomseed}@>;
 reset_timer_code: @<Implement \.{\\pdfresettimer}@>;
 @z
 
-@x
+@x \pdfsavepos
   print_int(what_lhm(p)); print_char(",");
   print_int(what_rhm(p)); print_char(")");
   end;
@@ -1584,7 +1644,7 @@ set_random_seed_code: print_esc("pdfsetrandomseed");
 reset_timer_code: print_esc("pdfresettimer");
 @z
 
-@x
+@x \pdfsavepos
 close_node,language_node: begin r:=get_node(small_node_size);
   words:=small_node_size;
   end;
@@ -1596,7 +1656,7 @@ pdf_save_pos_node:
    r := get_node(small_node_size);
 @z
 
-@x
+@x \pdfsavepos
 close_node,language_node: free_node(p,small_node_size);
 @y
 close_node,language_node: free_node(p,small_node_size);
