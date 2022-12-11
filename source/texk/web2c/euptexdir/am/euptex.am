@@ -60,18 +60,10 @@ euptex_web_srcs = \
 euptex.ch: tie$(EXEEXT) euptex.web $(euptex_ch_srcs)
 	$(tie_c) euptex.web $(euptex_ch_srcs)
 euptex_ch_srcs = \
-	eptexdir/etex.ch0 \
-	ptexdir/ptex-base.ch \
-	uptexdir/uptex-m.ch \
-	euptexdir/euptex.ch0 \
-	eptexdir/eptex.ech \
-	eptexdir/etex.ch1 \
-	euptexdir/euptex.ch1 \
+	euptexdir/euptex-base.ch \
 	$(euptex_ch_synctex) \
 	eptexdir/fam256.ch \
-	euptexdir/pdfstrcmp-eup-pre.ch \
-	eptexdir/pdfutils.ch \
-	euptexdir/pdfstrcmp-eup-post.ch \
+	euptexdir/pdfutils-eup.ch \
 	eptexdir/suppresserrors.ch \
 	eptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
