@@ -3,6 +3,7 @@
 @y
 % Here is TeX material that gets inserted after \input webmac
 \def\pTeX{p\kern-.15em\TeX}
+\def\upTeX{u\pTeX}
 @z
 
 @x
@@ -34,7 +35,7 @@
 @#
 @d upTeX_version=1
 @d upTeX_revision==".29"
-@d upTeX_version_string=='-u1.29' {current u\pTeX\ version}
+@d upTeX_version_string=='-u1.29' {current \upTeX\ version}
 @#
 @d npTeX_version=0
 @d npTeX_minor_version=0
@@ -1166,7 +1167,7 @@ stretch(fill_glue):=unity; stretch_order(fill_glue):=fill;@/
 @x
 @p procedure short_display(@!p:integer); {prints highlights of list |p|}
 @y
-@p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures|@>@;@/
+@p@t\4@>@<Declare the pTeX-specific |print_font_...| procedures@>@;@/
 procedure short_display(@!p:integer); {prints highlights of list |p|}
 @z
 
@@ -1376,7 +1377,8 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
 @d un_vbox=24 {unglue a box ( \.{\\unvbox}, \.{\\unvcopy} )}
 @y
 @d char_num=max_char_code+1 {character specified numerically ( \.{\\char} )}
-@d math_char_num=char_num+1 {explicit math code ( \.{\\mathchar} )}
+@d kchar_num=char_num+1 {cjk character specified numerically ( \.{\\kchar} )}
+@d math_char_num=kchar_num+1 {explicit math code ( \.{\\mathchar} )}
 @d mark=math_char_num+1 {mark definition ( \.{\\mark} )}
 @d xray=mark+1 {peek inside of \TeX\ ( \.{\\show}, \.{\\showbox}, etc.~)}
 @d make_box=xray+1 {make a box ( \.{\\box}, \.{\\copy}, \.{\\hbox}, etc.~)}
@@ -1472,8 +1474,7 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
   \.{\\lastkern}, \.{\\lastskip} )}
 @d max_non_prefixed_command=70 {largest command code that can't be \.{\\global}}
 @y
-@d kchar_num=left_right+1 {cjk character specified numerically ( \.{\\kchar} )}
-@d math_comp=kchar_num+1 {component of formula ( \.{\\mathbin}, etc.~)}
+@d math_comp=left_right+1 {component of formula ( \.{\\mathbin}, etc.~)}
 @d limit_switch=math_comp+1 {diddle limit conventions ( \.{\\displaylimits}, etc.~)}
 @d above=limit_switch+1 {generalized fraction ( \.{\\above}, \.{\\atop}, etc.~)}
 @d math_style=above+1 {style specification ( \.{\\displaystyle}, etc.~)}
@@ -1603,9 +1604,10 @@ kern_node,math_node,penalty_node: begin r:=get_node(small_node_size);
 @d set_interaction=hyph_data+1 {define level of interaction ( \.{\\batchmode}, etc.~)}
 @d set_auto_spacing=set_interaction+1 {set auto spacing mode
   ( \.{\\autospacing}, \.{\\noautospacing}, \.{\\autoxspacing}, \.{\\noautoxspacing} )}
-@d partoken_name=set_auto_spacing+1 {set |par_token| name}
-@d set_enable_cjk_token=partoken_name+1 {set cjk mode ( \.{\\enablecjktoken}, \.{\\disablecjktoken}, \.{\\forcecjktoken} )}
-@d max_command=set_enable_cjk_token {the largest command code seen at |big_switch|}
+@d set_enable_cjk_token=set_auto_spacing+1 {set cjk mode
+  ( \.{\\enablecjktoken}, \.{\\disablecjktoken}, \.{\\forcecjktoken} )}
+@d partoken_name=set_enable_cjk_token+1 {set |par_token| name}
+@d max_command=partoken_name {the largest command code seen at |big_switch|}
 @z
 
 @x
@@ -1770,8 +1772,8 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
   {table of 512 command codes for the wchar's catcodes }
 @d auto_xsp_code_base=kcat_code_base+512 {table of 256 auto spacer flag}
 @d inhibit_xsp_code_base=auto_xsp_code_base+256
-@d kinsoku_base=inhibit_xsp_code_base+256 {table of 256 kinsoku mappings}
-@d kansuji_base=kinsoku_base+256 {table of 10 kansuji mappings}
+@d kinsoku_base=inhibit_xsp_code_base+1024 {table of 1024 kinsoku mappings}
+@d kansuji_base=kinsoku_base+1024 {table of 10 kansuji mappings}
 @d lc_code_base=kansuji_base+10 {table of 256 lowercase mappings}
 @z
 
@@ -1831,11 +1833,14 @@ eqtb[enable_cjk_token_code]:=eqtb[cat_code_base];
 for k:=0 to 255 do
   begin cat_code(k):=other_char;
   math_code(k):=hi(k); sf_code(k):=1000;
-  auto_xsp_code(k):=0; inhibit_xsp_code(k):=0; inhibit_xsp_type(k):=0;
-  kinsoku_code(k):=0; kinsoku_type(k):=0;
+  auto_xsp_code(k):=0;
   end;
 for k:=0 to 511 do
   begin kcat_code(k):=other_kchar;
+  end;
+for k:=0 to 1023 do
+  begin inhibit_xsp_code(k):=0; inhibit_xsp_type(k):=0;
+  kinsoku_code(k):=0; kinsoku_type(k):=0;
   end;
 @z
 
@@ -2465,6 +2470,13 @@ primitive("oradical",radical,1);@/
 @z
 
 @x
+char_num: print_esc("char");
+@y
+char_num: print_esc("char");
+kchar_num: print_esc("kchar");
+@z
+
+@x
 def_font: print_esc("font");
 @y
 def_font: print_esc("font");
@@ -2483,13 +2495,6 @@ delim_num: if chr_code=0 then print_esc("delimiter")
 ignore_spaces: print_esc("ignorespaces");
 @y
 ignore_spaces: if chr_code=0 then print_esc("ignorespaces") else print_esc("pdfprimitive");
-@z
-
-@x
-ital_corr: print_esc("/");
-@y
-ital_corr: print_esc("/");
-kchar_num: print_esc("kchar");
 @z
 
 @x
@@ -2533,7 +2538,7 @@ begin
   end;
 end;
 
-@ @<Declare the pTeX-specific |print_font_...| procedures|@>=
+@ @<Declare the pTeX-specific |print_font_...| procedures@>=
 procedure print_font_name_and_size(f:internal_font_number);
 begin
   print(font_name[f]);
@@ -3588,19 +3593,23 @@ procedure scan_something_internal(@!level:small_number;@!negative:boolean);
   {fetch an internal parameter}
 label exit, restart;
 var m:halfword; {|chr_code| part of the operand token}
+@!q,@!r:pointer; {general purpose indices}
 @!tx:pointer; {effective tail node}
 @!qx:halfword; {general purpose index}
 @z
 
 @x
 begin m:=cur_chr;
+@y
+begin restart: m:=cur_chr;
+@z
+
+@x
 case cur_cmd of
 def_code: @<Fetch a character code from some table@>;
 toks_register,assign_toks,def_family,set_font,def_font: @<Fetch a token list or
   font identifier, provided that |level=tok_val|@>;
 @y
-@!q,@!r:pointer;
-begin restart: m:=cur_chr;
 case cur_cmd of
 assign_kinsoku: @<Fetch breaking penalty from some table@>;
 assign_inhibit_xsp_code: @<Fetch inhibit type from some table@>;
@@ -3631,7 +3640,7 @@ ignore_spaces: {trap unexpandable primitives}
 exit:end;
 @y
 @<Fix the reference count, if any, and negate |cur_val| if |negative|@>;
-end;
+exit:end;
 
 @ @p procedure scan_something_internal_ident;
   begin scan_something_internal(ident_val,false); end;
@@ -3705,13 +3714,13 @@ else { \.{\\delcode} }
 @d input_line_no_code=glue_val+5 {code for \.{\\inputlineno}}
 @d badness_code=glue_val+6 {code for \.{\\badness}}
 @d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
-@d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
-@d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
-@d uptex_version_code=eptex_version_code+1 {code for \.{\\uptexversion}}
-@d pdf_last_x_pos_code=uptex_version_code+1 {code for \.{\\pdflastxpos}}
+@d uptex_version_code=ptex_version_code+1 {code for \.{\\uptexversion}}
+@d eptex_version_code=uptex_version_code+1 {code for \.{\\epTeXversion}}
+@d ptex_minor_version_code=eptex_version_code+1 {code for \.{\\ptexminorversion}}
+@d pdf_last_x_pos_code=ptex_minor_version_code+1 {code for \.{\\pdflastxpos}}
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}
-@d elapsed_time_code =pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
+@d elapsed_time_code=pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
 @d random_seed_code=elapsed_time_code+1 {code for \.{\\pdfrandomseed}}
 @z
 
@@ -3735,10 +3744,10 @@ primitive("badness",last_item,badness_code);
 @!@:badness_}{\.{\\badness} primitive@>
 primitive("ptexversion",last_item,ptex_version_code);
 @!@:ptexversion_}{\.{\\ptexversion} primitive@>
-primitive("epTeXversion",last_item,eptex_version_code);
-@!@:epTeXversion_}{\.{\\epTeXversion} primitive@>
 primitive("uptexversion",last_item,uptex_version_code);
 @!@:uptexversion_}{\.{\\uptexversion} primitive@>
+primitive("epTeXversion",last_item,eptex_version_code);
+@!@:epTeXversion_}{\.{\\epTeXversion} primitive@>
 primitive("ptexminorversion",last_item,ptex_minor_version_code);
 @!@:ptexminorversion_}{\.{\\ptexminorversion} primitive@>
 @z
@@ -3748,8 +3757,8 @@ primitive("ptexminorversion",last_item,ptex_minor_version_code);
 @y
   input_line_no_code: print_esc("inputlineno");
   ptex_version_code: print_esc("ptexversion");
-  eptex_version_code: print_esc("epTeXversion");
   uptex_version_code: print_esc("uptexversion");
+  eptex_version_code: print_esc("epTeXversion");
   ptex_minor_version_code: print_esc("ptexminorversion");
 @z
 
@@ -3876,8 +3885,8 @@ end
   input_line_no_code: cur_val:=line;
   badness_code: cur_val:=last_badness;
   ptex_version_code: cur_val:=pTeX_version;
-  eptex_version_code: cur_val:=epTeX_version_number;
   uptex_version_code: cur_val:=upTeX_version;
+  eptex_version_code: cur_val:=epTeX_version_number;
   ptex_minor_version_code: cur_val:=pTeX_minor_version;
   @/@<Cases for fetching an integer value@>@/
   end; {there are no other cases}
@@ -4853,8 +4862,8 @@ if_tdir_code: b:=(abs(direction)=dir_tate);
 if_ydir_code: b:=(abs(direction)=dir_yoko);
 if_ddir_code: b:=(abs(direction)=dir_dtou);
 if_mdir_code: b:=(direction<0);
-if_void_code, if_hbox_code, if_vbox_code, if_tbox_code, if_ybox_code, if_dbox_code, if_mbox_code:
-  @<Test box register status@>;
+if_tbox_code, if_ybox_code, if_dbox_code, if_mbox_code,
+if_void_code, if_hbox_code, if_vbox_code: @<Test box register status@>;
 if_pdfprimitive_code: begin
   save_scanner_status:=scanner_status;
   scanner_status:=normal;
@@ -5421,6 +5430,7 @@ else  begin print_err("Missing font identifier");
 
 @x
 @p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+var old_setting: integer; {saved value of |tracing_online|}
 @y
 @d print_lc_hex(#)==l:=#;
   if l<10 then print_char(l+"0")@+else print_char(l-10+"a")
@@ -5428,11 +5438,6 @@ else  begin print_err("Missing font identifier");
 @p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
 var @!l:0..255; {small indices or counters}
 old_setting: integer; {saved value of |tracing_online|}
-@z
-
-@x
-var old_setting: integer; {saved value of |tracing_online|}
-@y
 @z
 
 @x
@@ -7541,7 +7546,8 @@ if q<>null then q:=vpack(q,natural);
 change_box(q); {the |eq_level| of the box stays the same}
 vsplit:=vpackage(p,h,exactly,split_max_depth);
 @y
-q:=prune_page_top(q,saving_vdiscards>0); p:=list_ptr(v);
+q:=prune_page_top(q,saving_vdiscards>0);
+p:=list_ptr(v);
 if q<>null then begin
     q:=vpack(q,natural); set_box_dir(q)(box_dir(v));
   end;
@@ -7821,13 +7827,18 @@ hmode+no_boundary: begin get_x_token;
 ins_kp:=false;
 case abs(mode)+cur_cmd of
 hmode+letter,hmode+other_char: goto main_loop;
-hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+kchar_given: goto main_loop_j;
+hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul: goto main_loop_j;
+hmode+kchar_given:
+  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
 hmode+char_given:
-  if check_echar_range(cur_chr) then goto main_loop else goto main_loop_j;
+  if check_echar_range(cur_chr) then goto main_loop
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
 hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
-  if check_echar_range(cur_chr) then goto main_loop else goto main_loop_j;
+  if check_echar_range(cur_chr) then goto main_loop
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
   end;
 hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   goto main_loop_j;
   end;
 hmode+no_boundary: begin get_x_token;
@@ -7906,10 +7917,10 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else @<goto |main_lig_loop|@>;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_given then
-  @<goto |main_lig_loop|@>;
+  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 x_token; {now expand and set |cur_cmd|, |cur_chr|, |cur_tok|}
 if cur_cmd=letter then goto main_loop_lookahead+1;
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
@@ -7917,15 +7928,16 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else @<goto |main_lig_loop|@>;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=char_num then
   begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else @<goto |main_lig_loop|@>;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_num then
   begin scan_char_num; cur_chr:=cur_val;
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   @<goto |main_lig_loop|@>;
   end;
 if cur_cmd=inhibit_glue then
@@ -9003,25 +9015,25 @@ else if cur_cmd=char_given then
   if check_echar_range(cur_chr) then q:=new_character(f,cur_chr)
   else begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_chr
+    KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
     end
 else if cur_cmd=char_num then
   begin scan_char_num;
   if check_echar_range(cur_val) then q:=new_character(f,cur_val)
   else  begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val
+    KANJI(cx):=cur_val; cur_cmd:=kcat_code(kcatcodekey(cx));
     end
   end
 else if cur_cmd=kchar_given then
   begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_chr
+    KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
   end
 else if cur_cmd=kchar_num then
   begin scan_char_num;
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val
+    KANJI(cx):=cur_val; cur_cmd:=kcat_code(kcatcodekey(cx));
   end
 else back_input;
 if direction=dir_tate then
@@ -11215,7 +11227,7 @@ inserting a space between 2byte-char and 1byte-char.
 @d inhibit_after=2    {disable to insert space after 2byte-char}
 @d inhibit_none=3     {enable to insert space before/after 2byte-char}
 @d inhibit_unused=4   {unused entry}
-@d no_entry=1000
+@d no_entry=10000
 @d new_pos=0
 @d cur_pos=1
 
@@ -11247,7 +11259,7 @@ if n=new_pos then
     begin if pp<>no_entry then p:=pp; goto done; end;
   if inhibit_xsp_type(p)=inhibit_unused then
     if pp=no_entry then pp:=p; { save the nearest unused hash }
-  incr(p); if p>255 then p:=0;
+  incr(p); if p>1023 then p:=0;
   until s=p;
   p:=pp;
   end
@@ -11255,7 +11267,7 @@ else
   begin repeat
   if inhibit_xsp_code(p)=0 then goto done1;
   if inhibit_xsp_code(p)=c then goto done;
-  incr(p); if p>255 then p:=0;
+  incr(p); if p>1023 then p:=0;
   until s=p;
 done1: p:=no_entry;
   end;
@@ -11330,7 +11342,7 @@ if n=new_pos then
     begin if pp<>no_entry then p:=pp; goto done; end;
   if kinsoku_type(p)=kinsoku_unused_code then
     if pp=no_entry then pp:=p; { save the nearest unused hash }
-  incr(p); if p>255 then p:=0;
+  incr(p); if p>1023 then p:=0;
   until s=p;
   p:=pp;
   end
@@ -11338,7 +11350,7 @@ else
   begin repeat
   if kinsoku_type(p)=0 then goto done1;
   if kinsoku_code(p)=c then goto done;
-  incr(p); if p>255 then p:=0;
+  incr(p); if p>1023 then p:=0;
   until s=p;
 done1: p:=no_entry;
   end;
@@ -11717,7 +11729,8 @@ if type(last_char)=math_node then
     insert_skip:=after_schar else insert_skip:=no_skip;
   end
 else if font_dir[font(last_char)]<>dir_default then
-  begin insert_skip:=after_wchar; KANJI(cx):=info(link(last_char));
+  begin insert_skip:=after_wchar;
+  KANJI(cx):=info(link(last_char)) mod max_cjk_val;
   if is_char_node(link(p))and(font_dir[font(link(p))]<>dir_default) then
     begin @<Append KANJI-KANJI spacing@>; p:=link(p);
     end;
@@ -11988,7 +12001,13 @@ main_loop_j+1: space_factor:=1000;
       end;
     fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
     link(tail):=main_p; tail:=main_p; last_jchr:=tail;
-    fast_get_avail(main_p); info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val;
+    fast_get_avail(main_p);
+    if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+      info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
+    else if cur_cmd=not_cjk then
+      info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
+    else { Does this case occur? }
+      info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
     link(tail):=main_p; tail:=main_p;
     cx:=cur_chr; @<Insert kinsoku penalty@>;
   end;
@@ -12012,18 +12031,22 @@ again_2:
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     char_num: begin scan_char_num; cur_chr:=cur_val;
       if check_echar_range(cur_chr) then
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     kchar_given: begin
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     kchar_num: begin scan_char_num; cur_chr:=cur_val;
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     inhibit_glue: begin inhibit_glue_flag:=(cur_chr=0); goto again_2; end;
     othercases begin ins_kp:=max_halfword;
