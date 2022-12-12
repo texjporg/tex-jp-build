@@ -1,4 +1,5 @@
-%% Support for some primitives defined in pdfTeX
+%% Support for some primitives defined in pdfTeX.
+%% [This file is licensed under GPLv2.]
 %%
 %% \pdfstrcmp: need for LaTeX3
 %%   In comparison, Japanese characters will be always encoded in UTF-8.
@@ -845,7 +846,7 @@ ignore_spaces: {trap unexpandable primitives}
 @d pdf_last_x_pos_code=ptex_minor_version_code+1 {code for \.{\\pdflastxpos}}
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}
-@d elapsed_time_code =pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
+@d elapsed_time_code=pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
 @d random_seed_code=elapsed_time_code+1 {code for \.{\\pdfrandomseed}}
 @z
 
