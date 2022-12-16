@@ -1150,7 +1150,7 @@ void clear_infile_enc(FILE *fp)
 {
     infile_enc[fileno(fp)] = ENC_UNKNOWN;
 }
-long ptencconvfirstline(long pos, long last, unsigned char *buff, const long buffsize)
+long ptenc_conv_first_line(long pos, long last, unsigned char *buff, const long buffsize)
 {
    return last;
 }
@@ -1365,7 +1365,7 @@ int ptenc_get_command_line_args(int *p_ac, char ***p_av)
     return 0;
 }
 
-long ptencconvfirstline(long pos, long last, unsigned char *buff, const long buffsize)
+long ptenc_conv_first_line(long pos, long last, unsigned char *buff, const long buffsize)
   /* return new last */
 {
     unsigned char *old, *new_buf; long new_last, i;
