@@ -1,0 +1,13 @@
+% fnさざ波.tex
+% UTF-8 encoding
+\catcode`\{=1
+\catcode`\}=2
+
+\immediate\write16{JOB[\jobname] :: We are in fnさざ波.tex}
+
+\immediate\openout0=\jobname.txt
+\immediate\write0{abc αβγ абв あア※￥ 天地人}
+\immediate\closeout0
+
+\relax\end
+

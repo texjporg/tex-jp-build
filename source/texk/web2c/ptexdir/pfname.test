@@ -1,0 +1,22 @@
+#! /bin/sh -vx
+#
+# Copyright 2022 Japanese TeX Development Community <issue@texjp.org>
+# You may freely use, modify and/or distribute this file.
+
+test -d ptests || mkdir -p ptests
+rm -f fn*.*
+
+rc=0
+
+TEXMFCNF=$srcdir/../kpathsea
+TEXINPUTS=$srcdir/ptexdir/tests:.
+export TEXMFCNF TEXINPUTS
+
+for enc in euc sjis; do
+for doc in fn fnさざ波; do
+  ./ptex -ini -interaction nonstopmode -kanji=utf8 --kanji-internal=$enc $doc.tex >ptests/$doc-$enc-term.log || $rc=1
+  diff $doc.txt $srcdir/ptexdir/tests/fn.txt || $rc=2
+done
+done
+
+exit $rc
