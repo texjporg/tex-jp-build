@@ -6865,6 +6865,15 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 fix_date_and_time;@/
 @y
 last:=ptenc_conv_first_line(loc, last, buffer, buf_size);
+begin
+print_nl("debug 1st line "); print_int(loc); print(" ");
+for k:=0 to last do begin
+  if k=loc then print(">");
+  if (buffer[k]<@"20)or(buffer[k]>@"7e) then
+    begin print("["); print_hex(buffer[k]); print("]"); end
+  else print(buffer[k]);
+end;
+print_nl(""); end;
 fix_date_and_time;@/
 @z
 
