@@ -1,0 +1,17 @@
+% fn‡@‡p‡Zûè±`-sjis.tex
+% Shift_JIS encoding, including CP932 platform-dependent characters
+\catcode`\{=1
+\catcode`\}=2
+
+\immediate\write16{JOB[\jobname] :: We are in fn‡@‡p‡Zûè±`-sjis.tex}
+
+\immediate\openout1=fn‡@‡p‡Zûè±`-sjis.txt
+\immediate\closeout1
+
+\input fn‡@‡p‡Zûè±`-sjis.txt
+
+\immediate\openout0=\jobname.txt
+\immediate\write0{abc ƒ¿ƒÀƒÁ „p„q„r ‚ ƒA¦ “V’nl}
+\immediate\closeout0
+
+\relax\end
