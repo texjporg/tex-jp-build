@@ -6864,7 +6864,7 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 @x
 fix_date_and_time;@/
 @y
-last:=ptenc_conv_first_line(loc, last, buffer, buf_size);
+last:=ptenc_conv_first_line(loc, last, buffer, buf_size); limit:=last;
 begin
 print_nl("debug 1st line "); print_int(loc); print(" ");
 for k:=0 to last do begin
