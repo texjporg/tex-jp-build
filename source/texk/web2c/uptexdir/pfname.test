@@ -4,7 +4,7 @@
 # You may freely use, modify and/or distribute this file.
 
 test -d uptests || mkdir -p uptests
-rm -f uptests/fn*.log uptests/fn*.txt
+rm -f uptests/fn*.log uptests/fn*.txt uptests/fn*.tex
 
 rc=0
 
@@ -29,8 +29,8 @@ for doc in fn fnさざ波; do
   fi
 
   echo '>>> Document:'$doc '  File Encoding:'$fenc '  Internal Encoding:'$ienc
-  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc $doc.tex >uptests/$doc-$ienc-term.log || $rc=1
-  mv $doc-$ienc.txt $doc-$ienc.log uptests/
+  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc --shell-escape $doc.tex >uptests/$doc-$ienc-term.log || $rc=1
+  mv $doc-$ienc.txt $doc-$ienc.log $doc-tmp.tex uptests/
   diff uptests/$doc-$ienc.txt $srcdir/ptexdir/tests/fn-utf8.txt || $rc=2
 
 done
@@ -57,8 +57,8 @@ for doc in fnさざ波-$fenc; do
   fi
 
   echo '>>> Document:'$doc '  File Encoding:'$fenc '  Internal Encoding:'$ienc
-  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc $doc.tex >uptests/$doc-$fenc-term.log || $rc=3
-  mv $doc-$ienc.txt $doc-$ienc.log uptests/
+  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc --shell-escape $doc.tex >uptests/$doc-$fenc-term.log || $rc=3
+  mv $doc-$ienc.txt $doc-$ienc.log $doc-tmp.tex uptests/
   diff uptests/$doc-$ienc.txt $srcdir/ptexdir/tests/fn-$fenc.txt || $rc=4
 
 done
@@ -66,31 +66,25 @@ done
 
 
 # pTeX compatible mode, CP932 characters
+if [ "$COMSPEC" != "" ]; then
+echo "*** We guess OS is Windows."
+
 for fenc in sjis; do
 for doc in fn①㎝Ⅶ閒ｱ～-$fenc; do
 
   ienc=$fenc
-  if [ "$COMSPEC" != "" ]; then
-    echo "*** We guess OS is Windows."
-    if [ $fenc != euc ]; then ienc="sjis"; fi
-    if [ $ienc = uptex ]; then
-      command_line_encoding=utf8
-      export command_line_encoding
-    else
-      command_line_encoding=none
-      export command_line_encoding
-    fi
-  else
-    echo "*** We guess OS is not Windows."
-    if [ $fenc != sjis ]; then ienc="euc"; fi
-  fi
+  if [ $fenc != euc ]; then ienc="sjis"; fi
+  command_line_encoding=none
+  export command_line_encoding
 
   echo '>>> Document:'$doc '  File Encoding:'$fenc '  Internal Encoding:'$ienc
-  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc $doc.tex >uptests/$doc-$fenc-term.log || $rc=3
-  mv $doc*.txt $doc-$ienc.log uptests/
+  ./uptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc --shell-escape $doc.tex >uptests/$doc-$fenc-term.log || $rc=3
+  mv $doc*.txt $doc-$ienc.log $doc-tmp.tex uptests/
   diff uptests/$doc-$ienc.txt $srcdir/ptexdir/tests/fn-$fenc.txt || $rc=4
 
 done
 done
+
+fi
 
 exit $rc
