@@ -15,7 +15,7 @@ export TEXMFCNF TEXINPUTS
 # upTeX internal encoding
 fenc="utf8"
 for ienc in euc sjis uptex; do
-for doc in fn fnさざ波; do
+for doc in fn fnさざ波-$fenc fn①㎝Ⅶ閒ｱ～-$fenc fn①㎝Ⅶ閒ｱ-$fenc fn£¥ÆØß§-$fenc; do
 
   if [ "$COMSPEC" != "" ]; then
     echo "*** We guess OS is Windows."
@@ -37,7 +37,7 @@ done
 done
 
 # pTeX compatible mode, regacy encoding
-for fenc in sjis euc jis utf8; do
+for fenc in sjis euc jis; do
 for doc in fnさざ波-$fenc; do
 
   ienc=$fenc

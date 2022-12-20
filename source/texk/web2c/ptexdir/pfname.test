@@ -15,7 +15,7 @@ export TEXMFCNF TEXINPUTS
 # pTeX internal encoding
 fenc="utf8"
 for ienc in euc sjis; do
-for doc in fn fnさざ波; do
+for doc in fn fnさざ波-$fenc fn①㎝Ⅶ閒ｱ～-$fenc fn①㎝Ⅶ閒ｱ-$fenc fn£¥ÆØß§-$fenc; do
 
   echo '>>> Document:'$doc '  File Encoding:'$fenc '  Internal Encoding:'$ienc
   ./ptex -ini -interaction nonstopmode -jobname=$doc-$ienc -kanji=$fenc --kanji-internal=$ienc --shell-escape $doc.tex >ptests/$doc-$ienc-term.log || $rc=1
@@ -26,7 +26,7 @@ done
 done
 
 # pTeX, regacy encoding
-for fenc in sjis euc jis utf8; do
+for fenc in sjis euc jis; do
 for doc in fnさざ波-$fenc; do
 
   ienc=$fenc
