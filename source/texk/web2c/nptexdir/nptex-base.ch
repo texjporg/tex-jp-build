@@ -10124,6 +10124,7 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 @x
 fix_date_and_time;@/
 @y
+last:=ptenc_conv_first_line(loc, last, buffer, buf_size); limit:=last;
 fix_date_and_time;@/
 isprint_utf8:=false;
 random_seed:=(microseconds*1000)+(epochseconds mod 1000000);@/
