@@ -71,3 +71,5 @@ UTF-8        fn£¥µÆÇñß-utf8.tex      fn±×÷§¶-utf8.tex
 UTF-8        fnさざ波-utf8.tex       fn±×÷§¶-utf8.tex
 EUC-JP       fnさざ波-euc.tex        fn±×÷§¶-utf8.tex
 Shift_JIS    fnさざ波-sjis.tex       fn±×÷§¶-utf8.tex
+ISO-2022-JP  fnさざ波-jis.tex        fn±×÷§¶-utf8.tex
+UTF-8        fn①㎝Ⅶ閒ｱ～-utf8.tex  fn±×÷§¶-utf8.tex

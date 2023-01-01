@@ -519,6 +519,9 @@ void init_default_kanji (const_string file_str, const_string internal_str)
         if (!set_enc_string (p, NULL))
             fprintf (stderr, "Ignoring bad kanji encoding \"%s\".\n", p);
     }
+    if (!is_internalUPTEX()) {
+        ptenc_utf8_line_buff_mode (true);
+    }
 }
 
 void init_default_kanji_select(void)

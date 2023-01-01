@@ -414,7 +414,7 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
         buffer2[l]:=1;
       loc:=loc+multistrlen(ustringcast(buffer), limit+1, loc) end
     else begin
-      cur_chr:=buffer[loc]; incr(loc);
+      cur_chr:=ReEncodeInteralEnc(buffer[loc]); incr(loc);
       reswitch: cur_cmd:=cat_code(cur_chr);
     end;
 @z

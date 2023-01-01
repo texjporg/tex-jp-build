@@ -32,9 +32,12 @@ mv fn*.tex uptests/
 # upTeX internal encoding
 fenc="utf8"
 for ienc in euc sjis uptex; do
-for doc in fn-$fenc fnさざ波-$fenc fn£¥µÆÇñß-$fenc; do
+for doc in fn-$fenc fnさざ波-$fenc fn£¥µÆÇñß-$fenc fn①㎝Ⅶ閒ｱ～-$fenc; do
 
   if [ $ienc != uptex -a $doc = fn£¥µÆÇñß-$fenc ]; then
+    continue
+  fi
+  if [ $ienc != uptex -a $doc = fn①㎝Ⅶ閒ｱ～-$fenc ]; then
     continue
   fi
 
@@ -59,7 +62,7 @@ done
 
 
 # pTeX compatible mode, regacy encoding
-for fenc in sjis euc; do
+for fenc in sjis euc jis; do
 for doc in fnさざ波-$fenc; do
 
   ienc=$fenc

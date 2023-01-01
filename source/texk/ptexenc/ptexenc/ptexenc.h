@@ -37,6 +37,7 @@ extern PTENCDLL void enable_UPTEX (boolean enable);
 extern PTENCDLL void set_prior_file_enc(void);
 extern PTENCDLL void set_guess_file_enc(boolean enable);
 extern PTENCDLL void ptenc_ptex_mode(const boolean enable);
+extern PTENCDLL void ptenc_utf8_line_buff_mode (const boolean enable);
 
 /* get/set Kanji encoding by string */
 extern PTENCDLL const_string get_enc_string(void);
@@ -71,6 +72,7 @@ extern PTENCDLL int multibytelen (int first_byte);
 extern PTENCDLL long fromBUFF(unsigned char *s, int len, int pos);
 extern PTENCDLL long fromBUFFshort(unsigned short *s, int len, int pos);
 extern PTENCDLL long toBUFF(long inter);
+extern PTENCDLL long ReEncodeInteralEnc(long kcode);
 
 /* for outputting filename (*s) to the terminal */
 extern PTENCDLL int multistrlenfilename(unsigned short *s, int len, int pos);

@@ -24,6 +24,7 @@
 @define function fromBUFF ();
 @define function fromBUFFshort ();
 @define function toBUFF ();
+@define function ReEncodeInteralEnc ();
 
 @define function fromDVI ();
 @define function toDVI ();

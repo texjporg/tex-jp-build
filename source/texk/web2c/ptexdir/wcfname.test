@@ -44,7 +44,7 @@ done
 
 
 # pTeX, regacy encoding
-for fenc in sjis euc; do
+for fenc in sjis euc jis; do
 for doc in fnさざ波-$fenc; do
 
   ienc=$fenc

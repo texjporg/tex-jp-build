@@ -29,6 +29,7 @@ static int default_kanji_enc;
 static boolean UPTEX_enabled;
 static boolean ptex_mode = false;
 static boolean prior_file_enc = false;
+static boolean line_buff_utf8 = false;
 
 #define ESC '\033'
 
@@ -158,6 +159,14 @@ void ptenc_ptex_mode (const boolean enable)
 {
    //fprintf(stderr, "ptenc_ptex_mode is called! (%d)\n", enable);
    ptex_mode = enable;
+}
+
+/* enable utf8 line buffer mode */
+void ptenc_utf8_line_buff_mode (const boolean enable)
+{
+    if (ptex_mode)
+        line_buff_utf8 = enable;
+    fprintf(stderr,"###DBG500, mode %d %d\n", ptex_mode, line_buff_utf8);
 }
 
 /* enable/disable UPTEX */
@@ -331,7 +340,7 @@ int multibytelen (int first_byte)
 long fromBUFF(unsigned char *s, int len, int pos)
 {
     s += pos; len -= pos;
-    if (is_internalUPTEX()) {
+    if (is_internalUPTEX() || line_buff_utf8) {
         if (UTF8Slength(s, len) < 0) return s[0];
         return UCStoUPTEX(UTF8StoUCS(s));
     }
@@ -356,7 +365,16 @@ long fromBUFFshort(unsigned short *s, int len, int pos)
 /* internal (EUC/SJIS/UPTEX) to buffer (EUC/SJIS/UTF-8) code conversion */
 long toBUFF(long kcode)
 {
-    if (is_internalUPTEX()) kcode = UCStoUTF8(UPTEXtoUCS(kcode));
+    if (is_internalUPTEX() || line_buff_utf8)
+        kcode = UCStoUTF8(UPTEXtoUCS(kcode));
+    return kcode;
+}
+
+/* conversion from code on input line to internal (EUC/SJIS/UPTEX) code */
+long ReEncodeInteralEnc(long kcode)
+{
+    if (line_buff_utf8 && !is_internalUPTEX())
+        kcode = fromJIS(UCS2toJIS(kcode));
     return kcode;
 }
 
@@ -1347,11 +1365,16 @@ long ptenc_conv_first_line(long pos, long last, unsigned char *buff, const long 
   /* return new last */
 {
     unsigned char *old, *new_buf; long new_last, i;
+    fprintf(stderr,"###DBG000, buff(%s) %d, %d\n", buff, internal_enc, line_buff_utf8);
+    //if (internal_enc==ENC_UPTEX || line_buff_utf8) return last; /* no conversion needed */
     if (internal_enc==ENC_UPTEX) return last; /* no conversion needed */
     old = xmalloc(last-pos+2);
     if (old==NULL) return last;
     strncpy(old, buff+pos, last-pos+1); old[last-pos+1]='\0';
     new_buf = ptenc_from_utf8_string_to_internal_enc(old);
+    fprintf(stderr,"###DBG001, old(%s)\n", old);
+    fprintf(stderr,"###DBG001, new(%s)\n", new_buf);
+    fprintf(stderr,"###DBG001, \n");
     if (new_buf==NULL) { free(old); return last; }
     new_last=pos+strlen(new_buf)-1;
     if (new_last>=buffsize) new_last=buffsize-1;
