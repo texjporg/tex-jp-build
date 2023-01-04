@@ -1810,7 +1810,6 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
 @d auto_xspacing==equiv(auto_xspacing_code)
 @d enable_cjk_token==equiv(enable_cjk_token_code)
 @d cjkx_code(#)==equiv(cjkx_code_base+#)
-@d kcatcodekey(#)==(#) { npTeX: \.{\\cjkxcode} は文字ごと }
 @d auto_xsp_code(#)==equiv(auto_xsp_code_base+#)
 @d inhibit_xsp_type(#)==eq_type(inhibit_xsp_code_base+#)
 @d inhibit_xsp_code(#)==equiv(inhibit_xsp_code_base+#)
@@ -1818,6 +1817,19 @@ primitive("xkanjiskip",assign_glue,glue_base+xkanji_skip_code);@/
 @d kinsoku_code(#)==equiv(kinsoku_base+#)
 @d kansuji_char(#)==equiv(kansuji_base+#)
 @d check_echar_range(#)==((cat_code(#)<>letter)or(cat_code(#)<>other_char)or(cjkx_code(#)>0))
+@z
+
+@x
+@ We initialize most things to null or undefined values. An undefined font
+@y
+@ @p function kcat_code(@!c:integer):integer;
+var @!cc:integer;
+begin cc:=cat_code(c);
+if cc=other_char then kcat_code:=other_kchar
+else kcat_code:=letter+cjkx_code(cc)*cjk_code_flag;
+end;
+
+@ We initialize most things to null or undefined values. An undefined font
 @z
 
 @x
@@ -1853,15 +1865,9 @@ eqtb[auto_spacing_code]:=eqtb[cat_code_base];
 eqtb[auto_xspacing_code]:=eqtb[cat_code_base];
 eqtb[enable_cjk_token_code]:=eqtb[cat_code_base];
 for k:=0 to 255 do
-<<<<<<< HEAD
-  begin math_code(k):=hi(k); sf_code(k):=1000;
-  auto_xsp_code(k):=0; inhibit_xsp_code(k):=0; inhibit_xsp_type(k):=0;
-  kinsoku_code(k):=0; kinsoku_type(k):=0;
-=======
   begin cat_code(k):=other_char;
   math_code(k):=hi(k); sf_code(k):=1000;
   auto_xsp_code(k):=0;
->>>>>>> nptex_concept
   end;
 for k:=0 to number_usvs-1 do
   begin cat_code(k):=other_char; cjkx_code(k):=0;
@@ -2389,7 +2395,7 @@ else  begin
   print_esc(l); j:=str_start[l]; l:=str_start[l+1];
   if l>j+1 then begin
     if (str_pool[j]>=@"100)and(l-j=multistrlenshort(str_pool, l, j)) then
-      begin cat:=cjkx_code(kcatcodekey(fromBUFFshort(str_pool, l, j)));
+      begin cat:=cjkx_code(fromBUFFshort(str_pool, l, j));
       if (cat<>other_kchar) then print_char(" ");
       end
     else print_char(" "); end
@@ -2978,9 +2984,9 @@ begin switch: if loc<=limit then {current line not yet finished}
     cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
     i:=1;
     reswitch: cur_cmd:=cat_code(cur_chr);
-    if (cur_cmd=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-      cur_cmd:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
-    else if (cur_cmd=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+    if (cur_cmd=letter)and(cjkx_code(cur_chr)>0) then
+      cur_cmd:=letter+cjkx_code(cur_chr)*cjk_code_flag
+    else if (cur_cmd=other_char)and(cjkx_code(cur_chr)>0) then
       cur_cmd:=other_kchar;
     if i>0 then begin
       if cur_cmd>=cjk_code_flag then
@@ -3169,9 +3175,9 @@ begin if loc>limit then cur_cs:=null_cs {|state| is irrelevant in this case}
 else  begin start_cs: k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=cat_code(cur_chr);
-  if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-    cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
-  else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+  if (cat=letter)and(cjkx_code(cur_chr)>0) then
+    cat:=letter+cjkx_code(cur_chr)*cjk_code_flag
+  else if (cat=other_char)and(cjkx_code(cur_chr)>0) then
     cat:=other_kchar;
   if cat>=cjk_code_flag then
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
@@ -3288,9 +3294,9 @@ end
 begin repeat
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=cat_code(cur_chr);
-  if (cat=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-    cat:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
-  else if (cat=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+  if (cat=letter)and(cjkx_code(cur_chr)>0) then
+    cat:=letter+cjkx_code(cur_chr)*cjk_code_flag
+  else if (cat=other_char)and(cjkx_code(cur_chr)>0) then
     cat:=other_kchar;
   if cat>=cjk_code_flag then
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
@@ -3825,7 +3831,7 @@ else if m=(del_code_base+128) then begin
   end
 else if m=cjkx_code_base then
   begin scan_char_num;
-  scanned_result(equiv(m+kcatcodekey(cur_val)))(int_val); end
+  scanned_result(equiv(m+cur_val))(int_val); end
 else if m=cat_code_base then
   begin scan_char_num;
   scanned_result(equiv(m+cur_val))(int_val); end
@@ -3863,18 +3869,11 @@ else { \.{\\delcode} }
 @d input_line_no_code=glue_val+5 {code for \.{\\inputlineno}}
 @d badness_code=glue_val+6 {code for \.{\\badness}}
 @d ptex_version_code=badness_code+1 {code for \.{\\ptexversion}}
-<<<<<<< HEAD
-@d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
-@d eptex_version_code=ptex_minor_version_code+1 {code for \.{\\epTeXversion}}
-@d uptex_version_code=eptex_version_code+1 {code for \.{\\uptexversion}}
-@d nptex_version_code=uptex_version_code+1 {code for \.{\\nptexversion}}
-@d pdf_last_x_pos_code=nptex_version_code+1 {code for \.{\\pdflastxpos}}
-=======
 @d uptex_version_code=ptex_version_code+1 {code for \.{\\uptexversion}}
 @d eptex_version_code=uptex_version_code+1 {code for \.{\\epTeXversion}}
-@d ptex_minor_version_code=eptex_version_code+1 {code for \.{\\ptexminorversion}}
+@d nptex_version_code=eptex_version_code+1 {code for \.{\\nptexversion}}
+@d ptex_minor_version_code=nptex_version_code+1 {code for \.{\\ptexminorversion}}
 @d pdf_last_x_pos_code=ptex_minor_version_code+1 {code for \.{\\pdflastxpos}}
->>>>>>> nptex_concept
 @d pdf_last_y_pos_code=pdf_last_x_pos_code+1 {code for \.{\\pdflastypos}}
 @d pdf_shell_escape_code=pdf_last_y_pos_code+1 {code for \.{\\pdflastypos}}
 @d elapsed_time_code=pdf_shell_escape_code+1 {code for \.{\\pdfelapsedtime}}
@@ -3903,13 +3902,10 @@ primitive("ptexversion",last_item,ptex_version_code);
 @!@:ptexversion_}{\.{\\ptexversion} primitive@>
 primitive("uptexversion",last_item,uptex_version_code);
 @!@:uptexversion_}{\.{\\uptexversion} primitive@>
-<<<<<<< HEAD
-primitive("nptexversion",last_item,nptex_version_code);
-@!@:nptexversion_}{\.{\\nptexversion} primitive@>
-=======
 primitive("epTeXversion",last_item,eptex_version_code);
 @!@:epTeXversion_}{\.{\\epTeXversion} primitive@>
->>>>>>> nptex_concept
+primitive("nptexversion",last_item,nptex_version_code);
+@!@:nptexversion_}{\.{\\nptexversion} primitive@>
 primitive("ptexminorversion",last_item,ptex_minor_version_code);
 @!@:ptexminorversion_}{\.{\\ptexminorversion} primitive@>
 @z
@@ -3920,11 +3916,8 @@ primitive("ptexminorversion",last_item,ptex_minor_version_code);
   input_line_no_code: print_esc("inputlineno");
   ptex_version_code: print_esc("ptexversion");
   uptex_version_code: print_esc("uptexversion");
-<<<<<<< HEAD
-  nptex_version_code: print_esc("nptexversion");
-=======
   eptex_version_code: print_esc("epTeXversion");
->>>>>>> nptex_concept
+  nptex_version_code: print_esc("nptexversion");
   ptex_minor_version_code: print_esc("ptexminorversion");
 @z
 
@@ -4052,11 +4045,8 @@ end
   badness_code: cur_val:=last_badness;
   ptex_version_code: cur_val:=pTeX_version;
   uptex_version_code: cur_val:=upTeX_version;
-<<<<<<< HEAD
-  nptex_version_code: cur_val:=npTeX_version;
-=======
   eptex_version_code: cur_val:=epTeX_version_number;
->>>>>>> nptex_concept
+  nptex_version_code: cur_val:=npTeX_version;
   ptex_minor_version_code: cur_val:=pTeX_minor_version;
   @/@<Cases for fetching an integer value@>@/
   end; {there are no other cases}
@@ -8001,24 +7991,19 @@ hmode+no_boundary: begin get_x_token;
 @y
 ins_kp:=false;
 case abs(mode)+cur_cmd of
-<<<<<<< HEAD
 hmode+letter,hmode+other_char: begin check_node_recipe(reswitch); goto main_loop; end;
-hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+kchar_given: goto main_loop_j;
-=======
-hmode+letter,hmode+other_char: goto main_loop;
 hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul: goto main_loop_j;
 hmode+kchar_given:
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
->>>>>>> nptex_concept
+  begin cur_cmd:=kcat_code(cur_chr); goto main_loop_j; end;
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+  else begin cur_cmd:=kcat_code(cur_chr); goto main_loop_j; end;
 hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+  else begin cur_cmd:=kcat_code(cur_chr); goto main_loop_j; end;
   end;
 hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
-  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+  cur_cmd:=kcat_code(cur_chr);
   goto main_loop_j;
   end;
 hmode+no_boundary: begin get_x_token;
@@ -8097,10 +8082,10 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 if cur_cmd=other_char then @<Look for \.{\\nptexnoderecipe}, and goto |main_lig_loop| if found@>;
 if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  else begin cur_cmd:=kcat_code(cur_chr); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_given then
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  begin cur_cmd:=kcat_code(cur_chr); @<goto |main_lig_loop|@>; end;
 x_token; {now expand and set |cur_cmd|, |cur_chr|, |cur_tok|}
 if cur_cmd=letter then goto main_loop_lookahead+1;
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
@@ -8108,17 +8093,16 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  else begin cur_cmd:=kcat_code(cur_chr); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=char_num then
   begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  else begin cur_cmd:=kcat_code(cur_chr); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_num then
   begin scan_char_num; cur_chr:=cur_val;
-  cur_cmd:=kcat_code(kcatcodekey(cur_chr));
-  @<goto |main_lig_loop|@>;
+  cur_cmd:=kcat_code(cur_chr); @<goto |main_lig_loop|@>;
   end;
 if cur_cmd=inhibit_glue then
   begin inhibit_glue_flag:=true; goto main_loop_lookahead;
@@ -9162,7 +9146,9 @@ if not check_echar_range(cur_val) then
   if p<>null then
      begin
         link(p):=get_avail;
-        info(link(p)):=KANJI(cx) + cjkx_code(kcatcodekey(cx))*max_cjk_val;
+        if cat_code(cur_val)=other_char then
+          info(link(p)):=KANJI(cx) + max_cjk_val
+        else info(link(p)):=KANJI(cx);
      end;
   end
 else begin f:=cur_font; p:=new_character(f,cur_val);
@@ -9198,25 +9184,25 @@ else if cur_cmd=char_given then
   if check_echar_range(cur_chr) then q:=new_character(f,cur_chr)
   else begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
+    KANJI(cx):=cur_chr;
     end
 else if cur_cmd=char_num then
   begin scan_char_num;
   if check_echar_range(cur_val) then q:=new_character(f,cur_val)
   else  begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val; cur_cmd:=kcat_code(kcatcodekey(cx));
+    KANJI(cx):=cur_val;
     end
   end
 else if cur_cmd=kchar_given then
   begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
+    KANJI(cx):=cur_chr;
   end
 else if cur_cmd=kchar_num then
   begin scan_char_num;
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
-    KANJI(cx):=cur_val; cur_cmd:=kcat_code(kcatcodekey(cx));
+    KANJI(cx):=cur_val;
   end
 else back_input;
 if direction=dir_tate then
@@ -9232,7 +9218,10 @@ else  begin if font_dir[f]=dir_yoko then disp:=0
 if KANJI(cx)<>empty then
   begin q:=new_character(f,get_jfm_pos(KANJI(cx),f));
   link(q):=get_avail;
-  info(link(q)):=KANJI(cx) + cjkx_code(kcatcodekey(cx))*max_cjk_val;
+  if cat_code(cx)=other_char then
+    info(link(q)):=KANJI(cx) + max_cjk_val
+  else
+    info(link(q)):=KANJI(cx);
   last_jchr:=q;
   end;
 @z
@@ -9394,7 +9383,7 @@ else  begin
     p:=nucleus(info(p)); q:=kcode_noad_nucleus(p);
     end;
   math_type(p):=math_jchar; fam(p):=cur_jfam; character(p):=qi(0);
-  math_kcode(p-1):=KANJI(cx) + cjkx_code(kcatcodekey(cx))*max_cjk_val;
+  math_kcode(p-1):=KANJI(cx) + kcat_code(cx)*max_cjk_val;
   if font_dir[fam_fnt(fam(p)+cur_size)]=dir_default then
     begin print_err("Not two-byte family");
     help1("IGNORE.");@/
@@ -10007,7 +9996,7 @@ def_code: begin
     @<Let |m| be the minimal legal code value, based on |cur_chr|@>;
     @<Let |n| be the largest legal code value, based on |cur_chr|@>;
     p:=cur_chr; cur_val1:=p;
-    if p=cjkx_code_base then begin scan_char_num; p:=p+kcatcodekey(cur_val) end
+    if p=cjkx_code_base then begin scan_char_num; p:=p+cur_val end
     else begin scan_char_num; p:=p+cur_val; end;
     scan_optional_equals; scan_int;
     if ((cur_val<m)and(p<del_code_base))or(cur_val>n) then
@@ -10916,9 +10905,9 @@ if j=1 then
     begin cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
     loc:=loc+multistrlen(ustringcast(buffer), limit+1,loc);
     cur_tok:=cat_code(cur_chr);
-    if (cur_tok=letter)and(cjkx_code(kcatcodekey(cur_chr))>0) then
-      cur_tok:=letter+cjkx_code(kcatcodekey(cur_chr))*cjk_code_flag
-    else if (cur_tok=other_char)and(cjkx_code(kcatcodekey(cur_chr))>0) then
+    if (cur_tok=letter)and(cjkx_code(cur_chr)>0) then
+      cur_tok:=letter+cjkx_code(cur_chr)*cjk_code_flag
+    else if (cur_tok=other_char)and(cjkx_code(cur_chr)>0) then
       cur_tok:=other_kchar
     else cur_tok:=other_char;
     if cur_chr=" " then cur_tok:=space_token
@@ -12170,8 +12159,7 @@ while(p<>null) do
 begin if is_char_node(p) then
   begin if font_dir[font(p)]<>dir_default then
     begin KANJI(cx):=info(link(p)) mod max_cjk_val;
-    i:=info(link(p)) div max_cjk_val; k:=0;
-    if (i=kanji)or(i=kana)or(i=hangul) then begin t:=q; s:=p; end;
+    if (info(link(p)) div max_cjk_val)>0 then begin t:=q; s:=p; end;
     p:=link(p); q:=p;
     end
   else begin k:=k+1;
@@ -12315,12 +12303,10 @@ main_loop_j+1: space_factor:=1000;
     fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
     link(tail):=main_p; tail:=main_p; last_jchr:=tail;
     fast_get_avail(main_p);
-    if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
-      info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
-    else if cur_cmd=not_cjk then
-      info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
-    else { Does this case occur? }
-      info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
+    if cur_cmd mod cjk_code_flag=other_char then
+      info(main_p):=KANJI(cur_chr)+max_cjk_val
+    else
+      info(main_p):=KANJI(cur_chr);
     link(tail):=main_p; tail:=main_p;
     cx:=cur_chr; @<Insert kinsoku penalty@>;
   end;
@@ -12344,22 +12330,22 @@ again_2:
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
-      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+      cur_cmd:=kcat_code(cur_chr);
       end;
     char_num: begin scan_char_num; cur_chr:=cur_val;
       if check_echar_range(cur_chr) then
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
-      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+      cur_cmd:=kcat_code(cur_chr);
       end;
     kchar_given: begin
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
-      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+      cur_cmd:=kcat_code(cur_chr);
       end;
     kchar_num: begin scan_char_num; cur_chr:=cur_val;
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
-      cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+      cur_cmd:=kcat_code(cur_chr);
       end;
     inhibit_glue: begin inhibit_glue_flag:=(cur_chr=0); goto again_2; end;
     othercases begin ins_kp:=max_halfword;
