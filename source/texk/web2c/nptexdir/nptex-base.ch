@@ -60,6 +60,7 @@
 @d text_size=0 {size code for the largest size in a family}
 @d script_size=256 {size code for the medium size in a family}
 @d script_script_size=512 {size code for the smallest size in a family}
+@d max_char_val=@"0800000 {to separate char and command code}
 @z
 
 @x
@@ -819,7 +820,6 @@ end;
 @d max_quarterword=@"FFFF {largest allowable value in a |quarterword|}
 @d min_halfword=-@"3FFFFFFF {smallest allowable value in a |halfword|}
 @d max_halfword=@"3FFFFFFF {largest allowable value in a |halfword|}
-@d max_cjk_val=@"0800000 {to separate character code and command code}
 @d number_usvs=@"0110000 {number of Unicode characters}
 @z
 
@@ -2513,6 +2513,12 @@ primitive("oradical",radical,1);@/
 @z
 
 @x
+primitive("relax",relax,256); {cf.\ |scan_file_name|}
+@y
+primitive("relax",relax,max_char_val); {cf.\ |scan_file_name|}
+@z
+
+@x
 char_num: print_esc("char");
 @y
 char_num: print_esc("char");
@@ -2687,7 +2693,6 @@ end;
 @y
 @d cs_token_flag=@"1FFFFFFF {amount added to the |eqtb| location in a
   token that stands for a control sequence; is a multiple of~@@"1000000, less~1}
-@d max_char_val=@"0800000 {to separate char and command code}
 @d left_brace_token=@"0800000 {$2^{23}\cdot|left_brace|$}
 @d left_brace_limit=@"1000000 {$2^{23}\cdot(|left_brace|+1)$}
 @d right_brace_token=@"1000000 {$2^{23}\cdot|right_brace|$}
@@ -2728,7 +2733,7 @@ if (p<hi_mem_min) or (p>mem_end) then
   end;
 if info(p)>=cs_token_flag then print_cs(info(p)-cs_token_flag) {|wchar_token|}
 else  begin
-  m:=info(p) div max_cjk_val; c:=info(p) mod max_cjk_val;
+  m:=info(p) div max_char_val; c:=info(p) mod max_char_val;
   if info(p)<0 then print_esc("BAD.")
 @.BAD@>
   else @<Display the token $(|m|,|c|)$@>;
@@ -2934,6 +2939,12 @@ done1:
 first:=buf_size; repeat buffer[first]:=0; decr(first); until first=0;
 @y
 first:=buf_size; repeat buffer[first]:=0; buffer2[first]:=0; decr(first); until first=0;
+@z
+
+@x
+primitive("par",par_end,256); {cf.\ |scan_file_name|}
+@y
+primitive("par",par_end,max_char_val); {cf.\ |scan_file_name|}
 @z
 
 @x
@@ -3406,7 +3417,7 @@ begin no_new_control_sequence:=false; get_next; no_new_control_sequence:=true;
 @^inner loop@>
 if cur_cs=0 then
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
-    cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
+    cur_tok:=(cur_cmd*max_char_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 else cur_tok:=cs_token_flag+cur_cs;
 end;
@@ -3529,6 +3540,19 @@ end
 @z
 
 @x
+@ @<Complain about an undefined macro@>=
+begin print_err("Undefined control sequence");
+@.Undefined control sequence@>
+@y
+@ @<Complain about an undefined macro@>=
+begin 
+print_nl("!!! "); print_int(cur_cmd);
+print_err("Undefined control sequence");
+@.Undefined control sequence@>
+@z
+
+
+@x
 begin r:=get_avail; p:=r; {head of the list of characters}
 repeat get_x_token;
 @y
@@ -3542,6 +3566,16 @@ repeat get_x_token;
 @y
 is_in_csname := b;
 @<Look up the characters of list |r| in the hash table, and set |cur_cs|@>;
+@z
+
+@x
+if eq_type(cur_cs)=undefined_cs then
+  begin eq_define(cur_cs,relax,256); {N.B.: The |save_stack| might change}
+  end; {the control sequence will now match `\.{\\relax}'}
+@y
+if eq_type(cur_cs)=undefined_cs then
+  begin eq_define(cur_cs,relax,max_char_val); {N.B.: The |save_stack| might change}
+  end; {the control sequence will now match `\.{\\relax}'}
 @z
 
 @x
@@ -3580,9 +3614,9 @@ while p<>null do
       overflow("buffer size",buf_size);
 @:TeX capacity exceeded buffer size}{\quad buffer size@>
     end;
-  if info(p) mod max_cjk_val>=@"80 then {|wchar_token|}
-    begin t:=toBUFF(info(p) mod max_cjk_val);
-    if info(p) div max_cjk_val>=cjk_code_flag then set_buffer_from_t(1)
+  if info(p) mod max_char_val>=@"80 then {|wchar_token|}
+    begin t:=toBUFF(info(p) mod max_char_val);
+    if info(p) div max_char_val>=cjk_code_flag then set_buffer_from_t(1)
     else set_buffer_from_t(0);
     p:=link(p);
     end
@@ -3631,7 +3665,7 @@ else expand;
 goto restart;
 done: if cur_cs=0 then
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
-    cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
+    cur_tok:=(cur_cmd*max_char_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 else cur_tok:=cs_token_flag+cur_cs;
 end;
@@ -3653,7 +3687,7 @@ begin while cur_cmd>max_command do
   end;
 if cur_cs=0 then
   if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
-    cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
+    cur_tok:=(cur_cmd*max_char_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 else cur_tok:=cs_token_flag+cur_cs;
 @z
@@ -3998,7 +4032,7 @@ if not is_char_node(tx) then
 @d find_effective_tail==find_effective_tail_epTeX
 @#
 @d find_last_char==
-if font_dir[font(tx)]<>dir_default then cur_val:=KANJI(info(link(tx))) mod max_cjk_val
+if font_dir[font(tx)]<>dir_default then cur_val:=KANJI(info(link(tx))) mod max_char_val
 else cur_val:=qo(character(tx))
 
 @d ignore_font_kerning==
@@ -4469,12 +4503,12 @@ while k<pool_ptr do
   t:=fromBUFFshort(str_pool, pool_ptr, k); 
   k:=k+multistrlenshort(str_pool, pool_ptr, k)-1;
   if cat=0 then
-    begin if tb>=@"100 then t:=other_kchar*max_cjk_val+t { |wchar_token| }
+    begin if tb>=@"100 then t:=other_kchar*max_char_val+t { |wchar_token| }
     else if t=" " then t:=space_token
     else t:=other_token+t;
     end
   else if cat=active_char then t:= cs_token_flag + active_base + t
-  else t:=t+cat*max_cjk_val;
+  else t:=t+cat*max_char_val;
 @z
 
 @x
@@ -5068,8 +5102,8 @@ if this_if=if_char_code then b:=(n=cur_chr)@+else b:=(m=cur_cmd);
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   begin m:=cur_cmd; n:=cur_chr;
   end
-else if (cur_cmd>active_char)or(cur_chr>255) then
-  begin m:=relax; n:=max_cjk_val;
+else if (cur_cmd>active_char)or(cur_chr>=max_char_val) then
+  begin m:=relax; n:=max_char_val;
   end
 else  begin m:=cur_cmd; n:=cur_chr;
   end;
@@ -5077,8 +5111,8 @@ get_x_token_or_active_char;
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   begin cur_cmd:=cur_cmd;
   end {dummy}
-else if (cur_cmd>active_char)or(cur_chr>=max_cjk_val) then
-  begin cur_cmd:=relax; cur_chr:=max_cjk_val;
+else if (cur_cmd>active_char)or(cur_chr>=max_char_val) then
+  begin cur_cmd:=relax; cur_chr:=max_char_val;
   end;
 if this_if=if_char_code then b:=(n=cur_chr)
 else if this_if=if_cat_code then
@@ -5779,7 +5813,7 @@ continue:
       end;
     prev_p:=link(prev_p); {N.B.: not |prev_p:=p|, |p| might be |lig_trick|}
     p:=link(p);
-    jc:=KANJI(info(p)) mod max_cjk_val;
+    jc:=KANJI(info(p)) mod max_char_val;
     if font_enc[f]=2 then {Unicode TFM}
       jc:=toUCS(jc)
     else if font_enc[f]=1 then {JIS-encoded TFM}
@@ -9147,7 +9181,7 @@ if not check_echar_range(cur_val) then
      begin
         link(p):=get_avail;
         if cat_code(cur_val)=other_char then
-          info(link(p)):=KANJI(cx) + max_cjk_val
+          info(link(p)):=KANJI(cx) + max_char_val
         else info(link(p)):=KANJI(cx);
      end;
   end
@@ -9219,7 +9253,7 @@ if KANJI(cx)<>empty then
   begin q:=new_character(f,get_jfm_pos(KANJI(cx),f));
   link(q):=get_avail;
   if cat_code(cx)=other_char then
-    info(link(q)):=KANJI(cx) + max_cjk_val
+    info(link(q)):=KANJI(cx) + max_char_val
   else
     info(link(q)):=KANJI(cx);
   last_jchr:=q;
@@ -9383,7 +9417,7 @@ else  begin
     p:=nucleus(info(p)); q:=kcode_noad_nucleus(p);
     end;
   math_type(p):=math_jchar; fam(p):=cur_jfam; character(p):=qi(0);
-  math_kcode(p-1):=KANJI(cx) + kcat_code(cx)*max_cjk_val;
+  math_kcode(p-1):=KANJI(cx) + kcat_code(cx)*max_char_val;
   if font_dir[fam_fnt(fam(p)+cur_size)]=dir_default then
     begin print_err("Not two-byte family");
     help1("IGNORE.");@/
@@ -10911,7 +10945,7 @@ if j=1 then
       cur_tok:=other_kchar
     else cur_tok:=other_char;
     if cur_chr=" " then cur_tok:=space_token
-    else cur_tok:=cur_chr+cur_tok*max_cjk_val;
+    else cur_tok:=cur_chr+cur_tok*max_char_val;
 @z
 
 @x
@@ -10952,13 +10986,13 @@ if_cs_code:begin n:=get_avail; p:=n; {head of the list of characters}
 @y
   if check_kanji(info(p)) then {|wchar_token|}
     begin
-    if BYTE1(toBUFF(info(p) mod max_cjk_val))<>0 then
-      begin buffer[m]:=BYTE1(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
-    if BYTE2(toBUFF(info(p) mod max_cjk_val))<>0 then
-      begin buffer[m]:=BYTE2(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
-    if BYTE3(toBUFF(info(p) mod max_cjk_val))<>0 then
-      begin buffer[m]:=BYTE3(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m); end;
-    buffer[m]:=BYTE4(toBUFF(info(p) mod max_cjk_val)); buffer2[m]:=1; incr(m);
+    if BYTE1(toBUFF(info(p) mod max_char_val))<>0 then
+      begin buffer[m]:=BYTE1(toBUFF(info(p) mod max_char_val)); buffer2[m]:=1; incr(m); end;
+    if BYTE2(toBUFF(info(p) mod max_char_val))<>0 then
+      begin buffer[m]:=BYTE2(toBUFF(info(p) mod max_char_val)); buffer2[m]:=1; incr(m); end;
+    if BYTE3(toBUFF(info(p) mod max_char_val))<>0 then
+      begin buffer[m]:=BYTE3(toBUFF(info(p) mod max_char_val)); buffer2[m]:=1; incr(m); end;
+    buffer[m]:=BYTE4(toBUFF(info(p) mod max_char_val)); buffer2[m]:=1; incr(m);
     p:=link(p);
     end
   else
@@ -11986,7 +12020,7 @@ end;
 
 @ @<Insert a space around the character |p|@>=
 if font_dir[font(p)]<>dir_default then
-  begin KANJI(cx):=info(link(p)) mod max_cjk_val;
+  begin KANJI(cx):=info(link(p)) mod max_char_val;
   if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>;
   p:=link(p); insert_skip:=after_wchar;
   end
@@ -12015,7 +12049,7 @@ if type(first_char)=math_node then
   if insert_skip=after_wchar then @<Insert KANJI-ASCII spacing@>;
   end
 else if font_dir[font(first_char)]<>dir_default then
-  begin KANJI(cx):=info(link(first_char)) mod max_cjk_val;
+  begin KANJI(cx):=info(link(first_char)) mod max_char_val;
   if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>
   else if insert_skip=after_wchar then @<Insert KANJI-KANJI spacing@>;
   end
@@ -12032,7 +12066,7 @@ if type(last_char)=math_node then
   end
 else if font_dir[font(last_char)]<>dir_default then
   begin insert_skip:=after_wchar;
-  KANJI(cx):=info(link(last_char)) mod max_cjk_val;
+  KANJI(cx):=info(link(last_char)) mod max_char_val;
   if is_char_node(link(p))and(font_dir[font(link(p))]<>dir_default) then
     begin @<Append KANJI-KANJI spacing@>; p:=link(p);
     end;
@@ -12074,7 +12108,7 @@ end
 begin if is_char_node(link(p)) then
   begin q:=p; p:=link(p);
   if font_dir[font(p)]<>dir_default then
-    begin KANJI(cx):=info(link(p)) mod max_cjk_val;
+    begin KANJI(cx):=info(link(p)) mod max_char_val;
     if insert_skip=after_schar then @<Insert ASCII-KANJI spacing@>
     else if insert_skip=after_wchar then @<Insert KANJI-KANJI spacing@>;
     p:=link(p); insert_skip:=after_wchar;
@@ -12158,8 +12192,8 @@ k:=0;
 while(p<>null) do
 begin if is_char_node(p) then
   begin if font_dir[font(p)]<>dir_default then
-    begin KANJI(cx):=info(link(p)) mod max_cjk_val;
-    if (info(link(p)) div max_cjk_val)>0 then begin t:=q; s:=p; end;
+    begin KANJI(cx):=info(link(p)) mod max_char_val;
+    if (info(link(p)) div max_char_val)>0 then begin t:=q; s:=p; end;
     p:=link(p); q:=p;
     end
   else begin k:=k+1;
@@ -12304,7 +12338,7 @@ main_loop_j+1: space_factor:=1000;
     link(tail):=main_p; tail:=main_p; last_jchr:=tail;
     fast_get_avail(main_p);
     if cur_cmd mod cjk_code_flag=other_char then
-      info(main_p):=KANJI(cur_chr)+max_cjk_val
+      info(main_p):=KANJI(cur_chr)+max_char_val
     else
       info(main_p):=KANJI(cur_chr);
     link(tail):=main_p; tail:=main_p;
@@ -12461,7 +12495,7 @@ skip_loop: do_nothing;
 procedure print_utf8_generic(@!s:integer; @!f:integer); {prints a single character}
 var i: integer;
 begin
-i:=s mod max_cjk_val;
+i:=s mod max_char_val;
 if (i<@"20)or((i>=@"80)and(i<@"A0)) then print(i)
 else begin s:=toBUFF(i);
   if BYTE1(s)<>0 then print_char(f+BYTE1(s));
