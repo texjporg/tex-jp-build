@@ -1,3 +1,8 @@
+2023-01-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptexextra.h:
+	Make AUTHOR "Japanese TeX Development Community".
+
 2022-12-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* wcfname.test, am/ptex.am:

@@ -4,6 +4,8 @@
 	Add tests for file names with JIS X 0208 characters
 	in `eptex --kanji-internal={euc,sjis}`.
 	https://github.com/texjporg/tex-jp-build/issues/136
+	* eptexextra.h:
+	Make AUTHOR "Japanese TeX Development Community".
 
 2022-12-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
