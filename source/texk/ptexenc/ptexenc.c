@@ -1150,6 +1150,10 @@ void clear_infile_enc(FILE *fp)
 {
     infile_enc[fileno(fp)] = ENC_UNKNOWN;
 }
+long ptenc_conv_first_line(long pos, long last, unsigned char *buff, const long buffsize)
+{
+   return last;
+}
 #else /* !WIN32 */
 static const_string in_filter = NULL;
 static FILE *piped_fp[NOFILE];
@@ -1339,26 +1343,21 @@ unsigned char *ptenc_from_internal_enc_string_to_utf8(const unsigned char *is)
     return buf;
 }
 
-int ptenc_get_command_line_args(int *p_ac, char ***p_av)
+long ptenc_conv_first_line(long pos, long last, unsigned char *buff, const long buffsize)
+  /* return new last */
 {
-    int i, argc;
-    char **argv;
-
-    get_terminal_enc();
-    if (terminal_enc == ENC_UTF8 && !is_internalUPTEX()) {
-        argc = *p_ac;
-        argv = xmalloc(sizeof(char *)*(argc+1));
-        for (i=0; i<argc; i++) {
-            argv[i] = ptenc_from_utf8_string_to_internal_enc((*p_av)[i]);
-#ifdef DEBUG
-            fprintf(stderr, "Commandline arguments %d:(%s)\n", i, argv[i]);
-#endif /* DEBUG */
-        }
-        argv[argc] = NULL;
-        *p_av = argv;
-         return terminal_enc;
-    }
-    return 0;
+    unsigned char *old, *new_buf; long new_last, i;
+    if (internal_enc==ENC_UPTEX) return last; /* no conversion needed */
+    old = xmalloc(last-pos+2);
+    if (old==NULL) return last;
+    strncpy(old, buff+pos, last-pos+1); old[last-pos+1]='\0';
+    new_buf = ptenc_from_utf8_string_to_internal_enc(old);
+    if (new_buf==NULL) { free(old); return last; }
+    new_last=pos+strlen(new_buf)-1;
+    if (new_last>=buffsize) new_last=buffsize-1;
+    for (i=0;i<strlen(new_buf); i++) buff[pos+i]=new_buf[i];
+    free(old); free(new_buf);
+    return new_last;
 }
 
 #endif /* !WIN32 */

@@ -1,3 +1,30 @@
+2022-12-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* wcfname.test, am/ptex.am:
+	Add tests for file names with JIS X 0208 characters
+	in `ptex --kanji-internal={euc,sjis}`.
+	https://github.com/texjporg/tex-jp-build/issues/136
+
+2022-12-22  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch, ptex.defines, kanji.h, am/ptex.am:
+	Accept file names with JIS X 0208 characters
+	in `ptex --kanji-internal={euc,sjis}`.
+	https://github.com/texjporg/tex-jp-build/issues/136
+
+2022-12-12  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Increase INHIBIT/KINSOKU table size to 1024.
+
+2022-12-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	am/ptex.am:
+	Merge change files/binaries for pTeX tools into upTeX tools.
+	Now pTeX tools (pbibtex, pdvitype, ppltotf, ptftopl) run
+	as the compatible mode.
+	https://github.com/texjporg/tex-jp-build/issues/32
+	https://github.com/texjporg/tex-jp-build/issues/154
+
 2022-11-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* {nissya,pdvitype,yokotate}.test, tests/nissya_bib.bbl,
