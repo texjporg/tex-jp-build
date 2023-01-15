@@ -2,6 +2,11 @@
 
 	* uptexextra.h:
 	Make AUTHOR "Japanese TeX Development Community".
+	* am/uptex.am:
+	Remove binaries of upTeX (uptex).
+	Now we use alias of e-upTeX (euptex) for upTeX (uptex).
+	https://github.com/texjporg/tex-jp-build/issues/32
+	* COPYRIGHT: copyright year.
 
 2022-12-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
