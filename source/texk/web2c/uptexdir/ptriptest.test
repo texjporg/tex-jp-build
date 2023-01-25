@@ -1,6 +1,6 @@
 #! /bin/sh -vx
 # $Id$
-# Copyright 2022 Japanese TeX Development Community <issue@texjp.org>
+# Copyright 2022-2023 Japanese TeX Development Community <issue@texjp.org>
 # Copyright 2017-2018 Karl Berry <tex-live@tug.org>
 # Copyright 2010-2014 Peter Breitenlohner <tex-live@tug.org>
 # You may freely use, modify and/or distribute this file.
@@ -29,7 +29,7 @@ is_OK=:
 
 set -x
 
-echo "*** TRIP test for pTeX ***."
+echo "*** TRIP test for upTeX-euc ***."
 
 ../pltotf $testdir/trip.pl trip.tfm || exit 1
 
