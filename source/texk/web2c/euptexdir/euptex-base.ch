@@ -195,8 +195,8 @@
 @y
 @d eTeX_version_string=='-2.6' {current \eTeX\ version}
 @#
-@d epTeX_version_string=='-220214'
-@d epTeX_version_number==220214
+@d epTeX_version_string=='-230214'
+@d epTeX_version_number==230214
 @z
 
 @x
