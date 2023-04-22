@@ -170,8 +170,9 @@ tfmload(register fontdesctype *curfnt)
 #endif /* DEBUG */
          }
       }
-      if (font_level>1 || hd<2 || bc<0 || ec<0 || nw<0
-                       || bc>ec+1 || ec>65535 || nw>65536)
+      if ((font_level>1 || hd<2 || bc<0 || ec<0 || nw<0
+                       || bc>ec+1 || ec>0xFFFFFF || nw>0x1000000) ||
+         (font_level==0 && (ec>65535 || nw>65536)))
          badtfm("header");
       if (font_level==1) {
          nco = tfm32();
