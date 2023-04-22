@@ -15,7 +15,7 @@ export TEXMFCNF TFMFONTS T1FONTS TEXFONTMAPS DVIPDFMXINPUTS TEXPICTS TEXFONTS SO
 
 failed=
 
-rm -f upjf.vf upjv.vf upjf-g.ofm upjv-g.ofm
+rm -f upjf.vf upjv.vf upjf-g.ofm upjv-g.ofm upjf-r.ofm upjv-r.ofm
 
 echo "*** dvipdfmx: test for upjf_full.pdf" && echo \
 	&& cp $srcdir/tests/upjf_full.vf ./upjf.vf \
@@ -36,6 +36,16 @@ echo "*** dvipdfmx: test for upjf_omit.pdf" && echo \
 	|| failed="$failed dvipdfmx-upjf-vf_omit"
 
 cmp ./upjf_full.pdf ./upjf_omit.pdf || failed="$failed dvipdfmx-upjf-cmp"
+
+echo "*** dvipdfmx: test for upjf_omit2.pdf" && echo \
+	&& cp $srcdir/tests/upjf-r00.ofm ./upjf-r.ofm \
+	&& cp $srcdir/tests/upjv-r00.ofm ./upjv-r.ofm \
+	&& ./xdvipdfmx --dvipdfmx -vv --pdfm-str-utf8 -f upjf.map -o upjf.pdf $srcdir/tests/upjf.dvi \
+	&& mv ./upjf.pdf ./upjf_omit2.pdf \
+	&& echo && echo "dvipdfmx-upjf-vf_omit2 tests OK" && echo \
+	|| failed="$failed dvipdfmx-upjf-vf_omit2"
+
+cmp ./upjf_full.pdf ./upjf_omit2.pdf || failed="$failed dvipdfmx-upjf-cmp2"
 
 test -z "$failed" && exit 0
 echo
