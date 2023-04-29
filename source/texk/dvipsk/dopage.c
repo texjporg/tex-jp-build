@@ -136,18 +136,21 @@ dochar:
       /* try fallback */
          chardesctype *cd0;
          cd0 = curfnt->localfonts->desc->chardesc;
+         int kind0 = curfnt->localfonts->desc->kind;
          if (mychar<curfnt->localfonts->desc->maxchars && (cd0[mychar].flags & EXISTS)) {
 #ifdef DEBUG
             if (dd(D_FONTS))
                fprintf_str(stderr,
-                 "Fallback pTeX vf:%s char=%d(0x%06x) to %s\n",
-                  curfnt->name, mychar, mychar, curfnt->localfonts->desc->name);
+                 "Fallback pTeX vf:%s char=%d(0x%06x) to %s:%s\n",
+                  curfnt->name, mychar, mychar, kind0==OFM_OMEGA ? "ofm" : "tfm",
+                  curfnt->localfonts->desc->name);
 #endif /* DEBUG */
             cd0 = &(cd0[mychar]);
          } else {
             fprintf_str(stderr,
-                 "Warning: Failed to fallback pTeX vf:%s char=%d(0x%06x) to %s\n",
-                  curfnt->name, mychar, mychar, curfnt->localfonts->desc->name);
+                 "Warning: Failed to fallback pTeX vf:%s char=%d(0x%06x) to %s:%s\n",
+                  curfnt->name, mychar, mychar, kind0==OFM_OMEGA ? "ofm" : "tfm",
+                  curfnt->localfonts->desc->name);
          }
          if (charmove) {
             if (!dir) {
