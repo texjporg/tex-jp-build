@@ -26,6 +26,11 @@
    (CHARHT R 0.9)
    (CHARDP R 0.1)
    )
+(CHARREPEAT H FF00 H FF
+   (CHARWD R 0.5)
+   (CHARHT R 0.9)
+   (CHARDP R 0.1)
+   )
 (CHARACTER H 20B9F
    (CHARWD R 1.0)
    (CHARHT R 0.9)
