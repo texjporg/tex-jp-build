@@ -7,7 +7,7 @@
 	* tfmload.c: Accept maximum EC 0x10FFFF for OFM level 1.
 	* uptex-vf.test, Makefile_upjf, testdata/upjf-r00.{ofm,opl},
 	testdata/upjv-r00.{ofm,opl}, testdata/upjf1-r.{tfm,pl},
-	testdata/upjf1_{full,omit}.{vf,zvp0}:
+	testdata/upjf1_{full,omit}.{vf,zvp0}, Makefile.am:
 	Add new tests for fallback virtual font to OFM.
 
 	The rule for virtual fonts (VF) fallback is extended:
