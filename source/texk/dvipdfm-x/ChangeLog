@@ -7,7 +7,7 @@
 	* configure.ac: version 20230429.
 	* dvipdfmx-upjf.test, Makefile_upjf, tests/upjf-r00.{ofm,opl},
 	tests/upjv-r00.{ofm,opl}, tests/upjf1-r.{tfm,pl},
-	tests/upjf1_{full,omit}.{vf,zvp0}:
+	tests/upjf1_{full,omit}.{vf,zvp0}, Makefile.am:
 	Add new tests for fallback virtual font to OFM.
 
 	The rule for virtual fonts (VF) fallback is extended:
