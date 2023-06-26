@@ -1,3 +1,39 @@
+2023-06-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.test: Check CTWILL output.
+
+2023-06-22  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctproofmac.tex,
+	* cttwinxmac.tex,
+	* ctwimac.tex: Minor fixes, bug in TWINX macros.
+	* ctwill-proofsort: Avoid provoked user errors.
+	* ctwill.test,
+	* tests/index.tex: Shorter test suite, TWINX tested.
+
+2023-06-21  Karl Berry  <karl@freefriends.org>
+
+	* ctwill-proofsort: 'quotes' for $Revision$.
+
+2023-06-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.h,
+	* ctwill-mini.ch,
+	* ctwill-w2c.ch,
+	* ctwill.bux: Use 'kpse_find_file' for '*.bux' files.
+	* ctwill.test,
+	* tests/: Comprehensive test of CTWILL and its utilities.
+
+2023-06-18  Karl Berry  <karl@freefriends.org>
+
+	* ctwill-proofsort: die if getopt fails;
+	standardize version() output;
+	move COPYRIGHT to end of help, include github repo.
+	* ctwill.test: for now, exit before running TeX,
+	since building plain.fmt is too intensive.
+	Consistently use ./ctie instead of ctie since we want
+	the binary in the build directory.
+	
 2023-06-17  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill-{mini,hint}.ch: Make ctwill.w plain-TeX-able again.

@@ -60,6 +60,12 @@ Section 2.
 Section 4.
 
 @x
+For backward compatibility with pre-{\mc ANSI} compilers, we replace the
+@y
+And we replace the
+@z
+
+@x
 @d _(s) gettext(s)
 @y
 @d _(s) gettext(s)
@@ -390,28 +396,33 @@ Section 53.
 @-t@>
 @z
 
-Section 55.
+Section 54.
 
 @x
-@ @<Get a bin...@>={
+@ @<Get a hex...@>={
 @y
-@r @ @<Get a bin...@>={
+@r @ @<Get a hex...@>={
 @z
 
-Section 58.
+Section 57.
 
 @x
-@ @<Get a wide...@>={
+      else {
 @y
-@r @ @<Get a wide...@>={
+      else
 @z
 
-Section 63.
+@x
+      }
+@y
+@z
+
+Section 64.
 
 @x
-@ @<If end of name...@>=
+@ This function skips over a restricted context at relatively high speed.
 @y
-@r @ @<If end of name...@>=
+@r @ This function skips over a restricted context at relatively high speed.
 @z
 
 Section 65.
@@ -2160,6 +2171,15 @@ Section 322.
 @z
 
 Section 328.
+
+@x l.116 of CTWILL-TEXLIVE.CH
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@y
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@-name@>
+@z
+
+Section 330.
 
 @x
 @** Index.
