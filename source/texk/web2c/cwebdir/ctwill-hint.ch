@@ -22,6 +22,13 @@ The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 @-banner@>
 @$banner {CTWILL}1 =\.{"This\ is\ CTWILL"}@>
+
+@$ctangle {CTWILL}3 \&{enum} \&{cweb}@>
+@$ctwill {CTWILL}3 \&{enum} \&{cweb}@>
+@$cweave {CTWILL}3 \&{enum} \&{cweb}@>
+
+@$inner {CTWILL}207 \&{enum} \&{mode}@>
+@$outer {CTWILL}207 \&{enum} \&{mode}@>
 @z
 
 Section 2.
@@ -600,9 +607,9 @@ Section 208.
 @-cur_end@>
 @-cur_tok@>
 @-cur_mode@>
-@$cur_end {CTWILL}208 =\\{cur\_state}.\\{end\_field}]@>
-@$cur_tok {CTWILL}208 =\\{cur\_state}.\\{tok\_field}]@>
-@$cur_mode {CTWILL}208 =\\{cur\_state}.\\{mode\_field}]@>
+@$cur_end {CTWILL}208 =\\{cur\_state}.\\{end\_field}@>
+@$cur_tok {CTWILL}208 =\\{cur\_state}.\\{tok\_field}@>
+@$cur_mode {CTWILL}208 =\\{cur\_state}.\\{mode\_field}@>
 @z
 
 Section 211.

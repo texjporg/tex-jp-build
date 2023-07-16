@@ -60,6 +60,13 @@ faithful overall rendering of {\itt CTWILL}'s code, though. \hfill
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 @-banner@>
 @$banner {CTWILL}1 =\.{"This\ is\ CTWILL"}@>
+
+@$ctangle {CTWILL}3 \&{enum} \&{cweb}@>
+@$ctwill {CTWILL}3 \&{enum} \&{cweb}@>
+@$cweave {CTWILL}3 \&{enum} \&{cweb}@>
+
+@$inner {CTWILL}223 \&{enum} \&{mode}@>
+@$outer {CTWILL}223 \&{enum} \&{mode}@>
 @z
 
 Section 2.
@@ -686,7 +693,7 @@ The raw input is converted into scraps according to the following table,
 \.{\\hbox\{}\thinspace stuff\/\thinspace\.\} to the following scrap.
 
 \smallskip
-*The \.{\\,} (thin space) is omitted in ``inner \TeX\ mode.''
+*The \.{\\,} (thin space) is omitted in ``|inner| \TeX\ mode.''
 @z
 
 Sections 117--125.
@@ -1584,12 +1591,18 @@ Section 224.
 @-cur_end@>
 @-cur_tok@>
 @-cur_mode@>
-@$cur_end {CTWILL}224 =\\{cur\_state}.\\{end\_field}]@>
-@$cur_tok {CTWILL}224 =\\{cur\_state}.\\{tok\_field}]@>
-@$cur_mode {CTWILL}224 =\\{cur\_state}.\\{mode\_field}]@>
+@$cur_end {CTWILL}224 =\\{cur\_state}.\\{end\_field}@>
+@$cur_tok {CTWILL}224 =\\{cur\_state}.\\{tok\_field}@>
+@$cur_mode {CTWILL}224 =\\{cur\_state}.\\{mode\_field}@>
 @z
 
 Section 227.
+
+@x
+@ To insert token-list |p| into the output, the |push_level| subroutine
+@y
+@r @ To insert token-list |p| into the output, the |push_level| subroutine
+@z
 
 @x
 push_level( /* suspends the current level */
@@ -1605,11 +1618,10 @@ Section 228.
 
 @x
 force when the current level was begun. This subroutine will never be
-called when |stack_ptr==1|.
+called when |stack_ptr==1|. It is so simple, we declare it as a macro:
 @y
-force when the current level was begun.
-
-This subroutine will never be called when |stack_ptr==1|.
+force when the current level was begun.  It is so simple, we declare it as a
+macro.  This subroutine will never be called when |stack_ptr==1|.
 @z
 
 Section 233--234.
