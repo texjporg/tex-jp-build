@@ -212,6 +212,11 @@
 @d pTeX_banner_k==pTeX_banner
   {printed when \pTeX\ starts}
 @#
+@d epTeX_version==pTeX_version_string,epTeX_version_string,eTeX_version_string
+@d epTeX_banner=='This is e-pTeX, Version 3.141592653',epTeX_version
+@d epTeX_banner_k==epTeX_banner
+  {printed when \epTeX\ starts}
+@#
 @d upTeX_version=1
 @d upTeX_revision==".29"
 @d upTeX_version_string=='-u1.29' {current \upTeX\ version}
@@ -219,11 +224,6 @@
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
   {printed when \upTeX\ starts}
-@#
-@d epTeX_version==pTeX_version_string,epTeX_version_string,eTeX_version_string
-@d epTeX_banner=='This is e-pTeX, Version 3.141592653',epTeX_version
-@d epTeX_banner_k==epTeX_banner
-  {printed when \epTeX\ starts}
 @#
 @d eupTeX_version==pTeX_version_string,upTeX_version_string,epTeX_version_string,eTeX_version_string
 @d eupTeX_banner=='This is e-upTeX, Version 3.141592653',eupTeX_version
@@ -6659,8 +6659,10 @@ while link(tail)<>null do
   {reset |inhibit_glue_flag| when a node other than |disp_node| is found;
    |disp_node| is always inserted according to tex-jp-build issue 40}
   begin p:=tail; tail:=link(tail);
-  if is_char_node(tail) then
-    inhibit_glue_flag:=false
+  if is_char_node(tail) then begin
+    inhibit_glue_flag:=false;
+    if font_dir[font(tail)]<>dir_default then last_jchr:=link(tail);
+    end
   else
     case type(tail) of
     glue_node : begin
