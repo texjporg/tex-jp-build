@@ -43,8 +43,8 @@ git branch -m master texlive-gitsvn
 ```
 git remote add origin git@github.com:texjporg/tex-jp-build.git
 git remote -v
-git checkout -b master origin/master
-git checkout -b texlive-trunk origin/texlive-trunk
+git switch -c master origin/master
+git switch -c texlive-trunk origin/texlive-trunk
 git worktree add ../texlive-gitsvn texlive-gitsvn
 ```
 
@@ -71,7 +71,7 @@ git log remotes/git-svn --oneline
 
 ```
 cd workXXX/Build/
-git checkout texlive-trunk
+git switch texlive-trunk
 git cherry-pick ffb1af1b4..d39202e05 --allow-empty
 git diff texlive-gitsvn
 ```
@@ -79,7 +79,7 @@ git diff texlive-gitsvn
 ブランチ`texlive-gitsvn` と `texlive-trunk` は内容が完全に同じでコミットハッシュだけが異なる状態になっているはず。
 
 ```
-git checkout master
+git switch master
 git remote -v
 git fetch
 git merge origin/master

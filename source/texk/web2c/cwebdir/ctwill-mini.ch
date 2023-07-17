@@ -1,14 +1,31 @@
+Formatting changes for CTWILL by Andreas Scherer
+This file is in the Public Domain.
+
+This extensive set of changes is my best attempt to format CTWILL with
+itself in DVI or PDF format, i.e., with the '[pdf]ctwimac.tex' macros. This
+produces output with 'mini-indexes' on each spread of pages.
+
+Apply these additional changes in the following two-step procedure:
+First create 'ctwill-w2c.ch' that mogrifies CWEAVE into CTWILL:
+$ tie -c ctwill-w2c.ch \
+> cweave.w cweav-{patch,extensions,output,i18n,twill}.ch \
+> cwtw-texlive.ch ctwill-texlive.ch
+Then create 'ctwill.w' that gets processed with TeX (plain, pdfTeX, XeTeX):
+$ ctie -m ctwill.w \
+> cweave.w ctwill-w2c.ch ctwill-mini.ch
+
 Section 1.
 
 @x
 @** Introduction.
 @y
-\ifacro \ifx\undefined\pdfpagewidth\else
+\ifx\undefined\pdfpagewidth
+\else
   \pdfpagewidth=\pagewd \advance\pdfpagewidth by 2cm
   \pdfpageheight=\pageht \advance\pdfpageheight by 5cm
   \ifpdftex \pdfhorigin=1cm \pdfvorigin=1cm
   \else \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
-\fi\fi
+\fi
 
 @** Introduction.
 @z
@@ -43,6 +60,13 @@ faithful overall rendering of {\itt CTWILL}'s code, though. \hfill
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 @-banner@>
 @$banner {CTWILL}1 =\.{"This\ is\ CTWILL"}@>
+
+@$ctangle {CTWILL}3 \&{enum} \&{cweb}@>
+@$ctwill {CTWILL}3 \&{enum} \&{cweb}@>
+@$cweave {CTWILL}3 \&{enum} \&{cweb}@>
+
+@$inner {CTWILL}223 \&{enum} \&{mode}@>
+@$outer {CTWILL}223 \&{enum} \&{mode}@>
 @z
 
 Section 2.
@@ -57,6 +81,12 @@ Section 2.
 @z
 
 Section 4.
+
+@x
+For backward compatibility with pre-{\mc ANSI} compilers, we replace the
+@y
+And we replace the
+@z
 
 @x
 @d _(s) gettext(s)
@@ -389,28 +419,33 @@ Section 53.
 @-t@>
 @z
 
-Section 55.
+Section 54.
 
 @x
-@ @<Get a bin...@>={
+@ @<Get a hex...@>={
 @y
-@r @ @<Get a bin...@>={
+@r @ @<Get a hex...@>={
 @z
 
-Section 58.
+Section 57.
 
 @x
-@ @<Get a wide...@>={
+      else {
 @y
-@r @ @<Get a wide...@>={
+      else
 @z
 
-Section 63.
+@x
+      }
+@y
+@z
+
+Section 64.
 
 @x
-@ @<If end of name...@>=
+@ This function skips over a restricted context at relatively high speed.
 @y
-@r @ @<If end of name...@>=
+@r @ This function skips over a restricted context at relatively high speed.
 @z
 
 Section 65.
@@ -658,7 +693,7 @@ The raw input is converted into scraps according to the following table,
 \.{\\hbox\{}\thinspace stuff\/\thinspace\.\} to the following scrap.
 
 \smallskip
-*The \.{\\,} (thin space) is omitted in ``inner \TeX\ mode.''
+*The \.{\\,} (thin space) is omitted in ``|inner| \TeX\ mode.''
 @z
 
 Sections 117--125.
@@ -1556,12 +1591,18 @@ Section 224.
 @-cur_end@>
 @-cur_tok@>
 @-cur_mode@>
-@$cur_end {CTWILL}224 =\\{cur\_state}.\\{end\_field}]@>
-@$cur_tok {CTWILL}224 =\\{cur\_state}.\\{tok\_field}]@>
-@$cur_mode {CTWILL}224 =\\{cur\_state}.\\{mode\_field}]@>
+@$cur_end {CTWILL}224 =\\{cur\_state}.\\{end\_field}@>
+@$cur_tok {CTWILL}224 =\\{cur\_state}.\\{tok\_field}@>
+@$cur_mode {CTWILL}224 =\\{cur\_state}.\\{mode\_field}@>
 @z
 
 Section 227.
+
+@x
+@ To insert token-list |p| into the output, the |push_level| subroutine
+@y
+@r @ To insert token-list |p| into the output, the |push_level| subroutine
+@z
 
 @x
 push_level( /* suspends the current level */
@@ -1577,11 +1618,10 @@ Section 228.
 
 @x
 force when the current level was begun. This subroutine will never be
-called when |stack_ptr==1|.
+called when |stack_ptr==1|. It is so simple, we declare it as a macro:
 @y
-force when the current level was begun.
-
-This subroutine will never be called when |stack_ptr==1|.
+force when the current level was begun.  It is so simple, we declare it as a
+macro.  This subroutine will never be called when |stack_ptr==1|.
 @z
 
 Section 233--234.
@@ -2159,6 +2199,15 @@ Section 322.
 @z
 
 Section 328.
+
+@x l.116 of CTWILL-TEXLIVE.CH
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@y
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@-name@>
+@z
+
+Section 330.
 
 @x
 @** Index.
