@@ -1,3 +1,24 @@
+2023-07-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-{mac,mini,vms,w2c}.ch,
+	* comm-w2c.h,
+	* common.bux,
+	* common.{c,h,w},
+	* ctangle.{c,w},
+	* ctwill-mini.ch,
+	* ctwill.bux: Match common.w with common.h.
+
+2023-07-18  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebdir/comm-mac.ch,
+	* cwebdir/comm-w2c.ch,
+	* cwebdir/common.c,
+	* cwebdir/common.w: Discard rest of overfull input line.
+
+2023-07-17  Andreas Scherer  <https://ascherer.github.io>
+
+	* cweave.w: Deal with malign user input.
+
 2023-07-16  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill-mini.ch,

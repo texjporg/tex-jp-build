@@ -1233,7 +1233,7 @@ out('.');
 switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
 @y
 @ We don't format the index completely; the \.{twinx} program does the
-rest of the job.
+rest of the job.  Compare this code with section |@<Mini-output...@>|.
 
 @<Output the name...@>=
 switch (cur_name->ilk) {
@@ -1246,16 +1246,9 @@ switch (cur_name->ilk) {
 @z
 
 @x
-    else {
+    else {@+boolean all_caps=true;@+@t}\6{@>
 @y
-    else {@+char *j;@+@t}\6{@>
-@z
-
-@x
-  case wildcard: out_str("\\9");@+ goto not_an_identifier;
-@y
-  case roman: out_str("  ");@+ goto not_an_identifier;
-  case wildcard: out_str("\\9");@+ goto not_an_identifier;
+    else {@+boolean all_caps=true;@+char *j;@+@t}\6{@>
 @z
 
 @x
@@ -1267,6 +1260,7 @@ switch (cur_name->ilk) {
     out('$');
     goto name_done;
 @y
+  case roman: out_str("  ");
 not_an_identifier: out_name(cur_name,false); goto name_done;
   case custom: out_str("\\$"); break;
 @.\\\$@>
@@ -1883,11 +1877,10 @@ out_mini(
 switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
   case normal: case func_template:
     if (is_tiny(cur_name)) out_str("\\|");
-    else {
+    else {@+boolean all_caps=true;@+@t}\6{@>
       for (j=cur_name->byte_start;j<(cur_name+1)->byte_start;j++)
-        if (xislower(*j)) goto lowcase;
-      goto allcaps;
-lowcase: out_str("\\\\");
+        if (xislower(*j)) all_caps=false;
+      out_str(all_caps ? "\\." : "\\\\");
     }
   break;
 @.\\|@>
@@ -1895,7 +1888,7 @@ lowcase: out_str("\\\\");
 @.\\\\@>
   case wildcard: out_str("\\9"); break;
 @.\\9@>
-  case typewriter: allcaps: out_str("\\.");
+  case typewriter: out_str("\\."); break;
 @.\\.@>
   case roman: break;
   case custom:
