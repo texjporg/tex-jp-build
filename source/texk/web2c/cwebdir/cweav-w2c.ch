@@ -60,9 +60,9 @@
 @z
 
 @x
-@d max_refs 30000 /* number of cross-references; must be less than 65536 */
+@ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
 @y
-@d max_refs 65535 /* number of cross-references; must be less than 65536 */
+@ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
 @z
 
 @x
@@ -270,38 +270,6 @@ tex_puts("cwebma");
 @i prod.w
 @y
 @i prod-cweave.w
-@z
-
-@x
-@d inner_tok_flag (5*id_flag) /* signifies a token list in `\pb' */
-
-@c
-static void
-print_text( /* prints a token list for debugging; not used in |main| */
-@y
-@d inner_tok_flag (5*id_flag) /* signifies a token list in `\pb' */
-
-@<Predecl...@>=
-#if 0
-static void print_text(text_pointer p);
-#endif
-
-@ @c
-#if 0
-static void
-print_text( /* prints a token list for debugging; not used in |main| */
-@z
-
-@x
-}
-@y
-}
-#endif
-@z
-
-@x
-@ @<Predecl...@>=@+static void print_text(text_pointer p);
-@y
 @z
 
 @x
