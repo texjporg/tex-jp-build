@@ -111,14 +111,6 @@ possible changes from this \.{COMMON} interface consistently.
 
 @i common.h
 
-@ The following parameters are sufficient to handle \TEX/ (converted to
-\.{CWEB}), so they should be sufficient for most applications of \.{CWEAVE}.
-
-@d line_length 80 /* lines of \TEX/ output have at most this many characters;
-  should be less than 256 */
-@d max_refs 30000 /* number of cross-references; must be less than 65536 */
-@d max_scraps 5000 /* number of tokens in \CEE/ texts being parsed */
-
 @* Data structures exclusive to {\tt CWEAVE}.
 As explained in \.{common.w}, the field of a |name_info| structure
 that contains the |rlink| of a section name is used for a completely
@@ -216,7 +208,9 @@ typedef struct xref_info {
 } xref_info;
 typedef xref_info *xref_pointer;
 
-@ @<Private...@>=
+@ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
+
+@<Private...@>=
 static xref_info xmem[max_refs]; /* contains cross-reference information */
 static xref_pointer xmem_end = xmem+max_refs-1;
 static xref_pointer xref_ptr; /* the largest occupied position in |xmem| */
@@ -1326,6 +1320,9 @@ characters long, so we place it into an output buffer. During the output
 process, |out_line| will hold the current line number of the line about to
 be output.
 
+@d line_length 80 /* lines of \TEX/ output have at most this many characters;
+  should be less than 256 */
+
 @<Private...@>=
 static char out_buf[line_length+1]; /* assembled characters */
 static char *out_buf_end = out_buf+line_length; /* end of |out_buf| */
@@ -1482,7 +1479,7 @@ out_section(
 sixteen_bits n)
 {
   char s[6];
-  sprintf(s,"%d",(int)n); out_str(s);
+  snprintf(s,6,"%d",(int)n); out_str(s);
   if (changed_section[n]) out_str("\\*");
 @.\\*@>
 }
@@ -2161,6 +2158,8 @@ blanks that will not match in any productions. Parsing stops when
 Since the |scrap| structure will later be used for other purposes, we
 declare its second element as a union.
 
+@d trans trans_plus.Trans /* translation texts of scraps */
+
 @<Type...@>=
 typedef struct {
   eight_bits cat;
@@ -2172,7 +2171,7 @@ typedef struct {
 } scrap;
 typedef scrap *scrap_pointer;
 
-@ @d trans trans_plus.Trans /* translation texts of scraps */
+@ @d max_scraps 5000 /* number of tokens in \CEE/ texts being parsed */
 
 @<Private...@>=
 static scrap scrap_info[max_scraps]; /* memory array for scraps */
@@ -2211,9 +2210,18 @@ translated without line-break controls.
 @d tok_flag (4*id_flag) /* signifies a token list */
 @d inner_tok_flag (5*id_flag) /* signifies a token list in `\pb' */
 
+@<Predecl...@>=
+#ifdef DEBUG
+static void print_text(text_pointer p);
+#endif
+
+@ This function prints a token list for debugging;
+it is not used in |main| at this time.
+
 @c
+#ifdef DEBUG
 static void
-print_text( /* prints a token list for debugging; not used in |main| */
+print_text(
 text_pointer p)
 {
   token_pointer j; /* index into |tok_mem| */
@@ -2238,8 +2246,7 @@ text_pointer p)
   }
   update_terminal();
 }
-
-@ @<Predecl...@>=@+static void print_text(text_pointer p);
+#endif /* |DEBUG| */
 
 @ @<Print token |r|...@>=
 switch (r) {
@@ -4236,7 +4243,7 @@ else {
   group_found=true;
   out_str("\\N");
 @.\\N@>
-  {@+ char s[32];@+sprintf(s,"{%d}",sec_depth+1);@+out_str(s);@+}
+  {@+ char s[32];@+snprintf(s,32,"{%d}",sec_depth+1);@+out_str(s);@+}
   if (show_progress)
   printf("*%d",(int)section_count); update_terminal(); /* print a progress report */
 }
