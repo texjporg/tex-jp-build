@@ -3,19 +3,25 @@
 # Copyright 2023 Andreas Scherer <tex-live@tug.org>
 # You may freely use, modify and/or distribute this file.
 
+BinDir=${BinDir:-.}
+ExeExt=${ExeExt:-}
+_ctwill=$BinDir/ctwill$ExeExt
+_ctwill_refsort=$BinDir/ctwill-refsort$ExeExt
+_ctwill_twinx=$BinDir/ctwill-twinx$ExeExt
+
 testdir=$srcdir/cwebdir/tests
 
 # Test CTWILL by running it twice
-CWEBINPUTS=$testdir ./ctwill ham ham || exit 1
-CWEBINPUTS=$testdir ./ctwill ham ham || exit 1
+CWEBINPUTS=$testdir $_ctwill ham ham || exit 1
+CWEBINPUTS=$testdir $_ctwill ham ham || exit 1
 diff ham.tex $testdir/ham.tex || exit 1
 
 # Test CTWILL-REFSORT
-./ctwill-refsort < $testdir/ham.ref > ham.sref || exit 1
+$_ctwill_refsort < $testdir/ham.ref > ham.sref || exit 1
 diff ham.sref $testdir/ham.sref || exit 1
 
 # Test CTWILL-TWINX
-./ctwill-twinx ham.tex > index.tex
+$_ctwill_twinx ham.tex > index.tex
 diff index.tex $testdir/index.tex || exit 1
 
 # Test CTWILL-PROOFSORT

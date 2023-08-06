@@ -1,0 +1,3 @@
+/* dvips/c-auto.h: defines for dvips, as determined by configure. */
+#define VERSION "${VERSION}"
+#define TL_VERSION "TeX Live ${TEX_LIVE_VERSION}; Visual C++"

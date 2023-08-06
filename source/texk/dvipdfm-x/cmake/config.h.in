@@ -1,0 +1,8 @@
+#cmakedefine VERSION "${VERSION}"
+
+#cmakedefine HAVE_INTTYPES_H 1
+#cmakedefine HAVE_STDINT_H 1
+
+#cmakedefine HAVE_TIMEZONE 1
+
+#cmakedefine HAVE_TM_GMTOFF 1

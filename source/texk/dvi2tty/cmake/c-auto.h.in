@@ -1,0 +1,27 @@
+/* ptexenc/c-auto.h: defines for ptexenc, as determined by configure. */
+/* Guard against double inclusion. */
+#ifndef PTEXENC_C_AUTO_H
+#define PTEXENC_C_AUTO_H
+
+#define PTEXENCVERSION "ptexenc version @PTEXENC_VERSION@"
+
+#cmakedefine HAVE_ICONV_H 1
+
+#cmakedefine HAVE_ATEXIT 1
+#cmakedefine HAVE_ON_EXIT 1
+
+#cmakedefine KANJI_ICONV 1
+
+#endif /* !PTEXENC_C_AUTO_H */
+
+#define VERSION "${VERSION}"
+#define TL_VERSION "TeX Live ${TEX_LIVE_VERSION}; Visual C++"
+
+#undef popen
+#define popen _popen
+#undef pclose
+#define pclose _pclose
+#undef fileno
+#define fileno _fileno
+#undef unlink
+#define unlink _unlink

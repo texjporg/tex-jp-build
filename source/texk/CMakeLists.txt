@@ -1,0 +1,15 @@
+# CMakeLists.txt for texk directory
+
+add_subdirectory(kpathsea)
+add_subdirectory(ptexenc)
+add_subdirectory(web2c)
+add_subdirectory(dvipdfm-x)
+add_subdirectory(dvipsk)
+add_subdirectory(makejvf)
+add_subdirectory(mendexk)
+add_subdirectory(upmendex)
+add_subdirectory(bibtex-x)
+add_subdirectory(dviout-util)
+add_subdirectory(dvi2tty)
+add_subdirectory(seetexk)
+add_subdirectory(dvidvi)
