@@ -94,7 +94,7 @@ can be found in Knuth's article ``Mini-indexes for literate programs,''
 reprinted in {\sl Digital Typography\/} (1999), 225--245.
 
 A kind of ``user manual'' for \.{CTWILL} can be found in the appendix
-\X270:Mogrify \.{CWEAVE} into \.{CTWILL}\X~and beyond, together with
+\X271:Mogrify \.{CWEAVE} into \.{CTWILL}\X~and beyond, together with
 additional material specific to \.{CTWILL}. % FIXME
 Until then, \.{CWEAVE}'s sequence of sections will be preserved.
 
@@ -135,7 +135,7 @@ turned on during the first phase---NOT!
 @x
 @ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
 @y
-@ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
+@ @d max_refs 65535 /* number of cross-references; must be less than 65536 */
 @z
 
 @x
@@ -811,7 +811,7 @@ else if (cat1==ubinop && (cat2==ubinop || cat2==cast)) {
 version 3.6, because those productions bypass |decl_head| (thereby
 confusing |make_ministring|, which depends on the |decl_head| productions
 to deduce the type). We revert to an older syntax that was
-less friendly to \CPLUSPLUS/ but good enough for me.
+less friendly to \CPLUSPLUS/ but good enough for me.@^system dependencies@>
 
 @<Cases for |typedef_like|@>=
 if (cat1==decl_head) {
@@ -967,6 +967,11 @@ static boolean temp_switch; /* has `\.{@@\%}' occurred recently? */
 @z
 
 @x
+If the section has changed, we put \.{\\*} just after the section number.
+@y
+@z
+
+@x
 if (*(loc-1)!='*') out_str("\\M");
 @y
 if (*(loc-1)!='*') {
@@ -1098,41 +1103,18 @@ flush_buffer(out_ptr,false,false);
 @x
 out_str("\\fi"); finish_line();
 @.\\fi@>
-flush_buffer(out_buf,false,false); /* insert a blank line, it looks nice */
 @y
 finish_line(); out_str("\\mini"); finish_line();
 @.\\mini@>
 @<Output information about usage of id's defined in other sections@>@;
 out_str("}\\FI"); finish_line();
 @.\\FI@>
-flush_buffer(out_buf,false,false); /* insert a blank line, it looks nice */
 @z
 
 @x
-if (no_xref) {
-  finish_line();
-  out_str("\\end");
-@.\\end@>
-  finish_line();
-}
+  if (show_progress) fputs("\nWriting the index...",stdout);
 @y
-if (no_xref) {
-  finish_line();
-  out_str("\\end");
-@.\\end@>
-}
-@z
-
-@x
-  phase=3; if (show_progress) fputs("\nWriting the index...",stdout);
-@y
-  phase=3; if (show_progress) fputs(_("\nWriting the index..."),stdout);
-@z
-
-@x
-    fatal("! Cannot open index file ",idx_file_name);
-@y
-    fatal(_("! Cannot open index file "),idx_file_name);
+  if (show_progress) fputs(_("\nWriting the index..."),stdout);
 @z
 
 @x
@@ -1143,20 +1125,21 @@ if (no_xref) {
 @z
 
 @x
+    fatal("! Cannot open index file ",idx_file_name);
+@y
+    fatal(_("! Cannot open index file "),idx_file_name);
+@z
+
+@x
     fatal("! Cannot open section file ",scn_file_name);
 @y
     fatal(_("! Cannot open section file "),scn_file_name);
 @z
 
 @x
-@.\\end@>
-  finish_line();
-  fclose(active_file);
-}
+fclose(active_file);
 @y
-@.\\end@>
-}
-finish_line(); fclose(active_file); active_file=tex_file=NULL;
+fclose(active_file); active_file=tex_file=NULL;
 if (check_for_change) @<Update the result when it has changed@>@;
 @z
 
@@ -1200,7 +1183,7 @@ out('.');
 
 @x
 @ @<Output the name...@>=
-switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
+switch (cur_name->ilk) {@+char *p; /* index into |byte_mem| */@+@t}\6{\4@>
 @y
 @ We don't format the index completely; the \.{twinx} program does the
 rest of the job.  Compare this code with section |@<Mini-output...@>|.
@@ -1218,15 +1201,16 @@ switch (cur_name->ilk) {
 @x
     else {@+boolean all_caps=true;@+@t}\6{@>
 @y
-    else {@+boolean all_caps=true;@+char *j;@+@t}\6{@>
+    else {@+boolean all_caps=true;@+char *p;
+      /* index into |byte_mem| */ @+@t}\6{@>
 @z
 
 @x
   case roman: not_an_identifier: out_name(cur_name,false); goto name_done;
   case custom:
     out_str("$\\");
-    for (j=cur_name->byte_start;j<(cur_name+1)->byte_start;j++)
-      out(*j=='_'? 'x': *j=='$'? 'X': *j);
+    for (p=cur_name->byte_start;p<(cur_name+1)->byte_start;p++)
+      out(*p=='_'? 'x': *p=='$'? 'X': *p);
     out('$');
     goto name_done;
 @y
@@ -1245,7 +1229,7 @@ out_name(cur_name,proofing);
 @x
   puts("\nMemory usage statistics:");
 @.Memory usage statistics:@>
-  printf("%td names (out of %ld)\n",
+  printf("%td names (out of %ld)\n",@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf("%td cross-references (out of %ld)\n",
             (ptrdiff_t)(xref_ptr-xmem),(long)max_refs);
@@ -1266,7 +1250,7 @@ out_name(cur_name,proofing);
 @y
   puts(_("\nMemory usage statistics:"));
 @.Memory usage statistics:@>
-  printf(_("%td names (out of %ld)\n"),
+  printf(_("%td names (out of %ld)\n"),@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf(_("%td cross-references (out of %ld)\n"),
             (ptrdiff_t)(xref_ptr-xmem),(long)max_refs);
@@ -1294,15 +1278,15 @@ out_name(cur_name,proofing);
 @x
 @** Index.
 @y
-@q Section 270. @>
+@q Section 271. @>
 @** Mogrify {\tentex CWEAVE} into {\tentex CTWILL}.  The following sections
 introduce material that is specific to \.{CTWILL}.
 
 Care has been taken to keep the original section numbering of \.{CWEAVE}
 up to this point intact, so this new material should nicely integrate
-with the original ``\&{270.~Index}.''
+with the original ``\&{271.~Index}.''
 
-@q Section 2->271. @>
+@q Section 2->272. @>
 @* {\tentex CTWILL} user manual.
 Here is a sort of user manual for \.{CTWILL}---which is exactly like
 \.{CWEAVE} except that it produces much better documentation, for which you
@@ -1463,7 +1447,7 @@ which are quite different from the change files you set up for tangling.
 
 @d max_tex_chars 80 /* limit on the \TeX\ part of a meaning */
 
-@q Section 24->272. @>
+@q Section 25->273. @>
 @* Temporary and permanent meanings.
 \.{CTWILL} has special data structures to keep track of current
 and temporary meanings. These structures were not designed for maximum
@@ -1481,7 +1465,7 @@ typedef struct {
   char tex_part[max_tex_chars]; /* \TeX\ part of meaning */
 } meaning_struct;
 
-@q Section 25->273. @>
+@q Section 26->274. @>
 @ @<Private...@>=
 static struct perm_meaning {
   meaning_struct perm; /* current meaning of an identifier */
@@ -1504,16 +1488,16 @@ static char *ministring_buf_end=ministring_buf+max_tex_chars-1;
 static char *ministring_ptr; /* first available slot in |ministring_buf| */
 static boolean ms_mode; /* are we outputting to |ministring_buf|? */
 
-@q Section 26->274. @>
+@q Section 27->275. @>
 @ @<Set init...@>=
 max_temp_meaning_ptr=temp_meaning_stack;
 title_code_ptr=title_code;
 ms_mode=false;
 
-@q Section 275. @>
+@q Section 276. @>
 @ @<Predec...@>=@+static void new_meaning(name_pointer);
 
-@q Section 29->276. @>
+@q Section 30->277. @>
 @ The |new_meaning| routine changes the current ``permanent meaning''
 when an identifier is redeclared. It gets the |tex_part| from
 |ministring_buf|.
@@ -1524,7 +1508,6 @@ new_meaning(
   name_pointer p)
 {
   struct perm_meaning *q=get_meaning(p);
-  ms_mode=false;
   if (q->stamp!=section_count) {
     if (*(ministring_ptr-1)==' ') ministring_ptr--;
     if (ministring_ptr>=ministring_buf_end)
@@ -1538,7 +1521,7 @@ new_meaning(
   @<Write the new meaning to the \.{.aux} file@>@;
 }
 
-@q Section 74->277. @>
+@q Section 75->278. @>
 @ @<Process a user-generated meaning@>=
 { char *first=id_first;
   while (xisspace(*first)) first++;
@@ -1550,7 +1533,8 @@ new_meaning(
     name_pointer p=id_lookup(first,loc-1,normal);
     sixteen_bits t=title_lookup();
     if (*(loc-1)=='}')
-      while (xisdigit(*loc)) n=10*n+(*loc++)-'0';
+      for (;xisdigit(*loc);loc++)@^system dependencies@>
+        if (n < INT_MAX / 10) n=10*n+(*loc)-'0';
     if (*loc++!=' ')
       err_print(_("! Location in meaning should be followed by space"));
     else @<Digest the meaning of |p|, |t|, |n|@>@;
@@ -1558,7 +1542,7 @@ new_meaning(
   loc=id_loc+2;
 }
 
-@q Section 75->278. @>
+@q Section 76->279. @>
 @ @<Suppress mini-index entry@>=
 { char *first=id_first,*last=id_loc;
   while (xisspace(*first)) first++;
@@ -1569,7 +1553,7 @@ new_meaning(
   }
 }
 
-@q Section 76->279. @>
+@q Section 77->280. @>
 @ @<Digest...@>=
 { meaning_struct *m;
   struct perm_meaning *q=get_meaning(p);
@@ -1592,7 +1576,7 @@ new_meaning(
   }
 }
 
-@q Section 140->280/1. @>
+@q Section 141->281/2. @>
 @* Make ministrings.
  \.{CTWILL} needs the following procedure, which appends tokens of a
 translated text until coming to |tok_loc|, then suppresses text that may
@@ -1622,10 +1606,10 @@ static boolean app_supp(
 catch14: return *(*(p+1)-1)=='9'; /* was production 14 used? */
 }
 
-@q Section 282. @>
+@q Section 283. @>
 @ @<Predec...@>=@+static boolean app_supp(text_pointer);
 
-@q Section 141->283. @>
+@q Section 142->284. @>
 @ The trickiest part of \.{CTWILL} is the procedure |make_ministring(pp+l)|,
 with offset $l\in\{0,1,2\}$, which tries to figure out a symbolic form of
 definition after |make_underlined(pp+l)| has been called. We rely heavily
@@ -1653,14 +1637,14 @@ make_ministring(scrap_pointer p)
   cur_mathness=maybe_math; /* restore it */
 }
 
-@q Section 284. @>
+@q Section 285. @>
 @ @<Predec...@>=@+static void make_ministring(scrap_pointer);
 
-@q Section 42->285. @>
+@q Section 43->286. @>
 @ @<Private...@>=
 static sixteen_bits int_loc, ext_loc; /* locations of special reserved words */
 
-@q Section 142->286. @>
+@q Section 143->287. @>
 @ Here we use the fact that a |decl_head| comes from |int_like| only in
 production~27, whose translation is fairly easy to recognize. (Well,
 production 28 has been added for \CPLUSPLUS/, but we hope that doesn't
@@ -1701,7 +1685,7 @@ else {
   @<Append tokens for type |q|@>@;
 }
 
-@q Section 143->287. @>
+@q Section 144->288. @>
 @ @<Append tokens for type |q|@>=
 cur_mathness=no_math; /* it was |maybe_math| */
 if (*(q+1)==*q+8 && *(*q+1)==' ' && *(*q+3)==' ') {
@@ -1713,13 +1697,13 @@ while (ast_count) {
   big_app('{');@+app('*');@+app('}');@+ast_count--;
 }
 
-@q Section 252->288. @>
+@q Section 253->289. @>
 @ @<Private...@>=
 static boolean is_macro; /* it's a macro def, not a format def */
 static boolean def_diff; /* |false| iff the current macro has parameters */
 static name_pointer id_being_defined; /* the definee */
 
-@q Section 256->289. @>
+@q Section 257->290. @>
 @ @<Make ministring for a new macro@>=
 {
   ms_mode=true; ministring_ptr=ministring_buf;
@@ -1737,14 +1721,14 @@ static name_pointer id_being_defined; /* the definee */
   new_meaning(id_being_defined);
 }
 
-@q Section 245->290. @>
+@q Section 246->291. @>
 @* Process {\tentex .aux} files.
 
 @<Private...@>=
 static FILE *aux_file;
 static char aux_file_name[max_file_name_length]; /* name of \.{.aux} file */
 
-@q Section 246->291. @>
+@q Section 247->292. @>
 @ @<Read the \.{.aux} file, if present; then open it for output@>=
 memcpy(aux_file_name,tex_file_name,strlen(tex_file_name)-4);
 strcat(aux_file_name,".bux");
@@ -1773,9 +1757,10 @@ if (include_depth) { /* at least one new file was opened */
 if ((aux_file=fopen(aux_file_name,"wb"))==NULL)
   fatal(_("! Cannot open aux output file "),aux_file_name);
 
-@q Section 30->292. @>
+@q Section 31->293. @>
 @ @<Write the new meaning to the \.{.aux} file@>=
 {@+int n=q->perm.prog_no;
+  ms_mode=false;@/
   fprintf(aux_file,"@@$%.*s %.*s",@|
     (int)length(p),p->byte_start,@|
     (int)length(title_code[n]),title_code[n]->byte_start);
@@ -1783,7 +1768,7 @@ if ((aux_file=fopen(aux_file_name,"wb"))==NULL)
   fprintf(aux_file," %s@@>\n",q->perm.tex_part);
 }
 
-@q Section 267->293. @>
+@q Section 268->294. @>
 @* Usage of identifiers.
 The following code is performed for each identifier parsed during
 a section. Variable |top_usage| is always nonzero; it has the sentinel
@@ -1802,7 +1787,7 @@ placed on the list, unless they are reserved and their current
     }
 }
 
-@q Section 268->294. @>
+@q Section 269->295. @>
 @ @<Output information about usage of id's defined in other sections@>=
 { struct perm_meaning *q;
   while (temp_meaning_ptr>temp_meaning_stack) {
@@ -1818,38 +1803,40 @@ placed on the list, unless they are reserved and their current
   }
 }
 
-@q Section 269->295. @>
+@q Section 270->296. @>
 @ @c static void
 out_mini(
   meaning_struct *m)
-{ char s[90];
+{ char s[max_tex_chars+10];
   name_pointer cur_name=m->id;
   if (m->prog_no==0) { /* reference within current program */
     if (m->sec_no==section_count) return; /* defined in current section */
-    snprintf(s,90,"\\[%d",m->sec_no);
+    snprintf(s,max_tex_chars+10,"\\[%d",m->sec_no);
   } else { name_pointer n=title_code[m->prog_no];
     if (*(n->byte_start)=='{')
-      snprintf(s,90,"\\]%.*s%d",(int)length(n),n->byte_start,m->sec_no);
-    else snprintf(s,90,"\\]%.*s",(int)length(n),n->byte_start);
+      snprintf(s,max_tex_chars+10,"\\]%.*s%d",(int)length(n),n->byte_start,m->sec_no);
+    else snprintf(s,max_tex_chars+10,"\\]%.*s",(int)length(n),n->byte_start);
   }
   out_str(s); out(' ');
   @<Mini-output the name at |cur_name|@>@;
   out(' '); out_str(m->tex_part); finish_line();
 }
 
-@q Section 270->296. @>
+@q Section 271->297. @>
 @ @<Predec...@>=@+static void out_mini(meaning_struct *);
 
-@q Section 271->297. @>
+@q Section 272->298. @>
 @ Compare this code with section |@<Output the name...@>|.
 
 @<Mini-output...@>=
-switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
+switch (cur_name->ilk) {@+char *p; /* index into |byte_mem| */@+@t}\6{\4@>
   case normal: case func_template:
     if (is_tiny(cur_name)) out_str("\\|");
     else {@+boolean all_caps=true;@+@t}\6{@>
-      for (j=cur_name->byte_start;j<(cur_name+1)->byte_start;j++)
-        if (xislower(*j)) all_caps=false;
+      for (p=cur_name->byte_start;p<(cur_name+1)->byte_start;p++)
+        if (xislower(*p)) { /* not entirely uppercase */
+          all_caps=false; break;
+        }
       out_str(all_caps ? "\\." : "\\\\");
     }
   break;
@@ -1863,8 +1850,8 @@ switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
   case roman: break;
   case custom:
     out_str("$\\");
-    for (j=cur_name->byte_start;j<(cur_name+1)->byte_start;j++)
-      out(*j=='_'? 'x': *j=='$'? 'X': *j);
+    for (p=cur_name->byte_start;p<(cur_name+1)->byte_start;p++)
+      out(*p=='_'? 'x': *p=='$'? 'X': *p);
     out('$');
     goto name_done;
   default: out_str("\\&");
@@ -1873,7 +1860,7 @@ switch (cur_name->ilk) {@+char *j;@+@t}\6{\4@>
 out_name(cur_name,true);
 name_done:@;
 
-@q Section 27->298. @>
+@q Section 28->299. @>
 @* Handle program title.
 Here's a routine that converts a program title from the buffer
 into an internal number for the |prog_no| field of a meaning.
@@ -1903,10 +1890,10 @@ It advances |loc| past the title found.
   return p-title_code;
 }
 
-@q Section 299. @>
+@q Section 300. @>
 @ @<Predec...@>=@+static sixteen_bits title_lookup(void);
 
-@q Section 28->300. @>
+@q Section 29->301. @>
 @ @<Give a default title to the program, if necessary@>=
 if (title_code_ptr==title_code) { /* no \.{\\def\\title} found in limbo */
   char *saveloc=loc,*savelimit=limit; /* save */
@@ -1919,7 +1906,7 @@ if (title_code_ptr==title_code) { /* no \.{\\def\\title} found in limbo */
   loc=saveloc; limit=savelimit; /* restore */
 }
 
-@q Section 301. @>
+@q Section 302. @>
 @** Extensions to {\tentex CWEB}.  The following sections introduce new or
 improved features that have been created by numerous contributors over the
 course of a quarter century.
@@ -1984,7 +1971,7 @@ do {
 } while(comparison && !feof(tex_file) && !feof(check_file));
 
 @ Note the superfluous call to |remove| before |rename|.  We're using it to
-get around a bug in some implementations of |rename|.
+get around a bug in some implementations of |rename|.@^system dependencies@>
 
 @<Take appropriate action...@>=
 if(comparison)
