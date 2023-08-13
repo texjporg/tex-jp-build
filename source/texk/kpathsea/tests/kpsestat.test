@@ -21,5 +21,3 @@ done
 echo "kpsestat = \$srcdir => `$_kpsestat = $srcdir`"
 echo "kpsestat = \$srcdir/ => `$_kpsestat = $srcdir/`"
 echo "kpsestat = \$srcdir/kpsestat.c => `$_kpsestat = $srcdir/kpsestat.c`"
-
-exit 0

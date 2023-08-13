@@ -33,14 +33,14 @@ fi
 
 # Make sure we get expected values from the test texmf.cnf.
 val=`$_kpsewhich --var-value=maxpr`; remove_cr
-test x"$val" = x200 || exit 1
+test x"$val" = x200 || exit 2
 #
 val=`$_kpsewhich --progname=foo --var-value=maxpr`; remove_cr
-test x"$val" = x100 || exit 1
+test x"$val" = x100 || exit 3
 #
 val=`$_kpsewhich --var-value=othervar`; remove_cr
-test x"$val" = x300 || exit 1
+test x"$val" = x300 || exit 4
 
 # Now override on cmd line -- both texmf.cnf values should get overridden.
 val=`$_kpsewhich --cnf-line=maxpr=99 --var-value=maxpr`; remove_cr
-test x"$val" = x99 || exit 1
+test x"$val" = x99 || exit 5

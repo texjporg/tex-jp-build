@@ -19,21 +19,23 @@ DIFF="diff"
 $DIFF --strip-trailing-cr $0 $0 \
   && DIFF="diff --strip-trailing-cr" || echo
 
-
-# for check version
-echo "*** Start seetex tests with::"
-$_dviselect
-$_dvibook
-$_dviconcat
-$_dvitodvi
-
-
 # check whether the binaries are Windows exe or not
 run_stdio_test=1
 if [ $ExeExt = ".exe" ]; then
   echo "*** We assume EXE on Windows."
   run_stdio_test=0
 fi
+
+# for check version
+echo "*** Start seetex tests with::"
+$_dviselect
+if [ $run_stdio_test -gt 0 ]; then
+$_dvibook
+$_dviconcat
+fi
+$_dvitodvi
+
+TEXMFCNF=$srcdir/../kpathsea; export TEXMFCNF
 
 
 rm -rf play*
@@ -171,13 +173,13 @@ echo dvitodvi tests OK
 if [ $run_stdio_test -gt 0 ]; then
 
 rm -f playdvi.2
-cat playsel.dvi | $_dvitodvi '4:500@0+1(16.5cm,0)+2(0,28cm)+3(16.5cm,28cm)' -o playdvi.dvi \
+cat playsel.dvi | $_dvitodvi -o playdvi.dvi '4:500@0+1(16.5cm,0)+2(0,28cm)+3(16.5cm,28cm)' \
 	2>playdvi.2 \
 	&& $DIFF playdvi.2 $srcdir/tests/playdvi.2 \
 	|| exit 21
 
 rm -f playdvi.2
-$_dvitodvi '4:500@0+1(16.5cm,0)+2(0,28cm)+3(16.5cm,28cm)' -o playdvi.dvi <playsel.dvi \
+$_dvitodvi '4:500@0+1(16.5cm,0)+2(0,28cm)+3(16.5cm,28cm)' >playdvi.dvi <playsel.dvi \
 	2>playdvi.2 \
 	&& $DIFF playdvi.2 $srcdir/tests/playdvi.2 \
 	|| exit 22
