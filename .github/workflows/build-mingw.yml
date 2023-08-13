@@ -205,8 +205,8 @@ jobs:
             --disable-pdftex-synctex \
             --disable-mf \
             --disable-mf-nowin \
-            --enable-tex \
-            --enable-tex-synctex \
+            --disable-tex \
+            --disable-tex-synctex \
             --disable-etex \
             --disable-etex-synctex \
             --disable-aleph \
