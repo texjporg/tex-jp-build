@@ -1,5 +1,5 @@
 name: Build on MacOS
-run-name: ${{ github.actor }} is building and testing on MacOS
+run-name: building & testing on MacOS
 on:
   push:
     branches:
@@ -52,7 +52,7 @@ jobs:
       - name: icu
         shell: bash
         run: |
-          ICU_PREFIX=`find /usr/local -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
+          ICU_PREFIX=`find /usr/local/Cellar -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
           # ICU_PREFIX="/usr/local/Cellar/icu4c/73.2"
           echo "ICU_PREFIX: "$ICU_PREFIX
           echo "ICU_PREFIX=$ICU_PREFIX" >> $GITHUB_ENV
@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir -p ./source/Work/texk/bibtex-x
           cd ./source/Work/texk/bibtex-x
-          CFLAGS=-I$ICU_PREFIX/include \
+          CPPFLAGS=-I$ICU_PREFIX/include \
           LDFLAGS=-L$ICU_PREFIX/lib \
           LIBS="-licuio -licui18n -licuuc -licudata" \
           ../../../texk/bibtex-x/configure \
@@ -77,7 +77,7 @@ jobs:
         run: |
           mkdir -p ./source/Work/texk/upmendex
           cd ./source/Work/texk/upmendex
-          CFLAGS=-I$ICU_PREFIX/include \
+          CPPFLAGS=-I$ICU_PREFIX/include \
           LDFLAGS=-L$ICU_PREFIX/lib \
           LIBS="-licuio -licui18n -licuuc -licudata" \
           ../../../texk/upmendex/configure \

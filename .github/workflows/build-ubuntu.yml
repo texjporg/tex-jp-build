@@ -1,5 +1,5 @@
 name: Build on Ubuntu
-run-name: ${{ github.actor }} is building and testing on Ubuntu
+run-name: building & testing on Ubuntu
 on:
   push:
     branches:

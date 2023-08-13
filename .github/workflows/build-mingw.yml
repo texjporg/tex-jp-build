@@ -1,5 +1,5 @@
 name: Build on MinGW
-run-name: ${{ github.actor }} is building and testing on MinGW
+run-name: building & testing on MinGW
 on:
   push:
     branches:
