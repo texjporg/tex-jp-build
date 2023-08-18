@@ -17,16 +17,16 @@
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
 @x
-\def\title{Common code for CTANGLE and CWEAVE (Version 4.8)}
+\def\title{Common code for CTANGLE and CWEAVE (Version 4.9)}
 @y
-\def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}} \ifpdf\sanitizecommand\Kpathsea{KPATHSEA}\fi
-\def\title{Common code for CTANGLE and CWEAVE (4.8 [\TeX~Live])}
+\def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}} \ifacro\sanitizecommand\Kpathsea{KPATHSEA}\fi
+\def\title{Common code for CTANGLE and CWEAVE (4.9 [\TeX~Live])}
 @z
 
 @x
-  \centerline{(Version 4.8)}
+  \centerline{(Version 4.9)}
 @y
-  \centerline{(Version 4.8 [\TeX~Live])}
+  \centerline{(Version 4.9 [\TeX~Live])}
 @z
 
 @x
@@ -76,7 +76,7 @@ cweb program; /* \.{CTANGLE} or \.{CWEAVE} or \.{CTWILL}? */
   @<Initialize pointers@>@;
 @y
   @<Initialize pointers@>@;
-  @<Set up |PROGNAME| feature and initialize the search path mechanism@>@;
+  @<Set up \.{PROGNAME} feature and initialize the search path mechanism@>@;
 @z
 
 @x
@@ -93,14 +93,15 @@ cweb program; /* \.{CTANGLE} or \.{CWEAVE} or \.{CTWILL}? */
 @z
 
 @x
-      ungetc(c,fp); loc=buffer; err_print("! Input line too long");
+    loc=buffer; err_print("! Input line too long");
 @y
-      ungetc(c,fp); loc=buffer; err_print(_("! Input line too long"));
+    loc=buffer; err_print(_("! Input line too long"));
 @z
 
 @x
 static char alt_web_file_name[max_file_name_length]; /* alternate name to try */
 @y
+char *found_filename; /* filename found by |kpse_find_file| */
 @z
 
 @x
@@ -140,41 +141,6 @@ static char alt_web_file_name[max_file_name_length]; /* alternate name to try */
 @z
 
 @x
-if ((web_file=fopen(web_file_name,"r"))==NULL) {
-  strcpy(web_file_name,alt_web_file_name);
-  if ((web_file=fopen(web_file_name,"r"))==NULL)
-       fatal("! Cannot open input file ", web_file_name);
-}
-@y
-if ((found_filename=kpse_find_cweb(web_file_name))==NULL @|
-    || (web_file=fopen(found_filename,"r"))==NULL)
-  fatal(_("! Cannot open input file "), web_file_name);
-else if (strlen(found_filename) < max_file_name_length) {
-  /* Copy name for \#\&{line} directives. */
-  if (strcmp(web_file_name, found_filename))
-    strcpy(web_file_name, found_filename +
-      ((strncmp(found_filename,"./",2)==0) ? 2 : 0));
-  free(found_filename);
-} else fatal(_("! Filename too long\n"), found_filename);
-@z
-
-@x
-if ((change_file=fopen(change_file_name,"r"))==NULL)
-       fatal("! Cannot open change file ", change_file_name);
-@y
-if ((found_filename=kpse_find_cweb(change_file_name))==NULL @|
-    || (change_file=fopen(found_filename,"r"))==NULL)
-  fatal(_("! Cannot open change file "), change_file_name);
-else if (strlen(found_filename) < max_file_name_length) {
-  /* Copy name for \#\&{line} directives. */
-  if (strcmp(change_file_name, found_filename))
-    strcpy(change_file_name, found_filename +
-      ((strncmp(found_filename,"./",2)==0) ? 2 : 0));
-  free(found_filename);
-} else fatal(_("! Filename too long\n"), found_filename);
-@z
-
-@x
       err_print("! Include file name not given");
 @y
       err_print(_("! Include file name not given"));
@@ -191,7 +157,7 @@ else if (strlen(found_filename) < max_file_name_length) {
 stop reading it and start reading from the named include file.  The
 \.{@@i} line should give a complete file name with or without
 double quotes.
-If the environment variable \.{CWEBINPUTS} is set, or if the compiler flag
+If the environment variable |CWEBINPUTS| is set, or if the compiler flag
 of the same name was defined at compile time,
 \.{CWEB} will look for include files in the directory thus named, if
 it cannot find them in the current directory.
@@ -205,7 +171,7 @@ double quotes.
 The actual file lookup is done with the help of the \Kpathsea/ library;
 see section~\X93:File lookup with \Kpathsea/\X~for details. % FIXME
 The remainder of the \.{@@i} line after the file name is ignored.
-@^system dependencies@> @.CWEBINPUTS@>
+@^system dependencies@>
 @z
 
 @x
@@ -240,7 +206,6 @@ The remainder of the \.{@@i} line after the file name is ignored.
 
 @x
   if ((kk=getenv("CWEBINPUTS"))!=NULL) {
-@.CWEBINPUTS@>
     if ((l=strlen(kk))>max_file_name_length-2) too_long();
     strcpy(temp_file_name,kk);
   }
@@ -287,6 +252,41 @@ The remainder of the \.{@@i} line after the file name is ignored.
 @z
 
 @x
+if ((web_file=fopen(web_file_name,"r"))==NULL) {
+  strcpy(web_file_name,alt_web_file_name);
+  if ((web_file=fopen(web_file_name,"r"))==NULL)
+       fatal("! Cannot open input file ", web_file_name);
+}
+@y
+if ((found_filename=kpse_find_cweb(web_file_name))==NULL @|
+    || (web_file=fopen(found_filename,"r"))==NULL)
+  fatal(_("! Cannot open input file "), web_file_name);
+else if (strlen(found_filename) < max_file_name_length) {
+  /* Copy name for \#\&{line} directives. */
+  if (strcmp(web_file_name, found_filename))
+    strcpy(web_file_name, found_filename +
+      ((strncmp(found_filename,"./",2)==0) ? 2 : 0));
+  free(found_filename);
+} else fatal(_("! Filename too long\n"), found_filename);
+@z
+
+@x
+if ((change_file=fopen(change_file_name,"r"))==NULL)
+       fatal("! Cannot open change file ", change_file_name);
+@y
+if ((found_filename=kpse_find_cweb(change_file_name))==NULL @|
+    || (change_file=fopen(found_filename,"r"))==NULL)
+  fatal(_("! Cannot open change file "), change_file_name);
+else if (strlen(found_filename) < max_file_name_length) {
+  /* Copy name for \#\&{line} directives. */
+  if (strcmp(change_file_name, found_filename))
+    strcpy(change_file_name, found_filename +
+      ((strncmp(found_filename,"./",2)==0) ? 2 : 0));
+  free(found_filename);
+} else fatal(_("! Filename too long\n"), found_filename);
+@z
+
+@x
 @d hash_size 353 /* should be prime */
 @y
 @d hash_size 8501 /* should be prime */
@@ -298,6 +298,12 @@ The remainder of the \.{@@i} line after the file name is ignored.
 @y
   if (byte_ptr+l>byte_mem_end) overflow(_("byte memory"));
   if (name_ptr>=name_dir_end) overflow(_("name"));
+@z
+
+@x
+  if (program==cweave) p->ilk=t, init_node(p);
+@y
+  if (program!=ctangle) p->ilk=t, init_node(p);
 @z
 
 @x
@@ -572,17 +578,10 @@ cb_usage(program==ctangle ? "ctangle" : program==cweave ? "cweave" : "ctwill");
 @z
 
 @x
-FILE *scn_file; /* where list of sections from \.{CWEAVE} goes */
+FILE *active_file; /* currently active file for \.{CWEAVE} output */
 @y
-FILE *scn_file; /* where list of sections from \.{CWEAVE} goes */
+FILE *active_file; /* currently active file for \.{CWEAVE} output */
 FILE *check_file; /* temporary output file */
-@z
-
-@x
-FILE *active_file; /* currently active file for \.{CWEAVE} output */
-@y
-FILE *active_file; /* currently active file for \.{CWEAVE} output */
-char *found_filename; /* filename found by |kpse_find_file| */
 @z
 
 @x
@@ -614,7 +613,7 @@ else {
 @z
 
 @x
-@** Index.
+@* Index.
 @y
 @** Extensions to {\tentex CWEB}.  The following sections introduce new or
 improved features that have been created by numerous contributors over the
@@ -643,7 +642,7 @@ const char *use_language=""; /* prefix of \.{cwebmac.tex} in \TEX/ output */
 char cb_banner[max_banner];@/
 string texmf_locale;@/
 #ifndef SEPARATORS
-#define SEPARATORS "://"
+#define SEPARATORS "://"@^system dependencies@>
 #endif
 char separators[]=SEPARATORS;
 
@@ -795,7 +794,7 @@ in the environment) its value will be used as the search path for filenames.
 This allows different flavors of \.{CWEB} to have different search paths.
 @.CWEBINPUTS@>
 
-@<Set up |PROGNAME| feature and initialize the search path mechanism@>=
+@<Set up \.{PROGNAME} feature and initialize the search path mechanism@>=
 kpse_set_program_name(argv[0], "cweb");
 
 @ When the files you expect are not found, the thing to do is to enable
@@ -820,7 +819,7 @@ Debugging output is always written to |stderr|, and begins with the string
 
 Modules for dealing with help messages and version info.
 
-@<Include files@>=
+@<Include files@>=@^system dependencies@>
 #define CWEB
 #include "help.h" /* |@!CTANGLEHELP|, |@!CWEAVEHELP|, |@!CTWILLHELP| */
 

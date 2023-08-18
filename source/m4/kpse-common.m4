@@ -1,6 +1,6 @@
 # $Id$
 # Public macros for the TeX Live (TL) tree.
-# Copyright 1995-2009, 2018 Karl Berry <tex-live@tug.org>
+# Copyright 1995-2009, 2015-2023 Karl Berry <tex-live@tug.org>
 # Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 #
 # This file is free software; the copyright holders
@@ -35,13 +35,15 @@ AC_DEFUN([KPSE_INIT],
 # _KPSE_USE_LIBTOOL()
 # -------------------
 AC_DEFUN([_KPSE_USE_LIBTOOL],
-[##tldbg $0: Generate a libtool script for use in configure tests.
+[echo 'tldbg:[$0] called, libtool package version: LT_PACKAGE_VERSION' >&AS_MESSAGE_LOG_FD
 AC_PROVIDE_IFELSE([LT_INIT], ,
                   [m4_fatal([$0: requires libtool])])[]dnl
 LT_OUTPUT
+#
 m4_append([AC_LANG(C)],
 [ac_link="./libtool --mode=link --tag=CC $ac_link"
 ])[]dnl
+#
 AC_PROVIDE_IFELSE([AC_PROG_CXX],
 [m4_append([AC_LANG(C++)],
 [ac_link="./libtool --mode=link --tag=CXX $ac_link"
@@ -213,7 +215,7 @@ eval LIBS=\"$[]AS_TR_CPP($1)_LIBS \$LIBS\"
 #
 # Initialization of Automake, compiler warnings, etc.
 AC_DEFUN([KPSE_BASIC], [dnl
-##tldbg $0: Remember $1 ($2) as Kpse_Package (for future messages).
+echo 'tldbg:[$0] called (pkg=[$1], amopt=[$2])' >&AS_MESSAGE_LOG_FD
 m4_define([Kpse_Package], [$1])
 dnl
 AM_INIT_AUTOMAKE([foreign silent-rules subdir-objects]m4_ifval([$2], [ $2]))
@@ -240,11 +242,16 @@ KPSE_COMPILER_WARNINGS
 # Originally written by Karl Berry as texk/kpathsea/common.ac.
 #
 AC_DEFUN([KPSE_COMMON], [dnl
-##tldbg $0: $1 ($2).
+echo 'tldbg:[$0] called (pkg=[$1], amopt=[$2])' >&AS_MESSAGE_LOG_FD
 KPSE_BASIC($@)
 dnl
+# am_prog_ar must be called before lt_init.
+AM_PROG_AR
+# (end am_prog_ar)
+# starting lt_prereq + lt_init.
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
+# (end lt_init)
 dnl
 AC_SYS_LARGEFILE
 AC_FUNC_FSEEKO

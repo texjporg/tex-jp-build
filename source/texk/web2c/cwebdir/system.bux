@@ -16,6 +16,7 @@
 @$fflush "<stdio.h>" \zip@>
 @$fopen "<stdio.h>" \zip@>
 @$fprintf "<stdio.h>" \zip@>
+@$fputc "<stdio.h>" \zip@>
 @$fputs "<stdio.h>" \zip@>
 @$fread "<stdio.h>" \zip@>
 @$fwrite "<stdio.h>" \zip@>
@@ -26,12 +27,18 @@
 @$puts "<stdio.h>" \zip@>
 @$rename "<stdio.h>" \zip@>
 @$remove "<stdio.h>" \zip@>
+@$snprintf "<stdio.h>" \zip@>
 @$sprintf "<stdio.h>" \zip@>
+@$sscanf "<stdio.h>" \zip@>
+@$stderr "<stdio.h>" \zip@>
+@$stdin "<stdio.h>" \zip@>
 @$stdout "<stdio.h>" \zip@>
 @$ungetc "<stdio.h>" \zip@>
 
-@$getenv "<stdlib.h>" \zip@>
+@$calloc "<stdlib.h>" \zip@>
 @$exit "<stdlib.h>" \zip@>
+@$free "<stdlib.h>" \zip@>
+@$getenv "<stdlib.h>" \zip@>
 
 @$isalpha "<ctype.h>" \zip@>
 @$isdigit "<ctype.h>" \zip@>
@@ -45,6 +52,13 @@
 @$gettext "<libintl.h>" \zip@>
 @$textdomain "<libintl.h>" \zip@>
 
+@$INT_MAX "<limits.h>" \zip@>
+
+@$bindtextdomain "<locale.h>" \zip@>
+@$setlocale "<locale.h>" \zip@>
+@$LC_CTYPE "<locale.h>" \zip@>
+@$LC_MESSAGES "<locale.h>" \zip@>
+
 @$bool "<stdbool.h>" \zip@>
 @$false "<stdbool.h>" \zip@>
 @$true "<stdbool.h>" \zip@>
@@ -55,7 +69,5 @@
 @$uint8_t "<stdint.h>" \zip@>
 @$uint16_t "<stdint.h>" \zip@>
 
-@$bindtextdomain "<locale.h>" \zip@>
-@$setlocale "<locale.h>" \zip@>
-@$LC_CTYPE "<locale.h>" \zip@>
-@$LC_MESSAGES "<locale.h>" \zip@>
+@$asctime "<time.h>" \zip@>
+@$localtime "<time.h>" \zip@>

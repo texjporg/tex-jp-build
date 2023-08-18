@@ -1,5 +1,5 @@
 % standard macros for CWEB listings (in addition to plain.tex)
-% Version 4.9 --- June 2022
+% Version 4.9 --- June 2023
 % modified for pages produced by CTWILL
 % further modified for page size of the MMIXware book
 % modified for PDF output with 'tex "\let\pdf+', 'pdftex', and 'xetex'
@@ -15,6 +15,11 @@
 \ifpdftex % pdfTeX produces PDF output if \pdfoutput>0
   \def\Black{\pdfliteral{0 g 0 G}}  % use rgb colors for direct PDF output too
   \def\PDFlinkcolor{\pdfliteral{\pdflinkcolor\space rg \pdflinkcolor\space RG}}
+\fi
+\let\ifacro=\ifpdf
+\ifhint\message{These macros are not suitable for HiTeX.}
+  \message{Please use 'ctwill +P [+lpdf]' instead.}
+  \end
 \fi
 
 \let\:=\. % preserve a way to get the dot accent
@@ -43,6 +48,8 @@
 \def\Cee{\CEE/} % for backward compatibility
 \def\Cpp{\CPLUSPLUS/} % for backward compatibility
 \def\9#1{}
+ % with this definition of \9 you can say @:sort key}{TeX code@>
+ % to alphabetize an index entry by the sort key but format with the TeX code
 \font\eightrm=cmr8
 \font\sixrm=cmr6
 \font\ninei=cmmi9
@@ -234,7 +241,7 @@
 \def\,{\relax\ifmmode\mskip\thinmuskip\else\thinspace\fi}
 \def\note#1#2.{\par\penalty5000
   \Y\noindent{\hangindent2\em\baselineskip10pt%
-    \eightrm#1~\ifpdf{\pdfnote#2.}\else#2\fi.\par}}
+    \eightrm#1~\ifacro{\pdfnote#2.}\else#2\fi.\par}}
 
 \newtoks\toksA \newtoks\toksB \newtoks\toksC \newtoks\toksD
 \newtoks\toksE \newtoks\toksF \newtoks\usersanitizer
@@ -243,13 +250,13 @@
 \newif\iftokprocessed \newif\ifTnum \newif\ifinstr
 {\def\\{\global\let\spacechar= }\\ }
 
-\ifpdf % The following are pdf macros
+\ifacro % The following are pdf macros
 \def\thewidth{\the\wd0 \space}
 \def\theheight{\the\ht\strutbox\space}
 \def\thedepth{\the\dp\strutbox\space}
 \ifpdftex
   \ifx\pdfannotlink\undefined\let\pdfannotlink\pdfstartlink\fi% for pdfTeX 0.14
-  \def\pdflink#1#2{\hbox{\pdfannotlink height\ht\strutbox depth\dp\strutbox
+  \def\pdflink#1#2{\hbox{\pdfannotlink height \theheight depth \thedepth
     attr{/Border [0 0 0]} goto num #1 \PDFlinkcolor #1\Black\pdfendlink}}
 \else\def\pdflink#1#2{\setbox0=\hbox{\special{pdf: bc [ \pdflinkcolor ]}{#1}%
     \special{pdf: ec}}\special{pdf: ann width \thewidth height \theheight
@@ -392,7 +399,7 @@
 \def\stsec{\tenpoint\rightskip=0pt % get out of C mode (cf. \B)
   \sfcode`;=1500 \pretolerance 200 \hyphenpenalty 50 \exhyphenpenalty 50
   \noindent\strut{\let\*=\lapstar\bf\secno.\quad}%
-  \ifpdf \smash{\raise\baselineskip\hbox to0pt{\let\*=\empty
+  \ifacro \smash{\raise\baselineskip\hbox to0pt{\let\*=\empty
     \ifpdftex \pdfdest num \secstar fith%
     \else \special{pdf: dest (\romannumeral\secstar)
       [ @thispage /FitH @ypos ]}\fi}}\fi}
@@ -422,7 +429,7 @@
 \let\G=\ge % greater than or equal sign
 % \H is long Hungarian umlaut accent
 \let\I=\ne % unequal sign
-\def\J{\.{@\&}} % TANGLE's join operation
+\def\J{\.{@\&}} % CTANGLE's join operation
 %\let\K== % assignment operator
 \let\K=\leftarrow % "honest" alternative to standard assignment operator
 % \L is Polish letter suppressed-L
@@ -434,7 +441,7 @@
 \outer\def\NN{\ifvoid\partialpage\leftfalse
   \else\ifdim\ht\partialpage<\pageht \lefttrue\else\leftfalse\fi\fi\NNN}
 \outer\def\NNN#1#2#3.{% beginning of starred section
-  \ifpdf{\toksF={}\makeoutlinetoks#3\outlinedone\outlinedone}\fi
+  \ifacro{\toksF={}\makeoutlinetoks#3\outlinedone\outlinedone}\fi
   \gdepth=#1\gtitle={#3}\def\secno{#2}\xdef\secstar{#2}
   \ifleft \flushout
     \gdef\rlhead{\let\i=I\uppercase{\ignorespaces#3}} % running left headline
@@ -451,8 +458,8 @@
     \expandafter\xdef\csname curr#1\endcsname{\secno}
     \ifnum#1>0\countB=#1 \advance\countB by-1
       \advancenumber{chunk\the\countB.\expnumber{curr\the\countB}}\fi
-  \else \special{pdf: outline #1 << /Title (\the\toksE) /Dest
-    [ @thispage /FitH @ypos ] >>}\fi\fi
+  \else \special{pdf: outline #1 << /Title (\the\toksE)
+      /Dest [ @thispage /FitH @ypos ] >>}\fi \fi
   \startsection{\bf\ignorespaces#3.\quad}\ignorespaces}
 \def\expnumber#1{\expandafter\ifx\csname#1\endcsname\relax 0%
   \else \csname#1\endcsname \fi} % Petr Olsak's macros from texinfo.tex
@@ -608,7 +615,7 @@
 {\obeylines\gdef\makeinref#1 #2 #3
   {\ifsorted\else\ttoks={\[#1 #2 #3}\immediate\write\reffile{+ \the\ttoks}\fi %
   \hangindent=1em \noindent #2\miniform#3, %<== space!
-    \S\ifpdf{\pdfnote#1.}\else{#1}\fi.\par}}
+    \S\ifacro{\pdfnote#1.}\else{#1}\fi.\par}}
 {\obeylines\gdef\makeoutref#1 #2 #3
   {\ifsorted\else\ttoks={\]#1 #2 #3}\immediate\write\reffile{+ \the\ttoks}\fi %
   \hangindent=1em \noindent #2\miniform#3, \extref#1.\par}}
@@ -672,8 +679,9 @@
     \immediate\write\cont{\catcode `\noexpand\@=12\relax} % \makeatother
     \immediate\closeout\cont % the contents information has been fully gathered
   \fi}
-\def\fin{\ifpdf \message{Section names:}
-  \def\U##1.{} \def\Us##1.{} \let\I=\relax \let\*=*
+\def\fin{\ifacro \message{Section names:}
+  \def\U##1.{} \def\Us##1.{} \def\Q##1.{} \def\Qs##1.{} \let\I=\relax \let\*=*
+  \newrefs={} \output={\shipout\box255}
   \def\outsecname{Names of the sections}
   \ifpdftex \makebookmarks \countsections
     \pdfdest name {NOS} fith
@@ -681,8 +689,8 @@
     \def\X##1:##2\X{\firstsecno##1.%
       {\toksF={}\makeoutlinetoks##2\outlinedone\outlinedone}%
       \pdfoutline goto num \the\toksA \expandafter{\the\toksE}}
-  \else \output={\shipout\box255}
-    \special{pdf: outline -1 << /Title (\outsecname) >>}%
+  \else \special{pdf: outline -1 << /Title (\outsecname)
+      /Dest [ @thispage /FitH @ypos ] >>}
     \def\X##1:##2\X{\firstsecno##1.%
       {\toksF={}\makeoutlinetoks##2\outlinedone\outlinedone}%
       \special{pdf: outline 0 << /Title (\the\toksE)
@@ -713,7 +721,7 @@
 %\def\contentsline#1#2#3#4#5{\ifnum#2=0 \smallbreak\fi
     %\line{\consetup{#2}#1
       %\rm\leaders\hbox to .5em{.\hfil}\hfil
-      %\ \ifpdf\pdflink{#3}{\romannumeral#3}\else#3\fi\hbox to3em{\hss#4}}}
+      %\ \ifacro\pdflink{#3}{\romannumeral#3}\else#3\fi\hbox to3em{\hss#4}}}
 %\def\consetup#1{\ifcase#1 \bf % depth -1 (@**)
   %\or % depth 0 (@*)
   %\or \hskip2em % depth 1 (@*1)
