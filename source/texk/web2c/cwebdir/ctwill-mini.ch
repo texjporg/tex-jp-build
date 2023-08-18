@@ -1,14 +1,31 @@
+Formatting changes for CTWILL by Andreas Scherer
+This file is in the Public Domain.
+
+This extensive set of changes is my best attempt to format CTWILL with
+itself in DVI or PDF format, i.e., with the '[pdf]ctwimac.tex' macros. This
+produces output with 'mini-indexes' on each spread of pages.
+
+Apply these additional changes in the following two-step procedure:
+First create 'ctwill-w2c.ch' that mogrifies CWEAVE into CTWILL:
+$ tie -c ctwill-w2c.ch \
+> cweave.w cweav-{patch,extensions,output,i18n,twill}.ch \
+> cwtw-texlive.ch ctwill-texlive.ch
+Then create 'ctwill.w' that gets processed with TeX (plain, pdfTeX, XeTeX):
+$ ctie -m ctwill.w \
+> cweave.w ctwill-w2c.ch ctwill-mini.ch
+
 Section 1.
 
 @x
 @** Introduction.
 @y
-\ifpdf \ifx\undefined\pdfpagewidth\else
+\ifx\undefined\pdfpagewidth
+\else
   \pdfpagewidth=\pagewd \advance\pdfpagewidth by 2cm
   \pdfpageheight=\pageht \advance\pdfpageheight by 5cm
   \ifpdftex \pdfhorigin=1cm \pdfvorigin=1cm
   \else \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
-\fi\fi
+\fi
 
 @** Introduction.
 @z
@@ -43,6 +60,13 @@ faithful overall rendering of {\itt CTWILL}'s code, though. \hfill
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 @-banner@>
 @$banner {CTWILL}1 =\.{"This\ is\ CTWILL"}@>
+
+@$ctangle {CTWILL}3 \&{enum} \&{cweb}@>
+@$ctwill {CTWILL}3 \&{enum} \&{cweb}@>
+@$cweave {CTWILL}3 \&{enum} \&{cweb}@>
+
+@$inner {CTWILL}223 \&{enum} \&{mode}@>
+@$outer {CTWILL}223 \&{enum} \&{mode}@>
 @z
 
 Section 2.
@@ -52,11 +76,17 @@ Section 2.
 @y
 @r @ \.{CWEAVE} has a fairly straightforward outline.  It operates in
 @%
-@$show_banner {CTWILL}14 =\\{flags}[\.{'b'}]@>
-@$show_progress {CTWILL}14 =\\{flags}[\.{'p'}]@>
+@$show_banner {CTWILL}15 =\\{flags}[\.{'b'}]@>
+@$show_progress {CTWILL}15 =\\{flags}[\.{'p'}]@>
 @z
 
-Section 4.
+Section 5.
+
+@x
+For backward compatibility with pre-{\mc ANSI} compilers, we replace the
+@y
+And we replace the
+@z
 
 @x
 @d _(s) gettext(s)
@@ -67,25 +97,25 @@ Section 4.
 @-HAVE_GETTEXT@>
 @z
 
-Section 5.
-
-@x
-@d compress(c) if (loc++<=limit) return c
-@y
-@d compress(c) if (loc++<=limit) return c
-@-c@>
-@z
-
 Section 6.
 
 @x
-@ Code related to input routines:
+@d compress(c) if (loc++<=limit) return c
 @y
-@ Code related to input routines:
+@d compress(c) if (loc++<=limit) return c
 @-c@>
 @z
 
 Section 7.
+
+@x
+@ Code related to input routines:
+@y
+@ Code related to input routines:
+@-c@>
+@z
+
+Section 8.
 
 @x
 @d cur_line line[include_depth] /* number of current line in current file */
@@ -94,12 +124,12 @@ Section 7.
 @-cur_file@>
 @-cur_file_name@>
 @-cur_line@>
-@$cur_file {CTWILL}7 =\\{file}[\\{include\_depth}]@>
-@$cur_file_name {CTWILL}7 =\hfil\break\\{file\_name}[\\{include\_depth}]@>
-@$cur_line {CTWILL}7 =\\{line}[\\{include\_depth}]@>
+@$cur_file {CTWILL}8 =\\{file}[\\{include\_depth}]@>
+@$cur_file_name {CTWILL}8 =\hfil\break\\{file\_name}[\\{include\_depth}]@>
+@$cur_line {CTWILL}8 =\\{line}[\\{include\_depth}]@>
 @z
 
-Section 10.
+Section 11.
 
 @x
 @ Code related to identifier and section name storage:
@@ -109,12 +139,14 @@ Section 10.
 @-llink@>
 @-rlink@>
 @-root@>
-@$llink {CTWILL}10 =\\{link}@>
-@$rlink {CTWILL}10 =\\{dummy}.\\{Rlink}@>
-@$root {CTWILL}10 =\\{name\_dir}$\MG$\\{rlink}@>
+@-ilk@>
+@$llink {CTWILL}11 =\\{link}@>
+@$rlink {CTWILL}11 =\\{dummy}.\\{Rlink}@>
+@$root {CTWILL}11 =\\{name\_dir}$\MG$\\{rlink}@>
+@$ilk {CTWILL}11 =\\{dummy}.\\{Ilk}@>
 @z
 
-Section 12.
+Section 13.
 
 @x
 @ Code related to error handling:
@@ -123,7 +155,7 @@ Section 12.
 @-s@>
 @z
 
-Section 14.
+Section 15.
 
 @x
 extern const char *use_language; /* prefix to \.{cwebmac.tex} in \TEX/ output */
@@ -135,15 +167,15 @@ extern const char *use_language; /* prefix to \.{ctwimac.tex} in \TEX/ output */
 @-show_stats@>
 @-make_xrefs@>
 @-check_for_change@>
-@$show_banner {CTWILL}14 =\\{flags}[\.{'b'}]@>
-@$show_progress {CTWILL}14 =\\{flags}[\.{'p'}]@>
-@$show_happiness {CTWILL}14 =\\{flags}[\.{'h'}]@>
-@$show_stats {CTWILL}14 =\\{flags}[\.{'s'}]@>
-@$make_xrefs {CTWILL}14 =\\{flags}[\.{'x'}]@>
-@$check_for_change {CTWILL}14 =\\{flags}[\.{'c'}]@>
+@$show_banner {CTWILL}15 =\\{flags}[\.{'b'}]@>
+@$show_progress {CTWILL}15 =\\{flags}[\.{'p'}]@>
+@$show_happiness {CTWILL}15 =\\{flags}[\.{'h'}]@>
+@$show_stats {CTWILL}15 =\\{flags}[\.{'s'}]@>
+@$make_xrefs {CTWILL}15 =\\{flags}[\.{'x'}]@>
+@$check_for_change {CTWILL}15 =\\{flags}[\.{'c'}]@>
 @z
 
-Section 15.
+Section 16.
 
 @x
 @ Code related to output:
@@ -154,19 +186,17 @@ Section 15.
 @-c@>
 @-update_terminal@>
 @-new_line@>
-@$update_terminal {CTWILL}15 =\\{fflush}(\\{stdout})@>
-@$new_line {CTWILL}15 =\\{putchar}(\.{'\\n'})@>
-@z
-
-Section 16.
-
-@x
-@ The procedure that gets everything rolling:
-@y
-@r @ The procedure that gets everything rolling:
+@$update_terminal {CTWILL}16 =\\{fflush}(\\{stdout})@>
+@$new_line {CTWILL}16 =\\{putchar}(\.{'\\n'})@>
 @z
 
 Section 17.
+
+@x
+@ The following parameters are sufficient to handle \TEX/ (converted to
+@y
+@r @ The following parameters are sufficient to handle \TEX/ (converted to
+@z
 
 @x
 @d long_buf_size (buf_size+longest_name) /* for \.{CWEAVE} */
@@ -183,8 +213,6 @@ Section 20.
 @y
 @* Data structures exclusive to {\tt CWEAVE}.
 @-a@>
-@-ilk@>
-@$ilk {CTWILL}20 =\\{dummy}.\\{Ilk}@>
 @z
 
 Section 21.
@@ -250,6 +278,16 @@ Section 37.
 @ Control codes are converted to \.{CWEAVE}'s internal
 @y
 @r @ Control codes are converted to \.{CWEAVE}'s internal
+@z
+
+Section 42.
+
+CTWILL hickups on comment and produces unmatched '$' in mini-index.
+
+@x l.646
+skip_TeX(void) /* skip past pure \TEX/ code */
+@y
+skip_TeX(void)
 @z
 
 Section 43.
@@ -379,28 +417,33 @@ Section 53.
 @-t@>
 @z
 
-Section 55.
+Section 54.
 
 @x
-@ @<Get a bin...@>={
+@ @<Get a hex...@>={
 @y
-@r @ @<Get a bin...@>={
+@r @ @<Get a hex...@>={
 @z
 
-Section 58.
+Section 57.
 
 @x
-@ @<Get a wide...@>={
+      else {
 @y
-@r @ @<Get a wide...@>={
+      else
 @z
 
-Section 63.
+@x
+      }
+@y
+@z
+
+Section 64.
 
 @x
-@ @<If end of name...@>=
+@ This function skips over a restricted context at relatively high speed.
 @y
-@r @ @<If end of name...@>=
+@r @ This function skips over a restricted context at relatively high speed.
 @z
 
 Section 65.
@@ -642,6 +685,15 @@ The raw input is converted into scraps according to the following table,
 \yskip\halign{\quad#\hfil&\quad#\hfil&\quad\hfil#\hfil\cr
 @z
 
+@x l.2137
+\.{\\hbox\{}\thinspace stuff\/\thinspace\.\} to the following scrap.
+@y
+\.{\\hbox\{}\thinspace stuff\/\thinspace\.\} to the following scrap.
+
+\smallskip
+*The \.{\\,} (thin space) is omitted in ``|inner| \TeX\ mode.''
+@z
+
 Sections 117--125.
 
 @x l.7 line numbers refer to 'prod.w'
@@ -714,7 +766,6 @@ Section 119.
 {$\displaystyle\!\matrix{\strut\hbox{#1}\hfill\cr\hbox{#2}\hfill\cr
    \strut\hbox{#3}\hfill\cr}$}
 \yskip@-in@>
-@%@$dindent {CTWILL}110 =\T{\~226/}@>
 \prodno=27 \midcol=2.5in
 \def\theprodno{\number\prodno \global\advance\prodno by1\enspace}
 \def\dagit{\dag\theprodno}
@@ -779,7 +830,6 @@ Section 121.
 {$\displaystyle\!\matrix{\strut\hbox{#1}\hfill\cr\hbox{#2}\hfill\cr
    \strut\hbox{#3}\hfill\cr}$}
 \yskip@-any@>@-z@>@-g@>@-a@>@-x@>@-y@>@-f@>
-@%@$dindent {CTWILL}110 =\T{\~226/}@>
 \prodno=61 \midcol=2.5in
 \def\theprodno{\number\prodno \global\advance\prodno by1\enspace}
 \def\dagit{\dag\theprodno}
@@ -956,14 +1006,12 @@ the category codes |pp->cat,@,@,(pp+1)->cat|$,\,\,\ldots\,$
 the category codes |pp->cat|, |(pp+1)->cat|, $\,\ldots\,$
 @z
 
-Section 127.
-
 @x
-@ @d trans trans_plus.Trans /* translation texts of scraps */
+@d trans trans_plus.Trans /* translation texts of scraps */
 @y
-@ @d trans trans_plus.Trans /* translation texts of scraps */
+@d trans trans_plus.Trans /* translation texts of scraps */
 @-trans@>
-@$trans {CTWILL}127 =\\{trans\_plus}.\\{Trans}@>
+@$trans {CTWILL}126 =\\{trans\_plus}.\\{Trans}@>
 @z
 
 Section 128.
@@ -982,6 +1030,7 @@ Section 129.
 @ Token lists in |@!tok_mem| are composed of the following kinds of
 @y
 @ Token lists in |@!tok_mem| are composed of the following kinds of
+@-DEBUG@>
 @-p@>
 @-res_flag@>
 @-section_flag@>
@@ -991,6 +1040,15 @@ Section 129.
 @$section_flag {CTWILL}129 =$\T{3}*\\{id\_flag}$@>
 @$tok_flag {CTWILL}129 =$\T{3}*\\{id\_flag}$@>
 @$inner_tok_flag {CTWILL}129 =$\T{4}*\\{id\_flag}$@>
+@z
+
+Section 130.
+
+@x l.2221
+@c
+@y
+@c
+@-DEBUG@>
 @z
 
 Section 132.
@@ -1033,9 +1091,9 @@ Section 135--136.
 @-cat1@>
 @-cat2@>
 @-cat3@>
-@$cat1 {CTWILL}136 =$(\\{pp}+\T{1})\MG\\{cat}$@>
-@$cat2 {CTWILL}136 =$(\\{pp}+\T{2})\MG\\{cat}$@>
-@$cat3 {CTWILL}136 =$(\\{pp}+\T{3})\MG\\{cat}$@>
+@$cat1 {CTWILL}135 =$(\\{pp}+\T{1})\MG\\{cat}$@>
+@$cat2 {CTWILL}135 =$(\\{pp}+\T{2})\MG\\{cat}$@>
+@$cat3 {CTWILL}135 =$(\\{pp}+\T{3})\MG\\{cat}$@>
 @z
 
 @x
@@ -1186,9 +1244,9 @@ should say, for example, `\.{@@!@@\^\\\&\{operator\}} \.{\$+\{=\}\$@@>}'
 @-no_ident_found@>
 @-case_found@>
 @-operator_found@>
-@$no_ident_found {CTWILL}138 =\hfil\break(\&{token\_pointer}) 0@>
-@$case_found {CTWILL}138 =\hfil\break(\&{token\_pointer}) 1@>
-@$operator_found {CTWILL}138 =\hfil\break(\&{token\_pointer}) 2@>
+@$no_ident_found {CTWILL}137 =\hfil\break(\&{token\_pointer}) 0@>
+@$case_found {CTWILL}137 =\hfil\break(\&{token\_pointer}) 1@>
+@$operator_found {CTWILL}137 =\hfil\break(\&{token\_pointer}) 2@>
 @z
 
 Section 139.
@@ -1211,7 +1269,7 @@ scrap_pointer p)
 make_reserved( /* make the first identifier in |p->trans| like |int| */
 scrap_pointer p)
 @-make_reserved@>
-@$make_reserved {CTWILL}140 \&{static} \&{void} (\,)@>
+@$make_reserved {CTWILL}139 \&{static} \&{void} (\,)@>
 @z
 
 Section 140.
@@ -1231,13 +1289,21 @@ make_underlined(
 /* underline the entry for the first identifier in |p->trans| */
 scrap_pointer p)
 @-make_underlined@>
-@$make_underlined {CTWILL}141 \&{static} \&{void} (\,)@>
+@$make_underlined {CTWILL}140 \&{static} \&{void} (\,)@>
 @z
 
 @x
     return; /* this happens, for example, in |case found:| */
 @y
     return; /* this happens, for example, in \&{case} \\{found}: */
+@z
+
+Section 141.
+
+@x
+  while (q != xmem) {
+@y
+  while (q != xmem) { @+
 @z
 
 Section 143.
@@ -1281,7 +1347,7 @@ Section 170.
 @y
 @d force_lines flags['f'] /* should each statement be on its own line? */
 @-force_lines@>
-@$force_lines {CTWILL}171 =\\{flags}[\.{'f'}]@>
+@$force_lines {CTWILL}170 =\\{flags}[\.{'f'}]@>
 @z
 
 Section 173.
@@ -1350,8 +1416,8 @@ Section 202.
 @ @<Print a snapsh...@>=
 @-n@>
 @%
+@$n {CTWILL}197 \&{short}@>
 @$n {CTWILL}198 \&{short}@>
-@$n {CTWILL}199 \&{short}@>
 @z
 
 Section 204.
@@ -1370,7 +1436,7 @@ Section 208.
         next_control==begin_short_comment) return;
 @y
 @-C_parse@>
-@$C_parse {CTWILL}209 \&{static} \&{void} (\,)@>
+@$C_parse {CTWILL}208 \&{static} \&{void} (\,)@>
     if (next_control=='|' || next_control==begin_comment @| ||
         next_control==begin_short_comment) return;
 @z
@@ -1527,7 +1593,7 @@ Section 220.
 @y
 @d make_pb flags['e']
 @-make_pb@>
-@$make_pb {CTWILL}221 =\\{flags}[\.{'e'}]@>
+@$make_pb {CTWILL}220 =\\{flags}[\.{'e'}]@>
 @z
 
 Section 224.
@@ -1539,12 +1605,18 @@ Section 224.
 @-cur_end@>
 @-cur_tok@>
 @-cur_mode@>
-@$cur_end {CTWILL}225 =\\{cur\_state}.\\{end\_field}]@>
-@$cur_tok {CTWILL}225 =\\{cur\_state}.\\{tok\_field}]@>
-@$cur_mode {CTWILL}225 =\\{cur\_state}.\\{mode\_field}]@>
+@$cur_end {CTWILL}224 =\\{cur\_state}.\\{end\_field}@>
+@$cur_tok {CTWILL}224 =\\{cur\_state}.\\{tok\_field}@>
+@$cur_mode {CTWILL}224 =\\{cur\_state}.\\{mode\_field}@>
 @z
 
 Section 227.
+
+@x
+@ To insert token-list |p| into the output, the |push_level| subroutine
+@y
+@r @ To insert token-list |p| into the output, the |push_level| subroutine
+@z
 
 @x
 push_level( /* suspends the current level */
@@ -1553,18 +1625,17 @@ text_pointer p)
 push_level( /* suspends the current level */
 text_pointer p)
 @-push_level@>
-@$push_level {CTWILL}228 \&{static} \&{void} (\,)@>
+@$push_level {CTWILL}227 \&{static} \&{void} (\,)@>
 @z
 
 Section 228.
 
 @x
 force when the current level was begun. This subroutine will never be
-called when |stack_ptr==1|.
+called when |stack_ptr==1|. It is so simple, we declare it as a macro:
 @y
-force when the current level was begun.
-
-This subroutine will never be called when |stack_ptr==1|.
+force when the current level was begun.  It is so simple, we declare it as a
+macro.  This subroutine will never be called when |stack_ptr==1|.
 @z
 
 Section 233--234.
@@ -1738,7 +1809,7 @@ Section 247.
 @y
 @ @d usage_sentinel (struct perm_meaning *)1
 @-usage_sentinel@>
-@$usage_sentinel {CTWILL}248 =(\&{struct} \&{perm\_meaning} ${}{*}{}$) \T{1}@>
+@$usage_sentinel {CTWILL}247 =(\&{struct} \&{perm\_meaning} ${}{*}{}$) \T{1}@>
 @<Translate the current section@>=@+ {
 @z
 
@@ -1751,7 +1822,7 @@ finish_C( /* finishes a definition or a \CEE/ part */
 finish_C( /* finishes a definition or a \CEE/ part */
   boolean visible) /* |true| if we should produce \TeX\ output */
 @-finish_C@>
-@$finish_C {CTWILL}252 \&{static} \&{void} (\,)@>
+@$finish_C {CTWILL}251 \&{static} \&{void} (\,)@>
 @z
 
 Section 252.
@@ -1791,7 +1862,7 @@ sixteen_bits flag)
 footnote( /* outputs section cross-references */
 sixteen_bits flag)
 @-footnote@>
-@$footnote {CTWILL}261 \&{static} \&{void} (\,)@>
+@$footnote {CTWILL}260 \&{static} \&{void} (\,)@>
 @z
 
 Section 261.
@@ -1801,6 +1872,14 @@ Section 261.
 @y
 @ @<Predecl...@>=@+static void footnote(sixteen_bits);
 @-footnote@>
+@z
+
+Section 264.
+
+@x
+@** Phase three processing.
+@y
+@r @** Phase three processing.
 @z
 
 Section 265.
@@ -1841,10 +1920,9 @@ Section 271.
 @-head@>
 @-sort_ptr@>
 @-max_sorts@>
-@$depth {CTWILL}272 =\\{cat}@>
-@$head {CTWILL}272 =\\{trans\_plus}.\\{Head}@>
-@$sort_ptr {CTWILL}272 =\\{scrap\_ptr}@>
-@$max_sorts {CTWILL}272 =\\{max_scraps}@>
+@$depth {CTWILL}271 =\\{cat}@>
+@$head {CTWILL}271 =\\{trans\_plus}.\\{Head}@>
+@$sort_ptr {CTWILL}271 =\\{scrap\_ptr}@>
 @z
 
 Section 273.
@@ -1862,7 +1940,7 @@ Section 275.
 @y
 @ Procedure |unbucket| goes through the buckets and adds nonempty lists
 @-unbucket@>
-@$unbucket {CTWILL}276 \&{static} \&{void} (\,)@>
+@$unbucket {CTWILL}275 \&{static} \&{void} (\,)@>
 @z
 
 Section 276.
@@ -1882,16 +1960,26 @@ Section 278.
   next_name=sort_ptr->head;
 @y
 @ @<Split the list...@>= {@+
-  int c;
+  int c; @+
   next_name=sort_ptr->head;@/
 @z
 
 Section 279.
 
 @x
+@ @<Output index...@>= {
   cur_name=sort_ptr->head;
 @y
-  @+cur_name=sort_ptr->head;@/
+@ @<Output index...@>= { @+
+  cur_name=sort_ptr->head;@/
+@z
+
+Section 281.
+
+@x
+  else {out_str("\\["); out_section(cur_val-def_flag); out(']');}
+@y
+  else {@+out_str("\\["); out_section(cur_val-def_flag); out(']');@+}
 @z
 
 Section 285.
@@ -1908,7 +1996,7 @@ Section 287.
 @x
   puts(_("\nMemory usage statistics:"));
 @.Memory usage statistics:@>
-  printf(_("%td names (out of %ld)\n"),
+  printf(_("%td names (out of %ld)\n"),@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf(_("%td cross-references (out of %ld)\n"),
             (ptrdiff_t)(xref_ptr-xmem),(long)max_refs);
@@ -1934,7 +2022,7 @@ Section 287.
 @y
   puts(_("\nMemory usage statistics:"));@/
 @.Memory usage statistics:@>
-  printf(_("%td names (out of %ld)\n"),
+  printf(_("%td names (out of %ld)\n"),@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),@/
             @t\5\5\5\5@>(long)max_names);@/
   printf(_("%td cross-references (out of %ld)\n"),
@@ -2002,18 +2090,18 @@ The current meaning of every identifier is initially `\.{\\uninitialized}'.
 @z
 
 @x
-must have fewer than 50 characters. If the \TeX\ part starts
+must have fewer than 80 characters. If the \TeX\ part starts
 @y
-must have fewer than 50 characters.
+must have fewer than 80 characters.
 
-@d max_tex_chars 50 /* limit on the \TeX\ part of a meaning */
+@d max_tex_chars 80 /* limit on the \TeX\ part of a meaning */
 @-s@>
 
 @ If the \TeX\ part starts
 @z
 
 @x
-@d max_tex_chars 50 /* limit on the \TeX\ part of a meaning */
+@d max_tex_chars 80 /* limit on the \TeX\ part of a meaning */
 @y
 @z
 
@@ -2024,7 +2112,7 @@ static struct perm_meaning {
 @y
 static struct perm_meaning {
 @-perm_meaning@>
-@$perm_meaning {CTWILL}293 \&{static} \&{struct}@>
+@$perm_meaning {CTWILL}292 \&{static} \&{struct}@>
 @z
 
 Section 301.
@@ -2047,7 +2135,7 @@ Section 302.
 @-c@>
 @-l@>
 @-make_ministring@>
-@$make_ministring {CTWILL}303 \&{static} \&{void} (\,)@>
+@$make_ministring {CTWILL}302 \&{static} \&{void} (\,)@>
 @z
 
 Section 303.
@@ -2080,8 +2168,8 @@ Section 311.
 @y
 @ @<Write the new meaning to the \.{.aux} file@>=
 @%
-@$p {CTWILL}296 \&{name\_pointer}@>
-@$q {CTWILL}296 \&{struct perm\_meaning} ${}{*}{}$@>
+@$p {CTWILL}295 \&{name\_pointer}@>
+@$q {CTWILL}295 \&{struct perm\_meaning} ${}{*}{}$@>
 @z
 
 Section 312.
@@ -2091,7 +2179,7 @@ Section 312.
 @y
 @<Flag the usage of this identifier, for the mini-index@>=
 @%
-@$p {CTWILL}219 \&{name\_pointer}@>
+@$p {CTWILL}218 \&{name\_pointer}@>
 @z
 
 Section 315.
@@ -2101,16 +2189,6 @@ Section 315.
 @y
 @ @<Predec...@>=@+static void out_mini(meaning_struct *);
 @-out_mini@>
-@z
-
-Section 316.
-
-@x
-@ Compare this code with section |@<Output the name...@>|.
-
-@<Mini-output...@>=
-@y
-@ @<Mini-output...@>=
 @z
 
 Section 318.
@@ -2129,7 +2207,7 @@ Section 321.
 @y
 @d indent_param_decl flags['i'] /* should formal parameter declarations be indented? */
 @-indent_param_decl@>
-@$indent_param_decl {CTWILL}322 =\\{flags}[\.{'i'}]@>
+@$indent_param_decl {CTWILL}321 =\\{flags}[\.{'i'}]@>
 @z
 
 Section 322.
@@ -2139,10 +2217,19 @@ Section 322.
 @y
 @d order_decl_stmt flags['o'] /* should declarations and statements be separated? */
 @-order_decl_stmt@>
-@$order_decl_stmt {CTWILL}323 =\\{flags}[\.{'o'}]@>
+@$order_decl_stmt {CTWILL}322 =\\{flags}[\.{'o'}]@>
 @z
 
 Section 328.
+
+@x l.116 of CTWILL-TEXLIVE.CH
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@y
+@d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
+@-name@>
+@z
+
+Section 330.
 
 @x
 @** Index.

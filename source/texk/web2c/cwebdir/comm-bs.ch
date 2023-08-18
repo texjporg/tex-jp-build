@@ -16,7 +16,7 @@ by using "huge" pointers.
 
 
 @x Section 9.
-  for section names */
+@d ilk dummy.Ilk /* used by \.{CWEAVE} only */
 
 @<Common code...@>=
 typedef struct name_info {
@@ -25,7 +25,7 @@ typedef struct name_info {
   union {
     struct name_info *Rlink; /* right link in binary search tree for section
       names */
-    char Ilk; /* used by identifiers in \.{CWEAVE} only */
+    eight_bits Ilk; /* used by identifiers in \.{CWEAVE} only */
   } dummy;
   void *equiv_or_xref; /* info corresponding to names */
 } name_info; /* contains information about an identifier or section name */
@@ -34,7 +34,7 @@ typedef name_pointer *hash_pointer;
 extern char byte_mem[]; /* characters of names */
 extern char *byte_mem_end; /* end of |byte_mem| */
 @y
-  for section names */
+@d ilk dummy.Ilk /* used by \.{CWEAVE} only */
 
 @f huge extern
 
@@ -45,7 +45,7 @@ typedef struct name_info {
   union {
     struct name_info *Rlink; /* right link in binary search tree for section
       names */
-    char Ilk; /* used by identifiers in \.{CWEAVE} only */
+    eight_bits Ilk; /* used by identifiers in \.{CWEAVE} only */
   } dummy;
   union {
     void huge* equiv_member;

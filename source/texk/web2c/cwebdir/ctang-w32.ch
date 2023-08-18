@@ -4,9 +4,9 @@ This is the change file for CWEB's CTANGLE under Win32
 Changes necessary for compiling with Borland C/C++
 
 @x section 1
-@d banner "This is CTANGLE (Version 4.8)"
+@d banner "This is CTANGLE (Version 4.9)"
 @y
-@d banner "This is CTANGLE (Version 4.8win32)"
+@d banner "This is CTANGLE (Version 4.9win32)"
 @z
 
 @x
@@ -30,8 +30,6 @@ name_pointer node)
 {
     node->equiv=(void *)text_info;
 }
-void
-init_p(name_pointer p,eight_bits t) {@+(void)p;@+(void)t;@+}
 @y
 void
 init_node(
@@ -39,6 +37,4 @@ name_pointer node)
 {
     node->equiv=(void *)text_info;
 }
-void __cdecl
-init_p(name_pointer p,eight_bits t) {@+(void)p;@+(void)t;@+}
 @z
