@@ -10,7 +10,7 @@ _uptex=$BinDir/uptex$ExeExt
 LC_ALL=C; export LC_ALL;  LANGUAGE=C; export LANGUAGE
 
 TEXMFCNF=$srcdir/../kpathsea; export TEXMFCNF
-TEXINPUTS=$srcdir/uptexdir/tests:.; export TEXINPUTS
+TEXINPUTS="$srcdir/uptexdir/tests;."; export TEXINPUTS
 
 $_uptex -ini -interaction batchmode -jobname upkcat-log kcat.tex || exit 1
 grep '::' upkcat-log.log > upkcat-log_ed.log \
