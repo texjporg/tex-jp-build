@@ -253,11 +253,11 @@ jobs:
             --without-system-harfbuzz
           make ctie.exe
           make ctwill.exe
-          make ctwill-refsort.exe || echo ""
-          make ctwill-twinx.exe || echo ""
+          make ctwill-refsort.exe
+          make ctwill-twinx.exe
           make cweave.exe
           make tie.exe
-          make twill.exe || echo ""
+          make twill.exe
           make updvitype.web
           make updvitype.p
           make updvitype.c
