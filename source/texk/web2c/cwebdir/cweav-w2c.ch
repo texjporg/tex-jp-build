@@ -17,15 +17,15 @@
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
 @x
-\def\title{CWEAVE (Version 4.9)}
+\def\title{CWEAVE (Version 4.10)}
 @y
-\def\title{CWEAVE (Version 4.9 [\TeX~Live])}
+\def\title{CWEAVE (Version 4.10 [\TeX~Live])}
 @z
 
 @x
-  \centerline{(Version 4.9)}
+  \centerline{(Version 4.10)}
 @y
-  \centerline{(Version 4.9 [\TeX~Live])}
+  \centerline{(Version 4.10 [\TeX~Live])}
 @z
 
 @x
@@ -41,9 +41,9 @@
 @z
 
 @x
-@d banner "This is CWEAVE (Version 4.9)"
+@d banner "This is CWEAVE (Version 4.10)"
 @y
-@d banner "This is CWEAVE, Version 4.9"
+@d banner "This is CWEAVE, Version 4.10"
   /* will be extended by the \TeX~Live |versionstring| */
 @z
 
@@ -60,9 +60,9 @@
 @z
 
 @x
-@d max_refs 30000 /* number of cross-references; must be less than 65536 */
+@ @d max_refs 30000 /* number of cross-references; must be less than 65536 */
 @y
-@d max_refs 65535 /* number of cross-references; must be less than 65536 */
+@ @d max_refs 65535 /* number of cross-references; must be less than 65536 */
 @z
 
 @x
@@ -270,38 +270,6 @@ tex_puts("cwebma");
 @i prod.w
 @y
 @i prod-cweave.w
-@z
-
-@x
-@d inner_tok_flag (5*id_flag) /* signifies a token list in `\pb' */
-
-@c
-static void
-print_text( /* prints a token list for debugging; not used in |main| */
-@y
-@d inner_tok_flag (5*id_flag) /* signifies a token list in `\pb' */
-
-@<Predecl...@>=
-#if 0
-static void print_text(text_pointer p);
-#endif
-
-@ @c
-#if 0
-static void
-print_text( /* prints a token list for debugging; not used in |main| */
-@z
-
-@x
-}
-@y
-}
-#endif
-@z
-
-@x
-@ @<Predecl...@>=@+static void print_text(text_pointer p);
-@y
 @z
 
 @x
@@ -547,24 +515,9 @@ if (show_progress) fputs(_("\nWriting the output file..."),stdout);
 @z
 
 @x
-if (no_xref) {
-  finish_line();
-  out_str("\\end");
-@.\\end@>
-  finish_line();
-}
+  if (show_progress) fputs("\nWriting the index...",stdout);
 @y
-if (no_xref) {
-  finish_line();
-  out_str("\\end");
-@.\\end@>
-}
-@z
-
-@x
-  phase=3; if (show_progress) fputs("\nWriting the index...",stdout);
-@y
-  phase=3; if (show_progress) fputs(_("\nWriting the index..."),stdout);
+  if (show_progress) fputs(_("\nWriting the index..."),stdout);
 @z
 
 @x
@@ -580,14 +533,9 @@ if (no_xref) {
 @z
 
 @x
-@.\\end@>
-  finish_line();
-  fclose(active_file);
-}
+fclose(active_file);
 @y
-@.\\end@>
-}
-finish_line(); fclose(active_file); active_file=tex_file=NULL;
+fclose(active_file); active_file=tex_file=NULL;
 if (check_for_change) @<Update the result when it has changed@>@;
 @z
 
@@ -606,7 +554,7 @@ if (check_for_change) @<Update the result when it has changed@>@;
 @x
   puts("\nMemory usage statistics:");
 @.Memory usage statistics:@>
-  printf("%td names (out of %ld)\n",
+  printf("%td names (out of %ld)\n",@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf("%td cross-references (out of %ld)\n",
             (ptrdiff_t)(xref_ptr-xmem),(long)max_refs);
@@ -627,7 +575,7 @@ if (check_for_change) @<Update the result when it has changed@>@;
 @y
   puts(_("\nMemory usage statistics:"));
 @.Memory usage statistics:@>
-  printf(_("%td names (out of %ld)\n"),
+  printf(_("%td names (out of %ld)\n"),@^system dependencies@>
             (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf(_("%td cross-references (out of %ld)\n"),
             (ptrdiff_t)(xref_ptr-xmem),(long)max_refs);
@@ -717,7 +665,7 @@ do {
 } while(comparison && !feof(tex_file) && !feof(check_file));
 
 @ Note the superfluous call to |remove| before |rename|.  We're using it to
-get around a bug in some implementations of |rename|.
+get around a bug in some implementations of |rename|.@^system dependencies@>
 
 @<Take appropriate action...@>=
 if(comparison)

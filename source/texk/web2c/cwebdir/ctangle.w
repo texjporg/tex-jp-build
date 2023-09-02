@@ -2,7 +2,7 @@
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
 % It is distributed WITHOUT ANY WARRANTY, express or implied.
-% Version 4.9 --- May 2023
+% Version 4.10 --- August 2023
 
 % Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -27,11 +27,11 @@
 \mathchardef\RA="3221 % right arrow
 \mathchardef\BA="3224 % double arrow
 
-\def\title{CTANGLE (Version 4.9)}
+\def\title{CTANGLE (Version 4.10)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The {\ttitlefont CTANGLE} processor}
   \vskip 15pt
-  \centerline{(Version 4.9)}
+  \centerline{(Version 4.10)}
   \vfill}
 \def\botofcontents{\vfill
 \noindent
@@ -61,7 +61,7 @@ Joachim Schrod, Lee Wittenberg, and others who have contributed improvements.
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (Version 4.9)"
+@d banner "This is CTANGLE (Version 4.10)"
 
 @c
 @<Include files@>@/
@@ -336,7 +336,7 @@ boolean flag) /* |flag==false| means we are in |output_defs| */
     cur_byte=cur_repl->tok_start; return;
   }
   stack_ptr--; /* go down to the previous level */
-  if (stack_ptr>stack) cur_state=*stack_ptr;
+  if (stack_ptr>stack) cur_state=*stack_ptr;@^system dependencies@>
 }
 
 @ The heart of the output procedure is the function |get_output|,
@@ -519,24 +519,18 @@ phase_two (void) {
 @.No program text...@>
   }
   else {
-    if (cur_out_file==end_output_files) {
-      if (show_progress) {
-        printf("\nWriting the output file (%s):",C_file_name);
-        update_terminal();
-      }
-    }
-    else {
-      if (show_progress) {
-        fputs("\nWriting the output files:",stdout);
+    if (show_progress) {
+      printf(cur_out_file==end_output_files ? @|
+        "\nWriting the output file (%s):" : @|
+        "\nWriting the output files: (%s)",C_file_name);
 @.Writing the output...@>
-        printf(" (%s)",C_file_name);
-        update_terminal();
-      }
-      if (text_info->text_link==macro) goto writeloop;
+      update_terminal();
     }
-    while (stack_ptr>stack) get_output();
-    flush_buffer();
-writeloop:   @<Write all the named output files@>@;
+    if (text_info->text_link!=macro) {
+      while (stack_ptr>stack) get_output();
+      flush_buffer();
+    }
+    @<Write all the named output files@>@;
     if (show_happiness) {
       if (show_progress) new_line();
       fputs("Done.",stdout);
@@ -586,7 +580,7 @@ static void out_char(eight_bits);
 @ @d macro_end (cur_text+1)->tok_start /* end of |macro| replacement text */
 @#
 @d C_printf(c,a) fprintf(C_file,c,a)
-@d C_putc(c) putc((int)(c),C_file) /* isn't \CEE/ wonderfully consistent? */
+@d C_putc(c) fputc((int)(c),C_file) /* isn't \CEE/ wonderfully consistent? */
 
 @c
 static void
@@ -694,9 +688,9 @@ This makes debugging a lot less confusing.
 static char translit[0200][translit_length];
 
 @ @<Set init...@>=
-{
-  int i;
-  for (i=0;i<0200;i++) sprintf(translit[i],"X%02X",(unsigned int)(0200+i));
+{ int i;
+  for (i=0;i<0200;i++)
+     snprintf(translit[i],translit_length,"X%02X",(unsigned int)(0200+i));
 }
 
 @ @<Case of an identifier@>=@t\1\quad@>
@@ -1540,7 +1534,7 @@ but not an |int|, we use \.{\%td} to print these quantities.
 void
 print_stats(void) {
   puts("\nMemory usage statistics:");
-  printf("%td names (out of %ld)\n",
+  printf("%td names (out of %ld)\n",@^system dependencies@>
           (ptrdiff_t)(name_ptr-name_dir),(long)max_names);
   printf("%td replacement texts (out of %ld)\n",
           (ptrdiff_t)(text_ptr-text_info),(long)max_texts);

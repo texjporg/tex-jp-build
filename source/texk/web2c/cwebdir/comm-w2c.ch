@@ -17,16 +17,16 @@
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
 @x
-\def\title{Common code for CTANGLE and CWEAVE (Version 4.9)}
+\def\title{Common code for CTANGLE and CWEAVE (Version 4.10)}
 @y
 \def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}} \ifacro\sanitizecommand\Kpathsea{KPATHSEA}\fi
-\def\title{Common code for CTANGLE and CWEAVE (4.9 [\TeX~Live])}
+\def\title{Common code for CTANGLE and CWEAVE (4.10 [\TeX~Live])}
 @z
 
 @x
-  \centerline{(Version 4.9)}
+  \centerline{(Version 4.10)}
 @y
-  \centerline{(Version 4.9 [\TeX~Live])}
+  \centerline{(Version 4.10 [\TeX~Live])}
 @z
 
 @x
@@ -223,6 +223,7 @@ The remainder of the \.{@@i} line after the file name is ignored.
     for (; k>=cur_file_name; k--) *(k+l+1)=*k;
     strcpy(cur_file_name,temp_file_name);
     cur_file_name[l]='/'; /* \UNIX/ pathname separator */
+@^system dependencies@>
     if ((cur_file=fopen(cur_file_name,"r"))!=NULL) {
       cur_line=0; print_where=true;
       goto restart; /* success */
@@ -301,9 +302,9 @@ else if (strlen(found_filename) < max_file_name_length) {
 @z
 
 @x
-  if (program==cweave) {
+  if (program==cweave) p->ilk=t, init_node(p);
 @y
-  if (program!=ctangle) {
+  if (program!=ctangle) p->ilk=t, init_node(p);
 @z
 
 @x
@@ -492,12 +493,10 @@ systems the contents of the compile-time variable |DEV_NULL| (\TeX~Live) or
 @z
 
 @x
-      while (*s)
         if (*s=='.') dot_pos=s++;
         else if (*s=='/') dot_pos=NULL,name_pos=++s;
         else s++;
 @y
-      while (*s)
         if (*s=='.') dot_pos=s++;
         else if (*s==DIR_SEPARATOR || *s==DEVICE_SEPARATOR || *s=='/')
           dot_pos=NULL,name_pos=++s;
@@ -642,7 +641,7 @@ const char *use_language=""; /* prefix of \.{cwebmac.tex} in \TEX/ output */
 char cb_banner[max_banner];@/
 string texmf_locale;@/
 #ifndef SEPARATORS
-#define SEPARATORS "://"
+#define SEPARATORS "://"@^system dependencies@>
 #endif
 char separators[]=SEPARATORS;
 
@@ -819,7 +818,7 @@ Debugging output is always written to |stderr|, and begins with the string
 
 Modules for dealing with help messages and version info.
 
-@<Include files@>=
+@<Include files@>=@^system dependencies@>
 #define CWEB
 #include "help.h" /* |@!CTANGLEHELP|, |@!CWEAVEHELP|, |@!CTWILLHELP| */
 

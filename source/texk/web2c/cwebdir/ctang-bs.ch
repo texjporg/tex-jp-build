@@ -17,16 +17,16 @@ by using "huge" pointers.
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (Version 4.9)"
+@d banner "This is CTANGLE (Version 4.10)"
 @y
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (Version 4.9pc/big)"
+@d banner "This is CTANGLE (Version 4.10pc/big)"
 @z
 
 
-@x Section 10.
+@x Section 11.
 @d ilk dummy.Ilk /* used by \.{CWEAVE} only */
 
 @<Common code...@>=
@@ -154,10 +154,10 @@ text_ptr=text_info+1; text_ptr->tok_start=tok_mem;
 out_char(
 eight_bits cur_char)
 {
-  char *j, *k; /* pointer into |byte_mem| */
+  char *j; /* pointer into |byte_mem| */
 @y
 out_char(cur_char)
 eight_bits cur_char;
 {
-  char huge* j, huge* k; /* pointer into |byte_mem| */
+  char huge* j; /* pointer into |byte_mem| */
 @z
