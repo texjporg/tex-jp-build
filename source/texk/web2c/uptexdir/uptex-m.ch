@@ -794,16 +794,17 @@ hmode+no_boundary: begin get_x_token;
    (cur_cmd=char_given)or(cur_cmd=char_num) then cancel_boundary:=true;
 @y
 hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul: goto main_loop_j;
-hmode+char_given:
-  if check_echar_range(cur_chr) then goto main_loop
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
-hmode+kchar_given:
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
-hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
+hmode+char_given: begin cur_chr:=cur_chr mod max_cjk_val;
   if check_echar_range(cur_chr) then goto main_loop
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
   end;
-hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
+hmode+kchar_given: begin cur_chr:=cur_chr mod max_cjk_val;
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+hmode+char_num: begin scan_char_num; cur_chr:=cur_val mod max_cjk_val;
+  if check_echar_range(cur_chr) then goto main_loop
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+  end;
+hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val mod max_cjk_val;
   cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   goto main_loop_j;
   end;
@@ -843,30 +844,33 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   @<goto |main_lig_loop|@>;
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
-  begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
+  begin cur_chr:=cur_chr mod max_cjk_val;
+  if check_echar_range(cur_chr) then goto main_loop_lookahead+1
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_given then
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  begin cur_chr:=cur_chr mod max_cjk_val;
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 x_token; {now expand and set |cur_cmd|, |cur_chr|, |cur_tok|}
 if cur_cmd=letter then goto main_loop_lookahead+1;
 if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   @<goto |main_lig_loop|@>;
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
-  begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
+  begin cur_chr:=cur_chr mod max_cjk_val;
+  if check_echar_range(cur_chr) then goto main_loop_lookahead+1
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_given then
   begin cur_chr:=cur_chr mod max_cjk_val;
   cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 if cur_cmd=char_num then
-  begin scan_char_num; cur_chr:=cur_val;
+  begin scan_char_num; cur_chr:=cur_val mod max_cjk_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_num then
-  begin scan_char_num; cur_chr:=cur_val;
+  begin scan_char_num; cur_chr:=cur_val mod max_cjk_val;
   cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   @<goto |main_lig_loop|@>;
   end;
@@ -895,6 +899,7 @@ if not is_char_ascii(cur_val) then
       link(p):=get_avail; info(link(p)):=KANJI(cx);
     end;
 @y
+cur_val:=cur_val mod max_cjk_val;
 if check_echar_range(cur_val)=0 then
   begin KANJI(cx):=cur_val;
   if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
@@ -935,13 +940,15 @@ else if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
   cx:=cur_chr;
   end
 else if cur_cmd=char_given then
+  begin cur_chr:=cur_chr mod max_cjk_val;
   if check_echar_range(cur_chr) then q:=new_character(f,cur_chr)
   else begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
     KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
     end
+  end
 else if cur_cmd=char_num then
-  begin scan_char_num;
+  begin scan_char_num; cur_val:=cur_val mod max_cjk_val;
   if check_echar_range(cur_val) then q:=new_character(f,cur_val)
   else  begin
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
@@ -949,12 +956,12 @@ else if cur_cmd=char_num then
     end
   end
 else if cur_cmd=kchar_given then
-  begin
+  begin cur_chr:=cur_chr mod max_cjk_val;
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
     KANJI(cx):=cur_chr; cur_cmd:=kcat_code(kcatcodekey(cx));
   end
 else if cur_cmd=kchar_num then
-  begin scan_char_num;
+  begin scan_char_num; cur_val:=cur_val mod max_cjk_val;
     if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
     KANJI(cx):=cur_val; cur_cmd:=kcat_code(kcatcodekey(cx));
   end
@@ -975,6 +982,7 @@ letter,other_char,char_given:
   if is_char_ascii(cur_chr) then begin
 @y
 letter,other_char,char_given:
+  begin cur_chr:=cur_chr mod max_cjk_val;
   if check_echar_range(cur_chr) then begin
 @z
 
@@ -986,9 +994,10 @@ char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
   end;
 @y
     KANJI(cx):=cur_chr;
+  end;
 kanji,kana,other_kchar,hangul: cx:=cur_chr;
 kchar_given:
-  KANJI(cx):=cur_chr;
+  KANJI(cx):=cur_chr mod max_cjk_val;
 char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
   goto reswitch;
   end;
@@ -1020,20 +1029,26 @@ mmode+char_num: begin scan_char_num; cur_chr:=cur_val;
   end;
 @y
 mmode+letter,mmode+other_char,mmode+char_given:
+  begin cur_chr:=cur_chr mod max_cjk_val;
   if check_echar_range(cur_chr) then
     set_math_char(ho(math_code(cur_chr)))
   else set_math_kchar(cur_chr);
+  end;
 mmode+kanji,mmode+kana,mmode+other_kchar,mmode+hangul: begin
     cx:=cur_chr; set_math_kchar(KANJI(cx));
   end;
-mmode+char_num: begin scan_char_num; cur_chr:=cur_val;
+mmode+char_num: begin scan_char_num;
+  cur_chr:=cur_val mod max_cjk_val;
   if check_echar_range(cur_chr) then
     set_math_char(ho(math_code(cur_chr)))
   else set_math_kchar(cur_chr);
   end;
 mmode+kchar_given:
+  begin cur_chr:=cur_chr mod max_cjk_val;
   set_math_kchar(cur_chr);
-mmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
+  end;
+mmode+kchar_num: begin scan_char_num;
+  cur_chr:=cur_val mod max_cjk_val;
   set_math_kchar(cur_chr);
   end;
 @z
@@ -1251,13 +1266,15 @@ begin if is_char_node(link(p)) then
     kanji,kana,other_kchar,hangul: cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
     letter,other_char: begin ins_kp:=true; cur_l:=qi(0); end;
     char_given: begin
+      cur_chr:=cur_chr mod max_cjk_val;
       if check_echar_range(cur_chr) then
         begin ins_kp:=true; cur_l:=qi(0);
         end
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
-    char_num: begin scan_char_num; cur_chr:=cur_val;
+    char_num: begin scan_char_num;
+      cur_chr:=cur_val mod max_cjk_val;
       if check_echar_range(cur_chr) then
         begin ins_kp:=true; cur_l:=qi(0);
         end
@@ -1265,10 +1282,12 @@ begin if is_char_node(link(p)) then
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
     kchar_given: begin
+      cur_chr:=cur_chr mod max_cjk_val;
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
-    kchar_num: begin scan_char_num; cur_chr:=cur_val;
+    kchar_num: begin scan_char_num;
+      cur_chr:=cur_val mod max_cjk_val;
       cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       cur_cmd:=kcat_code(kcatcodekey(cur_chr));
       end;
