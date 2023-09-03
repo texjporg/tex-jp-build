@@ -121,8 +121,18 @@ static struct option long_options[] = {
 static void read_in_whole(unsigned char **, unsigned *, FILE *, const_string );
 static void init_tables(void);
 
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(MIKTEX) && defined(DLLPROC)
+extern __declspec(dllexport) int DLLPROC (int argc, char *argv[]);
+#else
+#undef DLLPROC
+#endif
+
 int
-main (int argc, string *argv)
+#if defined(DLLPROC)
+DLLPROC (int argc, char *argv[])
+#else
+main (int argc, char *argv[])
+#endif
 {
     int getopt_return_val;
     int option_index = 0;

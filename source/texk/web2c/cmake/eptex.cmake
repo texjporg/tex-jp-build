@@ -115,7 +115,7 @@ web2c_tie_c(eptex.ch SOURCES eptex.web ${eptex_ch_srcs})
 add_custom_command(
   OUTPUT eptex-pool.c
   DEPENDS eptex.pool eptexd.h makecpool
-  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/cmake/makecpool.py"
+  COMMAND python3.exe "${CMAKE_CURRENT_SOURCE_DIR}/cmake/makecpool.py"
     "--makecpool" "$<TARGET_FILE:makecpool>"
     eptex eptex-pool.c
   )

@@ -126,7 +126,7 @@ web2c_tie_c(euptex.ch SOURCES euptex.web ${euptex_ch_srcs})
 add_custom_command(
   OUTPUT euptex-pool.c
   DEPENDS euptex.pool euptexd.h makecpool
-  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/cmake/makecpool.py"
+  COMMAND python3.exe "${CMAKE_CURRENT_SOURCE_DIR}/cmake/makecpool.py"
     "--makecpool" "$<TARGET_FILE_DIR:makecpool>/makecpool"
     euptex euptex-pool.c
   )
