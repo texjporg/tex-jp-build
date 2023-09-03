@@ -12,11 +12,11 @@ TEXMFCNF=$srcdir/../kpathsea \
   WEBINPUTS=$srcdir/tiedir \
   $_tie -c tie.outc tie.tie tie.cf1 tie.cf2 tie.cf3 || exit 1
 
-diff tie.outc $srcdir/tiedir/tie.chf.gen || exit 1
+diff tie.outc $srcdir/tiedir/tie.chf.gen || exit 2
 
 TEXMFCNF=$srcdir/../kpathsea \
   WEBINPUTS=$srcdir/tiedir \
-  $_tie -m tie.outm tie.tie tie.cf1 tie.cf2 tie.cf3 || exit 1
+  $_tie -m tie.outm tie.tie tie.cf1 tie.cf2 tie.cf3 || exit 3
 
-diff tie.outm $srcdir/tiedir/tie.master.gen || exit 1
+diff tie.outm $srcdir/tiedir/tie.master.gen || exit 4
 

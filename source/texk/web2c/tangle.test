@@ -11,5 +11,5 @@ _tangle=$BinDir/tangle$ExeExt
 TEXMFCNF=$srcdir/../kpathsea WEBINPUTS=$srcdir/cftests \
   $_tangle  cftest cftest || exit 1
 
-diff cftest.p $srcdir/cftests/cftest.p || exit 1
+diff cftest.p $srcdir/cftests/cftest.p || exit 2
 
