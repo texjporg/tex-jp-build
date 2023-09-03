@@ -277,7 +277,7 @@ jobs:
         shell: bash
         run: |
           cd ./Work
-          export BinDir=./Debug/bin ExeExt=.exe W2CDir=./Debug/bin srcdir=../texk/web2c/omegafonts
+          export BinDir=./Debug/bin ExeExt=.exe W2CDir=./Debug/bin srcdir=../source/texk/web2c/omegafonts
           $srcdir/bad.test         || echo -e "**\n** failed: omegafonts/bad.test\n**"
           $srcdir/charwd.test      || echo -e "**\n** failed: omegafonts/charwd.test\n**"
           $srcdir/check.test       || echo -e "**\n** failed: omegafonts/check.test\n**"
