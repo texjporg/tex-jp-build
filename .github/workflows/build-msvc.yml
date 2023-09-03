@@ -192,10 +192,10 @@ jobs:
           ./uptex.exe --version || echo "uptex"
           echo ""
           ls -lR
-          #echo ""
-          #./eptex.exe --version || echo "eptex"
-          #echo ""
-          #./euptex.exe --version || echo "euptex"
+          echo ""
+          ./eptex.exe --version || echo "eptex"
+          echo ""
+          ./euptex.exe --version || echo "euptex"
           #echo ""
           #./updvitype.exe --version || echo "updvitype"
           #echo ""
@@ -209,19 +209,89 @@ jobs:
         shell: bash
         run: |
           cd ./Work
-          export BinDir=./Debug/bin ExeExt=.exe srcdir=../source/texk/web2c
+          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin srcdir=../texk/web2c
           # $srcdir/ctiedir/ctie.test   || echo -e "**\n** failed: ctie.test\n**"
           # $srcdir/cwebdir/ctwill.test || echo -e "**\n** failed: ctwill.test\n**"
           # $srcdir/cwebdir/cweave.test || echo -e "**\n** failed: cweave.test\n**"
           $srcdir/tiedir/tie.test       || echo -e "**\n** failed: tie.test\n**"
           $srcdir/tangle.test           || echo -e "**\n** failed: tangle.test\n**"
-          $srcdir/ptexdir/pver.test     || echo -e "**\n** failed: pver.test\n**"
-          # $srcdir/eptexdir/epver.test   || echo -e "**\n** failed: epver.test\n**"
-          $srcdir/uptexdir/upver.test   || echo -e "**\n** failed: upver.test\n**"
-          $srcdir/uptexdir/upkcat.test  || echo -e "**\n** failed: upkcat.test\n**"
-          # $srcdir/eputexdir/eupver.test || echo -e "**\n** failed: eupver.test\n**"
+
+          $srcdir/dvicopy.test          || echo -e "**\n** failed: dvicopy.test\n**"
+          $srcdir/dvitype.test          || echo -e "**\n** failed: dvitype.test\n**"
+          $srcdir/gftodvi.test          || echo -e "**\n** failed: gftodvi.test\n**"
+          $srcdir/gftopk.test           || echo -e "**\n** failed: gftopk.test\n**"
+          $srcdir/gftype.test           || echo -e "**\n** failed: gftype.test\n**"
+          $srcdir/mft.test              || echo -e "**\n** failed: mft.test\n**"
+          $srcdir/patgen.test           || echo -e "**\n** failed: patgen.test\n**"
+          $srcdir/pktogf.test           || echo -e "**\n** failed: pktogf.test\n**"
+          $srcdir/pktype.test           || echo -e "**\n** failed: pktype.test\n**"
+          $srcdir/pltotf.test           || echo -e "**\n** failed: pltotf.test\n**"
+          $srcdir/pooltype.test         || echo -e "**\n** failed: pooltype.test\n**"
+          $srcdir/tftopl.test           || echo -e "**\n** failed: tftopl.test\n**"
+          $srcdir/vftovp.test           || echo -e "**\n** failed: vftovp.test\n**"
+          $srcdir/vptovf.test           || echo -e "**\n** failed: vptovf.test\n**"
+          $srcdir/weave.test            || echo -e "**\n** failed: weave.test\n**"
+
         env:
-          srcroot: "../source"
-          TEXMFCNF: "../source/texk/kpathsea/tests/windows"
+          srcroot: ".."
+          TEXMFCNF: "../texk/kpathsea/tests/windows"
+
+      - name: test web2c/*ptex
+        shell: bash
+        run: |
+          cd ./Work
+          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin W2CDir=../Debug/bin srcdir=../texk/web2c abs_srcdir=../../texk/web2c
+          $srcdir/ptexdir/ptriptest.test   || echo -e "**\n** failed: p/ptriptest.test\n**"
+          $srcdir/ptexdir/pver.test        || echo -e "**\n** failed: p/pver.test\n**"
+          $srcdir/ptexdir/wcfname.test     || echo -e "**\n** failed: p/wcfname.test\n**"
+
+          $srcdir/uptexdir/uptriptest.test || echo -e "**\n** failed: up/uptriptest.test\n**"
+          $srcdir/uptexdir/ptriptest.test  || echo -e "**\n** failed: up/ptriptest.test\n**"
+          $srcdir/uptexdir/upver.test      || echo -e "**\n** failed: up/upver.test\n**"
+          $srcdir/uptexdir/upkcat.test     || echo -e "**\n** failed: up/upkcat.test\n**"
+          $srcdir/uptexdir/wcfname.test    || echo -e "**\n** failed: up/wcfname.test\n**"
+          $srcdir/uptexdir/wcfname0.test   || echo -e "**\n** failed: up/wcfname0.test\n**"
+
+          $srcdir/eptexdir/eptriptest.test   || echo -e "**\n** failed: ep/eptriptest.test\n**"
+          $srcdir/eptexdir/pdfprimitive.test || echo -e "**\n** failed: ep/pdfprimitive.test\n**"
+          $srcdir/eptexdir/epver.test        || echo -e "**\n** failed: ep/epver.test\n**"
+          $srcdir/eptexdir/wcfname.test      || echo -e "**\n** failed: ep/wcfname.test\n**"
+
+          $srcdir/euptexdir/euptriptest.test  || echo -e "**\n** failed: eup/euptriptest.test\n**"
+          $srcdir/euptexdir/eptriptest.test   || echo -e "**\n** failed: eup/eptriptest.test\n**"
+          $srcdir/euptexdir/pdfprimitive.test || echo -e "**\n** failed: eup/pdfprimitive.test\n**"
+          $srcdir/euptexdir/eupver.test       || echo -e "**\n** failed: eup/eupver.test\n**"
+          $srcdir/euptexdir/wcfname.test      || echo -e "**\n** failed: eup/wcfname.test\n**"
+          $srcdir/euptexdir/wcfname0.test     || echo -e "**\n** failed: eup/wcfname0.test\n**"
+
+        env:
+          srcroot: ".."
+          TEXMFCNF: "../texk/kpathsea/tests/windows"
+          LN_S: "cp"
+
+      - name: test web2c/omegafonts
+        shell: bash
+        run: |
+          cd ./Work
+          export BinDir=./Debug/bin ExeExt=.exe W2CDir=./Debug/bin srcdir=../texk/web2c/omegafonts
+          $srcdir/bad.test         || echo -e "**\n** failed: omegafonts/bad.test\n**"
+          $srcdir/charwd.test      || echo -e "**\n** failed: omegafonts/charwd.test\n**"
+          $srcdir/check.test       || echo -e "**\n** failed: omegafonts/check.test\n**"
+          $srcdir/help.test        || echo -e "**\n** failed: omegafonts/help.test\n**"
+          $srcdir/level1.test      || echo -e "**\n** failed: omegafonts/level1.test\n**"
+          $srcdir/ligkern.test     || echo -e "**\n** failed: omegafonts/ligkern.test\n**"
+          $srcdir/ofonts.test      || echo -e "**\n** failed: omegafonts/ofonts.test\n**"
+          $srcdir/omfonts.test     || echo -e "**\n** failed: omegafonts/omfonts.test\n**"
+          $srcdir/overbmp.test     || echo -e "**\n** failed: omegafonts/overbmp.test\n**"
+          $srcdir/realnum.test     || echo -e "**\n** failed: omegafonts/realnum.test\n**"
+          $srcdir/repeat.test      || echo -e "**\n** failed: omegafonts/repeat.test\n**"
+          $srcdir/selectfont.test  || echo -e "**\n** failed: omegafonts/selectfont.test\n**"
+          $srcdir/shorten.test     || echo -e "**\n** failed: omegafonts/shorten.test\n**"
+          $srcdir/specialhex.test  || echo -e "**\n** failed: omegafonts/specialhex.test\n**"
+          $srcdir/version.test     || echo -e "**\n** failed: omegafonts/version.test\n**"
+          $srcdir/yannis.test      || echo -e "**\n** failed: omegafonts/yannis.test\n**"
+
+        env:
+          TEXMFCNF: "../../texk/kpathsea/tests/windows"
 
       - run: echo "⛄ This job's status is ${{ job.status }}."
