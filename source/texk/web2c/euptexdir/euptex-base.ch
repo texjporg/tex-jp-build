@@ -5592,22 +5592,6 @@ loop@+  begin if is_char_node(s) then
       goto done4;
 @z
 
-@x upTeX: \kchar, \kchardef
-loop@+  begin get_x_token;
-  reswitch: case cur_cmd of
-  letter,other_char,char_given:@<Append a new letter or hyphen@>;
-  char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
-    goto reswitch;
-    end;
-@y
-loop@+  begin get_x_token;
-  reswitch: case cur_cmd of
-  letter,other_char,char_given,kchar_given:@<Append a new letter or hyphen@>;
-  char_num,kchar_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
-    goto reswitch;
-    end;
-@z
-
 @x [44.968] l.19535 - pTeX: dir_node
   hlist_node,vlist_node,rule_node:@<Insert glue for |split_top_skip|
 @y
@@ -5838,11 +5822,11 @@ ins_kp:=false;
 case abs(mode)+cur_cmd of
 hmode+letter,hmode+other_char: goto main_loop;
 hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul: goto main_loop_j;
-hmode+kchar_given:
-  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+hmode+kchar_given:
+  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
 hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
@@ -5952,6 +5936,9 @@ if cur_cmd=char_given then
   begin if check_echar_range(cur_chr) then goto main_loop_lookahead+1
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
+if cur_cmd=kchar_given then
+  begin cur_chr:=cur_chr mod max_cjk_val;
+  cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 if cur_cmd=char_num then
   begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
@@ -6985,10 +6972,23 @@ letter,other_char,char_given:
       end;
     end
   else
+@z
+
+@x
+char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
+  goto reswitch;
+  end;
+@y
     KANJI(cx):=cur_chr;
+kanji,kana,other_kchar,hangul: cx:=cur_chr;
 kchar_given:
   KANJI(cx):=cur_chr;
-kanji,kana,other_kchar,hangul: cx:=cur_chr;
+char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
+  goto reswitch;
+  end;
+kchar_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=kchar_given;
+  goto reswitch;
+  end;
 @z
 
 @x [48.1151] l.22576 - pTeX: scan_math: use Kanji in math_mode
