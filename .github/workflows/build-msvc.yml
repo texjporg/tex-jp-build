@@ -205,11 +205,15 @@ jobs:
           #echo ""
           #./upbibtex.exe --version || echo "upbibtex"
 
+        env:
+          srcroot: "../source"
+          TEXMFCNF: "../source/texk/kpathsea/tests/windows"
+
       - name: test web2c
         shell: bash
         run: |
           cd ./Work
-          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin srcdir=../texk/web2c
+          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin srcdir=../source/texk/web2c
           # $srcdir/ctiedir/ctie.test   || echo -e "**\n** failed: ctie.test\n**"
           # $srcdir/cwebdir/ctwill.test || echo -e "**\n** failed: ctwill.test\n**"
           # $srcdir/cwebdir/cweave.test || echo -e "**\n** failed: cweave.test\n**"
@@ -233,14 +237,14 @@ jobs:
           $srcdir/weave.test            || echo -e "**\n** failed: weave.test\n**"
 
         env:
-          srcroot: ".."
-          TEXMFCNF: "../texk/kpathsea/tests/windows"
+          srcroot: "../source"
+          TEXMFCNF: "../source/texk/kpathsea/tests/windows"
 
       - name: test web2c/*ptex
         shell: bash
         run: |
           cd ./Work
-          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin W2CDir=../Debug/bin srcdir=../texk/web2c abs_srcdir=../../texk/web2c
+          export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin W2CDir=../Debug/bin srcdir=../source/texk/web2c abs_srcdir=../../source/texk/web2c
           $srcdir/ptexdir/ptriptest.test   || echo -e "**\n** failed: p/ptriptest.test\n**"
           $srcdir/ptexdir/pver.test        || echo -e "**\n** failed: p/pver.test\n**"
           $srcdir/ptexdir/wcfname.test     || echo -e "**\n** failed: p/wcfname.test\n**"
@@ -265,8 +269,8 @@ jobs:
           $srcdir/euptexdir/wcfname0.test     || echo -e "**\n** failed: eup/wcfname0.test\n**"
 
         env:
-          srcroot: ".."
-          TEXMFCNF: "../texk/kpathsea/tests/windows"
+          srcroot: "../source"
+          TEXMFCNF: "../source/texk/kpathsea/tests/windows"
           LN_S: "cp"
 
       - name: test web2c/omegafonts
@@ -292,6 +296,6 @@ jobs:
           $srcdir/yannis.test      || echo -e "**\n** failed: omegafonts/yannis.test\n**"
 
         env:
-          TEXMFCNF: "../../texk/kpathsea/tests/windows"
+          TEXMFCNF: "../source/texk/kpathsea/tests/windows"
 
       - run: echo "⛄ This job's status is ${{ job.status }}."
