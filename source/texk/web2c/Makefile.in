@@ -4542,7 +4542,7 @@ uptftopl_LDADD = $(uptex_ldadd)
 uptftopl_DEPENDENCIES = $(uptex_dependencies)
 
 # upTeX Tests
-uptex_tests = uptexdir/uptriptest.test uptexdir/ptriptest.test uptexdir/upver.test uptexdir/upkcat.test uptexdir/wcfname.test
+uptex_tests = uptexdir/uptriptest.test uptexdir/ptriptest.test uptexdir/upver.test uptexdir/upkcat.test uptexdir/wcfname.test uptexdir/wcfname0.test
 # uppPLtoTF/upTFtoPL
 upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
 	uptexdir/uppltotf.test uptexdir/uptftopl.test \
@@ -4600,7 +4600,7 @@ euptex_ch_srcs = \
 
 # e-upTeX Tests
 #
-euptex_tests = euptexdir/euptriptest.test euptexdir/eptriptest.test euptexdir/pdfprimitive.test euptexdir/eupver.test euptexdir/wcfname.test
+euptex_tests = euptexdir/euptriptest.test euptexdir/eptriptest.test euptexdir/pdfprimitive.test euptexdir/eupver.test euptexdir/wcfname.test euptexdir/wcfname0.test
 nptex_CPPFLAGS = $(PTEXENC_INCLUDES) $(AM_CPPFLAGS) -I$(srcdir)/libmd5 \
 	$(ZLIB_INCLUDES) $(am__append_147)
 
@@ -22252,7 +22252,7 @@ uptftopl.p: tangle$(EXEEXT) uptftopl.web uptexdir/uptftopl.ch
 uptftopl.web: tie$(EXEEXT) tftopl.web tftopl.ch
 	$(tie_m) tftopl.web tftopl.ch
 uptexdir/uptriptest.log uptexdir/ptriptest.log: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
-uptexdir/upver.log uptexdir/upkcat.log uptexdir/wcfname.log: uptex$(EXEEXT)
+uptexdir/upver.log uptexdir/upkcat.log uptexdir/wcfname.log uptexdir/wcfname0.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)
@@ -22294,7 +22294,7 @@ euptex.ch: tie$(EXEEXT) euptex.web $(euptex_ch_srcs)
 	$(tie_c) euptex.web $(euptex_ch_srcs)
 euptexdir/euptriptest.log euptexdir/eptriptest.log: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 euptexdir/pdfprimitive.log: euptex$(EXEEXT)
-euptexdir/eupver.log euptexdir/wcfname.log: euptex$(EXEEXT)
+euptexdir/eupver.log euptexdir/wcfname.log euptexdir/wcfname0.log: euptex$(EXEEXT)
 euptrip.diffs: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: euptrip-clean
