@@ -60,7 +60,7 @@
 @d banner=='This is BibTeX, Version 0.99d' {printed when the program starts}
 @y
 @d my_name=='upbibtex'
-@d banner=='This is upBibTeX, Version 0.99d-j0.36-u1.29'
+@d banner=='This is upBibTeX, Version 0.99d-j0.36-u1.30'
   {printed when the program starts}
 @z
 
@@ -986,7 +986,7 @@ begin
     else if k=@"94 then return { Hangul Jamo Extended-B }
     else if k=@"99 then return { CJK Compatibility Ideographs }
     else if (k>=@"10D)and(k<=@"110) then return { Kana Extended-B .. Small Kana Extension }
-    else if (k>=@"13B)and(k<=@"142) then return { CJK Unified Ideographs Extension B .. H }
+    else if (k>=@"13B)and(k<=@"143) then return { CJK Unified Ideographs Extension B .. H }
     else if k=@"1FE then return { Fullwidth digit and latin alphabet }
     else if k=@"1FF then return; { Halfwidth katakana }
     end

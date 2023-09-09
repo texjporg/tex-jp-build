@@ -379,7 +379,8 @@ static long ucs_range[]={
       0x2B740, /* CJK Unified Ideographs Extension D		     */
       0x2B820, /* CJK Unified Ideographs Extension E		     */
       0x2CEB0, /* CJK Unified Ideographs Extension F		     */
-      0x2F800, /* CJK Compatibility Ideographs Supplement	     */ /* 0x140 */
+      0x2EBF0, /* CJK Unified Ideographs Extension I		     */ /* 0x140 */
+      0x2F800, /* CJK Compatibility Ideographs Supplement	     */
       0x30000, /* CJK Unified Ideographs Extension G		     */
       0x31350, /* CJK Unified Ideographs Extension H		     */
       0x323B0, /* reserved					     */
@@ -394,8 +395,8 @@ static long ucs_range[]={
       0xC0000, /* reserved					     */
       0xD0000, /* reserved					     */
       0xE0000, /* Tags						     */
-      0xE0100, /* Variation Selectors Supplement		     */
-      0xF0000, /* Supplementary Private Use Area-A		     */ /* 0x150 */
+      0xE0100, /* Variation Selectors Supplement		     */ /* 0x150 */
+      0xF0000, /* Supplementary Private Use Area-A		     */
       0x100000, /* Supplementary Private Use Area-B		     */
   /* Value over 0x10FFFF is illegal under Unicode,
      They are for some special use.  *** experimental ***  */
@@ -412,11 +413,11 @@ static long ucs_range[]={
       0x1B0000, /* Reserved					     */
       0x1C0000, /* Reserved					     */
       0x1D0000, /* Reserved					     */
-      0x1E0000, /* Reserved					     */
-      0x1F0000, /* Reserved					     */ /* 0x160 */
+      0x1E0000, /* Reserved					     */ /* 0x160 */
+      0x1F0000, /* Reserved					     */
       0x200000, /* Reserved					     */
       0x210000, /* Reserved					     */
-      0x220000, /* Reserved					     */ /* 0x163 */
+      0x220000, /* Reserved					     */ /* 0x164 */
       CJK_CHAR_LIMIT
 };
 
