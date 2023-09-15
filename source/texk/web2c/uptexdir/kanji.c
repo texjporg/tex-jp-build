@@ -56,8 +56,8 @@ integer calc_pos(integer c)
 }
 
 /* Ref. http://www.unicode.org/Public/UNIDATA/Blocks.txt */
-/* # Blocks-15.0.0.txt                                   */
-/* # Date: 2022-01-28, 20:58:00 GMT [KW]                 */
+/* # Blocks-15.1.0.txt                                   */
+/* # Date: 2023-07-28, 15:47:20 GMT                      */
 static long ucs_range[]={
       0x0000, /* Basic Latin					     */ /* 0x00 */
       0x0080, /* Latin-1 Supplement				     */
