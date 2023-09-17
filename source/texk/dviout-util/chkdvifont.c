@@ -932,7 +932,7 @@ void tfm_define(FILE * fp)
 
     font.c = read_n(fp,4);          /* header[0] */
     font.d = read_long(fp);         /* header[1] */
-    if (ch == 'j') {    /* check for new features in pTeX p3.8.0 / JFM 2.0 */
+    if (ch == 'j') {    /* check for new features in Community pTeX / JFM 2.0 */
         for (i = 2; i < lh; i++)    /* the rest of header */
             read_long(fp);
         for (i = 0; i < nt; i++){           /* char_type */
@@ -961,7 +961,7 @@ void tfm_define(FILE * fp)
             printf("\t\"%s\" is a %cfm%s file :%3ld  -> %3ld\n",
                 font.n, ch, u, bc, ec);
             if (ch == 'j' && tfmver > 0) {
-                printf("\t\tNew features in pTeX p3.8.0 / JFM 2.0:\n");
+                printf("\t\tNew features in Community pTeX / JFM 2.0:\n");
                 if (tfmver & 1) printf("\t\t+ 3-byte kanji code\n"); /* TL18 */
                 if (tfmver & 2) printf("\t\t+ SKIP command in glue_kern\n"); /* TL18 */
                 if (tfmver & 4) printf("\t\t+ rearrangement in glue_kern\n"); /* TL18 */
