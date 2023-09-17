@@ -205,8 +205,8 @@
 @y
 @d pTeX_version=4
 @d pTeX_minor_version=1
-@d pTeX_revision==".0"
-@d pTeX_version_string=='-p4.1.0' {current \pTeX\ version}
+@d pTeX_revision==".1"
+@d pTeX_version_string=='-p4.1.1' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -218,8 +218,8 @@
   {printed when \epTeX\ starts}
 @#
 @d upTeX_version=1
-@d upTeX_revision==".29"
-@d upTeX_version_string=='-u1.29' {current \upTeX\ version}
+@d upTeX_revision==".30"
+@d upTeX_version_string=='-u1.30' {current \upTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
@@ -1550,7 +1550,7 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"99):=kanji; { CJK Compatibility Ideographs }
   { \hskip10pt|kcat_code(@"A2):=other_kchar;| Halfwidth and Fullwidth Forms }
   @+@t\1@>for k:=@"10D to @"110 do kcat_code(k):=kana; { Kana Extended-B .. Small Kana Extension }
-  @+@t\1@>for k:=@"13B to @"142 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. H }
+  @+@t\1@>for k:=@"13B to @"143 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. H }
   @t\hskip10pt@>kcat_code(@"1FD):=not_cjk; { Latin-1 Letters }
   @t\hskip10pt@>kcat_code(@"1FE):=kana; { Fullwidth digit and latin alphabet }
   @t\hskip10pt@>kcat_code(@"1FF):=kana; { Halfwidth katakana }
@@ -3865,9 +3865,11 @@ for k:=char_base[f]+bc to width_base[f]-1 do
       end
     else begin if b<>bchar then check_existence(b);
       if c<128 then begin
-          if jfm_flag<>dir_default then begin if d>=ne then abort; end
+        if jfm_flag<>dir_default then
+          begin if 256*c+d>=ne then abort; end {check glue}
         else check_existence(d); {check ligature}
-      end else if 256*(c-128)+d>=nk then abort; {check kern}
+        end
+      else if 256*(c-128)+d>=nk then abort; {check kern}
       if a<128 then if k-lig_kern_base[f]+a+1>=nl then abort;
       end;
     end;
@@ -5013,7 +5015,7 @@ if (math_type(subscr(q))=empty)and(math_type(supscr(q))=empty)and@|
        loop@+ begin
          if next_char(cur_i)=cur_c then if skip_byte(cur_i)<=stop_flag then
          if op_byte(cur_i)<kern_flag then
-           begin gp:=font_glue[cur_f]; rr:=rem_byte(cur_i);
+           begin gp:=font_glue[cur_f]; rr:=op_byte(cur_i)*256+rem_byte(cur_i);
            if gp<>null then begin
              while((type(gp)<>rr)and(link(gp)<>null)) do begin gp:=link(gp);
                end;
@@ -9192,7 +9194,7 @@ if inhibit_glue_flag<>true then
         end;
     loop@+begin if next_char(main_j)=cur_l then if skip_byte(main_j)<=stop_flag then
       begin if op_byte(main_j)<kern_flag then
-        begin gp:=font_glue[main_f]; cur_r:=rem_byte(main_j);
+        begin gp:=font_glue[main_f]; cur_r:=op_byte(main_j)*256+rem_byte(main_j);
         if gp<>null then
           begin while((type(gp)<>cur_r)and(link(gp)<>null)) do gp:=link(gp);
           gq:=glue_ptr(gp);
