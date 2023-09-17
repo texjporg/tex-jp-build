@@ -18,7 +18,7 @@ pass () {
 
 fail () {
   echo "***** unexpected failure of '$_kpseaccess $@'"
-  ret=78
+  ret=77
 }
 
 $_kpseaccess '' nonesuch && exit 1
