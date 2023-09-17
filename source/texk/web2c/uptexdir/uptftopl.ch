@@ -258,6 +258,12 @@ if file_format<>tfm_format then
   out_ln;@/
 @z
 
+@x [68] l.1075 - pTeX: no need to check for loop
+  @<Check for ligature cycles@>;
+@y
+  if file_format=tfm_format then begin @<Check for ligature cycles@>; end;
+@z
+
 @x [69] l.1090 - pTeX: we print Glue/kern instead of Ligature/kern
     print('Ligature/kern starting index for character '); print_octal(c);
     print_ln(' is too large;'); print_ln('so I removed it.'); reset_tag(c);
@@ -411,22 +417,21 @@ We need to include some routines for handling kanji character.
 @!kanji_type:array[0..max_kanji] of -1..255; {kanji type index}
 
 @ @<Output a glue step@>=
-begin  if nonexistent(tfm[k+1]) then
-  correct_bad_char('Glue step for')(k+1)
+begin if nonexistent(tfm[k+1]) then if tfm[k+1]<>boundary_char then
+  correct_bad_char('Glue step for')(k+1);
 @.Glue step for nonexistent...@>
-else
-  begin left; out('GLUE'); out_char(tfm[k+1]);
-    if 3*tfm[k+3]>=ng then
-      begin bad('Glue index too large.');
+left; out('GLUE'); out_char(tfm[k+1]);
+r:=3*(256*tfm[k+2]+tfm[k+3]);
+if r>=ng then
+  begin bad('Glue index too large.');
 @.Glue index too large@>
-      out(' R 0.0 R 0.0 R 0.0');
-      end
-    else begin out_fix(glue(3*tfm[k+3]));
-      out_fix(glue(3*tfm[k+3]+1));
-      out_fix(glue(3*tfm[k+3]+2));
-      end;
-    right;
+  out(' R 0.0 R 0.0 R 0.0');
+  end
+else begin out_fix(glue(r));
+  out_fix(glue(r+1));
+  out_fix(glue(r+2));
   end;
+right;
 end
 
 @ list the |char_type| table in a similar way to the type table.
