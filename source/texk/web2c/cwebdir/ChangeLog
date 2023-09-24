@@ -1,3 +1,18 @@
+2023-09-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.ch,
+	* cweave.w: Copy structures via pointers.
+
+2023-09-22  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctang-w2c.ch,
+	* ctangle.c,
+	* ctangle.w: Reuse code for secondary output.
+
+2023-09-22  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebacromac.tex: Factor out PDF/HINT macros.
+
 2023-09-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* {ctwill,cweave}.test: Make easier to test on Windows.
