@@ -75,6 +75,7 @@ jobs:
           $srcdir/beginfontk1.test
           $srcdir/eepic-nan.test
           $srcdir/pfbincl.test
+          $srcdir/quotecmd-test.pl || echo "quotecmd-test.pl"
           $srcdir/same-name.test
           $srcdir/test-missing-image.test
           $srcdir/test-overflow-buffers.test
@@ -126,7 +127,8 @@ jobs:
           $srcdir/tests/bibtex8-sort.test
           $srcdir/tests/bibtexu-basic.test
           $srcdir/tests/bibtexu-range.test
-          $srcdir/tests/bibtexu-char.test || echo "SKIP bibtexu-char.test"
+          $srcdir/tests/bibtexu-char.test || \
+            { if [ "$?" = "77" ]; then r="SKIP" ; else r="FAIL" ; fi } && echo "$r: bibtexu-char.test"
           $srcdir/tests/bibtexu-sort.test
           $srcdir/tests/bibtexu-yannis.test
         env:
@@ -272,6 +274,82 @@ jobs:
           srcroot: "../source"
           TEXMFCNF: "../source/texk/kpathsea/tests/windows"
           LN_S: "cp"
+
+      - name: web2c version check
+        shell: bash
+        run: |
+          cd ./Work/Debug/bin
+          # ./ctie.exe --version || echo "ctie"
+          # echo ""
+          # ./ctwill.exe --version || echo "ctwill"
+          # echo ""
+          # ./cweave.exe --version || echo "cwaeve"
+          # echo ""
+          ./tie.exe --version || echo "tie"
+          echo ""
+          # ./twill.exe --version || echo "twill"
+          # echo ""
+          # ./tex.exe --version || echo "tex"
+          # echo ""
+          # ./etex.exe --version || echo "etex"
+          # echo ""
+          ./ptex.exe --version || echo "ptex"
+          echo ""
+          ./uptex.exe --version || echo "uptex"
+          echo ""
+          ./eptex.exe --version || echo "eptex"
+          echo ""
+          ./euptex.exe --version || echo "euptex"
+          echo ""
+          # ./updvitype.exe --version || echo "updvitype"
+          # echo ""
+          # ./uppltotf.exe --version || echo "uppltotf"
+          # echo ""
+          # ./uptftopl.exe --version || echo "uptftopl"
+          # echo ""
+          # ./upbibtex.exe --version || echo "upbibtex"
+          # echo ""
+          ./dvitype.exe --version || echo "dvitype"
+          echo ""
+          ./dvicopy.exe --version || echo "dvicopy"
+          echo ""
+          ./pltotf.exe --version || echo "pltotf"
+          echo ""
+          ./tftopl.exe --version || echo "tftopl"
+          echo ""
+          # ./bibtex.exe --version || echo "bibtex"
+          # echo ""
+          ./gftodvi.exe --version || echo "gftodvi"
+          echo ""
+          ./gftopk.exe --version || echo "gftopk"
+          echo ""
+          ./gftype.exe --version || echo "gftype"
+          echo ""
+          ./mft.exe --version || echo "mft"
+          echo ""
+          ./patgen.exe --version || echo "patgen"
+          echo ""
+          ./pktogf.exe --version || echo "pktogf"
+          echo ""
+          ./pktype.exe --version || echo "pktype"
+          echo ""
+          ./pooltype.exe --version || echo "pooltype"
+          echo ""
+          ./vftovp.exe --version || echo "vftovp"
+          echo ""
+          ./vptovf.exe --version || echo "vptovf"
+          echo ""
+          ./weave.exe --version || echo "weave"
+          echo ""
+          # ./mpost.exe --version || echo "mpost"
+          # echo ""
+          # ./pmpost.exe --version || echo "pmpost"
+          # echo ""
+          # ./upmpost.exe --version || echo "upmpost"
+          # echo ""
+          # ./synctex.exe help || echo "synctex"
+        env:
+          TEXMFCNF: "../../../source/texk/kpathsea/tests/windows"
 
       - name: test web2c/omegafonts
         shell: bash

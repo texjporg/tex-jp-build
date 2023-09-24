@@ -162,51 +162,23 @@ jobs:
             --srcdir=../../../texk/web2c \
             --disable-all-pkgs \
             --enable-debug \
-            --enable-ptex \
-            --enable-eptex \
-            --enable-uptex \
-            --enable-euptex \
-            --enable-pmp \
-            --enable-upmp \
-            --enable-tex \
-            --enable-tex-synctex \
-            --enable-etex \
-            --enable-etex-synctex \
-            --enable-ptex-synctex \
-            --enable-eptex-synctex \
-            --enable-uptex-synctex \
-            --enable-euptex-synctex \
+            --enable-tex  --disable-tex-synctex \
+            --enable-etex  --enable-etex-synctex \
+            --enable-ptex  --enable-ptex-synctex \
+            --enable-uptex  --enable-uptex-synctex \
+            --enable-eptex  --enable-eptex-synctex \
+            --enable-euptex  --enable-euptex-synctex \
+            --enable-mp  --enable-pmp  --enable-upmp \
+            --disable-pdftex  --disable-pdftex-synctex \
             --enable-web-progs \
-            --disable-pdftex \
-            --disable-pdftex-synctex \
-            --disable-mf \
-            --disable-mf-nowin \
-            --disable-tex \
-            --disable-tex-synctex \
-            --disable-etex \
-            --disable-etex-synctex \
+            --enable-synctex \
+            --disable-mf  --disable-mf-nowin \
             --disable-aleph \
-            --disable-luatex \
-            --disable-luajittex \
-            --disable-luahbtex \
-            --disable-luajithbtex \
-            --disable-mp \
-            --disable-xetex \
-            --disable-xetex-synctex \
-            --disable-mflua \
-            --disable-mflua-nowin \
-            --disable-mfluajit \
-            --disable-mfluajit-nowin \
-            --disable-epsfwin \
-            --disable-hp2627win \
-            --disable-mftalkwin \
-            --disable-nextwin \
-            --disable-regiswin \
-            --disable-suntoolswin \
-            --disable-tektronixwin \
-            --disable-unitermwin \
-            --disable-web-progs \
-            --disable-synctex \
+            --disable-luatex  --disable-luajittex  --disable-luahbtex  --disable-luajithbtex \
+            --disable-xetex  --disable-xetex-synctex \
+            --disable-mflua  --disable-mflua-nowin  --disable-mfluajit  --disable-mfluajit-nowin \
+            --disable-epsfwin  --disable-hp2627win  --disable-mftalkwin  --disable-nextwin \
+            --disable-regiswin  --disable-suntoolswin  --disable-tektronixwin  --disable-unitermwin \
             --disable-missing \
             --with-gnu-ld \
             --without-x \
@@ -229,5 +201,81 @@ jobs:
             --without-system-harfbuzz
           make
           make check
+
+      - name: web2c version check
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
+          ./ctie --version || echo "ctie"
+          echo ""
+          ./ctwill --version || echo "ctwill"
+          echo ""
+          ./cweave --version || echo "cwaeve"
+          echo ""
+          ./tie --version || echo "tie"
+          echo ""
+          ./twill --version || echo "twill"
+          echo ""
+          ./tex --version || echo "tex"
+          echo ""
+          ./etex --version || echo "etex"
+          echo ""
+          ./ptex --version || echo "ptex"
+          echo ""
+          ./uptex --version || echo "uptex"
+          echo ""
+          ./eptex --version || echo "eptex"
+          echo ""
+          ./euptex --version || echo "euptex"
+          echo ""
+          ./updvitype --version || echo "updvitype"
+          echo ""
+          ./uppltotf --version || echo "uppltotf"
+          echo ""
+          ./uptftopl --version || echo "uptftopl"
+          echo ""
+          ./upbibtex --version || echo "upbibtex"
+          echo ""
+          ./dvitype --version || echo "dvitype"
+          echo ""
+          ./dvicopy --version || echo "dvicopy"
+          echo ""
+          ./pltotf --version || echo "pltotf"
+          echo ""
+          ./tftopl --version || echo "tftopl"
+          echo ""
+          ./bibtex --version || echo "bibtex"
+          echo ""
+          ./gftodvi --version || echo "gftodvi"
+          echo ""
+          ./gftopk --version || echo "gftopk"
+          echo ""
+          ./gftype --version || echo "gftype"
+          echo ""
+          ./mft --version || echo "mft"
+          echo ""
+          ./patgen --version || echo "patgen"
+          echo ""
+          ./pktogf --version || echo "pktogf"
+          echo ""
+          ./pktype --version || echo "pktype"
+          echo ""
+          ./pooltype --version || echo "pooltype"
+          echo ""
+          ./vftovp --version || echo "vftovp"
+          echo ""
+          ./vptovf --version || echo "vptovf"
+          echo ""
+          ./weave --version || echo "weave"
+          echo ""
+          ./mpost --version || echo "mpost"
+          echo ""
+          ./pmpost --version || echo "pmpost"
+          echo ""
+          ./upmpost --version || echo "upmpost"
+          echo ""
+          ./synctex help || echo "synctex"
+        env:
+          TEXMFCNF: "../../../texk/kpathsea"
 
       - run: echo "⛄ This job's status is ${{ job.status }}."
