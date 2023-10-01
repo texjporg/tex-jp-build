@@ -621,12 +621,12 @@ it is inserted into the table.
 @<Global var...@>=
 name_pointer hash[hash_size]; /* heads of hash lists */
 hash_pointer hash_end = hash+hash_size-1; /* end of |hash| */
-hash_pointer h; /* index into hash-head array */
+hash_pointer hash_ptr; /* index into hash-head array */
 
 @ Initially all the hash lists are empty.
 
 @<Init...@>=
-for (h=hash; h<=hash_end; *h++=NULL) ;
+for (hash_ptr=hash; hash_ptr<=hash_end; *hash_ptr++=NULL) ;
 
 @ Here is the main procedure for finding identifiers:
 
@@ -638,7 +638,7 @@ const char *last, /* last character of string plus one */
 eight_bits t) /* the |ilk|; used by \.{CWEAVE} only */
 {
   const char *i=first; /* position in |buffer| */
-  int h; /* hash code; shadows |hash_pointer h| */
+  int h; /* hash code */
   size_t l; /* length of the given identifier */
   name_pointer p; /* where the identifier is being sought */
   if (last==NULL) for (last=first; *last!='\0'; last++);
@@ -1030,10 +1030,12 @@ has special line-numbering conventions.
 
 @<Print error location based on input buffer@>=
 {char *k,*l; /* pointers into |buffer| */
-if (changing && include_depth==change_depth)
+if (changing && include_depth==change_depth && change_line>0)
   printf(". (l. %d of change file)\n", change_line);
-else if (include_depth==0) printf(". (l. %d)\n", cur_line);
+else if (cur_line>0) {
+  if (include_depth==0) printf(". (l. %d)\n", cur_line);
   else printf(". (l. %d of include file %s)\n", cur_line, cur_file_name);
+}
 l= (loc>=limit? limit: loc);
 if (l>buffer) {
   for (k=buffer; k<l; k++)

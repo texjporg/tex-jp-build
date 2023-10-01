@@ -3195,7 +3195,8 @@ static void reduce(scrap_pointer,short,eight_bits,short,short);@/
 static void squash(scrap_pointer,short,eight_bits,short,short);
 
 @ Now here's the |reduce| procedure used in our code for productions,
-which takes advantage of the simplification that occurs when |k==0|.
+which takes advantage of the simplifications that occur when |k==0|
+or |k==1|.
 
 @c
 static void
@@ -3204,7 +3205,7 @@ scrap_pointer j, short k,
 eight_bits c,
 short d, short n)
 {
-  scrap_pointer i, o; /* pointers into scrap memory */
+  scrap_pointer i; /* pointer into scrap memory */
   j->cat=c;
   if (k>0) {
     j->trans=text_ptr;
@@ -3212,8 +3213,8 @@ short d, short n)
     freeze_text();
   }
   if (k>1) {
-    for (i=j+k, o=j+1; i<=lo_ptr; i++, o++)
-      *o=*i;@^system dependencies@>
+    for (i=j+k; i<=lo_ptr; i++)
+      *(i-k+1)=*i;@^system dependencies@>
     lo_ptr=lo_ptr-k+1;
   }
   pp=(pp+d<scrap_base? scrap_base: pp+d);
@@ -3239,6 +3240,32 @@ short d, short n)
   default: confusion("squash");
   }
   reduce(j,k,c,d,n);
+}
+
+@ If \.{CWEAVE} is being run in debugging mode, the production numbers and
+current stack categories will be printed out when |tracing| is set to |fully|;
+a sequence of two or more irreducible scraps will be printed out when
+|tracing| is set to |partly|.
+
+@d off 0
+@d partly 1
+@d fully 2
+
+@<Private...@>=
+static int tracing=off; /* can be used to show parsing details */
+
+@ @<Print a snapsh...@>=
+if (tracing==fully) {
+  printf("\n%d:",n);
+  for (i=scrap_base; i<=lo_ptr; i++) {
+    putchar(i==pp?'*':' ');
+    if (i->mathness %4 == yes_math) putchar('+');
+    else if (i->mathness %4 == no_math) putchar('-');
+    print_cat(i->cat);
+    if (i->mathness /4 == yes_math) putchar('+');
+    else if (i->mathness /4 == no_math) putchar('-');
+  }
+  if (hi_ptr<=scrap_ptr) printf("..."); /* indicate that more is coming */
 }
 
 @ And here now is the code that applies productions as long as possible.
@@ -3277,34 +3304,7 @@ stored, since zero does not match anything in a production.
 if (lo_ptr<pp+3) {
   while (hi_ptr<=scrap_ptr && lo_ptr!=pp+3)
     *(++lo_ptr)=*(hi_ptr++);@^system dependencies@>
-  for (i=lo_ptr+1;i<=pp+3;i++) i->cat=0;
-}
-
-@ If \.{CWEAVE} is being run in debugging mode, the production numbers and
-current stack categories will be printed out when |tracing| is set to |fully|;
-a sequence of two or more irreducible scraps will be printed out when
-|tracing| is set to |partly|.
-
-@d off 0
-@d partly 1
-@d fully 2
-
-@<Private...@>=
-static int tracing=off; /* can be used to show parsing details */
-
-@ @<Print a snapsh...@>=
-if (tracing==fully) {
-  scrap_pointer k; /* pointer into |scrap_info|; shadows |short k| */
-  printf("\n%d:",n);
-  for (k=scrap_base; k<=lo_ptr; k++) {
-    if (k==pp) putchar('*'); else putchar(' ');
-    if (k->mathness %4 == yes_math) putchar('+');
-    else if (k->mathness %4 == no_math) putchar('-');
-    print_cat(k->cat);
-    if (k->mathness /4 == yes_math) putchar('+');
-    else if (k->mathness /4 == no_math) putchar('-');
-  }
-  if (hi_ptr<=scrap_ptr) printf("..."); /* indicate that more is coming */
+  for (j=lo_ptr+1;j<=pp+3;j++) j->cat=0;
 }
 
 @ The |translate| function assumes that scraps have been stored in
@@ -3324,7 +3324,6 @@ for overflow.
 static text_pointer
 translate(void) /* converts a sequence of scraps */
 {
-  scrap_pointer i; /* index into |cat| */
   scrap_pointer j; /* runs through final scraps */
   pp=scrap_base; lo_ptr=pp-1; hi_ptr=pp;
   @<If tracing, print an indication of where we are@>@;
@@ -4613,8 +4612,8 @@ having a nonempty cross-reference list into the proper bucket.
 @<Do the first pass...@>= {
 int c;
 for (c=0; c<256; c++) bucket[c]=NULL;
-for (h=hash; h<=hash_end; h++) {
-  next_name=*h;
+for (hash_ptr=hash; hash_ptr<=hash_end; hash_ptr++) {
+  next_name=*hash_ptr;
   while (next_name) {
     cur_name=next_name; next_name=cur_name->link;
     if (cur_name->xref!=(void *)xmem) {
