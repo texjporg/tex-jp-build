@@ -1,3 +1,47 @@
+2023-09-30  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile,
+	* ctwill-mini.ch,
+	* cwebacromac.tex,
+	* cwebmac.tex,
+	* cwebman-w2c.ch,
+	* cwebman.tex,
+	* texinputs/dcwebmac.tex,
+	* texinputs/fcwebmac.tex,
+	* texinputs/icwebmac.tex,
+	* texinputs/pdfctproofmac.tex,
+	* texinputs/pdfctwimac.tex,
+	* texinputs/pdfwebtocfront.tex: Add support for LuaTeX.
+
+2023-09-26  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebman-w2c.ch,
+	* cwebman.tex: HINT: The Viewer.
+
+2023-09-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.h,
+	* common.c,
+	* common.w: Check for available input.
+
+2023-09-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.h,
+	* common.c,
+	* common.h,
+	* common.w,
+	* ctang-bs.ch,
+	* ctangle.c,
+	* ctangle.w,
+	* ctwill.bux,
+	* cweav-bs.ch,
+	* cweave.w: Avoid shadow variables.
+
+2023-09-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-{hint,mini}.ch,
+	* cweave.w: Disentangle 'reduce' and 'translate'.
+
 2023-09-23  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill-mini.ch,
