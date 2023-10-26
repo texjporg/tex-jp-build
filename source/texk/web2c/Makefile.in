@@ -3851,7 +3851,9 @@ tex_ch_srcs = \
 
 # TeX tests
 #
-tex_tests = triptest.test tests/write18-quote-test.pl tests/tex-closeout.test
+tex_tests = triptest.test tests/outputdir.test tests/tex-closeout.test \
+  tests/write18-quote-test.pl
+
 call_mf_CPPFLAGS = -DEXEPROG=\"mf.exe\"
 nodist_call_mf_SOURCES = callexe.c
 call_mf_LDADD = 
@@ -4408,7 +4410,11 @@ ptex_ch_srcs = \
 
 # pTeX Tests
 #
-ptex_tests = ptexdir/ptriptest.test ptexdir/pver.test ptexdir/wcfname.test
+ptex_tests = \
+	ptexdir/ptriptest.test \
+	ptexdir/pver.test \
+	ptexdir/wcfname.test
+
 eptex_CPPFLAGS = $(PTEXENC_INCLUDES) $(AM_CPPFLAGS) -I$(srcdir)/libmd5 \
 	$(ZLIB_INCLUDES) $(am__append_138)
 
@@ -4453,7 +4459,12 @@ eptex_ch_srcs = \
 
 # e-pTeX Tests
 #
-eptex_tests = eptexdir/eptriptest.test eptexdir/pdfprimitive.test eptexdir/epver.test eptexdir/wcfname.test
+eptex_tests = \
+	eptexdir/eptriptest.test \
+	eptexdir/pdfprimitive.test \
+	eptexdir/epver.test \
+	eptexdir/wcfname.test
+
 uptex_cppflags = $(PTEXENC_INCLUDES) $(AM_CPPFLAGS) $(ZLIB_INCLUDES)
 uptex_ldadd = libukanji.a $(pproglib) $(PTEXENC_LIBS) $(LDADD) $(ZLIB_LIBS)
 uptex_dependencies = libukanji.a $(pproglib) $(PTEXENC_DEPEND) $(ZLIB_DEPEND) $(default_dependencies)
@@ -4511,7 +4522,8 @@ uptftopl_DEPENDENCIES = $(uptex_dependencies)
 # upTeX Tests
 uptex_tests = \
 	uptexdir/uptriptest.test uptexdir/ptriptest.test \
-	uptexdir/upver.test uptexdir/upkcat.test \
+	uptexdir/upver.test \
+	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test
 
 # uppPLtoTF/upTFtoPL
@@ -4519,7 +4531,7 @@ upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
 	uptexdir/uppltotf.test uptexdir/uptftopl.test \
 	uptexdir/upbibtex-openout-test.pl \
 	uptexdir/upbibtex-longline-test.pl uptexdir/upbibtex-mem.test \
-	uptexdir/nissya.test uptexdir/sample.test \
+	uptexdir/nissya.test uptexdir/unibib.test uptexdir/sample.test \
 	uptexdir/yokotate.test uptexdir/skipjfmp.test \
 	uptexdir/newjfm.test uptexdir/uparse.test uptexdir/gkhuge.test \
 	uptexdir/gk256.test
@@ -4564,7 +4576,13 @@ euptex_ch_srcs = \
 
 # e-upTeX Tests
 #
-euptex_tests = euptexdir/euptriptest.test euptexdir/eptriptest.test euptexdir/pdfprimitive.test euptexdir/eupver.test euptexdir/wcfname.test euptexdir/wcfname0.test
+euptex_tests = \
+	euptexdir/euptriptest.test euptexdir/eptriptest.test \
+	euptexdir/pdfprimitive.test \
+	euptexdir/eupver.test \
+	euptexdir/upkcat.test \
+	euptexdir/wcfname.test euptexdir/wcfname0.test
+
 
 # At the moment, these are the only man pages handled in the
 # conglomerated web2c/Makefile[.am]. (All the others are in man/.)
@@ -5313,7 +5331,10 @@ call_luajithbtex_LDADD =
 
 # LuaTeX/LuaJITTeX Tests
 #
-luatex_tests = luatexdir/luatex.test luatexdir/luaimage.test
+luatex_tests = luatexdir/luatex.test luatexdir/luaimage.test \
+               luatexdir/luaoutputdir.test
+
+#
 luahbtex_tests = luatexdir/luatex.test luatexdir/luaimage.test
 luajittex_tests = luatexdir/luajittex.test luatexdir/luajitimage.test
 luajithbtex_tests = luatexdir/luajittex.test luatexdir/luajitimage.test
@@ -21570,7 +21591,8 @@ tex-tangle: tangle$(EXEEXT) tex.web tex-final.ch tangle-sh
 tex-final.ch: tie$(EXEEXT) $(tex_ch_srcs)
 	$(tie_c) $(tex_ch_srcs)
 triptest.log: tex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
-tests/write18-quote-test.log tests/tex-closeout.test: tex$(EXEEXT)
+tests/outputdir.log tests/tex-closeout.log \
+  tests/write18-quote-test.log: tex$(EXEEXT)
 
 trip.diffs: tex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
@@ -22065,14 +22087,17 @@ uptftopl.p: tangle$(EXEEXT) uptftopl.web uptexdir/uptftopl.ch
 	$(up_tangle) uptftopl uptftopl
 uptftopl.web: tie$(EXEEXT) tftopl.web tftopl.ch
 	$(tie_m) tftopl.web tftopl.ch
-uptexdir/uptriptest.log uptexdir/ptriptest.log: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
-uptexdir/upver.log uptexdir/upkcat.log uptexdir/wcfname.log uptexdir/wcfname0.log: uptex$(EXEEXT)
+uptexdir/uptriptest.log uptexdir/ptriptest.log: \
+	uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
+uptexdir/upver.log uptexdir/upkcat.log \
+	uptexdir/wcfname.log uptexdir/wcfname0.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)
 uptexdir/uptftopl.log: uptftopl$(EXEEXT)
 uptexdir/upbibtex-openout-test.log uptexdir/upbibtex-longline-test.log \
-	uptexdir/upbibtex-mem.log uptexdir/nissya.log: upbibtex$(EXEEXT)
+	uptexdir/upbibtex-mem.log uptexdir/nissya.log \
+	uptexdir/unibib.log: upbibtex$(EXEEXT)
 uptexdir/sample.log: updvitype$(EXEEXT)
 uptexdir/yokotate.log uptexdir/skipjfmp.log \
 	uptexdir/newjfm.log uptexdir/uparse.log \
@@ -22107,9 +22132,11 @@ euptex.web: tie$(EXEEXT) $(euptex_web_srcs)
 # Generate euptex.ch
 euptex.ch: tie$(EXEEXT) euptex.web $(euptex_ch_srcs)
 	$(tie_c) euptex.web $(euptex_ch_srcs)
-euptexdir/euptriptest.log euptexdir/eptriptest.log: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
+euptexdir/euptriptest.log euptexdir/eptriptest.log: \
+	euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 euptexdir/pdfprimitive.log: euptex$(EXEEXT)
-euptexdir/eupver.log euptexdir/wcfname.log euptexdir/wcfname0.log: euptex$(EXEEXT)
+euptexdir/eupver.log euptexdir/upkcat.log \
+	euptexdir/wcfname.log euptexdir/wcfname0.log: euptex$(EXEEXT)
 euptrip.diffs: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: euptrip-clean
@@ -22295,7 +22322,8 @@ $(luajithbtex_OBJECTS): libluajittex.a
 @MINGW32_FALSE@@WIN32_TRUE@uninstall-luajithbtex-links:
 @MINGW32_FALSE@@WIN32_TRUE@	rm -f $(DESTDIR)$(bindir)/texluajit$(EXEEXT)
 @MINGW32_FALSE@@WIN32_TRUE@	rm -f $(DESTDIR)$(bindir)/texluajitc$(EXEEXT)
-luatexdir/luatex.log luatexdir/luaimage.log: luatex$(EXEEXT)
+luatexdir/luatex.log luatexdir/luaimage.log luatexdir/luaoutputdir.log: \
+  luatex$(EXEEXT)
 luatexdir/luahbtex.log luatexdir/luahbimage.log: luahbtex$(EXEEXT)
 luatexdir/luajittex.log luatexdir/luajitimage.log: luajittex$(EXEEXT)
 luatexdir/luajithbtex.log luatexdir/luajithbimage.log: luajithbtex$(EXEEXT)
