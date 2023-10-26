@@ -12,7 +12,7 @@
 % ==================================================================
 % Copyright (C) 1987, 1995 ASCII Corporation.
 % Copyright (C) 2009 ASCII MEDIA WORKS.
-% Copyright (C) 2010-2022 Japanese TeX Development Community
+% Copyright (C) 2010-2023 Japanese TeX Development Community
 % All rights reserved.
 %
 % Thanks for :
@@ -86,11 +86,12 @@
 %                  More details in TUGboat 41(2):329--334, 2020.
 % (2022-10-24) HY  pTeX p4.1.0 Add new syntax \font [in jis/ucs].
 %                  New primitives: \tojis, \ptextracingfonts and \ptexfontname.
+% (2023-09-17) HY  pTeX p4.1.1 Support more than 256 different glue/kern.
 % ==================================================================
 
 % upTeX Copyright Notice & Change History:
 % ==================================================================
-% Copyright (C) 2007-2022 Takuji Tanaka
+% Copyright (C) 2007-2023 Takuji Tanaka
 % All rights reserved.
 %
 % (02/26/2007) TTK  upTeX u0.01
@@ -138,6 +139,7 @@
 % (2022-01-23) TTK  upTeX u1.28
 % (2022-07-23) TTK  upTeX u1.29
 % (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
+% (2023-09-16) TTK  upTeX u1.30
 % ==================================================================
 
 % e-pTeX Copyright Notice & Change History:
@@ -5939,8 +5941,7 @@ if cur_cmd=char_given then
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
   end;
 if cur_cmd=kchar_given then
-  begin cur_chr:=cur_chr mod max_cjk_val;
-  cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
+  begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 if cur_cmd=char_num then
   begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop_lookahead+1
