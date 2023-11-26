@@ -393,7 +393,8 @@ am__set_b = \
       b='$*';; \
   esac
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
-	$(srcdir)/config.h.in $(top_srcdir)/../../build-aux/compile \
+	$(srcdir)/config.h.in $(top_srcdir)/../../build-aux/ar-lib \
+	$(top_srcdir)/../../build-aux/compile \
 	$(top_srcdir)/../../build-aux/config.guess \
 	$(top_srcdir)/../../build-aux/config.sub \
 	$(top_srcdir)/../../build-aux/depcomp \
@@ -454,6 +455,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -554,7 +556,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = $(PTEXENC_INCLUDES) $(KPATHSEA_INCLUDES) -DUNIX -DKPATHSEA -DPTEXENC
+AM_CPPFLAGS = $(PTEXENC_INCLUDES) $(KPATHSEA_INCLUDES) -DKPATHSEA -DPTEXENC
 AM_CFLAGS = $(WARNING_CFLAGS)
 dvispc_SOURCES = dvispc.c common.h
 chkdvifont_SOURCES = chkdvifont.c dd.h msvcdir.h common.h

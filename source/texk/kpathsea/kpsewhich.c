@@ -1,7 +1,7 @@
 /* kpsewhich -- standalone path lookup and variable expansion for Kpathsea.
    Ideas from Thomas Esser, Pierre MacKay, and many others.
 
-   Copyright 1995-2022 Karl Berry & Olaf Weber.
+   Copyright 1995-2023 Karl Berry & Olaf Weber.
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -736,7 +736,7 @@ read_command_line (kpathsea kpse, int argc, string *argv)
 
     } else if (ARGUMENT_IS ("version")) {
       puts (kpathsea_version_string);
-      puts ("Copyright 2022 Karl Berry & Olaf Weber.\n\
+      puts ("Copyright 2023 Karl Berry & Olaf Weber.\n\
 License LGPLv2.1+: GNU Lesser GPL version 2.1 or later <https://gnu.org/licenses/lgpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n");
@@ -831,7 +831,8 @@ main (int argc,  string *argv)
      || strstr(kpse->program_name,"pdftex") || strstr(kpse->program_name,"pdflatex")
      || strstr(kpse->program_name,"dvipdfm") || strstr(kpse->program_name,"extractbb")
      || strstr(kpse->program_name,"xbb") || strstr(kpse->program_name,"ebb")
-     || strstr(kpse->program_name,"dvips") || strstr(kpse->program_name,"upmendex"))
+     || strstr(kpse->program_name,"dvips") || strstr(kpse->program_name,"upmendex")
+     || strstr(kpse->program_name,"bibtex8") || strstr(kpse->program_name,"bibtexu"))
   {
     if (strstr(kpse->program_name,"upmendex"))
       enc = "utf-8";

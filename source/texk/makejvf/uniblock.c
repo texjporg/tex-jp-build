@@ -16,16 +16,16 @@ struct ublock {
 /*
  References:
  [1] http://www.unicode.org/Public/UNIDATA/Blocks.txt
-        Blocks-15.0.0.txt
-        Date: 2022-01-28, 20:58:00 GMT [KW]
+        Blocks-15.1.0.txt
+        Date: 2023-07-28, 15:47:20 GMT
  [2] CMap files
      https://github.com/adobe-type-tools/cmap-resources/
      Adobe-CNS1-7/                  Adobe-CNS1-7 materials
         cid2code.txt (Version 10/24/2017)
-     Adobe-GB1-5/                   Adobe-GB1-5 materials
-        cid2code.txt (Version 12/05/2017)
+     Adobe-GB1-6/                   Adobe-GB1-6 materials
+        cid2code.txt (Version 04/20/2023)
      Adobe-Japan1-7/                Adobe-Japan1-7 materials
-        cid2code.txt (Version 07/30/2019)
+        cid2code.txt (Version 05/18/2022)
      Adobe-Korea1-2/                Adobe-Korea1-2 materials
         cid2code.txt (Version 01/31/2012)
  Following code points are omitted from ENTRY_J:
@@ -35,6 +35,7 @@ struct ublock {
    Latin Extended-D           U+A7B5      Latin Small Letter Beta   15909
    Latin Extended-E           U+AB53      Latin Small Letter Chi    15911
    Geometric Shapes Extended  U+1F79C     Diamond Target            12244
+   CJK Unified Ideographs Extension H   U+31350     ---             19130
 */
 
 static struct ublock ublock_data[] = {
@@ -270,7 +271,7 @@ static struct ublock ublock_data[] = {
   {0x11600, 0x1165F, ENTRY_NO  , 0}, /* Modi */
   {0x11660, 0x1167F, ENTRY_NO  , 0}, /* Mongolian Supplement */
   {0x11680, 0x116CF, ENTRY_NO  , 0}, /* Takri */
-  {0x11700, 0x1173F, ENTRY_NO  , 0}, /* Ahom */
+  {0x11700, 0x1174F, ENTRY_NO  , 0}, /* Ahom */
   {0x11800, 0x1184F, ENTRY_NO  , 0}, /* Dogra */
   {0x118A0, 0x118FF, ENTRY_NO  , 0}, /* Warang Citi */
   {0x11900, 0x1195F, ENTRY_NO  , 0}, /* Dives Akuru */
@@ -306,7 +307,7 @@ static struct ublock ublock_data[] = {
   {0x17000, 0x187FF, ENTRY_NO  , 0}, /* Tangut */
   {0x18800, 0x18AFF, ENTRY_NO  , 0}, /* Tangut Components */
   {0x18B00, 0x18CFF, ENTRY_NO  , 0}, /* Khitan Small Script */
-  {0x18D00, 0x18D8F, ENTRY_NO  , 0}, /* Tangut Supplement */
+  {0x18D00, 0x18D7F, ENTRY_NO  , 0}, /* Tangut Supplement */
   {0x1AFF0, 0x1AFFF, ENTRY_NO  , 0}, /* Kana Extended-B */
   {0x1B000, 0x1B0FF, ENTRY_NO  , 0}, /* Kana Supplement */
   {0x1B100, 0x1B12F, ENTRY_NO  , 0}, /* Kana Extended-A */
@@ -354,10 +355,11 @@ static struct ublock ublock_data[] = {
   {0x1FA70, 0x1FAFF, ENTRY_NO  , 0}, /* Symbols and Pictographs Extended-A */
   {0x1FB00, 0x1FBFF, ENTRY_NO  , 0}, /* Symbols for Legacy Computing */
   {0x20000, 0x2A6DF, ENTRY_GCJ , 1}, /* CJK Unified Ideographs Extension B */
-  {0x2A700, 0x2B73F, ENTRY_CJ  , 1}, /* CJK Unified Ideographs Extension C */
-  {0x2B740, 0x2B81F, ENTRY_J   , 1}, /* CJK Unified Ideographs Extension D */
-  {0x2B820, 0x2CEAF, ENTRY_C   , 1}, /* CJK Unified Ideographs Extension E */
+  {0x2A700, 0x2B73F, ENTRY_GCJ , 1}, /* CJK Unified Ideographs Extension C */
+  {0x2B740, 0x2B81F, ENTRY_GJ  , 1}, /* CJK Unified Ideographs Extension D */
+  {0x2B820, 0x2CEAF, ENTRY_GC  , 1}, /* CJK Unified Ideographs Extension E */
   {0x2CEB0, 0x2EBEF, ENTRY_CJ  , 1}, /* CJK Unified Ideographs Extension F */
+  {0x2EBF0, 0x2EE5F, ENTRY_NO  , 1}, /* CJK Unified Ideographs Extension I */
   {0x2F800, 0x2FA1F, ENTRY_CJ  , 1}, /* CJK Compatibility Ideographs Supplement */
   {0x30000, 0x3134F, ENTRY_NO  , 1}, /* CJK Unified Ideographs Extension G */
   {0x31350, 0x323AF, ENTRY_NO  , 1}, /* CJK Unified Ideographs Extension H */

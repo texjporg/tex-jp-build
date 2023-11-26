@@ -392,7 +392,8 @@ am__set_b = \
       b='$*';; \
   esac
 am__DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.in \
-	$(srcdir)/c-auto.in $(top_srcdir)/../../build-aux/compile \
+	$(srcdir)/c-auto.in $(top_srcdir)/../../build-aux/ar-lib \
+	$(top_srcdir)/../../build-aux/compile \
 	$(top_srcdir)/../../build-aux/config.guess \
 	$(top_srcdir)/../../build-aux/config.sub \
 	$(top_srcdir)/../../build-aux/depcomp \
@@ -452,6 +453,7 @@ EGREP = @EGREP@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -559,10 +561,11 @@ makejvf_SOURCES = \
 	uniblock.c uniblock.h usrtable.c usrtable.h version.h write.c
 
 LDADD = $(PTEXENC_LIBS) $(KPATHSEA_LIBS)
-EXTRA_DIST = COPYRIGHT COPYRIGHT.jis Changes.txt README.txt \
+EXTRA_DIST = COPYRIGHT COPYRIGHT.ja Changes.txt README.txt \
 	tests/min10.tfm tests/min10.vf tests/rml.tfm tests/rmlv.tfm \
 	tests/tmin10.tfm tests/tmin10.vf tests/testnewu.tfm \
 	tests/testnewu.vf tests/gkhugeok.tfm tests/gkhugeok.vf \
+	tests/gk256g.tfm tests/gk256k.tfm tests/gk256.vf \
 	tests/skipjfmp.tfm tests/skipjfmp.vf tests/skipjfmp_omit.vf
 dist_check_SCRIPTS = makejvf.test
 TESTS = makejvf.test

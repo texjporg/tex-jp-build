@@ -1,22 +1,28 @@
-#!/usr/bin/env perl
+#!/usr/bin/env perl -s
 #
-# Copyright 2022 Japanese TeX Development Community <issue@texjp.org>
+# Copyright 2022-2023 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
 use strict;
 use warnings;
-use 5.010;
+use 5.008;
 use Encode;
+
+my $st = 0;
+our $windows; # option -windows
 
 foreach $_ (<DATA>) {
     chomp;
     my ($encname, $fname0, $fname1) = split ' ', $_;
 
+    $fname0 = "$ARGV[0]/$fname0" if @ARGV;
     my $src = &make_str($encname, $fname0, $fname1);
 
     open(my $ofh, '>', $fname0) or die "Cannot open $fname0:$!";
     print $ofh $src;
 }
+
+exit($st ? 239 : 0);
 
 
 sub make_str ($$;$) {
@@ -24,6 +30,7 @@ sub make_str ($$;$) {
     my ($src);
 
     my ($fnameT) = $fname0;
+    my $cmnt = $windows ? '%' : ''; # comment out if option -windows
     $fnameT =~ s/\.tex$/-tmp.tex/;
 
 $src = <<END;
@@ -43,7 +50,7 @@ $src = <<END;
 \\immediate\\closeout1
 
 % current directory
-\\input "|cat $fnameT"
+$cmnt\\input "|cat $fnameT"
 \\input $fnameT
 END
 
@@ -59,7 +66,13 @@ $src .= <<END;
 \\relax\\end
 END
 
-    Encode::from_to($src, 'utf8', $encname) if ($encname !~ /UTF.*8/i);
+    if ($encname !~ /UTF.*8/i) {
+        my $ret = Encode::from_to($src, 'utf8', $encname);
+        if (!$ret) {
+            warn "fn-generate.perl: Encode::from_to() failed.\n";
+            $st++;
+        }
+    }
     return ($src);
 
 }
@@ -68,6 +81,7 @@ __DATA__
 UTF-8        fn±×÷§¶-utf8.tex
 UTF-8        fn-utf8.tex             fn±×÷§¶-utf8.tex
 UTF-8        fn£¥µÆÇñß-utf8.tex      fn±×÷§¶-utf8.tex
+UTF-8        fnΔДदダ打다𝕯🎉-utf8.tex   fn±×÷§¶-utf8.tex
 UTF-8        fnさざ波-utf8.tex       fn±×÷§¶-utf8.tex
 EUC-JP       fnさざ波-euc.tex        fn±×÷§¶-utf8.tex
 Shift_JIS    fnさざ波-sjis.tex       fn±×÷§¶-utf8.tex

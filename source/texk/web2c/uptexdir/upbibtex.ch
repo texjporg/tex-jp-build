@@ -60,7 +60,7 @@
 @d banner=='This is BibTeX, Version 0.99d' {printed when the program starts}
 @y
 @d my_name=='upbibtex'
-@d banner=='This is upBibTeX, Version 0.99d-j0.36-u1.29'
+@d banner=='This is upBibTeX, Version 0.99d-j0.36-u1.30'
   {printed when the program starts}
 @z
 
@@ -743,6 +743,23 @@ begin
 pop_lit2_saved := pop_lit2; {save before negate}
 @z
 
+@x 2023-04-08 texjporg/tex-jp-build#157
+        str_start[pop_lit3+1] := sp_end;
+@y
+        { |2..4| bytes Kanji code break check }
+        tpe:=str_start[pop_lit3];
+        mbl_tpe:=0;
+        while tpe < str_start[pop_lit3+1] do begin
+          mbl_tpe := multibytelen(str_pool[tpe]);
+            if mbl_tpe<0 {just in case}
+                or (str_start[pop_lit3+1] < tpe+mbl_tpe) then
+                break;
+            tpe := tpe + mbl_tpe;
+            if sp_end<=tpe then break;
+        end;
+        str_start[pop_lit3+1] := tpe;
+@z
+
 @x Changes for JBibTeX by Shouichi Matsui [438] + fix (2022-02-20 j0.34)
 str_room(sp_end - sp_ptr);
 while (sp_ptr < sp_end) do                      {shift the substring}
@@ -951,7 +968,7 @@ function is_char_kanji_upbibtex(@!c:integer):boolean;
 label exit;
 var k:integer;
 begin
-  { based on upTeX-1.29 kcatcode status: 16,17,19->true / 15,18->false }
+  { based on upTeX-1.30 kcatcode status: 16,17,19->true / 15,18->false }
   is_char_kanji_upbibtex := true;
   if (is_internalUPTEX) then begin { should be in sync with |kcat_code| of uptex-m.ch }
     k := kcatcodekey(c);
@@ -969,7 +986,7 @@ begin
     else if k=@"94 then return { Hangul Jamo Extended-B }
     else if k=@"99 then return { CJK Compatibility Ideographs }
     else if (k>=@"10D)and(k<=@"110) then return { Kana Extended-B .. Small Kana Extension }
-    else if (k>=@"13B)and(k<=@"142) then return { CJK Unified Ideographs Extension B .. H }
+    else if (k>=@"13B)and(k<=@"143) then return { CJK Unified Ideographs Extension B .. H }
     else if k=@"1FE then return { Fullwidth digit and latin alphabet }
     else if k=@"1FF then return; { Halfwidth katakana }
     end

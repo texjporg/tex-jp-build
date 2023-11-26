@@ -1,3 +1,81 @@
+2023-11-25  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* wcfname{,0}.test: Add tests for --recorder and *.fls.
+	https://github.com/texjporg/tex-jp-build/issues/45
+
+2023-11-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* wcfname.test: Add test for file names with over-BMP
+	(4byte UTF-8).
+	https://tug.org/pipermail/tex-live/2023-November/049685.html
+	* ptriptest.test, uptriptest.test:
+	Check diffs of trip.{fot,typ} with ignoring trivial changes
+	in trip tests.
+	* gkhuge.test: Update test for Windows.
+
+2023-09-21  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex-m.ch: Clean up changes on 2023-09-03.
+	* unibib.test: New test for upbibtex.
+
+2023-09-17  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uppltotf.ch, uptftopl.ch: Version p230917.
+	  - Support more than 256 different glue/kern.
+	* gk256.test, tests/gk256[gk].{tex,tfm}: New tests.
+
+2023-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, uptex_version.h:
+	upTeX version u1.30.
+	* uptex-m.ch, upbibtex.ch, kanji.c:
+	Update reference of Unicode blocks to
+	"Blocks-15.1.0.txt Date: 2023-07-28, 15:47:20 GMT".
+	* tests/kcat.tex, tests/upkcat.txt: Update a test.
+
+2023-09-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {ptriptest,uptriptest,upver}.test:
+	Update tests for Windows.
+
+2023-09-03  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* uptex-m.ch: Proper support for \kchar in math mode.
+	https://github.com/texjporg/tex-jp-build/pull/159
+	* kanji.c: Check character code range < 2^24.
+	https://github.com/texjporg/tex-jp-build/issues/160
+
+2023-08-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* am/uptex.am, {gkhuge,newjfm,nissya,ptriptest,
+	sample,skipjfmp,uparse,upbibtex-mem,upbibtex,updvitype,
+	upkcat,uppltotf,uptftopl,uptriptest,upver,
+	wcfname,wcfname0,yokotate}.test:
+	Make easier to test on Windows.
+
+2023-04-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upbibtex.ch: Fix bug of substring$
+	from Yukimasa Morimi san:
+	https://github.com/texjporg/tex-jp-build/issues/157
+
+2023-03-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* wcfname.test:
+	Skip tests for Shift_JIS & EUC-JP if conversion failed.
+	Report from Ken Moffat.
+	https://tug.org/pipermail/tex-k/2023-March/003911.html
+
+2023-03-09  Karl Berry  <karl@tug.org>
+
+	* TL'23 release.
+
+2023-02-14  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* wcfname.test:
+	Avoid errors on parallel test processing.
+	Report from Ken Brown.
+
 2023-01-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* am/uptex.am:

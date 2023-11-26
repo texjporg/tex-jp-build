@@ -1,3 +1,168 @@
+2023-11-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/fn-generate.perl: Add test for file names with
+	over-BMP (4byte UTF-8).
+	https://tug.org/pipermail/tex-live/2023-November/049685.html
+
+2023-11-19  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch,
+	* mf.ch (Undump the dynamic memory): improve fmt/base corruption
+	checks, from DRF.
+
+2023-11-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Use zero-initialisation.
+
+2023-11-15  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch,
+	* mf.ch (Undump the dynamic memory): check that p does not
+	become too small, due to fmt/base corruption.
+	Report from Gregory James DUCK to Karl, 14 Sep 2023.
+	Found with a fuzz tester similar to AFL-fuzz. 
+
+2023-10-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* weave.ch: Fine print for command-line options.
+
+2023-10-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangleboot.pin,
+	* tangle.ch,
+	* weav-twill.ch,
+	* weave.ch: 'current_option' runs from '0..n_options'.
+
+2023-10-13  Andreas Scherer  <https://ascherer.github.io>
+
+	* help.h,
+	* weav-twill.ch,
+	* weave.ch: Add option '-p' to '\input pwebmac'.
+
+2023-10-09  Karl Berry  <karl@freefriends.org>
+
+	* lib/texmfmp.c (parse_options): if --output-directory was
+	specified, putenv the value to TEXMF_OUTPUT_DIRECTORY.
+	If --output-directory was not specified, and
+	TEXMF_OUTPUT_DIRECTORY is set in the environment (not config file),
+	set the output_directory variable to its value.
+	* tests/outputdir.test: new test.
+	* am/texmf.am (tex_tests): add it.
+	* doc/web2c.texi (Output file location),
+	* NEWS: document this.
+	* bibtex.ch: mention failure to implement TEXMF_OUTPUT_DIRECTORY.
+
+	* doc/web2c.texi (Shell escape commands): xref kpathsea doc
+	on output paranoia.
+	* tests/tex-closeout.test: tweak description.
+
+2023-10-09  Karl Berry  <karl@freefriends.org>
+
+	* cpascal.h: typo.
+
+2023-09-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Avoid shadow variables.
+
+2023-09-17  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {mftraptest,triptest,twill}.test:
+	Make easier to test on Windows.
+
+2023-09-04  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangle.ch: Fix typo as in weave.web.
+
+2023-09-03  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {tangle,dvicopy,dvitype,gftodvi,gftopk,gftype,mft,
+	patgen,pktogf,pktype,pltotf,pooltype,tftopl,vftovp,
+	vptovf,weave}.test:
+	Make easier to test on Windows.
+
+2023-08-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {mftraptest,triptest}.test:
+	Filter Web2C year in banner.
+	* {mftraptest,triptest,bibtex}.test,
+	tests/{bibtex-{auxinclude,bibauth,mem},tex-closeout}.test:
+	Make easier to test on Windows.
+	* Makefile.in: Add tests {,e}uptexdir/wcfname0.test.
+
+2023-08-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.10 release.
+
+2023-06-28  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Format 'common' with 'ctwill'.
+
+2023-06-26  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Purge 'init_p'.
+
+2023-06-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Match common.w with common.h.
+
+2023-07-18  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebboot.cin: Discard rest of overfull input line.
+
+2023-07-17  Andreas Scherer  <https://ascherer.github.io>
+
+	* weave.ch: Deal with malign user input.
+
+2023-07-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebboot.cin: Regenerate boot source.
+
+2023-06-20  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Changes in cwebdir/comm-w2c.h.
+
+2023-06-18  Karl Berry  <karl@freefriends.org>
+
+	* am/cweb.am (dist_bin_SCRIPTS): new script cwebdir/ctwill-proofsort.
+	(TESTS): rearrange to keep all info for a given test together.
+
+2023-06-17  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.in: Integrate cwebdir/ctwill.test; run reautoconf.
+
+2023-03-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/fn-generate.perl:
+	Skip tests for Shift_JIS & EUC-JP if conversion failed.
+	Report from Ken Moffat.
+	https://tug.org/pipermail/tex-k/2023-March/003911.html
+
+2023-02-14  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* tests/fn-generate.perl:
+	Avoid errors on parallel test processing.
+	Report from Ken Brown.
+
+2023-02-13  Karl Berry  <karl@freefriends.org>
+
+	* enctexdir/enctex-pdftex.ch: move "\special shipout"
+	change here, from enctex2.ch, so it is not applied to tex (which
+	doesn't have it).
+
+2023-02-12  Phelype Oleinik <phe.h.o1@gmail.com>
+        and Karl Berry  <karl@freefriends.org>
+
+	* enctexdir/enctex2.ch: make parallel change for ``late''
+	\special shipout. This code is what avoids the invalid
+	write_stream(tail):=null assignment in the original code.
+	See pdftex.web (Implement \.{\\special}) for more.
+
 2023-01-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* Makefile.in, ac/web2c.ac (ptex, uptex):

@@ -1,5 +1,5 @@
 $Id$
-Copyright 2006-2022 TeX Users Group.
+Copyright 2006-2023 TeX Users Group.
 You may freely use, modify and/or distribute this file.
 
 This TeX Live directory contains the programs that use the kpathsea
@@ -63,7 +63,7 @@ dvipos - maintained here, by us
 
 dvipsk - maintained here, by us
 
-dvisvgm 2.14 - checked 29aug22
+dvisvgm 3.0.3 - checked 21feb23
   https://dvisvgm.de/Downloads/
   https://github.com/mgieseki/dvisvgm
   https://ctan.org/pkg/dvisvgm
@@ -75,7 +75,7 @@ gsftopk - from Paul Vojta's xdvi.
 
 kpathsea - maintained here, by us
 
-lcdf-typetools 2.108 - checked 31may22
+lcdf-typetools 2.110 - checked 01sep23
   https://www.lcdf.org/type/
 
 makeindexk - maintained here, by us

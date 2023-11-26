@@ -81,10 +81,18 @@
 
 % A reward of $327.68 will be paid to the first finder of any remaining bug.
 
-% This is a beta version of 1.0 of Prote, developed during August 2021,
-% and corrected during september/october 2021.
+% This is the 1.1 version of Prote, developed during August 2021,
+% and corrected during september/october 2021 and amended in august 2023
+% for file primitives behavior matching input behavior.
 %
 % 1.0: adds primitives needed by LaTeX as listed in ltnews31.
+%    - 2022-07-21: tiddying formal fix: a spurious line was a left over
+%      of a removed paragraph (pointed by Martin Ruckert). Suppressed.
+%
+% 1.1: 2023-08-01: the new file primitives are used in LaTeX expecting
+%    the input behavior that ".tex" be appended if no extension. So
+%    modified to provide this.
+%
 %  History towards 1.0 release:
 %    0.99.4:
 %      - typos and style corrections provided by Martin Ruckert for
@@ -110,6 +118,8 @@
 %        xchg_buffer_length:=0 (caught by Martin Ruckert).
 %    0.99.10:
 %      - KerTeX Public License -> X11/MIT license.
+%    1.0:
+%      - Just naming the official release. No change.
 %
 % This work was done by Thierry Laronde and is under the MIT/X11
 % license.
@@ -358,9 +368,9 @@ known as `\Prote'.
 @#
 @d eTeX_states 1 /*number of \eTeX\ state variables in |eqtb|*/
 @#
-@d Prote_version_string "3.141592653-2.6-0.99.9" /*current \Prote\ version*/
-@d Prote_version 0 /* \.{\\Proteversion} */
-@d Prote_revision ".99.9" /* \.{\\Proterevision} */
+@d Prote_version_string "3.141592653-2.6-1.1.0" /*current \Prote\ version*/
+@d Prote_version 1 /* \.{\\Proteversion} */
+@d Prote_revision ".1.0" /* \.{\\Proterevision} */
 @#
 @d Prote_banner "This is Prote, Version " Prote_version_string
    /*printed when \Prote\ starts*/
@@ -5169,7 +5179,8 @@ that will be defined later.
 @d right_hyphen_min_code 52 /*minimum right hyphenation fragment size*/
 @d holding_inserts_code 53 /*do not remove insertion nodes from \.{\\box255}*/
 @d error_context_lines_code 54 /*maximum intermediate line pairs shown*/
-@d tex_int_pars 55 /*total number of \TeX's integer parameters*/
+@d tracing_stack_levels_code 55 /*tracing |input_stack| level if |tracingmacros| positive*/
+@d tex_int_pars 56 /*total number of \TeX's integer parameters*/
 @#
 @d etex_int_base tex_int_pars /*base for \eTeX's integer parameters*/
 @d tracing_assigns_code etex_int_base /*show assignments*/
@@ -5246,6 +5257,7 @@ that will be defined later.
 @d right_hyphen_min int_par(right_hyphen_min_code)
 @d holding_inserts int_par(holding_inserts_code)
 @d error_context_lines int_par(error_context_lines_code)
+@d tracing_stack_levels int_par(tracing_stack_levels_code)
 @#
 @d tracing_assigns int_par(tracing_assigns_code)
 @d tracing_groups int_par(tracing_groups_code)
@@ -5319,6 +5331,7 @@ case left_hyphen_min_code: print_esc("lefthyphenmin");@+break;
 case right_hyphen_min_code: print_esc("righthyphenmin");@+break;
 case holding_inserts_code: print_esc("holdinginserts");@+break;
 case error_context_lines_code: print_esc("errorcontextlines");@+break;
+case tracing_stack_levels_code: print_esc("tracingstacklevels");@+break;
 @/@<Cases for |print_param|@>@/
 default:print("[unknown integer parameter!]");
 }
@@ -5440,6 +5453,8 @@ primitive("holdinginserts", assign_int, int_base+holding_inserts_code);@/
 @!@:holding\_inserts\_}{\.{\\holdinginserts} primitive@>
 primitive("errorcontextlines", assign_int, int_base+error_context_lines_code);@/
 @!@:error\_context\_lines\_}{\.{\\errorcontextlines} primitive@>
+primitive("tracingstacklevels", assign_int, int_base+tracing_stack_levels_code);@/
+@!@:tracing\_stack\_levels_}{\.{\\tracingstacklevels} primitive@>
 
 @ @<Cases of |print_cmd_chr|...@>=
 case assign_int: if (chr_code < count_base) print_param(chr_code-int_base);
@@ -7497,7 +7512,8 @@ or |limit| or |line|.
 if (first==buf_size) overflow("buffer size", buf_size);
 @:TeX capacity exceeded buffer size}{\quad buffer size@>
 incr(in_open);push_input;index=in_open;@/
-source_filename_stack[index]=0; /* \TeX\ Live */
+source_filename_stack[index]=NULL; /* \TeX\ Live */
+full_source_filename_stack[index]=NULL; /* \TeX\ Live */
 eof_seen[index]=false;
 grp_stack[index]=cur_boundary;if_stack[index]=cond_ptr;
 line_stack[index]=line;start=first;state=mid_line;
@@ -8648,6 +8664,7 @@ strip off the enclosing braces. That's why |rbrace_ptr| was introduced.
 else pstack[n]=link(temp_head);
 incr(n);
 if (tracing_macros > 0)
+  if ((tracing_stack_levels==0)||(input_ptr < tracing_stack_levels))
   {@+begin_diagnostic();print_nl("");printn(match_chr);print_int(n);
   print("<-");show_token_list(pstack[n-1], null, 1000);
   end_diagnostic(false);
@@ -8655,8 +8672,19 @@ if (tracing_macros > 0)
 }
 
 @ @<Show the text of the macro being expanded@>=
-{@+begin_diagnostic();print_ln();print_cs(warning_index);
-token_show(ref_count);end_diagnostic(false);
+{@+begin_diagnostic();
+  if (tracing_stack_levels > 0)
+  { if (input_ptr < tracing_stack_levels)
+      {@+
+        int v=input_ptr;
+        print_ln();print_char('~');
+        while (v-- > 0) print_char('.');
+        print_cs(warning_index);token_show(ref_count);
+      }
+    else{@+print_char('~');print_char('~');print_cs(warning_index);}
+  }
+  else{@+print_ln();print_cs(warning_index);token_show(ref_count);}
+  end_diagnostic(false);
 }
 
 @* Basic scanning subroutines.
@@ -10614,8 +10642,9 @@ to place.
 @ Here now is the first of the system-dependent routines for file name scanning.
 @^system dependencies@>
 
-@p static void begin_name(void)
-{@+area_delimiter=0;ext_delimiter=0;
+@p static bool quoted_filename;
+static void begin_name(void)
+{@+area_delimiter=0;ext_delimiter=0; quoted_filename=false;
 }
 
 @ And here's the second. The string pool might change as the file name is
@@ -10624,15 +10653,11 @@ being scanned, since a new \.{\\csname} might be entered; therefore we keep
 string, instead of assigning an absolute address like |pool_ptr| to them.
 @^system dependencies@>
 
-
-The |ASCII_code| to use as a delimiter is specified also as a parameter.
-
-@p static bool more_name(ASCII_code @!c, ASCII_code d)
-{@+if (c==d) return false;
-else{@+str_room(1);append_char(c); /*contribute |c| to the current string*/
-  if ((c=='>')||(c==':'))
-    {@+area_delimiter=cur_length;ext_delimiter=0;
-    }
+@p static bool more_name(ASCII_code @!c)
+{@+if (c==' ' && !quoted_filename) return false;
+else if (c=='"') {@+quoted_filename=!quoted_filename; return true; }
+else {@+str_room(1);append_char(c); /*contribute |c| to the current string*/
+  if (IS_DIR_SEP(c)) {@+area_delimiter=cur_length;ext_delimiter=0; }
   else if (c=='.') ext_delimiter=cur_length;
   return true;
   }
@@ -10774,19 +10799,24 @@ a general text.
 
 @p static void scan_file_name(void)
 {@+
-ASCII_code d; /*the delimiter for |more_name|*/
 pool_pointer @!j, k; /*index into |str_pool|*/
 int @!old_setting; /*holds |selector| setting*/
 name_in_progress=true;begin_name();
-d=' '; /*traditional token delimiter*/
 @<Get the next non-blank non-relax...@>;
 if (cur_cmd==left_brace)
   @<Define a general text file name and |goto done|@>@;
-if (cur_chr=='"') {@+d='"';get_x_token();}
 loop@+{@+if ((cur_cmd > other_char)||(cur_chr > 255))  /*not a character*/
     {@+back_input();goto done;
     }
-  if (!more_name(cur_chr, d)) goto done;
+#if 0
+    /* This is from pdftex-final.ch. I don't know these `some cases',
+       and I am not sure whether the name should end even if quoting is on.*/
+    /*If |cur_chr| is a space and we're not scanning a token list, check
+      whether we're at the end of the buffer. Otherwise we end up adding
+      spurious spaces to file names in some cases.*/
+    if (cur_chr==' ' && state!=token_list && loc>limit) goto done;
+#endif
+  if (!more_name(cur_chr)) goto done;
   get_x_token();
   }
 done: end_name();name_in_progress=false;
@@ -10860,11 +10890,11 @@ pack_cur_name(e);
 }
 
 @ @<Scan file name in the buffer@>=
-{@+ASCII_code d=' '; /*traditional delimiter*/
+{@+
 begin_name();k=first;
 while ((buffer[k]==' ')&&(k < last)) incr(k);
 loop@+{@+if (k==last) goto done;
-  if (!more_name(buffer[k], d)) goto done;
+  if (!more_name(buffer[k])) goto done;
   incr(k);
   }
 done: end_name();
@@ -10966,15 +10996,33 @@ loop@+{@+begin_file_reading(); /*set up |cur_file| and new level of input*/
   prompt_file_name("input file name",".tex");
   }
 done: name=a_make_name_string(&cur_file);@/
-source_filename_stack[in_open]=name; /* \TeX\ Live*/
+if (source_filename_stack[in_open]==NULL)
+  free(source_filename_stack[in_open]);
+source_filename_stack[in_open]=strdup((char *)name_of_file+1); /*\TeX\ Live*/
+if (full_source_filename_stack[in_open]==NULL)
+  free(full_source_filename_stack[in_open]);
+full_source_filename_stack[in_open]=strdup(full_name_of_file);
 if (job_name==0)
   {@+if (c_job_name==NULL) job_name=cur_name;
      else job_name=s_no(c_job_name); open_log_file(); /* \TeX\ Live*/
   }  /*|open_log_file| doesn't |show_context|, so |limit|
     and |loc| needn't be set to meaningful values yet*/
-if (term_offset+length(name) > max_print_line-2) print_ln();
+if (term_offset+strlen(full_source_filename_stack[in_open]) > max_print_line-2)
+  print_ln();
 else if ((term_offset > 0)||(file_offset > 0)) print_char(' ');
-print_char('(');incr(open_parens);slow_print(name);update_terminal;
+print_char('(');incr(open_parens);
+print(full_source_filename_stack[in_open]);update_terminal;
+if (tracing_stack_levels > 0)
+{@+int v;
+  begin_diagnostic();print_ln();
+  print_char('~');
+  v=input_ptr-1;
+  if (v < tracing_stack_levels)
+    while (v-- > 0) print_char('.');
+  else print_char('~');
+  print("INPUT ");slow_print(cur_name);slow_print(cur_ext);print_ln();
+  end_diagnostic(false);
+}
 state=new_line;
 if (name==str_ptr-1)  /*conserve string pool space (but see note above)*/
   {@+flush_string;name=cur_name;
@@ -21795,9 +21843,19 @@ the \.{\\vtop} height is zero.
 
 
 @<Readjust the height...@>=
-{@+h=0;p=list_ptr(cur_box);
-if (p!=null) if (type(p) <= rule_node) h=height(p);
-depth(cur_box)=depth(cur_box)-h+height(cur_box);height(cur_box)=h;
+{@+if (type(cur_box)==vlist_node)
+  {@+h=0;p=list_ptr(cur_box);
+    if (p!=null && type(p) <= rule_node) h=height(p);
+    depth(cur_box)=depth(cur_box)-h+height(cur_box);height(cur_box)=h;
+  }
+  else if (type(cur_box) == whatsit_node)
+  { if (subtype(cur_box)==vpack_node)
+      pack_limit(cur_box)^=MAX_DIMEN+1;
+    else if(subtype(cur_box)==vset_node)
+    { height(cur_box)=height(cur_box)+depth(cur_box);
+      depth(cur_box)^=MAX_DIMEN+1;
+    }
+  }
 }
 
 @ A paragraph begins when horizontal-mode material occurs in vertical mode,
@@ -25517,14 +25575,15 @@ to hold the string numbers for name, area, and extension.
 @d baseline_node_no(A) mem[A+1].i /* baseline reference */@#
 
 @d image_node    hitex_ext+4  /*|subtype| that records an image */
-@d image_node_size 5 /* number of memory words in an |image_node| */
+@d image_node_size 6 /* number of memory words in an |image_node| */
 @d image_xwidth(A)  link(A+1)  /*extended width of image */
 @d image_xheight(A) info(A+1)  /*extended height of image */
-@d image_no(A)     link(A+2)  /* the section number */
-@d image_name(A)   info(A+2)  /*string number of file name */
-@d image_area(A)   info(A+3)  /*string number of file area */
-@d image_ext(A)    link(A+3)  /*string number of file extension */
-@d image_alt(A)    link(A+4)  /* alternative image description text */@#
+@d image_aspect(A)  mem[(A)+2].sc /* aspect ratio of image */
+@d image_no(A)     link(A+3)  /* the section number */
+@d image_name(A)   info(A+3)  /*string number of file name */
+@d image_area(A)   info(A+4)  /*string number of file area */
+@d image_ext(A)    link(A+4)  /*string number of file extension */
+@d image_alt(A)    link(A+5)  /* alternative image description text */@#
 
 @d hpack_node         hitex_ext+5 /* a hlist that needs to go to hpack */
 @d vpack_node         hitex_ext+6 /* a vlist that needs to go to vpackage */
@@ -25633,7 +25692,9 @@ for (k=0; k<=17; k++) write_open[k]=false;
 stays the same.
 
 @d immediate_code 4 /*command modifier for \.{\\immediate}*/
-@d set_language_code 5 /*command modifier for \.{\\setlanguage}*/
+@d latex_first_extension_code 5
+@d latespecial_node (latex_first_extension_code+0) /*|subtype| in whatsits that represent \.{\\special} things expanded during output*/
+@d set_language_code (latex_first_extension_code+1) /*command modifier for \.{\\setlanguage}*/
 @d TeX_last_extension_cmd_mod set_language_code
 
 @<Put each...@>=
@@ -25654,8 +25715,8 @@ primitive("setlanguage", extension, set_language_code);@/
 primitive("HINTversion", last_item, HINT_version_code);
 @!@:HINT\_version\_}{\.{\\HINTversion} primitive@>
 
-primitive("HINTsubversion", last_item, HINT_subversion_code);
-@!@:HINT\_subversion\_}{\.{\\HINTsubversion} primitive@>
+primitive("HINTminorversion", last_item, HINT_minor_version_code);
+@!@:HINT\_minor\_version\_}{\.{\\HINTminorversion} primitive@>
 
 primitive("HINTdest", extension, label_node);@/
 @!@:HINTdest\_}{\.{\\HINTdest} primitive@>
@@ -25764,6 +25825,38 @@ case image_node:@/
     {@+scan_normal_dimen; image_xheight(p)=new_xdimen(cur_val,cur_hfactor,cur_vfactor); }
     else
       break;
+  }
+  { scaled iw,ih;
+    double ia;
+    pointer r,q;
+    hextract_image_dimens(image_no(p),&ia,&iw,&ih);
+    image_aspect(p)=round(ia*ONE);
+    r=image_xwidth(p);
+    q=image_xheight(p);
+    if (r==null && q==null)
+    { if (iw>0)
+      { image_xwidth(p)=r=new_xdimen(iw,0,0);
+        image_xheight(p)=q=new_xdimen(ih,0,0);
+      }
+      else if (iw<0)
+      { MESSAGE("Unable to determine size of image %s; using 72dpi.\n",
+		dir[image_no(p)].file_name);
+	image_xwidth(p)=r=new_xdimen(-iw*ONE,0,0);
+        image_xheight(p)=q=new_xdimen(-ih*ONE,0,0);
+      }
+      else
+      { MESSAGE("Unable to determine size of image %s; using 100pt x 100pt\n",
+		dir[image_no(p)].file_name);
+ 	image_xwidth(p)=r=new_xdimen(100*ONE,0,0);
+        image_xheight(p)=q=new_xdimen(100*ONE,0,0);
+     }
+    }
+    else if (r!=null && q==null)
+      image_xheight(p)=q=new_xdimen(round(xdimen_width(r)/ia),
+	      round(xdimen_hfactor(r)/ia),round(xdimen_vfactor(r)/ia));
+    else if (r==null && q!=null)
+       image_xwidth(p)=r=new_xdimen(round(xdimen_width(q)*ia),
+ 	      round(xdimen_hfactor(q)*ia),round(xdimen_vfactor(q)*ia));
   }
   if (abs(mode)==vmode)
   { prev_depth=ignore_depth; /* this could be deleted if baseline nodes treat
@@ -25960,12 +26053,17 @@ cur_cs=k;p=scan_toks(false, false);write_tokens(tail)=def_ref;
 }
 
 @ When `\.{\\special\{...\}}' appears, we expand the macros in the token
-list as in \.{\\xdef} and \.{\\mark}.
+list as in \.{\\xdef} and \.{\\mark}.  When marked with \.{shipout}, we keep
+tokens unexpanded for now.
 
 @<Implement \.{\\special}@>=
+{@+if (scan_keyword("shipout"))
+{@+new_whatsit(latespecial_node, write_node_size);write_stream(tail)=null;
+p=scan_toks(false, false);write_tokens(tail)=def_ref;
+} else
 {@+new_whatsit(special_node, write_node_size);write_stream(tail)=null;
 p=scan_toks(false, true);write_tokens(tail)=def_ref;
-}
+} }
 
 @ Each new type of node that appears in our data structure must be capable
 of being displayed, copied, destroyed, and so on. The routines that we
@@ -25997,6 +26095,9 @@ case write_node: {@+print_write_whatsit("write", p);
   print_mark(write_tokens(p));
   } @+break;
 case close_node: print_write_whatsit("closeout", p);@+break;
+case latespecial_node: {@+print_esc("special");print(" shipout");
+  print_mark(write_tokens(p));
+  } @+break;
 case special_node: {@+print_esc("special");
   print_mark(write_tokens(p));
   } @+break;
@@ -26059,6 +26160,7 @@ case image_node:
   print_esc("HINTimage(");
   print("width ");print_xdimen(image_xheight(p));
   print(" height "); print_xdimen(image_xwidth(p));
+  print(" aspect "); print_scaled(image_aspect(p));
   print("), section ");print_int(image_no(p));
   if (image_name(p)!=0) {print(", "); printn(image_name(p));}
   break;
@@ -26139,7 +26241,7 @@ default: print("whatsit?");
 switch (subtype(p)) {
 case open_node: {@+r=get_node(open_node_size);words=open_node_size;
   } @+break;
-case write_node: case special_node: {@+r=get_node(write_node_size);
+case write_node: case special_node: case latespecial_node: {@+r=get_node(write_node_size);
   add_token_ref(write_tokens(p));words=write_node_size;
   } @+break;
 case close_node: case language_node: {@+r=get_node(small_node_size);
@@ -26258,7 +26360,7 @@ default:confusion("ext2");
 @ @<Wipe out the whatsit...@>=
 {@+switch (subtype(p)) {
 case open_node: free_node(p, open_node_size);@+break;
-case write_node: case special_node: {@+delete_token_ref(write_tokens(p));
+case write_node: case special_node: case latespecial_node: {@+delete_token_ref(write_tokens(p));
   free_node(p, write_node_size);goto done;
   }
 case close_node: case language_node: free_node(p, small_node_size);@+break;
@@ -26370,20 +26472,14 @@ that actually send out the requested data. Let's do \.{\\special} first
 
 @<Declare procedures needed in |hlist_out|, |vlist_out|@>=
 static void special_out(pointer @!p)
-{@+int old_setting; /*holds print |selector|*/
-int @!k; /*index into |str_pool|*/
-synch_h;synch_v;@/
-old_setting=selector;selector=new_string;
-show_token_list(link(write_tokens(p)), null, pool_size-pool_ptr);
-selector=old_setting;
-str_room(1);
-if (cur_length < 256)
-  {@+dvi_out(xxx1);dvi_out(cur_length);
+{@+pointer @!q, @!r; /*temporary variables for list manipulation*/
+int @!old_mode; /*saved |mode|*/
+
+if (subtype(p)==latespecial_node)
+  {@+@<Expand macros in the token list and make |link(def_ref)| point to the
+result@>;
+  write_tokens(p)=def_ref;
   }
-else{@+dvi_out(xxx4);dvi_four(cur_length);
-  }
-for (k=str_start[str_ptr]; k<=pool_ptr-1; k++) dvi_out(so(str_pool[k]));
-pool_ptr=str_start[str_ptr]; /*erase the string*/
 }
 
 @ To write a token list, we must run it through \TeX's scanner, expanding
@@ -26460,7 +26556,7 @@ static void out_what(pointer @!p)
 switch (subtype(p)) {
 case open_node: case write_node: case close_node: @<Do some work that has
 been queued up for \.{\\write}@>@;@+break;
-case special_node:
+case special_node: case latespecial_node: special_out(p);@+break;
 case language_node:
 case save_pos_code: do_nothing;@+break;
 default:confusion("ext4");
@@ -29072,9 +29168,14 @@ old_setting=selector;selector=new_string;
 @*1 \Prote\ added strings routines.
 
 The next procedure sets |name_of_file| from the string given as an
-argument. It silently truncates if the length of the string exceeds the
-size of the name buffer and doesn't use |cur_area| and |cur_ext|: it
-takes the string as is and the string is not flushed.
+argument, mimicking the |input| primitive by adding an |.tex| extension
+if there is none. It silently truncates if the length of the string
+exceeds the size of the name buffer and doesn't use |cur_area| and
+|cur_ext|, but |name_length| is set to the real name length (without
+truncating) so a test about |k <= file_name_size| allows to detect the
+impossibility of opening the file without having to call external code.
+The string is not flushed: it is the responsability of the code calling
+the procedure to flush it if wanted.
 
 @<Declare \Prote\ procedures for strings@>=
 static void str_to_name(str_number @!s)
@@ -29509,6 +29610,7 @@ returned.
 @<Cases of `Scan the argument for command |c|'@>=
 case file_size_code: {@+scan_general_x_text();toks_to_str();
   s=info(garbage);flush_list(link(garbage));str_to_name(s);
+  cur_val=-1; /*invalid value if error*/
   cur_val=get_file_size();
   flush_string;
   } @+break;
@@ -29551,7 +29653,6 @@ If the length is $0$, nothing is printed.
 @<Cases of `Print the result of command |c|'@>=
 case file_mod_date_code: for (k=0; time_str[k]!='\0'; k++)
    print_char(time_str[k]);@+break;
-
 
 @ The primitive \.{\\filedump} expands to the dump of the first
  \.{length} bytes of the file, starting from \.{offset}. Offset and
@@ -29672,7 +29773,7 @@ it, as a binary file.
 @<Generate the MD5 hash for a file@>=
 {@+str_to_name(s);
 xchg_buffer_length=0; /*empty if file not opened*/
-if (b_open_in(&data_in)) {@+
+if ((name_length <= file_name_size)&&(b_open_in(&data_in))) {@+
   mdfive_init;
   r=false; /*reset it to indicate eof*/
   while (!r)
@@ -30346,21 +30447,21 @@ implement the various features that have been used above to replace
 the new engine returns a version number as an integer
 extending the cases for |last_item|. Since the additional
 primitives that we define are specific to the \HINT\ format,
-we return version and subversion of the \HINT\ file
+we return major and minor version of the \HINT\ file
 format that this program will generate.
 
 @d HINT_version_code (eTeX_last_last_item_cmd_mod+7) /* \.{\\HINTversion} */
-@d HINT_subversion_code (eTeX_last_last_item_cmd_mod+8) /* \.{\\HINTsubversion} */
+@d HINT_minor_version_code (eTeX_last_last_item_cmd_mod+8) /* \.{\\HINTminorversion} */
 
 @ Now this new primitive needs its implementation.
 
 @<Cases of |last_item| for |print_cmd_chr|@>=
 case HINT_version_code: print_esc("HINTversion");@+break;
-case HINT_subversion_code: print_esc("HINTsubversion");@+break;
+case HINT_minor_version_code: print_esc("HINTminorversion");@+break;
 
 @ @<Cases for fetching a \Prote\ int value@>=
 case HINT_version_code: cur_val=HINT_VERSION;@+break;
-case HINT_subversion_code: cur_val=HINT_SUB_VERSION;@+break;
+case HINT_minor_version_code: cur_val=HINT_MINOR_VERSION;@+break;
 
 
 @ The implementation reuses code that has been written as part of
@@ -30480,6 +30581,7 @@ static pointer new_image_node( str_number n, str_number a, str_number e)
   int i;
   char *fn;
   int l;
+
   p=get_node(image_node_size);type(p)=whatsit_node;subtype(p)=image_node;
   image_name(p)=n;
   image_area(p)=a;
@@ -30488,6 +30590,7 @@ static pointer new_image_node( str_number n, str_number a, str_number e)
   i=hnew_file_section(fn);
   image_no(p)=i;
   image_xwidth(p)=image_xheight(p)=image_alt(p)=null;
+  image_aspect(p)=0;
   return p;
 }
 
@@ -30938,7 +31041,7 @@ static void new_outline(pointer p)
   List l;
   uint32_t pos;
   pos=hpos-hstart;
-  l.k=list_kind; /* this eventually should be |text_kind| */
+  l.t=TAG(list_kind,b001); /* this eventually should be a text */
   hout_list_node(outline_ptr(p),pos,&l);
   hset_outline(m,r,outline_depth(p),pos);
   DBG(DBGLABEL,"New outline for label *%d\n",r);
@@ -31179,8 +31282,8 @@ For example \LaTeX\ redefines \.{\\protect} to be \.{\\noexpand}.
 As a consequence we have to implement a simplified version
 of \TeX's usual process to fire up the output routine.
 
-The |collect_output| routine takes a node list |p|,
-removes the output nodes and appends them to |q|, with |q|
+The |collect_output| routine takes a node list |*p|,
+removes the output nodes and appends them to |*q|, with |q|
 always pointing to the tail pointer.
 
 @<Hi\TeX\ auxiliary routines@>=
@@ -31199,9 +31302,19 @@ discretionary breaks.
 if (!is_char_node(*p))
 { pointer r=*p;
   switch (type(r))
-  { case whatsit_node:
+  {
+#if 0
+    case glue_node: /* possibly the output routine might like these */
+    case penalty_node:
+      { *p=link(r); link(r)=null; *q=r; q=&(link(r));
+        if (*p==null) return q;
+      }
+      break;
+#endif
+    case whatsit_node:
       switch (subtype(r))
       { case open_node: case write_node: case close_node:
+        case special_node: case latespecial_node:
         { *p=link(r); link(r)=null; *q=r; q=&(link(r));
           if (*p==null) return q;
         }
@@ -31239,7 +31352,7 @@ if (!is_char_node(*p))
 @ @<Fire up the output routine for |q|@>=
 { pointer r=new_null_box();type(r)=vlist_node;
   subtype(r)=0;shift_amount(r)=0;height(r)=hvsize;
-  if (t==NULL) list_ptr(r)=null;
+  if (t==NULL) list_ptr(r)=null; /* or |new_glue(fill_glue);| ?  */
   else { list_ptr(r)=q;  *t=new_glue(fill_glue); }
   flush_node_list(box(255)); /* just in case \dots */
   box(255)=r;
@@ -31282,6 +31395,7 @@ if (!is_char_node(p))
   { case whatsit_node:
       switch (subtype(p))
       { case open_node: case write_node: case close_node:
+        case special_node: case latespecial_node:
           out_what(p);
           break;
         case par_node: execute_output(par_list(p));
@@ -32743,6 +32857,7 @@ ensure_font_no(post_break(p));
   DBG(DBGDEF,"Maximum disc reference: %d\n",max_ref[disc_kind]);
   for (i=0;i<=max_ref[disc_kind]; i++)
            HPUTDEF(hout_disc(dc_defined[i]),i);
+
 @*1 Parameter Lists.
 We store predefined parameter lists in a hash table in order to speed up
 finding existing parameter lists. The parameter list itself is stored as
@@ -32759,7 +32874,8 @@ static struct {int l; /* link */
   uint32_t n; /* number */
   uint32_t s; /* size */
   uint8_t *p; /* pointer */} pl_defined[PLH_SIZE]={{0}};
-static int pl_head=-1, *pl_tail=&pl_head;
+static int pl_head=0, *pl_tail=&pl_head;
+
 @ Next we define three short auxiliary routines and the |hget_param_list_no| function.
 
 @<Hi\TeX\ routines@>=
@@ -32769,7 +32885,7 @@ static uint32_t  hparam_list_hash(List *l)
   uint32_t i;
   for (i=0;i<l->s;i++)
     h=3*h+hstart[l->p+i];
-  return i;
+  return h;
 }
 
 static bool pl_equal(List *l, uint8_t *p)
@@ -32788,7 +32904,7 @@ static void pl_copy(List *l, uint8_t *p)
 static int hget_param_list_no(List *l)
 { uint32_t h;
   int i;
-  if (l->s<=0) return -1;
+  if (l->s<=0) return 0;
   h= hparam_list_hash(l);
   i = h%PLH_SIZE;
   while (pl_defined[i].p!=NULL)
@@ -32800,7 +32916,7 @@ static int hget_param_list_no(List *l)
   if (max_ref[param_kind]>=0xFF || section_no!=2) return -1;
   pl_defined[i].n=++max_ref[param_kind];
   *pl_tail=i; pl_tail=&(pl_defined[i].l);
-  pl_defined[i].l=-1;
+  pl_defined[i].l=0;
   pl_defined[i].h=h;
   pl_defined[i].s=l->s;
   ALLOCATE(pl_defined[i].p,l->s,uint8_t);
@@ -32830,21 +32946,22 @@ static void hdef_param_node(int ptype, int pnumber,int pvalue)
 parameter lists sorted by their reference number.
 
  @<Output parameter list definitions@>=
-  DBG(DBGDEF,"Defining %d parameter lists\n",max_ref[param_kind]+1);
-  for (i=pl_head;i>=0;i=pl_defined[i].l)
-  { int j;
+  DBG(DBGDEF,"Defining %d parameter lists\n",max_ref[param_kind]);
+  for (i=pl_head;i>0;i=pl_defined[i].l)
+  { int j,k;
     DBG(DBGDEF,"Defining parameter list %d, size 0x%x\n",i,pl_defined[i].s);
     j=hsize_bytes(pl_defined[i].s);
     HPUTX(1+1+j+1+pl_defined[i].s+1+j+1);
-    HPUTTAG(param_kind,j+1);
+    if (j==4) k=3; else k=j;
+    HPUTTAG(param_kind,k);
     HPUT8(pl_defined[i].n);
     hput_list_size(pl_defined[i].s,j);
-    HPUT8(0x100-j);
+    HPUT8(0x100-k);
     memcpy(hpos,pl_defined[i].p,pl_defined[i].s);
     hpos=hpos+pl_defined[i].s;
-    HPUT8(0x100-j);
+    HPUT8(0x100-k);
     hput_list_size(pl_defined[i].s,j);
-    HPUTTAG(param_kind,j+1);
+    HPUTTAG(param_kind,k);
   }
 @*1 Fonts.
 To store a font definition, we define the data type |Font|
@@ -33414,14 +33531,14 @@ static uint8_t hout_disc(pointer p)
   else
   { uint32_t lpos;
     lpos=hpos-hstart;
-    h.p.k=list_kind;
+    h.p.t=TAG(list_kind,b001);
     hout_list_node(pre_break(p),lpos,&(h.p));
     if (post_break(p)==null)
       h.q.s=0;
     else
     { uint32_t lpos;
       lpos=hpos-hstart;
-      h.q.k=list_kind;
+      h.q.t=TAG(list_kind,b001);
       hout_list_node(post_break(p),lpos,&(h.q));
     }
   }
@@ -33520,7 +33637,7 @@ signal ``use the defaults''.
   new_param_node(dimen_type,split_max_depth_code,depth(p));
   new_param_node(glue_type,split_top_skip_code,split_top_ptr(p));
   pos=hpos-hstart;
-  l.k=param_kind;
+  l.t=TAG(param_kind,b001);
   n=hout_param_list(link(temp_head),pos,&l);
   flush_node_list(link(temp_head));@+ link(temp_head)=null;
   if (n>=0) HPUT8(n); else i=b010;
@@ -33547,6 +33664,7 @@ We have added custom whatsit nodes and now we switch based on the subtype.
         return;
     }
     break;
+
 @ For \TeX's whatsit nodes that handle output files, no code is generated;
 hence, we call |out_what| and simply remove the tag byte that is already
 in the output.
@@ -33560,10 +33678,9 @@ to mimic expanding inside an output routine.
 
 
 @<cases to output whatsit content nodes@>=
-     case open_node:
-     case write_node:
-     case close_node: out_what(p);
-     case special_node: hpos--; return;
+     case open_node: case write_node: case close_node:
+     case special_node: case latespecial_node: out_what(p);  hpos--; return;
+
 @*1 Paragraphs.
 When we output a paragraph node, we have to consider a special case:
 The parameter list is given by a reference number but the extended dimension
@@ -33585,7 +33702,7 @@ case par_node:
 	else
         { xpos=hpos-hstart; hout_xdimen_node(p); xsize=(hpos-hstart)-xpos; i|=b100; }
         pos=hpos-hstart;
-        l.k=param_kind;
+        l.t=TAG(param_kind,b001);
 	m=hout_param_list(par_params(p),pos,&l);
         if (m>=0)
         { if (i&b100)
@@ -33622,7 +33739,7 @@ case par_node:
           int n;
           Info i=b000;
           pos=hpos-hstart;
-          l.k=param_kind;
+          l.t=TAG(param_kind,b001);
 	  n=hout_param_list(display_params(p),pos,&l);
           if (n>=0) HPUT8(n); else i|=b100;
           if (display_eqno(p)!=null && display_left(p))
@@ -33732,7 +33849,7 @@ static void hout_item_list(pointer p, bool v)
 { List l;
   uint32_t pos;
   DBG(DBGBASIC,"Writing Item List\n");
-  l.k=list_kind;
+  l.t=TAG(list_kind,b001);
   HPUTTAG(item_kind,b000);
   pos=hpos-hstart;
   HPUTX(2);
@@ -33757,7 +33874,7 @@ static void hout_align_list(pointer p, bool v)
 { List l;
   uint32_t pos;
   DBG(DBGBASIC,"Writing Align List\n");
-  l.k=list_kind;
+  l.t=TAG(list_kind,b001);
   pos=hpos-hstart;
   HPUTX(2);
   HPUT8(0); /* space for the tag */
@@ -33825,7 +33942,7 @@ static void hout_list_node2(pointer p)
 { List l;
   uint32_t pos;
   pos=hpos-hstart;
-  l.k=list_kind;
+  l.t=TAG(list_kind,b001);
   hout_list_node(p,pos,&l);
 }
 @ @<Hi\TeX\ function declarations@>=
@@ -33838,15 +33955,14 @@ The next function is like |hout_list_node| but restricted to parameter nodes.
 The parameter |p| is a pointer to a param node list.
 The function either finds a reference number to a predefined parameter list
    and returns the reference number,
- or it outputs the node list at position pos (that's where the tag goes),
-   sets |l->k|, |l->p| and |l->s|, and returns $-1$.
+or it outputs the node list at position pos (that's where the tag goes),
+   sets |l->t|, |l->p| and |l->s|, and returns $-1$.
 
 @<Hi\TeX\ routines@>=
 static int hout_param_list(pointer p, uint32_t pos, List *l)
 { int n;
   hpos=hstart+pos;
-  if (p==null)
-  {HPUTX(2); hpos++;hput_tags(pos,TAG(param_kind,1)); l->s=0; return -1;}
+  if (p==null) return 0;
   HPUTX(3);
   HPUT8(0); /* space for the tag */
   HPUT8(0); /* space for the list size */
@@ -33910,7 +34026,7 @@ case outline_node: hpos--; new_outline(p);  return;
             h.h=xdimen_hfactor(r)/(double)ONE;
             h.v=xdimen_vfactor(r)/(double)ONE;
           }
-          tag=TAG(image_kind,hput_image_spec(image_no(p),0.0,0,&w,0,&h));
+          tag=TAG(image_kind,hput_image_spec(image_no(p),image_aspect(p)/(double)ONE,0,&w,0,&h));
           hout_list_node2(image_alt(p)); /* should eventually become  a text */
 	}
         break;
@@ -34046,7 +34162,7 @@ static void hprint_text(pointer p)
 \item Tables where the width of a column depends on \.{\\hsize} or
       \.{\\vsize} are not tested and probably not yet supported.
 
-\item \.{\\vtop} and \.{\\vcenter} will not work if any dimension of the
+\item \.{\\vcenter} will not work if any dimension of the
       vertical list depends on \.{\\hsize} or \.{\\vsize}.
 
 \item The encoding of horizontal lists as texts is not yet supported,
@@ -34318,8 +34434,9 @@ static void parse_options (int argc, char *argv[])
     { fprintf(stderr,"Try '%s --help' for more information\n",argv[0]);
       exit(1);
     }
-    else if (g == -1) return;
+    else if (g == -1) break;
   }
+  @<Check the environment for extra settings@>@;
 }
 
 @ @<Forward declarations@>=
@@ -34448,6 +34565,19 @@ static char *normalize_quotes (const char *nom, const char *mesg)
     }
     return ret;
 }
+
+@ If the output directory was specified on the command line,
+we save it in an environment variable so that subbrocesses can
+get the value. If on the other hand the environment specifies
+a directory and the command line does not, save the value from
+the environment to the global variable so that it is used in the
+rest of the code.
+
+@<Check the environment for extra settings@>=
+if (output_directory)
+    xputenv ("TEXMF_OUTPUT_DIRECTORY", output_directory);
+else if (getenv ("TEXMF_OUTPUT_DIRECTORY"))
+    output_directory = getenv ("TEXMF_OUTPUT_DIRECTORY");
 
 @*1 Passing a file name as a general text argument.
 
@@ -34819,10 +34949,11 @@ static int texmf_yesno(const char *var)
 
 @ We need a stack, matching the |line_stack| that
 contains the source file names;
-we postpone \TeX\ Live's |full_source_filename_stack| to a later time.
 
 @<Global...@>=
-static int @!source_filename_stack0[max_in_open], *const @!source_filename_stack = @!source_filename_stack0-1;
+static char * @!source_filename_stack0[max_in_open]={NULL}, **const @!source_filename_stack = @!source_filename_stack0-1;
+static char * @!full_source_filename_stack0[max_in_open]={NULL}, **const @!full_source_filename_stack = @!full_source_filename_stack0-1;
+static char *full_name_of_file=NULL;
 
 @ The function |print_file_line|
 prints ``file:line:error'' style messages using
@@ -34832,10 +34963,10 @@ falls back to the ``non-file:line:error'' style.
 @<Basic printing...@>=
 static void print_file_line(void)
 {@+int level=in_open;
-  while (level>0 && source_filename_stack[level]==0) level--;
+  while (level>0 && full_source_filename_stack[level]==NULL) level--;
   if (level==0) print_nl("! ");
   else
-  { print_nl(""); printn(source_filename_stack[level]); print_char(':');
+  { print_nl(""); print(full_source_filename_stack[level]); print_char(':');
     if (level==in_open) print_int(line);
     else print_int(line_stack[level]);
     print(": ");
@@ -35063,7 +35194,8 @@ static FILE*open_in(char*filename,kpse_file_format_type t,const char*rwb)
   {@+
     f= fopen(fname,rwb);
     if (f!=NULL) recorder_record_input(fname);
-    free(fname);@+
+    if (full_name_of_file!=NULL) free(full_name_of_file);
+    full_name_of_file=fname;@+
   }
   return f;
 }
@@ -35226,7 +35358,7 @@ make_time_str(time_t t, bool utc)
         lt = *localtime(&t);
     }
     size = strftime(time_str, TIME_STR_SIZE, "D:%Y%m%d%H%M%S", &lt);
-    /* expected format: |"YYYYmmddHHMMSS"| */
+    /* expected format: |"D:YYYYmmddHHMMSS"| */
     if (size == 0) {
         /* unexpected, contents of |time_str| is undefined */
         time_str[0] = '\0';
@@ -35259,7 +35391,7 @@ make_time_str(time_t t, bool utc)
     } else {
         off_hours = off / 60;
         off_mins = abs(off - off_hours * 60);
-        snprintf(&time_str[size], 9, "%+03d'%02d'", off_hours, off_mins);
+        snprintf(&time_str[size], TIME_STR_SIZE-size, "%+03d'%02d'", off_hours, off_mins);
     }
 }
 
