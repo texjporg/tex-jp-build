@@ -7527,6 +7527,10 @@ is finished:
 {@+first=start;line=line_stack[index];
 if ((name==18)||(name==19)) pseudo_close();else
 if (name > 17) a_close(&cur_file); /*forget it*/
+if (full_source_filename_stack[in_open]!=NULL)
+{ free(full_source_filename_stack[in_open]);
+  full_source_filename_stack[in_open]=NULL;
+}
 pop_input;decr(in_open);
 }
 
@@ -10989,17 +10993,17 @@ of string pool space; but that can confuse the interactive `\.E' option.
 @p static void start_input(void) /*\TeX\ will \.{\\input} something*/
 {@+
 scan_file_name(); /*set |cur_name| to desired file name*/
-pack_cur_name(".tex");
+pack_cur_name("");
 loop@+{@+begin_file_reading(); /*set up |cur_file| and new level of input*/
-  if (a_open_in(&cur_file)) goto done;
+  if (kpse_in_name_ok((char*)name_of_file+1) && a_open_in(&cur_file)) goto done;
   end_file_reading(); /*remove the level that didn't work*/
   prompt_file_name("input file name",".tex");
   }
 done: name=a_make_name_string(&cur_file);@/
-if (source_filename_stack[in_open]==NULL)
+if (source_filename_stack[in_open]!=NULL)
   free(source_filename_stack[in_open]);
 source_filename_stack[in_open]=strdup((char *)name_of_file+1); /*\TeX\ Live*/
-if (full_source_filename_stack[in_open]==NULL)
+if (full_source_filename_stack[in_open]!=NULL)
   free(full_source_filename_stack[in_open]);
 full_source_filename_stack[in_open]=strdup(full_name_of_file);
 if (job_name==0)
@@ -31640,7 +31644,7 @@ static pointer vpackage(pointer p, scaled h, scaled hf, scaled vf, small_number 
                           if (image_xheight(p)!=null)
                           { pointer r=image_xheight(p);
                             if (xdimen_hfactor(r)==0 && xdimen_vfactor(r)==0)
-			    {  x= x+d+xdimen_width(p);d=0;}
+			    {  x= x+d+xdimen_width(r);d=0;}
                             else goto repack;
                           }
 			}
@@ -34886,6 +34890,10 @@ static char *find_file(char *fname, kpse_file_format_type t, int mx)
         fname++;
   }
   filename = kpse_find_file(fname, t, mx);
+  if (full_name_of_file!=NULL)
+  { free(full_name_of_file); full_name_of_file=NULL;}
+  if (filename!=NULL)
+    full_name_of_file=strdup(filename);
   if (quoted) {
         /* Undo modifications */
         fname--;
@@ -34948,7 +34956,8 @@ static int texmf_yesno(const char *var)
 }
 
 @ We need a stack, matching the |line_stack| that
-contains the source file names;
+contains the source file names. For the full source filenames we use
+poiters to |char| because these names are just used for output.
 
 @<Global...@>=
 static char * @!source_filename_stack0[max_in_open]={NULL}, **const @!source_filename_stack = @!source_filename_stack0-1;
