@@ -832,8 +832,10 @@ CIDFont_type2_dofont (pdf_font *font)
         } else {
           gid = tt_cmap_lookup(ttcmap, code);
           /* Lookup Unicode Variation Sequences */
-          if (gid > 0 && uvs > 0 && ttcmap_uvs) {
-            gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
+          if (gid > 0 && uvs > 0) {
+            gid2 = 0;
+            if (ttcmap_uvs)
+              gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
             if (gid2 == 0)
               WARN("Ignored Variation Selector: CID=%u mapped to U+%04X U+%04X", cid, code, uvs);
             else
@@ -930,8 +932,10 @@ CIDFont_type2_dofont (pdf_font *font)
         } else {
           gid = tt_cmap_lookup(ttcmap, code);
           /* Lookup Unicode Variation Sequences */
-          if (gid > 0 && uvs > 0 && ttcmap_uvs) {
-            gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
+          if (gid > 0 && uvs > 0) {
+            gid2 = 0;
+            if (ttcmap_uvs)
+              gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
             if (gid2 == 0)
               WARN("Ignored Variation Selector: CID=%u mapped to U+%04X U+%04X", cid, code, uvs);
             else
