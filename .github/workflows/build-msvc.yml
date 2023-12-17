@@ -129,6 +129,7 @@ jobs:
           $srcdir/tests/bibtexu-range.test
           $srcdir/tests/bibtexu-char.test || \
             { if [ "$?" = "77" ]; then r="SKIP" ; else r="FAIL" ; fi } && echo "$r: bibtexu-char.test"
+          $srcdir/tests/bibtexu-iscjk.test
           $srcdir/tests/bibtexu-sort.test
           $srcdir/tests/bibtexu-yannis.test
         env:
