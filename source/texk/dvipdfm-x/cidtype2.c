@@ -477,10 +477,6 @@ cid_to_code (CMap *cmap, CID cid, int unicode_cmap, int32_t *puvs)
       uvs = UC_UTF16BE_decode_char(&p, endptr);
       if (p == endptr && uvs >= 0xfe00 && uvs <= 0xfe0f) {
         /* Standardized Variation Sequence */
-        /* Combine CJK compatibility ideograph */
-        int32_t cci = UC_Combine_CJK_compatibility_ideograph(uc, uvs);
-        if (cci > 0)
-          return cci;
         *puvs = uvs;
         return uc;
       }
@@ -502,10 +498,6 @@ cid_to_code (CMap *cmap, CID cid, int unicode_cmap, int32_t *puvs)
       if (p == endptr) {
         if (uvs >= 0xfe00 && uvs <= 0xfe0f) {
           /* Standardized Variation Sequence */
-          /* Combine CJK compatibility ideograph */
-          int32_t cci = UC_Combine_CJK_compatibility_ideograph(uc, uvs);
-          if (cci > 0)
-            return cci;
           *puvs = uvs;
           return uc;
         } else if (uvs >= 0xe0100 && uvs <= 0xe01ef) {
@@ -810,8 +802,8 @@ CIDFont_type2_dofont (pdf_font *font)
   if (h_used_chars) {
     used_chars = h_used_chars;
     for (cid = 1; cid <= last_cid; cid++) {
-      int32_t  code, uvs;
-      uint16_t gid = 0, gid2;
+      int32_t  code, uvs = 0;
+      uint16_t gid = 0;
 
       if (!is_used_char2(h_used_chars, cid))
         continue;
@@ -830,16 +822,21 @@ CIDFont_type2_dofont (pdf_font *font)
         if (code < 0) {
           WARN("Unable to map CID to code: CID=%u", cid);
         } else {
-          gid = tt_cmap_lookup(ttcmap, code);
-          /* Lookup Unicode Variation Sequences */
-          if (gid > 0 && uvs > 0) {
-            gid2 = 0;
-            if (ttcmap_uvs)
-              gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
-            if (gid2 == 0)
+          if (ttcmap_uvs && uvs > 0) {
+            gid = tt_cmap_uvs_lookup(ttcmap_uvs, ttcmap, code, uvs);
+          }
+          if (gid == 0 && uvs >= 0xfe00 && uvs <= 0xfe0f) {
+            /* Standardized Variation Sequence */
+            /* Combine CJK compatibility ideograph */
+            int32_t code2 = UC_Combine_CJK_compatibility_ideograph(code, uvs);
+            if (code2 > 0)
+              gid = tt_cmap_lookup(ttcmap, code2);
+          }
+          if (gid == 0) {
+            gid = tt_cmap_lookup(ttcmap, code);
+            if (gid > 0 && uvs > 0) {
               WARN("Ignored Variation Selector: CID=%u mapped to U+%04X U+%04X", cid, code, uvs);
-            else
-              gid = gid2;
+            }
           }
 #ifdef FIX_CJK_UNIOCDE_SYMBOLS
           if (gid == 0 && unicode_cmap) {
@@ -902,8 +899,8 @@ CIDFont_type2_dofont (pdf_font *font)
     }
 
     for (cid = 1; cid <= last_cid; cid++) {
-      int32_t  code, uvs;
-      uint16_t gid = 0, gid2;
+      int32_t  code, uvs = 0;
+      uint16_t gid = 0;
 
       if (!is_used_char2(v_used_chars, cid))
         continue;
@@ -930,16 +927,21 @@ CIDFont_type2_dofont (pdf_font *font)
         if (code < 0) {
           WARN("Unable to map CID to code: CID=%u", cid);
         } else {
-          gid = tt_cmap_lookup(ttcmap, code);
-          /* Lookup Unicode Variation Sequences */
-          if (gid > 0 && uvs > 0) {
-            gid2 = 0;
-            if (ttcmap_uvs)
-              gid2 = tt_cmap_uvs_lookup(ttcmap_uvs, code, uvs, gid);
-            if (gid2 == 0)
+          if (ttcmap_uvs && uvs > 0) {
+            gid = tt_cmap_uvs_lookup(ttcmap_uvs, ttcmap, code, uvs);
+          }
+          if (gid == 0 && uvs >= 0xfe00 && uvs <= 0xfe0f) {
+            /* Standardized Variation Sequence */
+            /* Combine CJK compatibility ideograph */
+            int32_t code2 = UC_Combine_CJK_compatibility_ideograph(code, uvs);
+            if (code2 > 0)
+              gid = tt_cmap_lookup(ttcmap, code2);
+          }
+          if (gid == 0) {
+            gid = tt_cmap_lookup(ttcmap, code);
+            if (gid > 0 && uvs > 0) {
               WARN("Ignored Variation Selector: CID=%u mapped to U+%04X U+%04X", cid, code, uvs);
-            else
-              gid = gid2;
+            }
           }
 #ifdef FIX_CJK_UNIOCDE_SYMBOLS
           if (gid == 0 && unicode_cmap) {

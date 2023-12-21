@@ -555,29 +555,6 @@ release_cmap14 (struct cmap14 *map)
   }
 }
 
-static USHORT
-lookup_cmap14 (struct cmap14 *map, ULONG unicode, ULONG uvs, USHORT default_gid)
-{
-  ULONG  i, j;
-
-  for (i = 0; i < map->numVarSelectorRecords; i++) {
-    if (map->varSelector[i].varSelector == uvs) {
-      for (j = 0; j < map->varSelector[i].numUnicodeValueRanges; j++) {
-        if (map->varSelector[i].rangesStartUnicodeValue[j] <= unicode &&
-            unicode <= map->varSelector[i].rangesStartUnicodeValue[j] + map->varSelector[i].rangesAdditionalCount[j])
-          return default_gid;
-      }
-      for (j = 0; j < map->varSelector[i].numUVSMappings; j++) {
-        if (map->varSelector[i].uvsMappingsUnicodeValue[j] == unicode)
-          return map->varSelector[i].uvsMappingsGlyphID[j];
-      }
-      return 0;
-    }
-  }
-
-  return 0;
-}
-
 /* read cmap */
 tt_cmap *
 tt_cmap_read (sfnt *sfont, USHORT platform, USHORT encoding)
@@ -742,19 +719,40 @@ tt_cmap_lookup (tt_cmap *cmap, ULONG cc)
   return gid;
 }
 
-USHORT
-tt_cmap_uvs_lookup (tt_cmap *cmap, ULONG unicode, ULONG uvs, USHORT default_gid)
+static USHORT
+lookup_cmap14 (struct cmap14 *map, tt_cmap* cmap_default, ULONG unicode, ULONG uvs)
 {
-  USHORT gid = 0;
+  ULONG  i, j;
 
-  ASSERT(cmap);
+  for (i = 0; i < map->numVarSelectorRecords; i++) {
+    if (map->varSelector[i].varSelector == uvs) {
+      for (j = 0; j < map->varSelector[i].numUnicodeValueRanges; j++) {
+        if (map->varSelector[i].rangesStartUnicodeValue[j] <= unicode &&
+            unicode <= map->varSelector[i].rangesStartUnicodeValue[j] + map->varSelector[i].rangesAdditionalCount[j])
+          return tt_cmap_lookup(cmap_default, unicode);
+      }
+      for (j = 0; j < map->varSelector[i].numUVSMappings; j++) {
+        if (map->varSelector[i].uvsMappingsUnicodeValue[j] == unicode)
+          return map->varSelector[i].uvsMappingsGlyphID[j];
+      }
+      return 0;
+    }
+  }
 
-  if (cmap->format != 14) {
+  return 0;
+}
+
+USHORT
+tt_cmap_uvs_lookup(tt_cmap* cmap_uvs, tt_cmap* cmap_default, ULONG unicode, ULONG uvs)
+{
+  ASSERT(cmap_uvs);
+
+  if (cmap_uvs->format != 14) {
     WARN("Unicode Variation Sequences in OpenType/TrueType cmap must be format 14.");
     return 0;
   }
 
-  return lookup_cmap14(cmap->map, unicode, uvs, default_gid);
+  return lookup_cmap14(cmap_uvs->map, cmap_default, unicode, uvs);
 }
 
 
