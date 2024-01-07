@@ -789,13 +789,14 @@ static boolean is_tail(long *c, FILE *fp)
 }
 
 #define MARK_LEN 4
+static int bom_u[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x7E };
+static int bom_l[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x01 };
+
 /* if stream begins with BOM + 7bit char */
 static boolean isUTF8Nstream(FILE *fp)
 {
     int i;
     int c[MARK_LEN];
-    int bom_u[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x7E };
-    int bom_l[MARK_LEN] = { 0xEF, 0xBB, 0xBF, 0x01 };
 
     for (i=0; i<MARK_LEN; i++) {
         c[i] = getc4(fp);
@@ -817,22 +818,28 @@ static int infile_enc[NOFILE]; /* ENC_UNKNOWN (=0): not determined
       No halfwidth katakana in Shift_JIS
       No SS2 nor SS3 in EUC-JP
       JIS X 0208 only and no platform dependent characters in Shift_JIS, EUC-JP
+      ISO-8859 may have 0xA0..0xFF, may not have 0x80..0x9F
 */
-char *ptenc_guess_enc(FILE *fp)
+char *ptenc_guess_enc(FILE *fp, boolean chk_bom)
 {
     char *enc;
     int k0, k1, k2, cdb[2], cu8[4], len_utf8;
     int is_ascii=1, lbyte=0;
     int maybe_sjis=1, maybe_euc=1, maybe_utf8=1, maybe_iso8859=1, pos_db=0, pos_utf8=0;
-    int ch_sjis=0, ch_euc=0, ch_utf8=0, ch_iso8859=0;
+    int ch_sjis=0, ch_euc=0, ch_utf8=0, ch_iso8859=0, bom=0;
 #ifdef DEBUG
     int i;
     unsigned char str0[5];
 #endif /* DEBUG */
-    enc = xmalloc(sizeof(char)*18);
+    enc = xmalloc(sizeof(char)*20);
 
     while ((k0 = fgetc(fp)) != EOF &&
-           (maybe_sjis+maybe_euc+maybe_utf8+maybe_iso8859>1 || pos_db || pos_utf8)) {
+           (maybe_sjis+maybe_euc+maybe_utf8+maybe_iso8859>1 || pos_db || pos_utf8 || lbyte<200)) {
+        if (maybe_iso8859 && maybe_sjis+maybe_euc+maybe_utf8==1 && !pos_db && !pos_utf8
+            && ch_iso8859>=2000) {
+            break;
+        }
+        if (chk_bom && lbyte<4 && bom_l[lbyte] <= k0 && k0 <= bom_u[lbyte]) bom++;
         lbyte++;
         if (k0==ESC) {
             k0 = fgetc(fp);
@@ -994,7 +1001,8 @@ char *ptenc_guess_enc(FILE *fp)
         /* The threshold of ch_* to judge ISO-8859 or not is heuristic, not strict */
         if ((maybe_sjis && ch_sjis>=16 && ch_sjis*1.3<=ch_iso8859) ||
             (maybe_euc  && ch_euc >=8  && ch_euc *2  ==ch_iso8859) ||
-            (maybe_utf8 && ch_utf8>=8  && ch_utf8*2  <=ch_iso8859))
+            (maybe_utf8 && ch_utf8>=8  && ch_utf8*2  <=ch_iso8859) ||
+             bom==4)
                maybe_iso8859 = 0;
     }
     if (is_ascii)
@@ -1018,7 +1026,7 @@ char *ptenc_guess_enc(FILE *fp)
             enc = strcat(enc, ",i");
         enc = strcat(enc,")");
 #ifdef WIN32
-        if (guess_enc == ENC_UNKNOWN) guess_enc = UTF-8;
+        if (guess_enc == ENC_UNKNOWN) guess_enc = ENC_UTF8;
 #else
         if (guess_enc == ENC_UNKNOWN) guess_enc = get_terminal_enc();
 #endif
@@ -1087,7 +1095,7 @@ long input_line2(FILE *fp, unsigned char *buff, unsigned char *buff2,
             getc4(fp);
             getc4(fp);
             rewind(fp);
-            enc = ptenc_guess_enc(fp);
+            enc = ptenc_guess_enc(fp, 0);
             if (string_to_enc(enc) > 0) {
                 infile_enc[fd] = string_to_enc(enc);
                 fprintf(stderr, "(guessed encoding #%d: %s = %s)", fd, enc, enc_to_string(infile_enc[fd]));
