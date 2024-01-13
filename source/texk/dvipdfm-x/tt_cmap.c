@@ -1033,6 +1033,29 @@ create_inverse_cmap12 (int32_t *map_base, int32_t *map_sub, USHORT num_glyphs,
   }
 }
 
+static void
+create_inverse_cmap14 (int32_t *map_base, int32_t *map_sub, int32_t *map_uvs,
+                       USHORT num_glyphs, struct cmap14 *map)
+{
+  ULONG i, j, vs;
+
+  for (i = 0; i < map->numVarSelectorRecords; i++) {
+    vs = map->varSelector[i].varSelector;
+    /* It is expected that the default UVS inverse map
+       is already created with cmap4/12. */
+    for (j = 0; j < map->varSelector[i].numUVSMappings; j++) {
+      ULONG ch = map->varSelector[i].uvsMappingsUnicodeValue[j];
+      USHORT gid = map->varSelector[i].uvsMappingsGlyphID[j];
+      if (is_PUA_or_presentation(ch)) {
+        map_sub[gid] = ch;
+      } else {
+        map_base[gid] = ch;
+      }
+      map_uvs[gid] = vs;
+    }
+  }
+}
+
 /* NOTE: Reverse mapping code which had been placed here is removed since:
  *  - Implementation of reserve CMap mapping itself is imcomplete.
  *  - It is wrong to assume that all CMap passed here is Unicode to CID mapping.
@@ -1048,6 +1071,8 @@ create_ToUnicode_cmap (tt_cmap    *ttcmap,
   pdf_obj  *stream   = NULL;
   int32_t  *map_base = NULL, *map_sub = NULL;
   USHORT    gid, num_glyphs = 0;
+  tt_cmap  *ttcmap_uvs = NULL;
+  int32_t  *map_uvs    = NULL;
 
   ASSERT(ttcmap);
 
@@ -1078,6 +1103,18 @@ create_ToUnicode_cmap (tt_cmap    *ttcmap,
   case 12:
     create_inverse_cmap12(map_base, map_sub, num_glyphs, ttcmap->map);
     break;
+  }
+
+  /* Create Unicode Variation Sequences mapping from
+     inverse mapping of OpenType cmap format 14 subtable. */
+  ttcmap_uvs = tt_cmap_read(sfont, 0, 5);
+  if (ttcmap_uvs && ttcmap_uvs->format == 14) {
+    map_uvs = NEW(num_glyphs, int32_t);
+    for (gid = 0; gid < num_glyphs; gid++) {
+      map_uvs[gid] = -1;
+    }
+    create_inverse_cmap14(map_base, map_sub, map_uvs, num_glyphs, ttcmap_uvs->map);
+    tt_cmap_release(ttcmap_uvs);
   }
 
   /* Now create ToUnicode CMap stream */
@@ -1124,8 +1161,8 @@ create_ToUnicode_cmap (tt_cmap    *ttcmap,
       uint16_t cid = GIDToCIDMap[gid];
       if (is_used_char2(used_chars_copy, cid)) {
         int32_t        ch;
-        unsigned char  src[2], dst[4];
-        unsigned char *p = dst, *endptr = dst + 4;
+        unsigned char  src[2], dst[8];
+        unsigned char *p = dst, *endptr = dst + 8;
         size_t         len;
 
         ch = map_base[gid];
@@ -1133,6 +1170,9 @@ create_ToUnicode_cmap (tt_cmap    *ttcmap,
           src[0] = (cid >> 8) & 0xff;
           src[1] = cid & 0xff;
           len = UC_UTF16BE_encode_char(ch, &p, endptr);
+          if (map_uvs && map_uvs[gid] > 0) {
+            len += UC_UTF16BE_encode_char(map_uvs[gid], &p, endptr);
+          }
           CMap_add_bfchar(cmap, src, 2, dst, len);
           used_chars_copy[cid / 8] &= ~(1 << (7 - (cid % 8)));
           count++;
@@ -1200,6 +1240,7 @@ create_ToUnicode_cmap (tt_cmap    *ttcmap,
   }
   RELEASE(map_base);
   RELEASE(map_sub);
+  RELEASE(map_uvs);
 
   return stream;
 }
@@ -1332,6 +1373,9 @@ otf_create_ToUnicode_stream (const char *font_name,
   }
   if (ttcmap) {
     pdf_obj  *cmap_obj;
+    tt_cmap  *ttcmap_uvs = NULL; 
+
+    ttcmap_uvs = tt_cmap_read(sfont, 0, 5);
 
     CMap_set_silent(1); /* many warnings without this... */
     cmap_obj = create_ToUnicode_cmap(ttcmap, cmap_name, cmap_add, used_chars, sfont);
