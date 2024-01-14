@@ -56,6 +56,8 @@
 #define CHARACTER_INDEX(i)  ((i))
 #endif
 
+#define JFM_LASTCHAR    0xFFFFFF
+
 /*
  * TFM Record structure:
  * Multiple TFM's may be read in at once.
@@ -464,15 +466,19 @@ jfm_do_char_type_array (FILE *tfm_file, struct tfm_font *tfm)
   unsigned short chartype;
   unsigned int i;
 
-  tfm->chartypes = NEW(1114112, unsigned int);
-  for (i = 0; i < 1114112; i++) {
+  tfm->chartypes = NEW((JFM_LASTCHAR + 1), unsigned int);
+  for (i = 0; i < (JFM_LASTCHAR + 1); i++) {
     tfm->chartypes[i] = 0;
   }
   for (i = 0; i < tfm->nt; i++) {
     /* support new JFM spec by texjporg */
     charcode = get_unsigned_triple_kanji(tfm_file);
     chartype = get_unsigned_byte(tfm_file);
-    tfm->chartypes[charcode] = chartype;
+    if (charcode < (JFM_LASTCHAR + 1))
+      tfm->chartypes[charcode] = chartype;
+    else {
+      /* Invalid charcode */
+    }
   }
 }
 
@@ -487,10 +493,10 @@ jfm_make_charmap (struct font_metric *fm, struct tfm_font *tfm)
     fm->charmap.data = map = NEW(1, struct char_map);
     map->coverage.first_char = 0;
 #ifndef WITHOUT_ASCII_PTEX
-    map->coverage.num_chars  = 0x10FFFFL;
-    map->indices    = NEW(0x110001L, unsigned int);
-    map->indices[0x110000L] = tfm->chartypes[0];
-    for (code = 0; code <= 0x10FFFFU; code++) {
+    map->coverage.num_chars  = JFM_LASTCHAR;
+    map->indices    = NEW((JFM_LASTCHAR + 2), unsigned int);
+    map->indices[(JFM_LASTCHAR + 1)] = tfm->chartypes[0];
+    for (code = 0; code <= JFM_LASTCHAR; code++) {
 #else
     map->coverage.num_chars  = 0xFFFFL;
     map->indices    = NEW(0x10000L, unsigned short);
@@ -507,7 +513,7 @@ jfm_make_charmap (struct font_metric *fm, struct tfm_font *tfm)
     map->coverages     = NEW(map->num_coverages, struct coverage);
     map->coverages[0].first_char = 0;
 #ifndef WITHOUT_ASCII_PTEX
-    map->coverages[0].num_chars  = 0x10FFFFL;
+    map->coverages[0].num_chars  = JFM_LASTCHAR;
 #else
     map->coverages[0].num_chars  = 0xFFFFL;
 #endif
@@ -812,7 +818,7 @@ read_tfm (struct font_metric *fm, FILE *tfm_file, off_t tfm_file_size)
     jfm_do_char_type_array(tfm_file, &tfm);
     jfm_make_charmap(fm, &tfm);
     fm->firstchar = 0;
-    fm->lastchar  = 0x10FFFFL;
+    fm->lastchar  = JFM_LASTCHAR;
     fm->fontdir   = (tfm.id == JFMV_ID) ? FONT_DIR_VERT : FONT_DIR_HORIZ;
     fm->source    = SOURCE_TYPE_JFM;
   }
