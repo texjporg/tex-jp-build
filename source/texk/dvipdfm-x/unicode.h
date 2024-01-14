@@ -34,4 +34,7 @@ extern size_t  UC_UTF8_encode_char (int32_t ucv, unsigned char **dstpp, unsigned
 
 extern int32_t UC_Combine_CJK_compatibility_ideograph(int32_t ucv, int32_t uvs);
 
+extern int32_t UVS_combine_code(int32_t ucv, int32_t uvs);
+extern int32_t UVS_divide_code(int32_t code, int32_t *uvs);
+
 #endif /* _UNICODE_H_ */

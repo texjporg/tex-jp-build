@@ -1495,6 +1495,69 @@ load_cmap12 (struct cmap12 *map, uint16_t *GIDToCIDMap, USHORT num_glyphs,
   return;
 }
 
+static void
+load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap, USHORT num_glyphs,
+             otl_gsub *gsub_vert, otl_gsub *gsub_list,
+             CMap *cmap, int32_t *map_base, int32_t *map_sub)
+{
+  ULONG         i, j, ch, vs, code;
+  USHORT        gid, cid;
+  unsigned char buf[4];
+
+  for (i = 0; i < map->numVarSelectorRecords; i++) {
+    vs = map->varSelector[i].varSelector;
+    for (j = 0; j < map->varSelector[i].numUnicodeValueRanges; j++) {
+      for (ch  = map->varSelector[i].rangesStartUnicodeValue[j];
+           ch <= map->varSelector[i].rangesStartUnicodeValue[j] + map->varSelector[i].rangesAdditionalCount[j];
+           ch++) {
+        gid = tt_cmap_lookup(ttcmap_default, ch);
+        if (gsub_list)
+          otl_gsub_apply_chain(gsub_list, &gid);
+        if (gsub_vert)
+          otl_gsub_apply(gsub_vert, &gid);
+        cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
+        code = UVS_combine_code(ch, vs);
+        if (code <= 0) {
+          /* Unsupported Variation Sequence */
+          continue;
+        }
+        buf[0] = (code >> 24) & 0xff;
+        buf[1] = (code >> 16) & 0xff;
+        buf[2] = (code >>  8) & 0xff;
+        buf[3] = code & 0xff;
+        CMap_add_cidchar(cmap, buf, 4, cid);
+        if (map_base && map_sub && map_base[gid] <= 0) {
+          map_base[gid] = ch;
+        }
+      }
+    }
+    for (j = 0; j < map->varSelector[i].numUVSMappings; j++) {
+      ch = map->varSelector[i].uvsMappingsUnicodeValue[j];
+      gid = map->varSelector[i].uvsMappingsGlyphID[j];
+      if (gsub_list)
+        otl_gsub_apply_chain(gsub_list, &gid);
+      if (gsub_vert)
+        otl_gsub_apply(gsub_vert, &gid);
+      cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
+      code = UVS_combine_code(ch, vs);
+      if (code <= 0) {
+        /* Unsupported Variation Sequence */
+        continue;
+      }
+      buf[0] = (code >> 24) & 0xff;
+      buf[1] = (code >> 16) & 0xff;
+      buf[2] = (code >>  8) & 0xff;
+      buf[3] = code & 0xff;
+      CMap_add_cidchar(cmap, buf, 4, cid);
+      if (map_base && map_sub && map_base[gid] <= 0) {
+        map_base[gid] = ch;
+      }
+    }
+  }
+
+  return;
+}
+
 int
 otf_load_Unicode_CMap (const char *map_name, uint32_t ttc_index, /* 0 for non-TTC font */
                        const char *otl_tags, int wmode)
@@ -1506,6 +1569,7 @@ otf_load_Unicode_CMap (const char *map_name, uint32_t ttc_index, /* 0 for non-TT
   uint16_t    num_glyphs  = 0;
   FILE       *fp          = NULL;
   tt_cmap    *ttcmap      = NULL;
+  tt_cmap    *ttcmap_uvs  = NULL;
   CIDSysInfo  csi         = {NULL, NULL, 0};
   uint16_t   *GIDToCIDMap = NULL;
 
@@ -1740,6 +1804,11 @@ otf_load_Unicode_CMap (const char *map_name, uint32_t ttc_index, /* 0 for non-TT
                  gsub_vert, gsub_list,
                  cmap, map_base, map_sub);
       break;
+    }
+    ttcmap_uvs = tt_cmap_read(sfont, 0, 5); /* Unicode Variation Sequence */
+    if (ttcmap_uvs && ttcmap_uvs->format == 14) {
+      load_cmap14(ttcmap_uvs->map, ttcmap, GIDToCIDMap, num_glyphs, gsub_vert, gsub_list, cmap, map_base, map_sub);
+      tt_cmap_release(ttcmap_uvs);
     }
     if (gsub_vert)
       otl_gsub_release(gsub_vert);
