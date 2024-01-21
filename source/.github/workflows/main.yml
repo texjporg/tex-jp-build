@@ -28,89 +28,162 @@
 # * it would be nice if we could adjust the docker action usage
 #   to override the dockerfile but this seems not to be possible at the moment
 
-on: [push]
+# only build on pushed to trunk
+on:
+  push:
+    branches:
+      - trunk
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  docker_linux_32bit_job:
+  build_job:
     runs-on: ubuntu-latest
-    name: i386-linux build job
+    name: Build on ${{ matrix.tl_name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # we need to list the archs here, otherwise the matrix contains only
+        # one element release_build and that is overwritten by the include statements
+        tl_name: [ i386-linux, x86_64-linux, x86_64-linuxmusl, aarch64-linux, armhf-linux ]
+        release_build:
+          - ${{ startsWith(github.ref, 'refs/tags/') }}
+        include:
+          - tl_name: i386-linux
+            image: i386/ubuntu:xenial
+            platform: 386
+            ci_build: true
+            use_qemu: false
+          - tl_name: x86_64-linux
+            image: centos:7
+            platform: amd64
+            ci_build: true
+            use_qemu: false
+          - tl_name: x86_64-linuxmusl
+            image: alpine:3.5
+            platform: amd64
+            ci_build: true
+            use_qemu: false
+          - tl_name: aarch64-linux
+            image: arm64v8/debian:buster
+            platform: aarch64
+            ci_build: false
+            use_qemu: true
+            qemu_arch: aarch64
+          - tl_name: armhf-linux
+            image: arm32v7/debian:buster
+            platform: arm/v7
+            ci_build: false
+            use_qemu: true
+            qemu_arch: arm
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: checkout
-        uses: actions/checkout@v3
+      - name: checkout-main
+        uses: actions/checkout@v4
         with:
-          repository: TeX-Live/tl-build-docker-action
-          ref: v4
-          path: actions/TeX-Live/tl-build-docker-action
-      - name: Update Dockerfile
-        run: cp actions/TeX-Live/tl-build-docker-action/Dockerfile.i386-linux actions/TeX-Live/tl-build-docker-action/Dockerfile
-      - name: Run docker image
-        uses: ./actions/TeX-Live/tl-build-docker-action
+          path: 'repo'
+      - name: Setup QEMU
+        if: matrix.use_qemu
+        uses: docker/setup-qemu-action@v2
         with:
-          arch: 'i386-linux'
+          platforms: ${{ matrix.qemu_arch }}
+      - name: build
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.ci_build || matrix.release_build }}
+        with: 
+          image: ${{ matrix.image }}
+          options: -v ${{ github.workspace }}:/work --platform linux/${{ matrix.platform }}
+          run: |
+            cd /work/repo
+            case "${{ matrix.image }}" in
+              i386/ubuntu:*) .github/scripts/install-deps.ubuntu.sh ;;
+              */debian:*) .github/scripts/install-deps.ubuntu.sh ;;
+              centos:*) .github/scripts/install-deps.centos.sh ;;
+              alpine:*) .github/scripts/install-deps.alpine.sh ;;
+            esac
+            .github/scripts/build-tl.sh ${{ matrix.tl_name }}
       - name: find file step
-        run: ls -l
+        if: ${{ matrix.ci_build || matrix.release_build }}
+        run: ls -l $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
+      - name: save artifact
+        if: ${{ matrix.ci_build || matrix.release_build }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: texlive-bin-${{ matrix.tl_name }}.tar.gz
+          path: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
+          compression-level: 0
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: matrix.release_build
         with:
-          files: texlive-bin-i386-linux.tar.gz
+          files: $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  docker_linux_64bit_job:
+
+
+  vm_build_job:
     runs-on: ubuntu-latest
-    name: x86_64-linux build job
+    name: Build on ${{ matrix.arch }}-${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix: 
+        arch: [ i386, amd64 ]
+        os: [ freebsd, netbsd, solaris ]
+        ci_build: [ false ]
+        release_build: 
+          - ${{ startsWith(github.ref, 'refs/tags/') }}
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: checkout
-        uses: actions/checkout@v3
+      - name: checkout-main
+        uses: actions/checkout@v4
         with:
-          repository: TeX-Live/tl-build-docker-action
-          ref: v4
-          path: actions/TeX-Live/tl-build-docker-action
-      - name: Update Dockerfile
-        run: cp actions/TeX-Live/tl-build-docker-action/Dockerfile.x86_64-linux actions/TeX-Live/tl-build-docker-action/Dockerfile
-      - name: Run docker image
-        uses: ./actions/TeX-Live/tl-build-docker-action
-        with:
-          arch: 'x86_64-linux'
+          path: 'repo'
+      - name: build freebsd
+        uses: vmactions/freebsd-vm@v1
+        if: ${{ matrix.os == 'freebsd' && (matrix.ci_build || matrix.release_build) }}
+        with: 
+          usesh: true
+          run: |
+            cd repo
+            sh .github/scripts/install-deps.bsd.sh
+            sh .github/scripts/build-tl.sh ${{ matrix.arch }}-${{ matrix.os }}
+      - name: build netbsd
+        uses: vmactions/netbsd-vm@v1
+        if: ${{ matrix.os == 'netbsd' && (matrix.ci_build || matrix.release_build) }}
+        with: 
+          usesh: true
+          run: |
+            cd repo
+            sh .github/scripts/install-deps.bsd.sh
+            sh .github/scripts/build-tl.sh ${{ matrix.arch }}-${{ matrix.os }}
+      - name: build solaris
+        uses: vmactions/solaris-vm@v1
+        if: ${{ matrix.os == 'solaris' && (matrix.ci_build || matrix.release_build) }}
+        with: 
+          usesh: true
+          run: |
+            cd repo
+            sh .github/scripts/install-deps.solaris.sh
+            sh .github/scripts/build-tl.sh ${{ matrix.arch }}-${{ matrix.os }}
       - name: find file step
-        run: ls -l
+        if: ${{ matrix.ci_build || matrix.release_build }}
+        run: ls -l $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
+      - name: save artifact
+        if: ${{ matrix.ci_build || matrix.release_build }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
+          path: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
+          compression-level: 0
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: matrix.release_build
         with:
-          files: texlive-bin-x86_64-linux.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  docker_linuxmusl_64bit_job:
-    runs-on: ubuntu-latest
-    name: x86_64-linuxmusl build job
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: checkout
-        uses: actions/checkout@v3
-        with:
-          repository: TeX-Live/tl-build-docker-action
-          ref: v4
-          path: actions/TeX-Live/tl-build-docker-action
-      - name: Update Dockerfile
-        run: cp actions/TeX-Live/tl-build-docker-action/Dockerfile.x86_64-linuxmusl actions/TeX-Live/tl-build-docker-action/Dockerfile
-      - name: Run docker image
-        uses: ./actions/TeX-Live/tl-build-docker-action
-        with:
-          arch: 'x86_64-linuxmusl'
-      - name: find file step
-        run: ls -l
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: texlive-bin-x86_64-linuxmusl.tar.gz
+          files: $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
