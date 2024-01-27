@@ -155,6 +155,9 @@
    backward compatibility; new code need not use it. */
 #undef STDC_HEADERS
 
+/* Define to the current TeX Live version string. */
+#undef TL_VERSION
+
 /* Version number of package */
 #undef VERSION
 

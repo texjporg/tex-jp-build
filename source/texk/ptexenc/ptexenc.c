@@ -79,7 +79,7 @@ static int string_to_enc(const_string str)
     if (strcasecmp(str, "ISO-2022-JP") == 0) return ENC_JIS;
     if (strcasecmp(str, "EUC-JP") == 0)      return ENC_EUC;
     if (strcasecmp(str, "Shift_JIS")   == 0) return ENC_SJIS;
-    if (strcasecmp(str, "UTF-8")       == 0) return ENC_UTF8;
+    if (strncasecmp(str, "UTF-8", 5)   == 0) return ENC_UTF8;
     if (strcasecmp(str, "ISO-8859") == 0)    return ENC_JIS;
     return -1; /* error */
 }
@@ -1025,6 +1025,11 @@ char *ptenc_guess_enc(FILE *fp, boolean chk_bom)
         if (maybe_iso8859)
             enc = strcat(enc, ",i");
         enc = strcat(enc,")");
+        if (maybe_iso8859 && maybe_euc+maybe_sjis+maybe_utf8==1) {
+            if (maybe_sjis) guess_enc = ENC_SJIS;
+            if (maybe_euc)  guess_enc = ENC_EUC;
+            if (maybe_utf8) guess_enc = ENC_UTF8;
+        }
 #ifdef WIN32
         if (guess_enc == ENC_UNKNOWN) guess_enc = ENC_UTF8;
 #else
@@ -1035,8 +1040,10 @@ char *ptenc_guess_enc(FILE *fp, boolean chk_bom)
         strcpy(enc,"Shift_JIS");
     else if (maybe_euc)
         strcpy(enc,"EUC-JP");
-    else if (maybe_utf8)
+    else if (maybe_utf8) {
         strcpy(enc,"UTF-8");
+        if (bom>=3) strcat(enc," (BOM)");
+    }
     else if (maybe_iso8859)
         strcpy(enc,"ISO-8859");
     else
@@ -1196,6 +1203,15 @@ boolean setstdinenc(const char *str)
     enc = string_to_enc(str);
     if (enc < 0) return false;
     infile_enc[fileno(stdin)] = enc;
+    return true;
+}
+
+boolean setfileenc(const char *str)
+{
+    int enc;
+    enc = string_to_enc(str);
+    if (enc < 0) return false;
+    file_enc = enc;
     return true;
 }
 
