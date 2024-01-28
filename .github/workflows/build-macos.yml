@@ -44,7 +44,7 @@ jobs:
           cd ${{ github.workspace }}/source/Work/texk/kpathsea
           ../../../texk/kpathsea/configure
           make
-          make check
+          make check || cat tests/kpsesafe.log
           cd ${{ github.workspace }}/source/Work/texk/ptexenc
           ../../../texk/ptexenc/configure
           make

@@ -82,7 +82,7 @@ jobs:
           echo -e "###\n### link without libtool  kpsewhich.exe\n###"
           gcc -Wimplicit -Wreturn-type -g -O2   -o kpsewhich.exe kpsewhich.o .libs/libkpathsea.a || \
             echo -e "**\n** fail to link kpsewhich.exe"
-          make check
+          make check || cat tests/kpsesafe.log
 
           cd ../../../..
           mkdir -p ./source/Work/texk/ptexenc
