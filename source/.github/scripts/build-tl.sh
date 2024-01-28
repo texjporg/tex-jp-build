@@ -2,19 +2,63 @@
 
 set -e
 
-arch="$1"
-echo "Building TL for arch = $arch"
-
-destdir="$2"
-
-# for CentOS we need to activate gcc-9
-if [ -f /opt/rh/devtoolset-9/enable ]
+if [ "x$2" = "x" ]
 then
-  # we cannot call scl enable devtoolset-9 here since we need
-  # the settings in the running shell
-  . /opt/rh/devtoolset-9/enable
+  echo "Usage: `basename $0` arch buildsys [no-prepare]" >&2
+  exit 1
 fi
 
+arch="$1"
+echo "Building TL for arch = $arch"
+shift
+
+buildsys=$1
+echo "Building on $buildsys"
+shift
+
+do_prepare=1
+if [ "$1" = "no-prepare" ]
+then
+  do_prepare=0
+fi
+
+if [ $do_prepare = 1 ]
+then
+  case $buildsys in 
+     ubuntu|debian)
+       export DEBIAN_FRONTEND=noninteractive
+       export LANG=C.UTF-8
+       export LC_ALL=C.UTF-8
+       apt-get update -q -y
+       apt-get install -y --no-install-recommends bash gcc g++ make perl libfontconfig-dev libx11-dev libxmu-dev libxaw7-dev build-essential
+       ;;
+     centos)
+       yum update -y
+       yum install -y centos-release-scl
+       yum install -y devtoolset-9 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
+       . /opt/rh/devtoolset-9/enable
+       ;;
+     alpine)
+       apk update
+       apk add --no-progress bash gcc g++ make perl fontconfig-dev libx11-dev libxmu-dev libxaw-dev
+       ;;
+     freebsd)
+       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5
+       ;;
+     netbsd)
+       pkg_add gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5
+       ;;
+     solaris)
+       # pkg install pkg://solaris/developer/gcc-5
+       # maybe only the following is enough, and fortran and gobjc needs not be installed?
+       pkg install pkg://solaris/developer/gcc/gcc-c++-5
+       ;;
+     *)
+       echo "Unsupported build system: $buildsys" >&2
+       exit 1
+       ;;
+  esac
+fi
 
 find . -name \*.info -exec touch '{}' \;
 touch ./texk/detex/detex-src/detex.c
@@ -35,6 +79,9 @@ touch ./utils/asymptote/camp.tab.cc
 touch ./utils/asymptote/camp.tab.h
 touch ./utils/lacheck/lacheck.c
 touch ./utils/xindy/xindy-src/tex2xindy/tex2xindy.c
+# sometimes dvipng.1 seems to be outdated
+touch ./texk/dvipng/doc/dvipng.1
+touch ./texk/dvipng/dvipng-src/dvipng.1
 
 # default settings
 TL_MAKE_FLAGS="-j 2"
@@ -49,8 +96,23 @@ case "$arch" in
     BUILDARGS="--enable-arm-neon=on"
     ;;
   *-solaris)
-    export CC="/path/to/gcc-5.5 -m64"
-    export CXX="/path/to/g++-5.5 -m64"
+    export PATH=/opt/csw/bin:$PATH
+    export TL_MAKE=gmake
+    if [ $arch = "i386-solaris" ]
+    then
+      export CC="gcc -m32"
+      export CXX="g++ -m32"
+    else
+      export CC="gcc -m64"
+      export CXX="g++ -m64"
+    fi
+    ;;
+  *-freebsd)
+    export TL_MAKE=gmake
+    export CC=gcc 
+    export CXX=g++
+    export CFLAGS=-D_NETBSD_SOURCE
+    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++11'
     ;;
 esac
 export TL_MAKE_FLAGS
@@ -59,8 +121,3 @@ export TL_MAKE_FLAGS
 
 mv inst/bin/* $arch
 tar czvf texlive-bin-$arch.tar.gz $arch
-if [ -n "$destdir" ] ; then
-  mv texlive-bin-$arch.tar.gz "$destdir"
-  ls "$destdir"
-fi
-
