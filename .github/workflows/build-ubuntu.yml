@@ -143,13 +143,17 @@ jobs:
       - name: make libs
         shell: bash
         run: |
-          mkdir -p ./source/Work/libs/{gmp,mpfr}
+          mkdir -p ./source/Work/libs/{gmp,mpfr,mpfi}
           cd ${{ github.workspace }}/source/Work/libs/gmp
           ../../../libs/gmp/configure
           make
           make check
           cd ${{ github.workspace }}/source/Work/libs/mpfr
           ../../../libs/mpfr/configure
+          make
+          make check
+          cd ${{ github.workspace }}/source/Work/libs/mpfi
+          ../../../libs/mpfi/configure
           make
           make check
 
