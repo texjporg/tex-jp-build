@@ -918,7 +918,7 @@ CIDFont_type2_dofont (pdf_font *font)
         } else {
           gid  = tt_cmap_lookup(ttcmap, code);
 #ifdef FIX_CJK_UNIOCDE_SYMBOLS
-          if (gid == 0 && unicode_cmap) {
+          if (gid == 0 && unicode_cmap && code <= 0xFFFF) {
             int alt_code;
           
             alt_code = fix_CJK_symbols((unsigned short)code);
