@@ -358,6 +358,7 @@ texmf_other_scripts = \
 	dviinfox/dviinfox.pl \
 	easydtx/edtx2dtx.pl \
 	ebong/ebong.py \
+	eolang/eolang.pl \
 	epspdf/epspdf.tlu \
 	epspdf/epspdftk.tcl \
 	epstopdf/epstopdf.pl \
@@ -454,6 +455,7 @@ texmf_other_scripts = \
 	texlive/fmtutil-user.sh \
 	texlive/fmtutil.pl \
 	texlive/mktexlsr \
+	texlive/mktexlsr.pl \
 	texlive/mktexmf \
 	texlive/mktexpk \
 	texlive/mktextfm \
