@@ -45,7 +45,7 @@ static struct option long_options[] = {
   {0, 0, 0, 0}
 };
 
-#define MY_VERSION   "20240201"
+#define MY_VERSION   "20240211"
 #define BUG_ADDRESS  "issue@texjp.org"
 
 static void show_version(void)

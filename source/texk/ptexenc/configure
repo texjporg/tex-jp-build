@@ -2878,7 +2878,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 PTEXENCVERSION=1.4.6
 
 
-PTEXENC_LT_VERSINFO=5:5:4
+PTEXENC_LT_VERSINFO=5:6:4
 
 
 am__api_version='1.16'
