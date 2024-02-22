@@ -27,7 +27,6 @@ jobs:
             mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-gmp
             mingw-w64-x86_64-mpfr
-            mingw-w64-x86_64-mpfi
             bison
             texinfo
 
@@ -67,6 +66,13 @@ jobs:
           mkdir -p ./source/Work/libs/cairo
           cd ./source/Work/libs/cairo
           ../../../libs/cairo/configure
+          make
+          make check
+
+          cd ../../../..
+          mkdir -p ./source/Work/libs/mpfi
+          cd ./source/Work/libs/mpfi
+          ../../../libs/mpfi/configure
           make
           make check
 
@@ -239,7 +245,7 @@ jobs:
             --without-system-cairo \
             --with-system-gmp \
             --with-system-mpfr \
-            --with-system-mpfi \
+            --without-system-mpfi \
             --without-system-poppler \
             --without-system-xpdf \
             --without-system-zziplib \
