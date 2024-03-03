@@ -1287,3 +1287,78 @@ UC_Combine_CJK_compatibility_ideograph (int32_t ucv, int32_t uvs)
   }
   return -1;
 }
+
+int32_t
+UVS_combine_code(int32_t ucv, int32_t uvs)
+{
+  if (ucv >= 0 && ucv <= 0xFFFF) {
+    if (uvs >= 0xFE00 && uvs <= 0xFE0F) {
+      return ucv + ((uvs - 0xFE00 + 0x40) << 16);
+    }
+    else if (uvs >= 0xE0100 && uvs <= 0xE011F) {
+      return ucv + ((uvs - 0xE0100 + 0x80) << 16);
+    }
+  } else if (ucv >= 0x10000 && ucv <= 0x1FFFF) {
+    if (uvs >= 0xFE00 && uvs <= 0xFE0F) {
+      return (ucv & 0xFFFF) + ((uvs - 0xFE00 + 0x50) << 16);
+    }
+  } else if (ucv >= 0x20000 && ucv <= 0x2FFFF) {
+    if (uvs >= 0xFE00 && uvs <= 0xFE0F) {
+      return (ucv & 0xFFFF) + ((uvs - 0xFE00 + 0x60) << 16);
+    } else if (uvs >= 0xE0100 && uvs <= 0xE010F) {
+      return (ucv & 0xFFFF) + ((uvs - 0xE0100 + 0xC0) << 16);
+    }
+  } else if (ucv >= 0x30000 && ucv <= 0x3FFFF) {
+    if (uvs >= 0xE0100 && uvs <= 0xE010F) {
+      return (ucv & 0xFFFF) + ((uvs - 0xE0100 + 0xE0) << 16);
+    }
+  }
+  /* Unsupported Variation Sequence */
+  return 0;
+}
+
+int32_t
+UVS_divide_code(int32_t code, int32_t* uvs)
+{
+  int32_t v = code >> 16;
+  int32_t u = code & 0xFFFF;
+  if (v >= 0x40 && v < 0x50) {
+    if (uvs) *uvs = v - 0x40 + 0xFE00;
+    return u;
+  } else if (v >= 0x50 && v < 0x60) {
+    if (uvs) *uvs = v - 0x50 + 0xFE00;
+    return u + 0x10000;
+  } else if (v >= 0x60 && v < 0x70) {
+    if (uvs) *uvs = v - 0x60 + 0xFE00;
+    return u + 0x20000;
+  } else if (v >= 0x70 && v < 0x80) {
+    /* Undefined */
+    if (uvs) *uvs = 0;
+    return 0;
+  } else if (v >= 0x80 && v < 0xA0) {
+    if (uvs) *uvs = v - 0x80 + 0xE0100;
+    return u;
+  } else if (v >= 0xA0 && v < 0xC0) {
+    /* Undefined */
+    if (uvs) *uvs = 0;
+    return 0;
+  } else if (v >= 0xC0 && v < 0xD0) {
+    if (uvs) *uvs = v - 0xC0 + 0xE0100;
+    return u + 0x20000;
+  } else if (v >= 0xD0 && v < 0xE0) {
+    /* Undefined */
+    if (uvs) *uvs = 0;
+    return 0;
+  } else if (v >= 0xE0 && v < 0xF0) {
+    if (uvs) *uvs = v - 0xE0 + 0xE0100;
+    return u + 0x30000;
+  } else if (v >= 0xF0 && v < 0x100) {
+    /* Undefined */
+    if (uvs) *uvs = 0;
+    return 0;
+  } else {
+    /* Undefined */
+    if (uvs) *uvs = 0;
+    return 0;
+  }
+}
