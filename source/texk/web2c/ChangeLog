@@ -1,3 +1,33 @@
+2024-02-28  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* eptexdir/unbalanced-braces-eptex.ch: avoid crashing with devious
+	uses of \output and \write braces. Slightly modified one for
+	eptex and euptex.
+	* eptexdir/am/eptex.am (eptex_ch_srcs),
+	* euptexdir/am/euptex.am (euptex_ch_srcs) : include
+	eptexdir/unbalanced-braces-eptex.ch.
+	* ptexdir/am/ptex.am (ptex_ch_srcs),
+	* uptexdir/am/uptex.am (uptex_ch_srcs): include unbalanced-braces.ch.
+
+2024-02-26  Karl Berry  <karl@freefriends.org>
+
+	* unbalanced-braces.ch: avoid crashing with devious uses of
+	\output and \write braces. From DRF.
+	* pdftexdir/am/pdftex.am (pdftex_ch_srcs),
+	* xetexdir/am/xetex.am (xetex_ch_srcs): include unbalanced-braces.ch.
+	* tests/unbalanced-braces.test: doc file for tests (not runnable).
+
+2024-02-25  Karl Berry  <karl@freefriends.org>
+
+	* locnull-optimize.ch: inner loop optimization (removing one
+	unnecessary condition) from DRF.
+	* eptexdir/am/eptex.am (eptex_web_srcs),
+	* euptexdir/am/euptex.am (euptex_web_srcs),
+	* pdftexdir/am/pdftex.am (pdftex_ch_srcs),
+	* ptexdir/am/ptex.am (ptex_web_srcs),
+	* uptexdir/am/uptex.am (uptex_web_srcs),
+	* xetexdir/am/xetex.am (xetex_ch_srcs): include locnull-optimize.ch.
+
 2024-02-20  Karl Berry  <karl@tug.org>
 
 	* doc/web2c.texi: 2024.
