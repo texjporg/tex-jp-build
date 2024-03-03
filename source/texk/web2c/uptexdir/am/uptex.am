@@ -1,7 +1,7 @@
 ## $Id$
 ## texk/web2c/uptexdir/am/uptex.am: Makefile fragment for upTeX.
 ##
-## Copyright 2016-2023 Karl Berry <tex-live@tug.org>
+## Copyright 2016-2024 Karl Berry <tex-live@tug.org>
 ## Copyright 2011-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 
@@ -40,7 +40,7 @@ nodist_uptex_SOURCES = $(uptex_c_h) uptex-pool.c
 dist_uptex_SOURCES = uptexdir/uptexextra.c uptexdir/uptexextra.h uptexdir/uptex_version.h
 
 # We must create uptexd.h and uptexdir/uptex_version.h before building the uptex_OBJECTS.
-uptex_prereq = uptexd.h ptexdir/ptex_version.h uptexdir/uptex_version.h
+uptex_prereq = uptexd.h uptexdir/ptex_version.h uptexdir/uptex_version.h
 $(uptex_OBJECTS): $(uptex_prereq)
 
 $(uptex_c_h): uptex-web2c
@@ -70,13 +70,15 @@ uptex_web_srcs = \
 	tex.ch \
 	tracingstacklevels.ch \
 	partoken.ch \
+	locnull-optimize.ch \
 	zlib-fmt.ch
 
 # Generate uptex.ch
 uptex.ch: tie$(EXEEXT) uptex.web $(uptex_ch_srcs)
 	$(tie_c) uptex.web $(uptex_ch_srcs)
 uptex_ch_srcs = \
-	ptexdir/ptex-base.ch \
+	uptexdir/ptex-base.ch \
+	unbalanced-braces.ch \
 	uptexdir/uptex-m.ch \
 	$(uptex_ch_synctex) \
 	tex-binpool.ch
@@ -236,7 +238,7 @@ DISTCLEANFILES += uptests/xstory.dvityp uptests/xpagenum.typ uptests/x*ptex[34]*
 DISTCLEANFILES += uptests/xcmr10.tfm
 ## uptexdir/uptftopl.test
 DISTCLEANFILES += uptests/xcmr10.pl
-## ptexdir/sample.test
+## uptexdir/sample.test
 DISTCLEANFILES += uptests/xsample*.typ
 ## uptexdir/yokotate.test
 EXTRA_DIST += uptexdir/tests/umin10.pl uptexdir/tests/umin10.tfm

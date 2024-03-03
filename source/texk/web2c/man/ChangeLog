@@ -1,3 +1,35 @@
+2024-03-02  Bjarni Ingi Gislason  <bjarniig@simnet.is>
+
+	* pdftex.man: whitespace, \-, etc. updates.
+	https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065094
+
+2024-02-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man,
+	* twill.man: Unmask hyphen in manpages.
+
+2024-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* twill.man: Mask hyphen in manpage.
+
+2024-02-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.am,
+	* Makefile.in,
+	* ctwill.man: Link CTWILL manpage for ctwill-proofsort.
+
+2024-02-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile.am,
+	* Makefile.in: Link TWILL manpage for twill-refsort.
+
+2024-01-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man: Regenerate with Pandoc 3.1.11.1.
+
 2023-12-02  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill.man: CWEB 4.11 release.

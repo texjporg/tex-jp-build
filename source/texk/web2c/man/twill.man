@@ -1,4 +1,4 @@
-.TH TWILL 1 "30 October 2023" "Web2C @VERSION@"
+.TH TWILL 1 "16 February 2024" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF Metafont
@@ -19,9 +19,9 @@
 twill, twill-refsort \- translate \*(WB to \*(TX with mini-indexes
 .SH SYNOPSIS
 .PP
-\f[B]twill\f[R] [\f[B]-x\f[R]]
+\f[B]twill\f[R] [\f[B]\-x\f[R]]
 \f[I]webfile\f[R][\f[B].web\f[R]]
-[{\f[I]changefile\f[R][\f[B].ch\f[R]]|\f[B]-\f[R]}
+[{\f[I]changefile\f[R][\f[B].ch\f[R]]|\f[B]\-\f[R]}
 [\f[I]outfile\f[R][\f[B].tex\f[R]]]]
 .PD 0
 .PP
