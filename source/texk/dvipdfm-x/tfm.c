@@ -51,12 +51,13 @@
 #define JFMV_ID  9
 #define IS_JFM(i) ((i) == JFM_ID || (i) == JFMV_ID)
 
-#define CHARACTER_INDEX(i)  ((i > 0x10FFFFUL ? 0x110000UL : i))
+#define UCS_LASTCHAR    0x10FFFFUL
+#define JFM_LASTCHAR    0xFFFFFFUL
+
+#define CHARACTER_INDEX(i)  ((i > UCS_LASTCHAR ? (UCS_LASTCHAR+1) : i))
 #else
 #define CHARACTER_INDEX(i)  ((i))
 #endif
-
-#define JFM_LASTCHAR    0xFFFFFF
 
 /*
  * TFM Record structure:
@@ -166,6 +167,9 @@ struct coverage
 {
   int           first_char;
   int           num_chars;
+#ifndef WITHOUT_ASCII_PTEX
+  int           last_char;
+#endif
 };
 
 /*
@@ -213,8 +217,13 @@ release_range_map (struct range_map *map)
 static int
 lookup_char (const struct char_map *map, int charcode)
 {
+#ifndef WITHOUT_ASCII_PTEX
+  if (charcode >= map->coverage.first_char &&
+      charcode <= map->coverage.last_char)
+#else
   if (charcode >= map->coverage.first_char &&
       charcode <= map->coverage.first_char + map->coverage.num_chars)
+#endif
     return map->indices[CHARACTER_INDEX(charcode - map->coverage.first_char)];
   else
     return -1;
@@ -227,8 +236,13 @@ lookup_range (const struct range_map *map, int charcode)
 
   for (idx = map->num_coverages - 1; idx >= 0 &&
 	 charcode >= map->coverages[idx].first_char; idx--) {
+#ifndef WITHOUT_ASCII_PTEX
     if (charcode <=
 	map->coverages[idx].first_char + map->coverages[idx].num_chars)
+#else
+    if (charcode <=
+	map->coverages[idx].last_char)
+#endif
       return map->indices[CHARACTER_INDEX(idx)];
   }
 
@@ -466,15 +480,15 @@ jfm_do_char_type_array (FILE *tfm_file, struct tfm_font *tfm)
   unsigned short chartype;
   unsigned int i;
 
-  tfm->chartypes = NEW((JFM_LASTCHAR + 1), unsigned int);
-  for (i = 0; i < (JFM_LASTCHAR + 1); i++) {
+  tfm->chartypes = NEW((UCS_LASTCHAR + 1), unsigned int);
+  for (i = 0; i < (UCS_LASTCHAR + 1); i++) {
     tfm->chartypes[i] = 0;
   }
   for (i = 0; i < tfm->nt; i++) {
     /* support new JFM spec by texjporg */
     charcode = get_unsigned_triple_kanji(tfm_file);
     chartype = get_unsigned_byte(tfm_file);
-    if (charcode < (JFM_LASTCHAR + 1))
+    if (charcode < (UCS_LASTCHAR + 1))
       tfm->chartypes[charcode] = chartype;
     else {
       /* Invalid charcode */
@@ -493,10 +507,11 @@ jfm_make_charmap (struct font_metric *fm, struct tfm_font *tfm)
     fm->charmap.data = map = NEW(1, struct char_map);
     map->coverage.first_char = 0;
 #ifndef WITHOUT_ASCII_PTEX
-    map->coverage.num_chars  = JFM_LASTCHAR;
-    map->indices    = NEW((JFM_LASTCHAR + 2), unsigned int);
-    map->indices[(JFM_LASTCHAR + 1)] = tfm->chartypes[0];
-    for (code = 0; code <= JFM_LASTCHAR; code++) {
+    map->coverage.num_chars  = UCS_LASTCHAR;
+    map->coverage.last_char  = JFM_LASTCHAR;
+    map->indices    = NEW((UCS_LASTCHAR + 2), unsigned int);
+    map->indices[(UCS_LASTCHAR + 1)] = tfm->chartypes[0];
+    for (code = 0; code <= UCS_LASTCHAR; code++) {
 #else
     map->coverage.num_chars  = 0xFFFFL;
     map->indices    = NEW(0x10000L, unsigned short);
@@ -513,7 +528,8 @@ jfm_make_charmap (struct font_metric *fm, struct tfm_font *tfm)
     map->coverages     = NEW(map->num_coverages, struct coverage);
     map->coverages[0].first_char = 0;
 #ifndef WITHOUT_ASCII_PTEX
-    map->coverages[0].num_chars  = JFM_LASTCHAR;
+    map->coverages[0].num_chars  = UCS_LASTCHAR;
+    map->coverages[0].last_char  = JFM_LASTCHAR;
 #else
     map->coverages[0].num_chars  = 0xFFFFL;
 #endif
