@@ -763,6 +763,7 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 @y
 @d set2=129 {typeset a character and move right}
 @d set3=130 {typeset a character and move right}
+@d set4=131 {typeset a character and move right}
 @z
 
 @x
@@ -776,8 +777,10 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
 @y
     if (jc<@"10000) then begin
       dvi_out(set2);
-    end else begin
+    end else if (jc<@"1000000) then begin
       dvi_out(set3); dvi_out(BYTE2(jc));
+    end else begin
+      dvi_out(set4); dvi_out(BYTE1(jc)); dvi_out(BYTE2(jc));
     end;
     dvi_out(BYTE3(jc)); dvi_out(BYTE4(jc));
 @z
