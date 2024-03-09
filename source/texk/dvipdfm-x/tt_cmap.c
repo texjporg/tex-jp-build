@@ -1046,6 +1046,9 @@ create_inverse_cmap14 (int32_t *map_base, int32_t *map_sub, int32_t *map_uvs,
     for (j = 0; j < map->varSelector[i].numUVSMappings; j++) {
       ULONG ch = map->varSelector[i].uvsMappingsUnicodeValue[j];
       USHORT gid = map->varSelector[i].uvsMappingsGlyphID[j];
+      if (dpx_conf.verbose_level > VERBOSE_LEVEL_MIN) {
+        WARN("Read cmap14 VS=%x CH=%x (GID=%u)", vs, ch, gid);
+      }
       if (is_PUA_or_presentation(ch)) {
         map_sub[gid] = ch;
       } else {
@@ -1500,7 +1503,7 @@ load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap,
              otl_gsub *gsub_vert, otl_gsub *gsub_list,
              CMap *cmap, int32_t *map_base, int32_t *map_sub)
 {
-  ULONG         i, j, ch, vs, code;
+  ULONG         i, j, ch, vs, vs0;
   USHORT        gid, cid;
   unsigned char buf[4];
 
@@ -1516,15 +1519,15 @@ load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap,
         if (gsub_vert)
           otl_gsub_apply(gsub_vert, &gid);
         cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
-        code = UVS_combine_code(ch, vs);
-        if (code <= 0) {
-          /* Unsupported Variation Sequence */
-          continue;
+        vs0 = (vs >= 0xE0100 ? ((vs-0xE0100+16) << 4) : (((vs-0xFE00) << 2) + 0xC0));
+        buf[0] = (vs0 >> 8) & 0xff;
+        buf[1] = (ch >> 16) + vs0 & 0xff;
+        buf[2] = (ch >>  8) & 0xff;
+        buf[3] =  ch & 0xff;
+        if (dpx_conf.verbose_level > 1) {
+          WARN("load_cmap14 CH=%x VS=%x(%x) (%02x %02x %02x %02x)", ch, vs, vs0,
+               buf[0], buf[1], buf[2], buf[3]);
         }
-        buf[0] = (code >> 24) & 0xff;
-        buf[1] = (code >> 16) & 0xff;
-        buf[2] = (code >>  8) & 0xff;
-        buf[3] = code & 0xff;
         CMap_add_cidchar(cmap, buf, 4, cid);
         if (map_base && map_sub && map_base[gid] <= 0) {
           map_base[gid] = ch;
@@ -1539,15 +1542,15 @@ load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap,
       if (gsub_vert)
         otl_gsub_apply(gsub_vert, &gid);
       cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
-      code = UVS_combine_code(ch, vs);
-      if (code <= 0) {
-        /* Unsupported Variation Sequence */
-        continue;
+      vs0 = (vs >= 0xE0100 ? ((vs-0xE0100+16) << 4) : (((vs-0xFE00) << 2) + 0xC0));
+      buf[0] = (vs0 >> 8) & 0xff;
+      buf[1] = (ch >> 16) + vs0 & 0xff;
+      buf[2] = (ch >>  8) & 0xff;
+      buf[3] =  ch & 0xff;
+      if (dpx_conf.verbose_level > 1) {
+        WARN("load_cmap14 CH=%x VS=%x(%x) (%02x %02x %02x %02x)", ch, vs, vs0,
+             buf[0], buf[1], buf[2], buf[3]);
       }
-      buf[0] = (code >> 24) & 0xff;
-      buf[1] = (code >> 16) & 0xff;
-      buf[2] = (code >>  8) & 0xff;
-      buf[3] = code & 0xff;
       CMap_add_cidchar(cmap, buf, 4, cid);
       if (map_base && map_sub && map_base[gid] <= 0) {
         map_base[gid] = ch;

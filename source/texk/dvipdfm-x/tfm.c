@@ -51,10 +51,7 @@
 #define JFMV_ID  9
 #define IS_JFM(i) ((i) == JFM_ID || (i) == JFMV_ID)
 
-#define UCS_LASTCHAR    0x10FFFFUL
-#define JFM_LASTCHAR    0xFFFFFFUL
-
-#define CHARACTER_INDEX(i)  ((i > UCS_LASTCHAR ? (UCS_LASTCHAR+1) : i))
+#define CHARACTER_INDEX(i)  ((i > UCS_LASTCHAR ? UCS_LASTCHAR+1 : i))
 #else
 #define CHARACTER_INDEX(i)  ((i))
 #endif
@@ -236,15 +233,14 @@ lookup_range (const struct range_map *map, int charcode)
 
   for (idx = map->num_coverages - 1; idx >= 0 &&
 	 charcode >= map->coverages[idx].first_char; idx--) {
-#ifndef WITHOUT_ASCII_PTEX
     if (charcode <=
 	map->coverages[idx].first_char + map->coverages[idx].num_chars)
-#else
-    if (charcode <=
-	map->coverages[idx].last_char)
-#endif
       return map->indices[CHARACTER_INDEX(idx)];
   }
+#ifndef WITHOUT_ASCII_PTEX
+  if (charcode <= map->coverages[0].last_char)
+      return map->indices[0];
+#endif
 
   return -1;
 }

@@ -34,7 +34,8 @@ extern size_t  UC_UTF8_encode_char (int32_t ucv, unsigned char **dstpp, unsigned
 
 extern int32_t UC_Combine_CJK_compatibility_ideograph(int32_t ucv, int32_t uvs);
 
-extern int32_t UVS_combine_code(int32_t ucv, int32_t uvs);
-extern int32_t UVS_divide_code(int32_t code, int32_t *uvs);
+/* UTF-32 over U+FFFF -> UTF-16 surrogate pair */
+#define UTF32toUTF16HS(x)  (0xd800 + (((x-0x10000) >> 10) & 0x3ff))
+#define UTF32toUTF16LS(x)  (0xdc00 + (  x                 & 0x3ff))
 
 #endif /* _UNICODE_H_ */

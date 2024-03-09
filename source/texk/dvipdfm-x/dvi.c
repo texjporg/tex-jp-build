@@ -71,14 +71,11 @@
 #include "t1_load.h"
 #include "t1_char.h"
 #include "cff_dict.h"
+#include "unicode.h"
 
 #define DVI_STACK_DEPTH_MAX  256u
 #define TEX_FONTS_ALLOC_SIZE 16u
 #define VF_NESTING_MAX       16u
-
-/* UTF-32 over U+FFFF -> UTF-16 surrogate pair */
-#define UTF32toUTF16HS(x)  (0xd800 + (((x-0x10000) >> 10) & 0x3ff))
-#define UTF32toUTF16LS(x)  (0xdc00 + (  x                 & 0x3ff))
 
 /* Interal Variables */
 static FILE          *dvi_file  = NULL;
@@ -2165,6 +2162,7 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
 
   dvi_stack_depth = 0;
   for (;;) {
+    int32_t ch0;
     opcode = get_buffered_unsigned_byte();
 
     if (opcode <= SET_CHAR_127) {
@@ -2184,7 +2182,11 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
     case SET1: case SET2: case SET3:
       dvi_set(get_buffered_unsigned_num(opcode-SET1)); break;
     case SET4:
-      ERROR("Multibyte (>24 bits) character not supported!");
+      ch0 = get_buffered_unsigned_num(3);
+      if (ch0 <= JFM_LASTCHAR)
+        dvi_set(ch0);
+      else
+        ERROR("Multibyte (>24 bits) character not supported!");
       break;
 
     case SET_RULE:
@@ -2194,7 +2196,11 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
     case PUT1: case PUT2: case PUT3:
       dvi_put(get_buffered_unsigned_num(opcode-PUT1)); break;
     case PUT4:
-      ERROR("Multibyte (>24 bits) character not supported!");
+      ch0 = get_buffered_unsigned_num(3);
+      if (ch0 <= JFM_LASTCHAR)
+        dvi_set(ch0);
+      else
+        ERROR("Multibyte (>24 bits) character not supported!");
       break;
 
     case PUT_RULE:
