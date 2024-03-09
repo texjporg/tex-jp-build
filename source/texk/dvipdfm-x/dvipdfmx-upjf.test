@@ -85,6 +85,12 @@ echo "*** dvipdfmx: test for upjf1_omit2.pdf" && echo \
 
 cmp ./upjf1_full.pdf ./upjf1_omit2.pdf || failed="$failed dvipdfmx-upjf1-cmp2"
 
+rm -f upjf-r.ofm
+
+cp $srcdir/tests/upjf_full.vf ./upjf.vf
+cp $srcdir/tests/upjf-r.tfm ./upjf-r.tfm
+$_xdvipdfmx --dvipdfmx -vv -f up-ipamjm.map -o ivs06-ipa.pdf $srcdir/tests/ivs06.dvi
+$_xdvipdfmx --dvipdfmx -vv -f up-hara.map -o ivs06-hara.pdf $srcdir/tests/ivs06.dvi
 
 test -z "$failed" && exit 0
 echo
