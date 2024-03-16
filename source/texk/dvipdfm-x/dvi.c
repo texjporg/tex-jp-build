@@ -2162,7 +2162,6 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
 
   dvi_stack_depth = 0;
   for (;;) {
-    int32_t ch0;
     opcode = get_buffered_unsigned_byte();
 
     if (opcode <= SET_CHAR_127) {
@@ -2182,11 +2181,7 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
     case SET1: case SET2: case SET3:
       dvi_set(get_buffered_unsigned_num(opcode-SET1)); break;
     case SET4:
-      ch0 = get_buffered_unsigned_num(3);
-      if (ch0 <= JFM_LASTCHAR)
-        dvi_set(ch0);
-      else
-        ERROR("Multibyte (>24 bits) character not supported!");
+      ERROR("Multibyte (>24 bits) character not supported!");
       break;
 
     case SET_RULE:
@@ -2196,11 +2191,7 @@ dvi_do_page (double page_paper_height, double hmargin, double vmargin)
     case PUT1: case PUT2: case PUT3:
       dvi_put(get_buffered_unsigned_num(opcode-PUT1)); break;
     case PUT4:
-      ch0 = get_buffered_unsigned_num(3);
-      if (ch0 <= JFM_LASTCHAR)
-        dvi_set(ch0);
-      else
-        ERROR("Multibyte (>24 bits) character not supported!");
+      ERROR("Multibyte (>24 bits) character not supported!");
       break;
 
     case PUT_RULE:

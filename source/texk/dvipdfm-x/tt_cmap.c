@@ -1519,7 +1519,7 @@ load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap,
         if (gsub_vert)
           otl_gsub_apply(gsub_vert, &gid);
         cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
-        vs0 = (vs >= 0xE0100 ? ((vs-0xE0100+16) << 4) : (((vs-0xFE00) << 2) + 0xC0));
+        vs0 = (vs >= 0xE0100) ? ((vs-0xE0100+0x20) << 2) : ((vs-0xFE00+0x10) << 2);
         buf[0] = (vs0 >> 8) & 0xff;
         buf[1] = (ch >> 16) + vs0 & 0xff;
         buf[2] = (ch >>  8) & 0xff;
@@ -1542,7 +1542,7 @@ load_cmap14 (struct cmap14 *map, tt_cmap *ttcmap_default, uint16_t *GIDToCIDMap,
       if (gsub_vert)
         otl_gsub_apply(gsub_vert, &gid);
       cid = (gid < num_glyphs) ? GIDToCIDMap[gid] : 0;
-      vs0 = (vs >= 0xE0100 ? ((vs-0xE0100+16) << 4) : (((vs-0xFE00) << 2) + 0xC0));
+      vs0 = (vs >= 0xE0100) ? ((vs-0xE0100+0x20) << 2) : ((vs-0xFE00+0x10) << 2);
       buf[0] = (vs0 >> 8) & 0xff;
       buf[1] = (ch >> 16) + vs0 & 0xff;
       buf[2] = (ch >>  8) & 0xff;

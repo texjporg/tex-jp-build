@@ -426,7 +426,7 @@ void vf_set_char(int32_t ch, int vf_font)
 	    vf_fonts[vf_font].message_flag = 1;
           }
         if (dpx_conf.verbose_level > 1)
-	  WARN ("Fallback multibyte character in virtual font: VF:%s char=0x%08x(%d) to %s:%s",
+	  WARN ("Fallback multibyte character in virtual font: VF:%s char=0x%06x(%d) to %s:%s",
 	    vf_fonts[vf_font].tex_name, ch, ch, is_jfm==2 ? "OFM" : "TFM",
 	    vf_fonts[vf_font].dev_fonts[0].name);
         dvi_set (ch);
