@@ -9,13 +9,13 @@
 #define CJK_CHAR_LIMIT  0x1000000
 #define CJK_TOKEN_FLAG   0xFFFFFF
 #define KCAT_KANJI     16
-#define KCAT_HANGUL    19
+#define KCAT_MODIFIER  20
 
 /* TOKEN */
 boolean check_kanji (integer c)
 {
     if (c >= CS_TOKEN_FLAG) return false;
-    else if (!(XXHi(c)>=KCAT_KANJI && XXHi(c)<=KCAT_HANGUL)) return false;
+    else if (!(XXHi(c)>=KCAT_KANJI && XXHi(c)<=KCAT_MODIFIER)) return false;
     else return is_char_kanji(c & CJK_TOKEN_FLAG);
 }
 
@@ -396,6 +396,7 @@ static long ucs_range[]={
       0xD0000, /* reserved					     */
       0xE0000, /* Tags						     */
       0xE0100, /* Variation Selectors Supplement		     */ /* 0x150 */
+      0xE01F0, /* reserved					     */
       0xF0000, /* Supplementary Private Use Area-A		     */
       0x100000, /* Supplementary Private Use Area-B		     */
   /* Value over 0x10FFFF is illegal under Unicode,
@@ -412,12 +413,14 @@ static long ucs_range[]={
       0x1A0000, /* Reserved					     */
       0x1B0000, /* Reserved					     */
       0x1C0000, /* Reserved					     */
-      0x1D0000, /* Reserved					     */
-      0x1E0000, /* Reserved					     */ /* 0x160 */
+      0x1D0000, /* Reserved					     */ /* 0x160 */
+      0x1E0000, /* Reserved					     */
       0x1F0000, /* Reserved					     */
       0x200000, /* Reserved					     */
       0x210000, /* Reserved					     */
-      0x220000, /* Reserved					     */ /* 0x164 */
+      0x220000, /* Reserved					     */
+      0x400000, /* Standardized Variation Sequence		     */
+      0xC00000, /* Ideographic Variation Sequence		     */ /* 0x167 */
       CJK_CHAR_LIMIT
 };
 

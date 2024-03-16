@@ -178,7 +178,8 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d kana=17 {hiragana, katakana, alphabet}
 @d other_kchar=18 {cjk symbol codes}
 @d hangul=19 {hangul codes}
-@d max_char_code=19 {largest catcode for individual characters}
+@d modifier=20 {modifier codes}
+@d max_char_code=20 {largest catcode for individual characters}
 @z
 
 @x
@@ -273,9 +274,12 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"93):=hangul; { Hangul Syllables }
   @t\hskip10pt@>kcat_code(@"94):=hangul; { Hangul Jamo Extended-B }
   @t\hskip10pt@>kcat_code(@"99):=kanji; { CJK Compatibility Ideographs }
+  @t\hskip10pt@>kcat_code(@"9C):=modifier; { Variation Selectors }
   { \hskip10pt|kcat_code(@"A2):=other_kchar;| Halfwidth and Fullwidth Forms }
   @+@t\1@>for k:=@"10D to @"110 do kcat_code(k):=kana; { Kana Extended-B .. Small Kana Extension }
   @+@t\1@>for k:=@"13B to @"143 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. H }
+  @t\hskip10pt@>kcat_code(@"150):=modifier; { Variation Selectors Supplement }
+  @+@t\1@>for k:=@"166 to @"167 do kcat_code(k):=kanji; { Ideographic Variation Sequence .. Standardized Variation Sequence }
   @t\hskip10pt@>kcat_code(@"1FD):=not_cjk; { Latin-1 Letters }
   @t\hskip10pt@>kcat_code(@"1FE):=kana; { Fullwidth digit and latin alphabet }
   @t\hskip10pt@>kcat_code(@"1FF):=kana; { Halfwidth katakana }
@@ -354,13 +358,13 @@ kchar_num: print_esc("kchar");
 @x
 kanji,kana,other_kchar: print_kanji(KANJI(c));
 @y
-kanji,kana,other_kchar,hangul: print_kanji(KANJI(c));
+kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
 @z
 
 @x
 kanji,kana,other_kchar: begin print("kanji character ");
 @y
-kanji,kana,other_kchar,hangul: begin print("kanji character ");
+kanji,kana,other_kchar,hangul,modifier: begin print("kanji character ");
 @z
 
 @x
@@ -427,7 +431,7 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
 @y
 @ @d add_delims_to(#)==#+math_shift,#+tab_mark,#+mac_param,
   #+sub_mark,#+letter,#+other_char
-@d all_jcode(#)==#+kanji,#+kana,#+other_kchar
+@d all_jcode(#)==#+kanji,#+kana,#+other_kchar,#+modifier
 @d hangul_code(#)==#+hangul
 @z
 
@@ -476,13 +480,13 @@ start_cs:
 @x
   else if ((cat=letter)or(cat=kanji)or(cat=kana))and(k<=limit) then
 @y
-  else if ((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul))and(k<=limit) then
+  else if ((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)or(cat=modifier))and(k<=limit) then
 @z
 
 @x
   if (cat=kanji)or(cat=kana) then
 @y
-  if (cat=kanji)or(cat=kana)or(cat=hangul) then
+  if (cat=kanji)or(cat=kana)or(cat=hangul)or(cat=modifier) then
 @z
 
 @x
@@ -524,9 +528,9 @@ until not((cat=letter)or(cat=kanji)or(cat=kana))or(k>limit);
 if not((cat=letter)or(cat=kanji)or(cat=kana)) then decr(k);
 if cat=other_kchar then decr(k); {now |k| points to first nonletter}
 @y
-until not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul))or(k>limit);
+until not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)or(cat=modifier))or(k>limit);
 {@@<If an expanded...@@>;}
-if not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)) then decr(k);
+if not((cat=letter)or(cat=kanji)or(cat=kana)or(cat=hangul)or(cat=modifier)) then decr(k);
 if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to first nonletter}
 @z
 
@@ -548,7 +552,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     cur_tok:=cur_chr
   else cur_tok:=(cur_cmd*@'400)+cur_chr
 @y
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
     cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
@@ -578,7 +582,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     cur_tok:=cur_chr
   else cur_tok:=(cur_cmd*@'400)+cur_chr
 @y
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
     cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
@@ -588,7 +592,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     cur_tok:=cur_chr
   else cur_tok:=(cur_cmd*@'400)+cur_chr
 @y
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
     cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
@@ -634,7 +638,7 @@ primitive("uptexversion",last_item,uptex_version_code);
 @x
   if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then {|wchar_token|}
 @y
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
 @z
 
 @x
@@ -705,7 +709,7 @@ string_code, meaning_code: begin save_scanner_status:=scanner_status;
 ptex_revision_code, uptex_revision_code: do_nothing;
 string_code, meaning_code: begin save_scanner_status:=scanner_status;
   scanner_status:=normal; get_token;
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
 @z
 
 @x
@@ -732,7 +736,7 @@ uptex_revision_code: print(upTeX_revision);
 @x
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
 @y
-if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
 @z
 
 @x
@@ -740,7 +744,7 @@ get_x_token_or_active_char;
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
 @y
 get_x_token_or_active_char;
-if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
 @z
 
 @x
@@ -749,7 +753,7 @@ if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
     append_char(@"100+Hi(cur_chr)); {kanji upper byte}
     append_char(@"100+Lo(cur_chr)); {kanji lower byte}
 @y
-  if (cur_cmd>=kanji)and(cur_cmd<=hangul) then {|wchar_token|}
+  if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
     begin str_room(4); {4 is maximum}
     cur_chr:=toBUFF(cur_chr);
     if BYTE1(cur_chr)<>0 then append_char(@"100+BYTE1(cur_chr));
@@ -797,7 +801,7 @@ hmode+no_boundary: begin get_x_token;
    (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar)or
    (cur_cmd=char_given)or(cur_cmd=char_num) then cancel_boundary:=true;
 @y
-hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul: goto main_loop_j;
+hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+modifier: goto main_loop_j;
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop
   else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
@@ -813,7 +817,7 @@ hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
   end;
 hmode+no_boundary: begin get_x_token;
   if (cur_cmd=letter)or(cur_cmd=other_char)or
-   ((cur_cmd>=kanji)and(cur_cmd<=hangul))or
+   ((cur_cmd>=kanji)and(cur_cmd<=modifier))or
    (cur_cmd=char_given)or(cur_cmd=char_num)or
    (cur_cmd=kchar_given)or(cur_cmd=kchar_num) then cancel_boundary:=true;
 @z
@@ -843,7 +847,7 @@ if cur_cmd=char_num then
   end;
 @y
 if cur_cmd=letter then goto main_loop_lookahead+1;
-if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
   @<goto |main_lig_loop|@>;
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
@@ -854,7 +858,7 @@ if cur_cmd=kchar_given then
   begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); @<goto |main_lig_loop|@>; end;
 x_token; {now expand and set |cur_cmd|, |cur_chr|, |cur_tok|}
 if cur_cmd=letter then goto main_loop_lookahead+1;
-if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
   @<goto |main_lig_loop|@>;
 if cur_cmd=other_char then goto main_loop_lookahead+1;
 if cur_cmd=char_given then
@@ -885,7 +889,7 @@ vmode+letter,vmode+other_char,vmode+char_num,vmode+char_given,
    vmode+kchar_num,vmode+kchar_given,
    vmode+math_shift,vmode+un_hbox,vmode+vrule,
    vmode+accent,vmode+discretionary,vmode+hskip,vmode+valign,
-   vmode+kanji,vmode+kana,vmode+other_kchar,vmode+hangul,
+   vmode+kanji,vmode+kana,vmode+other_kchar,vmode+hangul,vmode+modifier,
 @z
 
 @x
@@ -933,7 +937,7 @@ else if cur_cmd=char_given then
 @y
 if (cur_cmd=letter)or(cur_cmd=other_char) then
   q:=new_character(f,cur_chr)
-else if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+else if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
   begin  if direction=dir_tate then f:=cur_tfont else f:=cur_jfont;
   cx:=cur_chr;
   end
@@ -989,7 +993,7 @@ char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
   end;
 @y
     KANJI(cx):=cur_chr;
-kanji,kana,other_kchar,hangul: cx:=cur_chr;
+kanji,kana,other_kchar,hangul,modifier: cx:=cur_chr;
 kchar_given:
   KANJI(cx):=cur_chr;
 char_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=char_given;
@@ -1026,7 +1030,7 @@ mmode+letter,mmode+other_char,mmode+char_given:
   if check_echar_range(cur_chr) then
     set_math_char(ho(math_code(cur_chr)))
   else set_math_kchar(cur_chr);
-mmode+kanji,mmode+kana,mmode+other_kchar,mmode+hangul: begin
+mmode+kanji,mmode+kana,mmode+other_kchar,mmode+hangul,mmode+modifier: begin
     cx:=cur_chr; set_math_kchar(KANJI(cx));
   end;
 mmode+char_num: begin scan_char_num; cur_chr:=cur_val;
@@ -1210,14 +1214,36 @@ begin if is_char_node(link(p)) then
 @y
     begin KANJI(cx):=info(link(p)) mod max_cjk_val;
     i:=info(link(p)) div max_cjk_val; k:=0;
-    if (i=kanji)or(i=kana)or(i=hangul) then begin t:=q; s:=p; end;
+    if (i=kanji)or(i=kana)or(i=hangul)or(i=modifier) then begin t:=q; s:=p; end;
 @z
 
 @x
+    begin if not disp_called then
+      begin prev_node:=tail; tail_append(get_node(small_node_size));
+      type(tail):=disp_node; disp_dimen(tail):=0; disp_called:=true
+      end;
+    fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
+    link(tail):=main_p; tail:=main_p; last_jchr:=tail;
     fast_get_avail(main_p); info(main_p):=KANJI(cur_chr);
 @y
+    begin if (cur_cmd=modifier) then begin
+      KANJI(cx):=info(main_p) mod max_cjk_val;
+      if (UVSgetsignificantbits(cx,cur_chr)>0) then begin
+        cx:=cx+UVSgetsignificantbits(cx,cur_chr);
+        info(main_p):=KANJI(cx)+kcat_code(kcatcodekey(KANJI(cx)))*max_cjk_val;
+        ins_kp:=false;
+        goto again_2
+        end
+      end
+      end;
+    begin if not disp_called then
+      begin prev_node:=tail; tail_append(get_node(small_node_size));
+      type(tail):=disp_node; disp_dimen(tail):=0; disp_called:=true
+      end;
+    fast_get_avail(main_p); font(main_p):=main_f; character(main_p):=cur_l;
+    link(tail):=main_p; tail:=main_p; last_jchr:=tail;
     fast_get_avail(main_p);
-    if (cur_cmd>=kanji)and(cur_cmd<=hangul) then
+    if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
       info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
     else if cur_cmd=not_cjk then
       info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
@@ -1232,7 +1258,7 @@ begin if is_char_node(link(p)) then
 @y
   main_i:=orig_char_info(main_f)(cur_l);
   case cur_cmd of
-    kanji,kana,other_kchar,hangul: begin
+    kanji,kana,other_kchar,hangul,modifier: begin
 @z
 
 @x
@@ -1251,7 +1277,7 @@ begin if is_char_node(link(p)) then
       else cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
       end;
 @y
-    kanji,kana,other_kchar,hangul: cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
+    kanji,kana,other_kchar,hangul,modifier: cur_l:=qi(get_jfm_pos(KANJI(cur_chr),main_f));
     letter,other_char: begin ins_kp:=true; cur_l:=qi(0); end;
     char_given: begin
       if check_echar_range(cur_chr) then
@@ -1285,12 +1311,38 @@ if s>@"FF then
   end else print_char(s);
 @y
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
+var @!v: integer;
 begin
-s:=toBUFF(s mod max_cjk_val);
-if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
-if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
-if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
-                    print_char(@"100+BYTE4(s));
+if (isinternalUPTEX) then begin
+  s:=toUCS(s mod max_cjk_val);
+  if(s>=@"400000) then begin
+    v:=UVSgetvariationselector(s);
+    s:=s mod @"40000
+    end
+  else begin
+    v:=0;
+    s:=s mod @"110000
+    end;
+  s:=UCStoUTF8(s);
+  if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
+  if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
+  if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
+                      print_char(@"100+BYTE4(s));
+  if (v>0) then begin
+    v:=UCStoUTF8(v);
+    if BYTE1(v)<>0 then print_char(@"100+BYTE1(v));
+                        print_char(@"100+BYTE2(v));
+                        print_char(@"100+BYTE3(v));
+                        print_char(@"100+BYTE4(v));
+    end
+  end
+else begin
+  s:=toBUFF(s mod max_cjk_val);
+  if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
+  if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
+  if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
+                      print_char(@"100+BYTE4(s));
+  end;
 end;
 
 function check_kcat_code(@!ct:integer):integer;

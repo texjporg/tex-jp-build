@@ -67,6 +67,8 @@ extern void init_default_kanji_select (void);
 #define inputline2(fp,buff,pos,size) input_line2(fp,buff,NULL,pos,size,NULL)
 #endif
 #define ptencconvfirstline(pos,limit,buff,size) ptenc_conv_first_line(pos,limit,buff,size)
+#define UVSgetsignificantbits(ucv,uvs) UVS_get_significant_bits(ucv,uvs)
+#define UVSgetvariationselector(ucv) UVS_get_variation_selector(ucv)
 
 extern void init_kanji (const_string file_str, const_string internal_str);
 extern void dump_kanji (gzFile fp);

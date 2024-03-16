@@ -1854,31 +1854,6 @@ if_in_csname_code: b := is_in_csname;
 if_font_char_code:begin scan_font_ident; n:=cur_val;
 @z
 
-@x
-procedure print_kanji(@!s:KANJI_code); {prints a single character}
-begin
-if s>@"FF then
-  begin print_char(@"100+Hi(s)); print_char(@"100+Lo(s));
-  end else print_char(s);
-end;
-@y
-procedure print_kanji(@!s:integer); {prints a single character}
-begin
-if s>@"FF then begin
-  if isprint_utf8 then begin
-    s:=UCStoUTF8(toUCS(s));
-    if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
-    if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
-    if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
-                        print_char(@"100+BYTE4(s));
-  end
-  else begin print_char(@"100+Hi(s)); print_char(@"100+Lo(s)); end;
-end
-else print_char(s);
-end;
-
-
-@z
 
 @x
 @* \[54] System-dependent changes.
