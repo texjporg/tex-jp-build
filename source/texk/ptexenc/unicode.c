@@ -130,17 +130,9 @@ long UCStoUPTEX (long ucs)
 long UPTEXtoUCS (long uptex)
 {
     long vs;
-    if (uptex>=0xC00000) {                        /* for SVS */
+    if (uptex>=0x400000) {                        /* for SVS, IVS */
+        if (UVS_divide_code(uptex, &vs) == 0) return 0;
         return uptex;
-    }
-    if (uptex>=0x400000) {                        /* for IVS */
-        uptex = UVS_divide_code(uptex, &vs);
-        if (uptex == 0) return 0;
-        if (vs >= 0xE0100) {
-            return ((vs-0xE0100 +16) << 20) + uptex;
-        } else {
-            return ((vs-0xFE00) << 18) + 0xC00000 + uptex;
-        }
     }
     if (uptex>=UCS_MAX*2) return uptex;
     if (uptex>=UCS_MAX)   return uptex % UCS_MAX; /* for OTF package */
@@ -148,22 +140,26 @@ long UPTEXtoUCS (long uptex)
 }
 
 long
-UVS_combine_code(long ucv, long uvs)
+UVS_get_significant_bits(long ucv, long uvs)
 {
     if (ucv > 0x3FFFF)
         return 0;
     if (ucv <= 0x2FFFF && uvs >= 0xFE00 && uvs <= 0xFE0F) { /* SVS, VS1 .. VS16 */
-        return ucv + ((uvs - 0xFE00) << 18) + 0xC00000;
+        return ((uvs - 0xFE00) << 18) + 0x400000;
     }
     if (uvs >= 0xE0100) {  /* IVS */
-        if (                  ucv <= 0x0FFFF && uvs <=0xE011F) { /* VS17 .. VS48 */
-            return  ucv           + ((uvs - 0xE0100 + 0x40) << 16);
+        if (                   ucv <= 0x033FF  ||
+            (ucv >= 0x04DC0 && ucv <= 0x04DFF) ||
+            (ucv >= 0x0A000 && ucv <= 0x0F8FF) ||
+            (ucv >= 0x0FB00 && ucv <= 0x1FFFF) ) return 0;
+        if (ucv <= 0x0FFFF && uvs <=0xE011F) { /* BMP, VS17 .. VS48 */
+            return ((uvs - 0xE0100) << 18) + 0x800000;
         }
-        if (ucv >= 0x20000 && ucv <= 0x2FFFF && uvs <=0xE010F) { /* VS17 .. VS32 */
-            return (ucv & 0xFFFF) + ((uvs - 0xE0100 + 0x80) << 16);
+        if (ucv <= 0x2FFFF && uvs <=0xE010F) { /* SIP, VS17 .. VS32 */
+            return ((uvs - 0xE0100) << 18) + 0x800000;
         }
-        if (ucv >= 0x30000                   && uvs <=0xE010F) { /* VS17 .. VS32 */
-            return (ucv & 0xFFFF) + ((uvs - 0xE0100 + 0xA0) << 16);
+        if (                  uvs <=0xE010F) { /* TIP, VS17 .. VS32 */
+            return ((uvs - 0xE0100) << 18) + 0x800000;
         }
     }
     /* Unsupported Variation Sequence */
@@ -171,41 +167,53 @@ UVS_combine_code(long ucv, long uvs)
 }
 
 long
+UVS_get_variation_selector(long ucv)
+{
+    long uvs;
+    uvs = ucv >> 16;
+    if (uvs >= 0x40 && uvs <= 0x7F) {    /* SVS, VS1 .. VS16 */
+        return ((uvs - 0x40) >> 2) + 0xFE00;
+    }
+    if (uvs >= 0x80 && uvs <= 0xFF) {    /* IVS, VS17 .. VS48 */
+        return ((uvs - 0x80) >> 2) + 0xE0100;
+    }
+    /* Unsupported Variation Sequence */
+    return 0;
+}
+
+long
+UVS_combine_code(long ucv, long uvs)
+{
+    long sb = UVS_get_significant_bits(ucv, uvs);
+    return (sb>0) ? ucv + sb : 0;
+}
+
+long
 UVS_divide_code(long code, long* uvs)
 {
-    long u, v;
+    long u, v, p;
 
     if (code<0x400000 || code>=0x1000000) {
       /* Undefined */
         goto Undefined;
     }
 
-    if (code>=0xC00000) {
-      /* SVS */
-        u = code & 0x3FFFF;
-        v = (code & 0x3FFFFF) >> 18;
-        if (uvs) *uvs = v + 0xFE00;
+    u = code & 0x3FFFF;  /* up to U+3FFFF */
+    v = code >> 18;
+    p = u >> 16;
+    if (v < 0x20) {  /* SVS     VS1 .. VS16 */
+        if (p==3) goto Undefined;
+        if (uvs) *uvs = v - 0x10 + 0xFE00;
         return u;
-    }
-
-      /* IVS */
-    u = code & 0xFFFF;
-    v = code >> 16;
-    if (v < 0x40) {
-        goto Undefined;
-    } else if (v < 0x60) {
-        if (uvs) *uvs = v - 0x40 + 0xE0100;
+    } else           /* IVS */
+    if (v < 0x40) {          /* VS17 .. VS32 */
+        if (p==1) goto Undefined;
+        if (uvs) *uvs = v - 0x20 + 0xE0100;
         return u;
-    } else if (v < 0x80) {
-        goto Undefined;
-    } else if (v < 0x90) {
-        if (uvs) *uvs = v - 0x80 + 0xE0100;
-        return u + 0x20000;
-    } else if (v < 0xA0) {
-        goto Undefined;
-    } else if (v < 0xB0) {
-        if (uvs) *uvs = v - 0xA0 + 0xE0100;
-        return u + 0x30000;
+    } else if (v < 0x60) {  /* VS33 .. VS48 */
+        if (p>0) goto Undefined;
+        if (uvs) *uvs = v - 0x20 + 0xE0100;
+        return u;
     }
 
  Undefined:
