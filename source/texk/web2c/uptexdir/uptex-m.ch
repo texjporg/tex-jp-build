@@ -565,11 +565,34 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
   buffer[j]:=Lo(info(p)); incr(j); p:=link(p);
 @y
   if check_kanji(info(p)) then {|wchar_token|}
-    begin t:=toBUFF(info(p) mod max_cjk_val);
-    if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
-    if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
-    if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
-                              buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+    begin
+    if (isinternalUPTEX) then begin
+      t:=toUCS(info(p) mod max_cjk_val);
+      if(t>=@"400000) then
+        t:=t mod @"40000
+      else
+        t:=t mod @"110000;
+      t:=UCStoUTF8(t);
+      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
+      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
+      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
+                                buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+      t:=UVSgetvariationselector(toUCS(info(p) mod max_cjk_val));
+      if (t>0) then begin
+        t:=UCStoUTF8(t);
+        if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
+        if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
+                                  buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j);
+                                  buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+        end
+      end
+    else begin
+      t:=toBUFF(info(p) mod max_cjk_val);
+      if BYTE1(t)<>0 then begin buffer[j]:=BYTE1(t); buffer2[j]:=1; incr(j); end;
+      if BYTE2(t)<>0 then begin buffer[j]:=BYTE2(t); buffer2[j]:=1; incr(j); end;
+      if BYTE3(t)<>0 then begin buffer[j]:=BYTE3(t); buffer2[j]:=1; incr(j); end;
+                                buffer[j]:=BYTE4(t); buffer2[j]:=1; incr(j);
+      end;
     p:=link(p);
     end
   else
@@ -755,11 +778,34 @@ if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
 @y
   if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
     begin str_room(4); {4 is maximum}
-    cur_chr:=toBUFF(cur_chr);
-    if BYTE1(cur_chr)<>0 then append_char(@"100+BYTE1(cur_chr));
-    if BYTE2(cur_chr)<>0 then append_char(@"100+BYTE2(cur_chr));
-    if BYTE3(cur_chr)<>0 then append_char(@"100+BYTE3(cur_chr));
-                              append_char(@"100+BYTE4(cur_chr));
+    if (isinternalUPTEX) then begin
+      cur_chr:=toUCS(cur_chr);
+      if(cur_chr>=@"400000) then
+        cur_chr:=cur_chr mod @"40000
+      else
+        cur_chr:=cur_chr mod @"110000;
+      cur_chr:=UCStoUTF8(cur_chr);
+      if BYTE1(cur_chr)<>0 then append_char(@"100+BYTE1(cur_chr));
+      if BYTE2(cur_chr)<>0 then append_char(@"100+BYTE2(cur_chr));
+      if BYTE3(cur_chr)<>0 then append_char(@"100+BYTE3(cur_chr));
+                                append_char(@"100+BYTE4(cur_chr));
+      cur_chr:=UVSgetvariationselector(toUCS(cur_tok mod max_cjk_val));
+      if (cur_chr>0) then begin
+        str_room(4);
+        cur_chr:=UCStoUTF8(cur_chr);
+        if BYTE1(cur_chr)<>0 then append_char(@"100+BYTE1(cur_chr));
+                                  append_char(@"100+BYTE2(cur_chr));
+                                  append_char(@"100+BYTE3(cur_chr));
+                                  append_char(@"100+BYTE4(cur_chr));
+        end
+      end
+    else begin
+      cur_chr:=toBUFF(cur_chr);
+      if BYTE1(cur_chr)<>0 then append_char(@"100+BYTE1(cur_chr));
+      if BYTE2(cur_chr)<>0 then append_char(@"100+BYTE2(cur_chr));
+      if BYTE3(cur_chr)<>0 then append_char(@"100+BYTE3(cur_chr));
+                                append_char(@"100+BYTE4(cur_chr));
+      end;
 @z
 
 @x
