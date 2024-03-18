@@ -167,13 +167,40 @@ if c>=177 then text_buf[text_ptr]:=@'77 else text_buf[text_ptr]:=c;
 end;
 
 @ @p procedure out_kanji(c:integer);
+var @!v: integer;
 begin
   if text_ptr>=line_length-5 then flush_text;
-  c:=toBUFF(fromDVI(c));
-  if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
-  if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
-  if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
-                            incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
+  if (isinternalUPTEX) then begin
+    c:=fromDVI(c);
+    if(c>=@"400000) then begin
+      v:=UVSgetvariationselector(c);
+      c:=c mod @"40000
+      end
+    else begin
+      v:=0;
+      c:=c mod @"110000
+      end;
+    c:=UCStoUTF8(c);
+    if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
+    if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
+    if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
+                              incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
+    if (v>0) then begin
+      if text_ptr>=line_length-5 then flush_text;
+      v:=UCStoUTF8(v);
+      if BYTE1(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(v); end;
+      if BYTE2(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(v); end;
+      if BYTE3(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(v); end;
+                                incr(text_ptr); text_buf[text_ptr]:=BYTE4(v);
+      end
+    end
+  else begin
+    c:=toBUFF(fromDVI(c));
+    if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
+    if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
+    if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
+                              incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
+    end;
 end;
 
 @ output hexdecimal / octal character code.
