@@ -21,8 +21,8 @@ extern long PTENCDLL UCStoUTF8(long ucs);
 extern long UCStoUPTEX(long ucs);
 extern long UPTEXtoUCS(long uptex);
 
-extern long UVS_get_significant_bits(long ucv, long uvs);
-extern long UVS_get_variation_selector(long ucv);
+extern int  UVS_get_codepoint_length(long ucv);
+extern long UVS_get_codepoint_in_sequence(long ucv, int n);
 extern long UVS_combine_code(long ucv, long uvs);
 extern long UVS_divide_code(long code, long* uvs);
 
