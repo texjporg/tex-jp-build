@@ -418,9 +418,14 @@ static long ucs_range[]={
       0x1F0000, /* Reserved					     */
       0x200000, /* Reserved					     */
       0x210000, /* Reserved					     */
-      0x220000, /* Reserved					     */
+      0x220000, /* Kana with Voiced Sound Mark			     */
+      0x240000, /* Kana with Semi-Voiced Sound Mark		     */
+      0x25E6E6, /* Emoji Flag Sequence				     */
+      0x260000, /* Emoji with Modifier Fitzpatrick		     */
+      0x300000, /* Reserved					     */
       0x400000, /* Standardized Variation Sequence		     */
-      0xC00000, /* Ideographic Variation Sequence		     */ /* 0x167 */
+      0x800000, /* Emoji Keycap Sequence			     */
+      0x800080, /* Ideographic Variation Sequence		     */ /* 0x16C */
       CJK_CHAR_LIMIT
 };
 
@@ -450,6 +455,9 @@ binary_search (long x, long *a, int left, int right)
 #define LATIN_SMALL_LETTER_O_WITH_DIAERESIS    0x00F6
 #define LATIN_SMALL_LETTER_O_WITH_STROKE       0x00F8
 #define LATIN_SMALL_LETTER_Y_WITH_DIAERESIS    0x00FF
+#define COMBINING_ENCLOSING_KEYCAP             0x20E3
+#define COMBINING_KANA_VOICED_SOUND_MARK       0x3099
+#define COMBINING_KANA_SEMI_VOICED_SOUND_MARK  0x309A
 #define FULLWIDTH_DIGIT_0    0xFF10
 #define FULLWIDTH_DIGIT_9    0xFF19
 #define FULLWIDTH_CAPITAL_A  0xFF21
@@ -460,13 +468,18 @@ binary_search (long x, long *a, int left, int right)
 #define HALFWIDTH_KATAKANA_SMALL_TSU  0xFF6F
 #define HALFWIDTH_KATAKANA_A          0xFF71
 #define HALFWIDTH_KATAKANA_N          0xFF9D
+#define REGIONAL_INDICATOR_SYMBOL_LETTER_A 0x1F1E6
+#define REGIONAL_INDICATOR_SYMBOL_LETTER_Z 0x1F1FF
+#define EMOJI_MODIFIER_FITZPATRIC_TYPE1_2  0x1F3FB
+#define EMOJI_MODIFIER_FITZPATRIC_TYPE6    0x1F3FF
 
 integer kcatcodekey(integer c)
 {
     integer block;
     if (is_internalUPTEX()) {
         block = binary_search((long)c, ucs_range, 0, NUCS_RANGE-1);
-        if (block==0x01) { /* Block : Latin-1 Supplement */
+        switch (block) {
+        case 0x01:         /* Block : Latin-1 Supplement */
             /* Latin-1 Letters */
             if (   FEMININE_ORDINAL_INDICATOR ==c
                ||  MASCULINE_ORDINAL_INDICATOR==c
@@ -474,17 +487,35 @@ integer kcatcodekey(integer c)
                || (LATIN_CAPITAL_LETTER_O_WITH_STROKE<=c && c<=LATIN_SMALL_LETTER_O_WITH_DIAERESIS  )
                || (LATIN_SMALL_LETTER_O_WITH_STROKE  <=c && c<=LATIN_SMALL_LETTER_Y_WITH_DIAERESIS  ) )
             return 0x1FD;
-        }
-        if (block==0xa2) { /* Block : Halfwidth and Fullwidth Forms */
+            break;
+        case 0xa2:         /* Block : Halfwidth and Fullwidth Forms */
             /* Fullwidth ASCII variants  except for U+FF01..FF0F, U+FF1A..FF20, U+FF3B..FF40, U+FF5B..FF5E */
             if (  (FULLWIDTH_DIGIT_0  <=c && c<=FULLWIDTH_DIGIT_9  )
                || (FULLWIDTH_CAPITAL_A<=c && c<=FULLWIDTH_CAPITAL_Z)
                || (FULLWIDTH_SMALL_A  <=c && c<=FULLWIDTH_SMALL_Z  ) )
             return 0x1FE;
-        /* Halfwidth Katakana variants  except for U+FF65, U+FF70, U+FF9E..FF9F */
+            /* Halfwidth Katakana variants  except for U+FF65, U+FF70, U+FF9E..FF9F */
             if (  (HALFWIDTH_KATAKANA_WO <=c && c<=HALFWIDTH_KATAKANA_SMALL_TSU )
                || (HALFWIDTH_KATAKANA_A  <=c && c<=HALFWIDTH_KATAKANA_N  ) )
             return 0x1FF;
+            break;
+        case 0x6c:         /* Block : Hiragana */
+            if (   COMBINING_KANA_VOICED_SOUND_MARK==c
+               ||  COMBINING_KANA_SEMI_VOICED_SOUND_MARK==c )
+            return 0x1F9;
+            break;
+        case 0x4b:         /* Block : Combining Diacritical Marks for Symbols */
+            if (   COMBINING_ENCLOSING_KEYCAP==c  )
+            return 0x1FA;
+            break;
+        case 0x12e:        /* Block : Enclosed Alphanumeric Supplement */
+            if (   REGIONAL_INDICATOR_SYMBOL_LETTER_A <=c && c<= REGIONAL_INDICATOR_SYMBOL_LETTER_Z  )
+            return 0x1FB;
+            break;
+        case 0x130:        /* Block : Miscellaneous Symbols and Pictographs */
+            if (   EMOJI_MODIFIER_FITZPATRIC_TYPE1_2 <=c && c<= EMOJI_MODIFIER_FITZPATRIC_TYPE6  )
+            return 0x1FC;
+            break;
         }
         return block;
     } else {
