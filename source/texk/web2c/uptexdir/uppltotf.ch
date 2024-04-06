@@ -361,8 +361,8 @@ incr(current_option);
 We need to include some routines for handling kanji characters.
 
 @<Constants...@>=
-max_kanji=1114111; { maximam number of 2byte characters }
-max_kanji_code=@"10FFFF; { maximum ucs code }
+max_kanji=@"2FFFFF; { maximam number of multibyte characters }
+max_kanji_code=@"2FFFFF; { maximum ucs code }
 yoko_id_number=11; { is identifier for YOKO-kumi font}
 tate_id_number=9; { is identifier for TATE-kumi font}
 
@@ -654,7 +654,7 @@ end;
 @#
 function valid_jis_code(cx:integer):boolean;
 begin valid_jis_code:=true;
-if (cx>@"10FFFF)or(not is_char_kanji(fromDVI(cx)))
+if (cx>max_kanji)or(not is_char_kanji(fromDVI(cx)))
   or(toDVI(fromDVI(cx))<>cx) then valid_jis_code:=false;
 end;
 @#
@@ -690,12 +690,23 @@ else if (ch='U')or(ch='u') then
   @<Scan a Kanji hexadecimal code@>;
   jis_code:=toDVI(fromUCS(cx)); cur_char:=ch;
   if not valid_jis_code(jis_code) then
-    err_print('jis code ', jis_code:1, ' is invalid');
+    err_print('ucs code ', jis_code:1, ' is invalid');
   end
 else if multistrlen(ustringcast(buffer), loc+4, loc)>1 then
   begin cur_char:=" ";
-  jis_code:=toDVI(fromBUFF(ustringcast(buffer), loc+4, loc));
+  jis_code:=fromBUFF(ustringcast(buffer), loc+4, loc);
   loc:=loc+multistrlen(ustringcast(buffer), loc+4, loc)-1;
+  if (isinternalUPTEX) then
+  begin
+    cx:=fromBUFF(ustringcast(buffer), loc+5, loc+1);
+    if (UVScombinecode(jis_code,cx)>0) then begin
+      jis_code:=UVScombinecode(jis_code,cx);
+      loc:=loc+multistrlen(ustringcast(buffer), loc+5, loc+1);
+      end;
+    end
+  else begin
+    jis_code:=toDVI(jis_code)
+    end;
   if not valid_jis_code(jis_code) then
     err_print('jis code ', jis_code:1, ' is invalid');
   end
