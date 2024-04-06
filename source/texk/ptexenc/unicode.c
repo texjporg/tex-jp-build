@@ -129,10 +129,10 @@ long UCStoUPTEX (long ucs)
 /* using over U+10.FFFF Area */
 long UPTEXtoUCS (long uptex)
 {
-    long vs;
+    long vs[2];
     if ((uptex>=0x220000 && uptex<=0x2FFFFF) || /* for 2-codepoint sequence */
          uptex>=0x400000) {               /* for SVS, IVS */
-        if (UVS_divide_code(uptex, &vs) == 0) return 0;
+        if (UVS_divide_code(uptex, vs) == 0) return 0;
         return uptex;
     }
     if (uptex>=UCS_MAX*2) return uptex;
@@ -161,7 +161,7 @@ UVS_get_codepoint_length(long ucv)
     else if (ucv <  0x300000) {
         len = 2;
     }
-    else if (ucv >= 0x400000) {
+    else if (ucv >= 0x400000 && ucv <= 0x43FFFFF) {
         len = 2;
     }
 
@@ -210,7 +210,7 @@ UVS_get_codepoint_in_sequence(long ucv, int n)
             cp[0] =   ucv & 0x3FFFF;
             cp[1] = ((uvs - 0x40) >> 2) + 0xFE00;
         }
-        if (uvs >= 0x80 && uvs <= 0xFF) {    /* IVS, VS17 .. VS48 */
+        if (uvs >= 0x80 && uvs <= 0x43F) {   /* IVS, VS17 .. VS256 */
             cp[0] =   ucv & 0x3FFFF;
             cp[1] = ((uvs - 0x80) >> 2) + 0xE0100;
         }
@@ -260,7 +260,7 @@ UVS_combine_code(long ucv, long uvs)
             (ucv >= 0x04DC0 && ucv <= 0x04DFF) ||
             (ucv >= 0x0A000 && ucv <= 0x0F8FF) ||
             (ucv >= 0x0FB00 && ucv <= 0x1FFFF) ) return 0;
-        if (ucv <= 0x0FFFF && uvs <=0xE011F) { /* BMP, VS17 .. VS48 */
+        if (ucv <= 0x0FFFF && uvs <=0xE01EF) { /* BMP, VS17 .. VS256 */
             return ((uvs - 0xE0100) << 18) + 0x800000 + ucv;
         }
         if (ucv <= 0x2FFFF && uvs <=0xE010F) { /* SIP, VS17 .. VS32 */
@@ -307,7 +307,7 @@ UVS_divide_code(long code, long* uvs)
         return u;
     }
 
-    if (code<0x400000 || code>=0x1000000) {
+    if (code<0x400000 || code>=0x4400000) {
       /* Undefined */
         goto Undefined;
     }
@@ -321,15 +321,15 @@ UVS_divide_code(long code, long* uvs)
         if (uvs) *uvs = v - 0x10 + 0xFE00;
         return u;
     } else
-    if (v == 0x20 && u <= 0x7F ) { /* for Emoji Keycap Sequence, also need U+20E3 */
-        if (uvs) *uvs = 0xFE0F;
+    if (v == 0x20 && u <= 0x7F ) { /* for Emoji Keycap Sequence, need space for U+20E3 */
+        if (uvs) { *uvs = 0xFE0F; *(uvs+1) = 0x20E3; }
         return u;
     } else           /* IVS */
     if (v < 0x40) {          /* VS17 .. VS32 */
         if (p==1) goto Undefined;
         if (uvs) *uvs = v - 0x20 + 0xE0100;
         return u;
-    } else if (v < 0x60) {  /* VS33 .. VS48 */
+    } else if (v <= 0x1FF) { /* VS33 .. VS256 */
         if (p>0) goto Undefined;
         if (uvs) *uvs = v - 0x20 + 0xE0100;
         return u;
