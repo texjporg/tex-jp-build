@@ -7,7 +7,7 @@
 @x
     if (cc=not_cjk) then cc:=other_kchar;
 @y
-    if cat>=kanji then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
+    if (cat>=kanji)and(cat<=modifier) then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
 @z
 
 @x
@@ -17,7 +17,7 @@
   else t:=left_brace_token*cat+t;
 @y
     if (t=" ")and(cat=0) then t:=space_token
-    else if (cat=0)or(cat>=kanji) then t:=other_token+t
+    else if (cat=0)or((cat>=kanji)and(cat<=modifier)) then t:=other_token+t
     else if cat=active_char then t:= cs_token_flag + active_base + t
     else t:=left_brace_token*cat+t;
 @z
@@ -25,7 +25,7 @@
 @x
 @d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>other_kchar)
 @y
-@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>hangul)
+@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>modifier)
 @z
 
 @x

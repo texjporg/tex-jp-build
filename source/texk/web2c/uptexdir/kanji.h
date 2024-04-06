@@ -35,6 +35,10 @@ extern boolean is_char_kanji (integer c);
 extern boolean ismultiprn (integer c);
 extern integer calc_pos (integer c);
 #define calcpos calc_pos
+extern integer ktoken_to_cmd (integer c);
+extern integer ktoken_to_chr (integer c);
+#define ktokentocmd ktoken_to_cmd
+#define ktokentochr ktoken_to_chr
 extern integer kcatcodekey (integer c);
 extern integer multilenbuffchar (integer c);
 

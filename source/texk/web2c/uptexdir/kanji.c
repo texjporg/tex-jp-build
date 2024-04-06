@@ -6,17 +6,36 @@
 #include "kanji.h"
 
 #define CS_TOKEN_FLAG  0x1FFFFFFF
+#define IVS_CHAR_LIMIT  0x4400000
 #define CJK_CHAR_LIMIT  0x1000000
+#define UCS_CHAR_LIMIT   0x120000
 #define CJK_TOKEN_FLAG   0xFFFFFF
+#define CAT_LEFT_BRACE  1
+#define CAT_DELIM_NUM  15
 #define KCAT_KANJI     16
 #define KCAT_MODIFIER  20
+#define KCAT_KANJI_IVS 23
 
 /* TOKEN */
 boolean check_kanji (integer c)
 {
+    integer c0, c1;
+
     if (c >= CS_TOKEN_FLAG) return false;
-    else if (!(XXHi(c)>=KCAT_KANJI && XXHi(c)<=KCAT_MODIFIER)) return false;
-    else return is_char_kanji(c & CJK_TOKEN_FLAG);
+
+    c0 = c & CJK_TOKEN_FLAG;
+    c1 = XXHi(c);
+    if (c1>=CAT_LEFT_BRACE && c1<=CAT_DELIM_NUM &&
+            c0 < UCS_CHAR_LIMIT) {
+        return is_char_kanji(c0);
+    }
+    else if (c1>=KCAT_KANJI && c1<=KCAT_MODIFIER) {
+        return is_char_kanji(c0);
+    }
+    else if (c1>=KCAT_KANJI_IVS+1 && c1<=KCAT_KANJI_IVS+4) {
+        return is_char_kanji(c - KCAT_KANJI_IVS * CJK_CHAR_LIMIT);
+    }
+    return false;
 }
 
 boolean is_char_ascii(integer c)
@@ -27,7 +46,7 @@ boolean is_char_ascii(integer c)
 boolean is_char_kanji(integer c)
 {
     if (is_internalUPTEX()) 
-        return ((c >= 0)&&(c<CJK_CHAR_LIMIT));
+        return ((c >= 0)&&(c<IVS_CHAR_LIMIT));
     else
         return iskanji1(Hi(c)) && iskanji2(Lo(c));
 }
@@ -53,6 +72,22 @@ integer calc_pos(integer c)
     c1 = (c1 % 4) * 64;  /* c1 = 0, 64, 128, 192 */
     c2 = c2 % 64;        /* c2 = 0..63 */
     return(c1 + c2);     /* ret = 0..255 */
+}
+
+integer ktoken_to_cmd(integer c)
+{
+    if (c > KCAT_KANJI_IVS * CJK_CHAR_LIMIT)
+        return KCAT_KANJI;
+    else
+        return (c / CJK_CHAR_LIMIT);
+}
+
+integer ktoken_to_chr(integer c)
+{
+    if (c > KCAT_KANJI_IVS * CJK_CHAR_LIMIT)
+        return (c - KCAT_KANJI_IVS * CJK_CHAR_LIMIT);
+    else
+        return (c % CJK_CHAR_LIMIT);
 }
 
 /* Ref. http://www.unicode.org/Public/UNIDATA/Blocks.txt */
@@ -426,7 +461,8 @@ static long ucs_range[]={
       0x400000, /* Standardized Variation Sequence		     */
       0x800000, /* Emoji Keycap Sequence			     */
       0x800080, /* Ideographic Variation Sequence		     */ /* 0x16C */
-      CJK_CHAR_LIMIT
+      CJK_CHAR_LIMIT, /* Ideographic Variation Sequence, VS49..VS256 */
+      IVS_CHAR_LIMIT
 };
 
 #define NUCS_RANGE (sizeof(ucs_range)/sizeof(ucs_range[0]))
