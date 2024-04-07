@@ -1,29 +1,35 @@
+# $Id$
 # .github/workflows/main.yml for texlive-source CI building
 #
 # Norbert Preining
 # Public Domain
 #
+# See https://github.com/TeX-Live/texlive-source/actions for status.
+#
 # This file controls CI testing via Github Actions of the
 # git-svn checkout of the TeX Live source directory
-# which is pushed to Github
+# which is pushed to Github at:
 #   https://github.com/TeX-Live/texlive-source
+#
 # The cron job that does the git svn up and git push is
 # running on texlive.info; see norbert cron there. Run cmd as norbert:
 #   /home/norbert/git-svn-repos/git-svn-syncer --new texlive-source
 #
-# To make and retrieve new binaries:
-# * go to https://github.com/TeX-Live/texlive-source/commits/master
-#   and check that all commits you want are there (max waiting time 30min).
-# * go to https://github.com/TeX-Live/texlive-source/releases
-#   and "Draft new release" (does git tag).
-# * wait 30min or so.
-# * go to https://github.com/TeX-Live/texlive-source/releases/latest/
-#   and there should be binaries for the new "release".
-# * use tl-update-bindir.
-#
+# A build is started with every commit. If a commit happens while a
+# build is running, somtimes the build is cancelled and a new one
+# started, and other times the new build waits until the old one is
+# complete? Seems mysterious.
+# 
+# See tlpkg/bin/tl-update-bindir for retrieving the binaries, which is
+# done only when a release is tagged, not from the
+# commit-triggered builds here.
 
-# only build on pushed to trunk
+# only build on push to trunk, not branch.
 on:
+  release:
+    types:
+      - released
+      - prereleased
   push:
     branches:
       - trunk
@@ -109,12 +115,11 @@ jobs:
           path: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
           compression-level: 0
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: AButler/upload-release-assets@v3.0
         if: matrix.release_build
         with:
-          files: $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.tl_name }}.tar.gz
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
 
   vm_build_job:
@@ -125,14 +130,12 @@ jobs:
       fail-fast: false
       matrix: 
         arch: [ i386, amd64 ]
-        os: [ freebsd, netbsd, solaris ]
+        os: [ freebsd, solaris ]
         release_build: 
           - ${{ startsWith(github.ref, 'refs/tags/') }}
         include:
           - os: freebsd
             ci_build: true
-          - os: netbsd
-            ci_build: false
           - os: solaris
             ci_build: true
 
@@ -146,15 +149,6 @@ jobs:
         if: ${{ matrix.os == 'freebsd' && (matrix.ci_build || matrix.release_build) }}
         with: 
           release: '13.2'
-          usesh: true
-          run: |
-            cd repo
-            sh .github/scripts/build-tl.sh ${{ matrix.arch }}-${{ matrix.os }} ${{ matrix.os }}
-      - name: build netbsd
-        uses: vmactions/netbsd-vm@v1
-        if: ${{ matrix.os == 'netbsd' && (matrix.ci_build || matrix.release_build) }}
-        with: 
-          release:  '9.0'
           usesh: true
           run: |
             cd repo
@@ -179,10 +173,8 @@ jobs:
           path: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
           compression-level: 0
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: AButler/upload-release-assets@v3.0
         if: matrix.release_build
         with:
-          files: $GITHUB_WORKSPACE/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          files: ${{ github.workspace }}/repo/texlive-bin-${{ matrix.arch }}-${{ matrix.os }}.tar.gz
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

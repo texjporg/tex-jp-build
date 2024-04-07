@@ -7,7 +7,7 @@ use strict; use warnings;
 
 package TeXLive::TLUtils;
 
-my $svnrev = '$Revision: 69653 $';
+my $svnrev = '$Revision: 70794 $';
 my $_modulerevision = ($svnrev =~ m/: ([0-9]+) /) ? $1 : "unknown";
 sub module_revision { return $_modulerevision; }
 
@@ -2267,7 +2267,7 @@ Run the ConTeXt cache generation commands, using C<$bindir> and
 C<$progext> to check if commands can be run. Use the function reference
 C<$run_postinst_cmd> to actually run the commands. The return status is
 zero if all succeeded, nonzero otherwise. If the main ConTeXt program
-(C<luametatex>) cannot be run at all, the return status is status.
+(C<luametatex>) cannot be run at all, the return status is zero.
 
 Functions C<info> and C<debug> are called with status reports.
 
@@ -2289,16 +2289,24 @@ sub update_context_cache {
   # can be done about it.
   my $lmtx = "$bindir/luametatex$progext";
   if (TeXLive::TLUtils::system_ok("$lmtx --version")) {
-    info("setting up ConTeXt cache: ");
+    info("setting up ConTeXt caches: ");
     $errcount += &$run_postinst_cmd("mtxrun --generate");
     #
     # If mtxrun failed, don't bother trying more.
     if ($errcount == 0) {
       $errcount += &$run_postinst_cmd("context --luatex --generate");
       #
+      # This is for finding fonts by font name (the --generate suffices
+      # for file name). Although ConTeXt does some automatic cache
+      # regeneration, Hans advises that this manual reload can help, and
+      # should be no harm.
+      # https://wiki.contextgarden.net/Use_the_fonts_you_want
+      # https://wiki.contextgarden.net/Mtxrun#base and #fonts
+      $errcount += &$run_postinst_cmd("mtxrun --script fonts --reload");
+      #
       # If context succeeded too, try luajittex. Missing on some platforms.
       # Although we build luajittex normally, instead of importing the
-      # binary, testing for file existence should suffice, we may as
+      # binary, so testing for file existence should suffice, we may as
       # well test execution since it's just as easy.
       # 
       if ($errcount == 0) {
@@ -4863,29 +4871,30 @@ sub report_tlpdb_differences {
 
   if (defined($ret{'removed_packages'})) {
     info ("removed packages from A to B:\n");
-    for my $f (@{$ret{'removed_packages'}}) {
+    for my $f (sort @{$ret{'removed_packages'}}) {
       info ("  $f\n");
     }
   }
   if (defined($ret{'added_packages'})) {
     info ("added packages from A to B:\n");
-    for my $f (@{$ret{'added_packages'}}) {
+    for my $f (sort @{$ret{'added_packages'}}) {
       info ("  $f\n");
     }
   }
   if (defined($ret{'different_packages'})) {
     info ("different packages from A to B:\n");
-    for my $p (keys %{$ret{'different_packages'}}) {
+    for my $p (sort keys %{$ret{'different_packages'}}) {
       info ("  $p\n");
-      for my $k (keys %{$ret{'different_packages'}->{$p}}) {
+      for my $k (sort keys %{$ret{'different_packages'}->{$p}}) {
         if ($k eq "revision") {
           info("    revision differ: $ret{'different_packages'}->{$p}->{$k}\n");
         } elsif ($k eq "removed" || $k eq "added") {
           info("    $k files:\n");
-          for my $f (@{$ret{'different_packages'}->{$p}->{$k}}) {
+          for my $f (sort @{$ret{'different_packages'}->{$p}->{$k}}) {
             info("      $f\n");
           }
         } else {
+          # e.g., fmttriggers; don't bother making a nice report.
           info("  unknown differ $k\n");
         }
       }

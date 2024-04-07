@@ -120,4 +120,5 @@ export TL_MAKE_FLAGS
 ./Build -C $BUILDARGS
 
 mv inst/bin/* $arch
+
 tar czvf texlive-bin-$arch.tar.gz $arch

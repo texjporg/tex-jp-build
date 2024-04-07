@@ -1,3 +1,34 @@
+2024-03-17  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (shell_escape_commands): add l3sys-query
+	after analysis on tex-live. https://ctan.org/pkg/l3sys-query
+
+2024-03-10  Karl Berry  <karl@tug.org>
+
+	* TL'24 release.
+
+2024-02-29  Karl Berry  <karl@freefriends.org>
+
+	* tex-file.c (abs_fname_ok): if extended, allow a dir that is the
+	exact match of TEXMF[SYS]VAR, since luatex might want to mkdir it.
+	* tests/kpsesafe.test: test it, both positive and negative.
+
+2024-02-23  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (XE_FONTCONFIG_PATH, XE_FC_CACHEDIR): rename from
+	FONTCONFIG_PATH resp. FC_CACHEDIR so we don't collide with
+	system directories specified by those paths, such as /etc/fonts.
+
+2024-02-22  Karl Berry  <karl@freefriends.org>
+
+	* tests/kpsereadlink.test: create and use our own test file and
+	symlink, instead of using libtool's, in case slibtool is in use.
+	From orbea, https://github.com/TeX-Live/texlive-source/pull/65.
+
+2023-02-10  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (TEXMFVAR, TEXMFCONFIG, doc): 2024.
+
 2024-01-31  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
 
 	* tex-file.c (kpathsea_name_ok) [MSDOS]: change #ifndef MSDOS
