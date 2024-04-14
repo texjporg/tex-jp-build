@@ -188,7 +188,6 @@ jobs:
             --enable-etex  --enable-etex-synctex \
             --enable-ptex  --enable-ptex-synctex \
             --enable-uptex  --enable-uptex-synctex \
-            --enable-eptex  --enable-eptex-synctex \
             --enable-euptex  --enable-euptex-synctex \
             --enable-mp  --enable-pmp  --enable-upmp \
             --disable-pdftex  --disable-pdftex-synctex \
@@ -245,8 +244,6 @@ jobs:
           ./ptex --version || echo "ptex"
           echo ""
           ./uptex --version || echo "uptex"
-          echo ""
-          ./eptex --version || echo "eptex"
           echo ""
           ./euptex --version || echo "euptex"
           echo ""

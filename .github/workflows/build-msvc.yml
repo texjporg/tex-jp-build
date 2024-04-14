@@ -196,8 +196,6 @@ jobs:
           echo ""
           ls -lR
           echo ""
-          ./eptex.exe --version || echo "eptex"
-          echo ""
           ./euptex.exe --version || echo "euptex"
           #echo ""
           #./updvitype.exe --version || echo "updvitype"
@@ -259,11 +257,6 @@ jobs:
           $srcdir/uptexdir/wcfname.test    || echo -e "**\n** failed: up/wcfname.test\n**"
           $srcdir/uptexdir/wcfname0.test   || echo -e "**\n** failed: up/wcfname0.test\n**"
 
-          $srcdir/eptexdir/eptriptest.test   || echo -e "**\n** failed: ep/eptriptest.test\n**"
-          $srcdir/eptexdir/pdfprimitive.test || echo -e "**\n** failed: ep/pdfprimitive.test\n**"
-          $srcdir/eptexdir/epver.test        || echo -e "**\n** failed: ep/epver.test\n**"
-          $srcdir/eptexdir/wcfname.test      || echo -e "**\n** failed: ep/wcfname.test\n**"
-
           $srcdir/euptexdir/euptriptest.test  || echo -e "**\n** failed: eup/euptriptest.test\n**"
           $srcdir/euptexdir/eptriptest.test   || echo -e "**\n** failed: eup/eptriptest.test\n**"
           $srcdir/euptexdir/pdfprimitive.test || echo -e "**\n** failed: eup/pdfprimitive.test\n**"
@@ -297,8 +290,6 @@ jobs:
           ./ptex.exe --version || echo "ptex"
           echo ""
           ./uptex.exe --version || echo "uptex"
-          echo ""
-          ./eptex.exe --version || echo "eptex"
           echo ""
           ./euptex.exe --version || echo "euptex"
           echo ""

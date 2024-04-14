@@ -231,7 +231,6 @@ jobs:
             --enable-etex  --enable-etex-synctex \
             --enable-ptex  --enable-ptex-synctex \
             --enable-uptex  --enable-uptex-synctex \
-            --enable-eptex  --enable-eptex-synctex \
             --enable-euptex  --enable-euptex-synctex \
             --enable-mp  --enable-pmp  --enable-upmp \
             --disable-pdftex  --disable-pdftex-synctex \
@@ -283,10 +282,6 @@ jobs:
           gcc -Wimplicit -Wreturn-type -g -O2   -o uptex.exe uptexdir/uptex-uptexextra.o uptex-uptexini.o uptex-uptex0.o uptex-uptex-pool.o libukanji.a lib/libp.a ../../texk/ptexenc/.libs/libptexenc.a lib/lib.a ../../texk/kpathsea/.libs/libkpathsea.a ../../libs/zlib/libz.a -lwsock32 || \
             echo -e "**\n** fail to link uptex.exe"
 
-          echo -e "###\n### link without libtool  eptex.exe\n###"
-          gcc -Wimplicit -Wreturn-type -g -O2   -o eptex.exe eptexdir/eptex-eptexextra.o synctexdir/eptex-synctex.o eptex-eptexini.o eptex-eptex0.o eptex-eptex-pool.o libkanji.a lib/libp.a ../../texk/ptexenc/.libs/libptexenc.a lib/lib.a ../../texk/kpathsea/.libs/libkpathsea.a -lwsock32 libmd5.a ../../libs/zlib/libz.a || \
-            echo -e "**\n** fail to link eptex.exe"
-
           echo -e "###\n### link without libtool  euptex.exe\n###"
           gcc -Wimplicit -Wreturn-type -g -O2   -o euptex.exe euptexdir/euptex-euptexextra.o synctexdir/euptex-synctex.o euptex-euptexini.o euptex-euptex0.o euptex-euptex-pool.o libukanji.a lib/libp.a ../../texk/ptexenc/.libs/libptexenc.a lib/lib.a ../../texk/kpathsea/.libs/libkpathsea.a -lwsock32 libmd5.a ../../libs/zlib/libz.a || \
             echo -e "**\n** fail to link euptex.exe"
@@ -312,8 +307,6 @@ jobs:
           ./ptex.exe --version || echo "ptex"
           echo ""
           ./uptex.exe --version || echo "uptex"
-          echo ""
-          ./eptex.exe --version || echo "eptex"
           echo ""
           ./euptex.exe --version || echo "euptex"
           echo ""
@@ -379,13 +372,6 @@ jobs:
           $srcdir/ptexdir/wcfname.test          || echo -e "**\n** failed: p/wcfname.test\n**"
           echo ""
 
-          $srcdir/eptexdir/pdfprimitive.test    || echo -e "**\n** failed: ep/pdfprimitive.test\n**"
-          echo ""
-          $srcdir/eptexdir/epver.test           || echo -e "**\n** failed: ep/epver.test\n**"
-          echo ""
-          $srcdir/eptexdir/wcfname.test         || echo -e "**\n** failed: ep/wcfname.test\n**"
-          echo ""
-
           $srcdir/uptexdir/upver.test           || echo -e "**\n** failed: up/upver.test\n**"
           echo ""
           $srcdir/uptexdir/upkcat.test          || echo -e "**\n** failed: up/upkcat.test\n**"
@@ -414,8 +400,6 @@ jobs:
           $srcdir/uptexdir/ptriptest.test
           echo ""
           $srcdir/uptexdir/uptriptest.test
-          echo ""
-          $srcdir/eptexdir/eptriptest.test
           echo ""
           $srcdir/euptexdir/eptriptest.test
           echo ""
