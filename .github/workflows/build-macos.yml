@@ -228,6 +228,8 @@ jobs:
           cd ./source/Work/texk/web2c
           export abs_srcdir=../$srcdir
           export DIFF=diff
+          export KPSEWHICH="../kpathsea/kpsewhich"
+          export LN_S="ln -s"
           $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
           echo ""
           $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
