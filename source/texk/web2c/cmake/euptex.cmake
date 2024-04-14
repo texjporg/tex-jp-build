@@ -59,7 +59,7 @@ set(euptex_prereq
   euptexd.h
   etexdir/etex_version.h
   ptexdir/ptex_version.h
-  eptexdir/eptex_version.h
+  euptexdir/eptex_version.h
   uptexdir/uptex_version.h
   )
 
@@ -76,20 +76,20 @@ set(euptex_web_srcs
   )
 
 set(euptex_ch_srcs
-  eptexdir/etex.ch0
+  euptexdir/etex.ch0
   ptexdir/ptex-base.ch
   uptexdir/uptex-m.ch
   euptexdir/euptex.ch0
-  eptexdir/eptex.ech
-  eptexdir/etex.ch1
+  euptexdir/eptex.ech
+  euptexdir/etex.ch1
   euptexdir/euptex.ch1
   ${euptex_ch_synctex}
-  eptexdir/fam256.ch
+  euptexdir/fam256.ch
   euptexdir/pdfstrcmp-eup-pre.ch
-  eptexdir/pdfutils.ch
+  euptexdir/pdfutils.ch
   euptexdir/pdfstrcmp-eup-post.ch
-  eptexdir/suppresserrors.ch
-  eptexdir/char-warning-eptex.ch
+  euptexdir/suppresserrors.ch
+  euptexdir/char-warning-eptex.ch
   tex-binpool.ch
   )
 

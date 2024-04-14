@@ -70,9 +70,6 @@ include(cmake/cweb.cmake)
 # pTeX
 include(cmake/ptex.cmake)
 
-# e-pTeX
-include(cmake/eptex.cmake)
-
 # upTeX
 include(cmake/uptex.cmake)
 
