@@ -221,6 +221,31 @@ jobs:
             --without-system-graphite2 \
             --without-system-harfbuzz
           make
+
+      - name: web2c triptest
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
+          export abs_srcdir=../$srcdir
+          export DIFF=diff
+          $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
+          echo ""
+          $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
+          echo ""
+          $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
+          echo ""
+          $srcdir/euptexdir/eptriptest.test || cat eupptripdir/eptrip.log
+          echo ""
+          $srcdir/euptexdir/euptriptest.test || cat euptripdir/euptrip.log
+          echo ""
+        env:
+          srcdir: "../../../texk/web2c"
+          TEXMFCNF: "../../../texk/kpathsea"
+
+      - name: web2c
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
           make check
 
       - name: web2c version check

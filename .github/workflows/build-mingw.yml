@@ -393,17 +393,15 @@ jobs:
           export abs_srcdir=../$srcdir
           export DIFF=diff
           export DIFFFLAGS="--strip-trailing-cr --ignore-matching-lines 'DVItype'"
-          $srcdir/ptexdir/ptriptest.test
+          $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
           echo ""
-          $srcdir/uptexdir/ptriptest.test
+          $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
           echo ""
-          $srcdir/uptexdir/ptriptest.test
+          $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
           echo ""
-          $srcdir/uptexdir/uptriptest.test
+          $srcdir/euptexdir/eptriptest.test || cat eupptripdir/eptrip.log
           echo ""
-          $srcdir/euptexdir/eptriptest.test
-          echo ""
-          $srcdir/euptexdir/euptriptest.test
+          $srcdir/euptexdir/euptriptest.test || cat euptripdir/euptrip.log
           echo ""
         env:
           srcdir: "../../../texk/web2c"
