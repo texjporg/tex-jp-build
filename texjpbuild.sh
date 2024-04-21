@@ -24,7 +24,6 @@ cd source && mkdir -p Work && cd Work
   --enable-seetexk \
   --enable-web2c \
   --enable-etex \
-  --enable-eptex \
   --enable-euptex \
   --enable-pmp \
   --enable-upmp \
