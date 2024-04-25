@@ -740,7 +740,7 @@ if cur_cs<>undefined_primitive then begin
   if t>max_command then begin
     cur_cmd := t;
     cur_chr := prim_equiv(cur_cs);
-    cur_tok := (cur_cmd*@'400)+cur_chr;
+    cur_tok := (cur_cmd*max_char_val)+cur_chr;
     cur_cs  := 0;
     goto reswitch;
     end
@@ -879,14 +879,20 @@ function str_toks(@!b:pool_pointer):pointer;
 function str_toks_cat(@!b:pool_pointer;@!cat:small_number):pointer;
 @z
 
-@x \Ucharcat: str_toks_cat
-  else if t=" " then t:=space_token
-  else t:=other_token+t;
+@x
+    if (cc=not_cjk) then cc:=other_kchar;
 @y
-  else if (t=" ")and(cat=0) then t:=space_token
-  else if (cat=0)or(cat>=kanji) then t:=other_token+t
-  else if cat=active_char then t:= cs_token_flag + active_base + t
-  else t:=left_brace_token*cat+t;
+    if (cat>=kanji)and(cat<=modifier) then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
+@z
+
+@x \Ucharcat: str_toks_cat
+    if t=" " then t:=space_token
+    else t:=other_token+t;
+@y
+    if (t=" ")and(cat=0) then t:=space_token
+    else if (cat=0)or((cat>=kanji)and(cat<=modifier)) then t:=other_token+t
+    else if cat=active_char then t:= cs_token_flag + active_base + t
+    else t:=left_brace_token*cat+t;
 @z
 
 @x \Ucharcat: str_toks_cat
@@ -962,7 +968,7 @@ we have to create a temporary string that is destroyed immediately after.
 
 @ Not all catcode values are allowed by \.{\\Ucharcat}:
 @d illegal_Ucharcat_ascii_catcode(#)==(#<left_brace)or(#>active_char)or(#=out_param)or(#=ignore)
-@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>other_kchar)
+@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>modifier)
 
 @p procedure conv_toks;
 @z
@@ -1148,19 +1154,41 @@ pdf_file_dump_code:
   end;
 uniform_deviate_code:     scan_int;
 normal_deviate_code:      do_nothing;
-Uchar_convert_code:       scan_char_num;
+Uchar_convert_code: begin scan_char_num;
+    if not is_char_ascii(cur_val) then
+	  if kcat_code(kcatcodekey(cur_val))=not_cjk then cat:=other_kchar;
+    end;
 Ucharcat_convert_code:
   begin
-    scan_ascii_num;
+    scan_char_num;
     i:=cur_val;
     scan_int;
-    if illegal_Ucharcat_ascii_catcode(cur_val) then
-      begin print_err("Invalid code ("); print_int(cur_val);
+    if i<=@"7F then { no |wchar_token| }
+      begin if illegal_Ucharcat_ascii_catcode(cur_val) then
+        begin print_err("Invalid code ("); print_int(cur_val);
 @.Invalid code@>
-      print("), should be in the ranges 1..4, 6..8, 10..13");
-      help1("I'm going to use 12 instead of that illegal code value.");@/
-      error; cat:=12;
-    end else cat:=cur_val;
+        print("), should be in the ranges 1..4, 6..8, 10..13");
+        help1("I'm going to use 12 instead of that illegal code value.");@/
+        error; cat:=12;
+      end else cat:=cur_val;
+    end else if i<=@"FF then
+      begin if (illegal_Ucharcat_ascii_catcode(cur_val))
+        and (illegal_Ucharcat_wchar_catcode(cur_val)) then
+        begin print_err("Invalid code ("); print_int(cur_val);
+@.Invalid code@>
+        print("), should be in the ranges 1..4, 6..8, 10..13, 16..19");
+        help1("I'm going to use 12 instead of that illegal code value.");@/
+        error; cat:=12;
+      end else cat:=cur_val;
+    end else { |wchar_token| only }
+      begin if illegal_Ucharcat_wchar_catcode(cur_val) then
+        begin print_err("Invalid code ("); print_int(cur_val);
+@.Invalid code@>
+        print("), should be in the ranges 16..19");
+        help1("I'm going to use 18 instead of that illegal code value.");@/
+        error; cat:=other_kchar;
+      end else cat:=cur_val;
+	end;
     cur_val:=i;
     end;
 @z
@@ -1853,7 +1881,6 @@ if_font_char_code:begin scan_font_ident; n:=cur_val;
 if_in_csname_code: b := is_in_csname;
 if_font_char_code:begin scan_font_ident; n:=cur_val;
 @z
-
 
 @x
 @* \[54] System-dependent changes.

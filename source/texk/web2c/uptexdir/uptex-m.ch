@@ -302,14 +302,6 @@ end else begin
 end;
 @z
 
-@x [18.???] pTeX: ensure buffer2[]=0 in primitive
-  for j:=0 to l-1 do begin
-    buffer[j]:=Lo(so(str_pool[k+j])); buffer2[j]:=Hi(so(str_pool[k+j])); end;
-@y
-  for j:=0 to l-1 do begin
-    buffer[j]:=Lo(so(str_pool[k+j])); buffer2[j]:=Hi(so(str_pool[k+j])); end;
-@z
-
 @x l.5897 - upTeX
 primitive("char",char_num,0);@/
 @!@:char_}{\.{\\char} primitive@>
