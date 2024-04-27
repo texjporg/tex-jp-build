@@ -1,5 +1,5 @@
 % $Id$
-% This is a change file for upTeX u1.30
+% This is a change file for upTeX u1.35
 % By Takuji Tanaka.
 %
 % (02/26/2007) TTK  upTeX u0.01
@@ -48,6 +48,7 @@
 % (2022-07-23) TTK  upTeX u1.29
 % (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
 % (2023-09-16) TTK  upTeX u1.30
+% (2024-04-27) TTK  upTeX u1.35
 
 @x
 \def\pTeX{p\kern-.15em\TeX}
@@ -62,8 +63,8 @@
   {printed when \pTeX\ starts}
 @#
 @d upTeX_version=1
-@d upTeX_revision==".30"
-@d upTeX_version_string=='-u1.30' {current \upTeX\ version}
+@d upTeX_revision==".35"
+@d upTeX_version_string=='-u1.35' {current \upTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
@@ -166,7 +167,7 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d max_halfword=@"3FFFFFFF {largest allowable value in a |halfword|}
 @d max_cjk_val=@"1000000 {to separate wchar and kcatcode}
 @d max_ivs_val=@"4400000 {to separate wchar with ivs and kcatcode}
-@d biggest_usv=@"10FFFF {the largest Unicode Scalar Value}
+@d max_ucs_val=@"110000 {largest Unicode Scalar Value}
 @z
 
 @x
@@ -1453,7 +1454,7 @@ end;
 
 function check_kcat_code(@!ct:integer;@!cx:integer):integer;
 begin
-if (((ct>=kanji)or((ct=latin_ucs)and(cx<=biggest_usv)))and(enable_cjk_token=0))or(enable_cjk_token=2)then
+if (((ct>=kanji)or((ct=latin_ucs)and(cx<max_ucs_val)))and(enable_cjk_token=0))or(enable_cjk_token=2)then
   check_kcat_code:=1
 else check_kcat_code:=0;
 end;

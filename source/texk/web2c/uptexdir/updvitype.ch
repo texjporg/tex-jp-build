@@ -9,7 +9,7 @@
 @d banner=='This is DVItype, Version 3.6' {printed when the program starts}
 @y
 @d my_name=='updvitype'
-@d banner=='This is upDVItype, Version 3.6-p221203'
+@d banner=='This is upDVItype, Version 3.6-p240427'
   {printed when the program starts}
 @z
 

@@ -1156,7 +1156,7 @@ uniform_deviate_code:     scan_int;
 normal_deviate_code:      do_nothing;
 Uchar_convert_code: begin scan_char_num;
     if not is_char_ascii(cur_val) then
-	  if kcat_code(kcatcodekey(cur_val))=not_cjk then cat:=other_kchar;
+      if kcat_code(kcatcodekey(cur_val))=not_cjk then cat:=other_kchar;
     end;
 Ucharcat_convert_code:
   begin
@@ -1188,7 +1188,7 @@ Ucharcat_convert_code:
         help1("I'm going to use 18 instead of that illegal code value.");@/
         error; cat:=other_kchar;
       end else cat:=cur_val;
-	end;
+      end;
     cur_val:=i;
     end;
 @z

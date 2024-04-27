@@ -1,5 +1,6 @@
 % This is a change file for TFtoPL
 %
+% (2024-04-27) TTK Support upTeX new encoding for combining characters
 % (2023-09-17) HY Support more than 256 different glue/kern
 % (2022-12-03) TTK Merge pTFtoPL source/binary into upTFtoPL
 % (2018-01-27) HY pTFtoPL p2.0 - new JFM spec by texjporg
@@ -17,7 +18,7 @@
 @d banner=='This is TFtoPL, Version 3.3' {printed when the program starts}
 @y
 @d my_name=='uptftopl'
-@d banner=='This is upTFtoPL, Version 3.3-p230917'
+@d banner=='This is upTFtoPL, Version 3.3-p240427'
   {printed when the program starts}
 @z
 
