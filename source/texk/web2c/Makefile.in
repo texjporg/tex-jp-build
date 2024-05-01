@@ -342,6 +342,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/web2c-disable.m4 \
 	$(top_srcdir)/../../m4/kpse-harfbuzz-flags.m4 \
 	$(top_srcdir)/../../m4/kpse-icu-flags.m4 \
 	$(top_srcdir)/../../m4/kpse-kpathsea-flags.m4 \
+	$(top_srcdir)/../../m4/kpse-largefile.m4 \
 	$(top_srcdir)/../../m4/kpse-lex.m4 \
 	$(top_srcdir)/../../m4/kpse-lib-version.m4 \
 	$(top_srcdir)/../../m4/kpse-libpng-flags.m4 \
@@ -3224,18 +3225,21 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	$(upweb_tests) tests/enc-u.bbl tests/enc-eu.bbl \
 	tests/enc-su.bbl tests/enc-uu.bbl uptexdir/tests/uptex3.tex \
 	uptexdir/tests/uptex3.dvi uptexdir/tests/uptex4.tex \
-	uptexdir/tests/uptex4.dvi uptexdir/tests/uptex3a.typ \
-	uptexdir/tests/uptex4a.typ uptexdir/tests/umin10.pl \
-	uptexdir/tests/umin10.tfm uptexdir/tests/utmin10.pl \
-	uptexdir/tests/utmin10.tfm uptexdir/tests/testnewu.pl \
-	uptexdir/tests/testnewu.tfm uptexdir/tests/uparse.pl \
-	uptexdir/tests/uparse.tfm uptexdir/tests/gkhugeok.tfm \
-	uptexdir/tests/gkhugeng.tfm uptexdir/tests/gkhugeng.err \
-	uptexdir/tests/gk256g.tfm uptexdir/tests/gk256k.tfm \
-	uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf \
-	$(euptex_web_srcs) $(euptex_ch_srcs) euptexdir/euptex.defines \
-	euptexdir/COPYRIGHT euptexdir/COPYRIGHT.jis \
-	euptexdir/ChangeLog euptexdir/EUPTEX.txt $(euptex_tests) \
+	uptexdir/tests/uptex4.dvi uptexdir/tests/uptex5.tex \
+	uptexdir/tests/uptex5.dvi uptexdir/tests/uptex3a.typ \
+	uptexdir/tests/uptex4a.typ uptexdir/tests/uptex5a.typ \
+	uptexdir/tests/umin10.pl uptexdir/tests/umin10.tfm \
+	uptexdir/tests/utmin10.pl uptexdir/tests/utmin10.tfm \
+	uptexdir/tests/testnewu.pl uptexdir/tests/testnewu.tfm \
+	uptexdir/tests/testnewu8.pl uptexdir/tests/testnewu8.tfm \
+	uptexdir/tests/uparse.pl uptexdir/tests/uparse.tfm \
+	uptexdir/tests/gkhugeok.tfm uptexdir/tests/gkhugeng.tfm \
+	uptexdir/tests/gkhugeng.err uptexdir/tests/gk256g.tfm \
+	uptexdir/tests/gk256k.tfm uptexdir/uptrip/uptrip.diffs \
+	uptexdir/uptrip/texmf.cnf $(euptex_web_srcs) $(euptex_ch_srcs) \
+	euptexdir/euptex.defines euptexdir/COPYRIGHT \
+	euptexdir/COPYRIGHT.jis euptexdir/ChangeLog \
+	euptexdir/EUPTEX.txt $(euptex_tests) \
 	euptexdir/eptrip/eptrip.log euptexdir/eptrip/eptrip.tex \
 	euptexdir/euptrip/euptrip.diffs euptexdir/euptrip/texmf.cnf \
 	euptexdir/pdfprimitive.test \
@@ -3557,9 +3561,9 @@ DISTCLEANFILES = CXXLD.sh tangle.c tangle.h tangle.p tangle-web2c \
 	uptests/nissya_bib.* uptests/xexampl.aux uptests/xexampl.bbl \
 	uptests/xexampl.blg uptests/xenc*.* uptests/fn*.* \
 	uptests/memtest.bib uptests/memtest?.* uptests/xstory.dvityp \
-	uptests/xpagenum.typ uptests/x*ptex[34]*.typ \
+	uptests/xpagenum.typ uptests/x*ptex[345]*.typ \
 	uptests/xcmr10.tfm uptests/xcmr10.pl uptests/xsample*.typ \
-	uptests/x*min10.* uptests/xchcode*.* uptests/xtestnewu.* \
+	uptests/x*min10.* uptests/xchcode*.* uptests/xtestnewu*.* \
 	uptests/xuparse.* uptests/yuparse.* uptests/ygkhuge*.* \
 	uptests/ygk256*.* uptests/xskipjfmp.* uptrip.diffs \
 	$(nodist_euptex_SOURCES) euptex.web euptex.ch euptex-web2c \
@@ -4671,7 +4675,7 @@ libluasocket_a_CPPFLAGS = \
 #liblua53socket_a_CPPFLAGS = \
 #	-DLUASOCKET_DEBUG -I$(top_srcdir)/luatexdir/luasocket $(LUA_LUA53_INCLUDES)
 libluajitsocket_a_CPPFLAGS = \
-	-DLUASOCKET_DEBUG -I$(top_srcdir)/luatexdir/luasocket $(LUAJIT_INCLUDES)
+	-DLUASOCKET_DEBUG -I$(top_srcdir)/luatexdir/luasocket $(LUAJIT_INCLUDES) $(LUAJIT_DEFINES)
 
 libluasocket_a_CFLAGS = # $(WARNING_CFLAGS)
 libluajitsocket_a_CFLAGS = # $(WARNING_CFLAGS)
@@ -4717,8 +4721,8 @@ libluajitmisc_a_DEPENDENCIES = $(ZZIPLIB_DEPEND) libluajitsocket.a
 libluamisc_a_CPPFLAGS = $(ZLIB_INCLUDES) $(ZZIPLIB_INCLUDES) $(PPLIB_INCLUDES) $(LUA_INCLUDES)
 #liblua53misc_a_CPPFLAGS = $(ZLIB_INCLUDES) $(ZZIPLIB_INCLUDES) $(PPLIB_INCLUDES) $(LUA_LUA53_INCLUDES)
 libluajitmisc_a_CPPFLAGS = $(ZLIB_INCLUDES) $(ZZIPLIB_INCLUDES) \
-	$(PPLIB_INCLUDES) $(LUAJIT_INCLUDES) -DLuajitTeX \
-	-I$(srcdir)/luatexdir
+	$(PPLIB_INCLUDES) $(LUAJIT_INCLUDES) $(LUAJIT_DEFINES) \
+	-DLuajitTeX -I$(srcdir)/luatexdir
 libluamisc_a_CFLAGS = # $(WARNING_CFLAGS)
 #liblua53misc_a_CFLAGS = # $(WARNING_CFLAGS)
 libluajitmisc_a_CFLAGS = # $(WARNING_CFLAGS)
@@ -5272,7 +5276,8 @@ libluaharfbuzz_a_DEPENDENCIES = $(HARFBUZZ_DEPEND) $(GRAPHITE2_DEPEND)
 libluajitharfbuzz_a_DEPENDENCIES = $(HARFBUZZ_DEPEND) $(GRAPHITE2_DEPEND)
 libluaharfbuzz_a_CPPFLAGS = $(AM_CPPFLAGS) $(LUA_INCLUDES) $(HARFBUZZ_INCLUDES) $(GRAPHITE2_INCLUDES)
 libluajitharfbuzz_a_CPPFLAGS = $(AM_CPPFLAGS) $(LUAJIT_INCLUDES) \
-	$(HARFBUZZ_INCLUDES) $(GRAPHITE2_INCLUDES) -DLuajitTeX
+	$(LUAJIT_DEFINES) $(HARFBUZZ_INCLUDES) $(GRAPHITE2_INCLUDES) \
+	-DLuajitTeX
 libluaharfbuzz_a_CFLAGS = # $(WARNING_CFLAGS)
 libluajitharfbuzz_a_CFLAGS = # $(WARNING_CFLAGS)
 libluaharfbuzz_a_SOURCES = \
