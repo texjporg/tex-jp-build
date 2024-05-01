@@ -6,7 +6,7 @@ This bundle also provides the latest "upstream" sources for the followings:
 
 * ptexenc
 * ptex, (u)pbibtex, (u)pdvitype, (u)ppltotf, (u)ptftopl
-* eptex
+* eptex extention as a part of euptex
 * makejvf
 * mendex
 * dviout-util
@@ -25,9 +25,9 @@ If you have issues, please let us know from the above page.
 ## Contents
 
 The bundle includes sources of:
-ptex, eptex, uptex, euptex,
+ptex, uptex, euptex,
 dvips, dvipdfmx, dvi2tty, makejvf, mendex, upmendex,
-pbibtex, upbibtex, pmpost, upmpost,
+upbibtex, pmpost, upmpost,
 dviout-util (dvispc, chkdvifont),
 seetex (dvibook, dviconcat, dviselect, dvitodvi),
 dvidvi, bibtex-x, related tools
