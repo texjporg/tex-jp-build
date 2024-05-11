@@ -71,11 +71,14 @@
 #include "t1_load.h"
 #include "t1_char.h"
 #include "cff_dict.h"
-#include "unicode.h"
 
 #define DVI_STACK_DEPTH_MAX  256u
 #define TEX_FONTS_ALLOC_SIZE 16u
 #define VF_NESTING_MAX       16u
+
+/* UTF-32 over U+FFFF -> UTF-16 surrogate pair */
+#define UTF32toUTF16HS(x)  (0xd800 + (((x-0x10000) >> 10) & 0x3ff))
+#define UTF32toUTF16LS(x)  (0xdc00 + (  x                 & 0x3ff))
 
 /* Interal Variables */
 static FILE          *dvi_file  = NULL;

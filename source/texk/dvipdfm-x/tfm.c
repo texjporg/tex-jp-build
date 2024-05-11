@@ -214,16 +214,16 @@ release_range_map (struct range_map *map)
 static int
 lookup_char (const struct char_map *map, int charcode)
 {
-#ifndef WITHOUT_ASCII_PTEX
-  if (charcode >= map->coverage.first_char &&
-      charcode <= map->coverage.last_char)
-#else
   if (charcode >= map->coverage.first_char &&
       charcode <= map->coverage.first_char + map->coverage.num_chars)
-#endif
     return map->indices[CHARACTER_INDEX(charcode - map->coverage.first_char)];
-  else
-    return -1;
+
+#ifndef WITHOUT_ASCII_PTEX
+  if (charcode <= map->coverage.last_char)
+      return map->indices[0];
+#endif
+
+  return -1;
 }
 
 static int
@@ -238,7 +238,7 @@ lookup_range (const struct range_map *map, int charcode)
       return map->indices[CHARACTER_INDEX(idx)];
   }
 #ifndef WITHOUT_ASCII_PTEX
-  if (charcode <= map->coverages[0].last_char)
+  if (charcode <= JFM_LASTCHAR)
       return map->indices[0];
 #endif
 
@@ -476,7 +476,7 @@ jfm_do_char_type_array (FILE *tfm_file, struct tfm_font *tfm)
   unsigned short chartype;
   unsigned int i;
 
-  tfm->chartypes = NEW((UCS_LASTCHAR + 1), unsigned int);
+  tfm->chartypes = NEW(UCS_LASTCHAR + 1, unsigned int);
   for (i = 0; i < (UCS_LASTCHAR + 1); i++) {
     tfm->chartypes[i] = 0;
   }
@@ -505,8 +505,8 @@ jfm_make_charmap (struct font_metric *fm, struct tfm_font *tfm)
 #ifndef WITHOUT_ASCII_PTEX
     map->coverage.num_chars  = UCS_LASTCHAR;
     map->coverage.last_char  = JFM_LASTCHAR;
-    map->indices    = NEW((UCS_LASTCHAR + 2), unsigned int);
-    map->indices[(UCS_LASTCHAR + 1)] = tfm->chartypes[0];
+    map->indices    = NEW(UCS_LASTCHAR + 2, unsigned int);
+    map->indices[UCS_LASTCHAR + 1] = tfm->chartypes[0];
     for (code = 0; code <= UCS_LASTCHAR; code++) {
 #else
     map->coverage.num_chars  = 0xFFFFL;
@@ -1030,6 +1030,10 @@ tfm_get_fw_width (int font_id, int32_t ch)
     default:
       idx = ch;
     }
+#ifndef WITHOUT_ASCII_PTEX
+  } else if (ch > fm->lastchar && ch <= JFM_LASTCHAR) {
+    idx = 0;
+#endif /* !WITHOUT_ASCII_PTEX */
   } else {
     ERROR("Invalid char: %ld\n", ch);
   }
@@ -1061,6 +1065,10 @@ tfm_get_fw_height (int font_id, int32_t ch)
     default:
       idx = ch;
     }
+#ifndef WITHOUT_ASCII_PTEX
+  } else if (ch > fm->lastchar && ch <= JFM_LASTCHAR) {
+    idx = 0;
+#endif /* !WITHOUT_ASCII_PTEX */
   } else {
     ERROR("Invalid char: %ld\n", ch);
   }
@@ -1092,6 +1100,10 @@ tfm_get_fw_depth (int font_id, int32_t ch)
     default:
       idx = ch;
     }
+#ifndef WITHOUT_ASCII_PTEX
+  } else if (ch > fm->lastchar && ch <= JFM_LASTCHAR) {
+    idx = 0;
+#endif /* !WITHOUT_ASCII_PTEX */
   } else {
     ERROR("Invalid char: %ld\n", ch);
   }
