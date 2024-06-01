@@ -16,6 +16,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - name: brew
+        shell: bash
+        run: |
+          #brew install icu4c
+          brew info icu4c
+
       - name: make libs
         shell: bash
         run: |
@@ -52,8 +58,8 @@ jobs:
       - name: icu
         shell: bash
         run: |
-          ICU_PREFIX=`find /usr/local/Cellar -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
-          # ICU_PREFIX="/usr/local/Cellar/icu4c/73.2"
+          ICU_PREFIX=`find /opt/homebrew/Cellar -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
+          # ICU_PREFIX="/opt/homebrew/Cellar/icu4c/74.2"
           echo "ICU_PREFIX: "$ICU_PREFIX
           echo "ICU_PREFIX=$ICU_PREFIX" >> $GITHUB_ENV
 
