@@ -28,15 +28,14 @@ Written by Tyge Tiessen, 2024. Public domain.
 
 
 def main():
-    # Handle commamd-line options
+    # Handle command-line options
     opt_handler = OptHandler()
-    args = opt_handler.args()
 
     # Read WEB file
-    web_reader = WebReader(args[0])
+    web_reader = WebReader(opt_handler.args[0])
 
     # Read change file
-    ch_reader = ChangeReader(args[1])
+    ch_reader = ChangeReader(opt_handler.args[1])
 
     # Run through the two files in parallel
     ch_reader.traverse(web_reader, opt_handler)
@@ -199,7 +198,7 @@ class ChangeReader:
                     text = re.sub(pattern, "", text, 1)
 
                     # Remove potentially text comment separator.
-                    pattern = " -+ "
+                    pattern = " -*"
                     if re.match(pattern, text):
                         text = re.sub(pattern, "", text, 1).strip()
 
@@ -224,11 +223,11 @@ class ChangeReader:
 
             ch_line = self._lines[self._chunk_start]
             if new_line[:10] != ch_line[:10]:
-                print("Old:")
-                print(f"  {ch_line}")
-                print("New:")
-                print(f"  {new_line}")
-                print()
+                eprint("Old:")
+                eprint(f"  {ch_line}")
+                eprint("New:")
+                eprint(f"  {new_line}")
+                eprint()
 
             self._lines[self._chunk_start] = new_line
 
@@ -242,9 +241,8 @@ class OptHandler:
     """
 
     def __init__(self):
-        """Optional elements of the output format
-        '@x [{part}.{section}] l.{line} {-(hyphen)} {text}'
-        """
+        # Optional elements of the output format
+        # '@x [{part}.{section}] l.{line} {-(hyphen)} {text}'
         self.part_b = True
         self.section_b = True
         self.line_b = True
@@ -252,9 +250,10 @@ class OptHandler:
         self.text_b = True
 
         try:
-            opts, self._args = getopt.getopt(sys.argv[1:], "pslht",
+            opts, self.args = getopt.getopt(sys.argv[1:], "pslht",
                 ["parts", "sections", "lines", "hyphens", "texts"])
         except getopt.GetoptError as err:
+            eprint(f"\n{os.path.basename(sys.argv[0])}: {err}!\n")
             print(USAGE)
             sys.exit(1)
 
@@ -272,12 +271,9 @@ class OptHandler:
             else:
                 assert False, f"Unhandled option {opt}"
 
-        if len(self._args) != 2:
+        if len(self.args) != 2:
             print(USAGE)
             sys.exit(1)
-
-    def args(self):
-        return self._args
 
 
 def eprint(*args, **kwargs):
