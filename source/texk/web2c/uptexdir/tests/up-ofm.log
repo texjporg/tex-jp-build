@@ -1,0 +1,15 @@
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**up-ofm
+(./up-ofm.tex cmtt10 uctt10x
+> \box0=
+\hbox(0.0+0.0)x5.24998, yoko direction
+.\displace 0.0
+.\uctt ^^c6
+
+! OK.
+l.43 \showbox0
+              
+
+[1] )
+Output written on up-ofm.dvi (1 page, 528 bytes).

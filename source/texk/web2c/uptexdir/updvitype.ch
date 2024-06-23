@@ -50,6 +50,27 @@ for i:=@'177 to 255 do xchr[i]:=i;
 @d ptex_id_byte=3 {identifies the kind of pTeX \.{DVI} files described here}
 @z
 
+@x
+  full_name := kpse_find_tfm (cur_name);
+  if full_name then begin
+    tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+  end else begin
+    tfm_file := nil;
+  end;
+@y
+  full_name := kpse_find_ofm (cur_name);
+  if full_name then begin
+    tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+  end else begin
+    full_name := kpse_find_tfm (cur_name);
+    if full_name then begin
+      tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+    end else begin
+      tfm_file := nil;
+    end
+  end;
+@z
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % JFM and pTeX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,6 +79,8 @@ for i:=@'177 to 255 do xchr[i]:=i;
 @y
 @!width_ptr:0..max_widths; {the number of known character widths}
 @!fnt_jfm_p:array [0..max_fonts] of boolean;
+@!fnt_ofm_p:array [0..max_fonts] of boolean;
+@!fnt_ofm_lv:array [0..max_fonts] of integer;
 @!jfm_char_code:array [0..max_widths] of integer;
 @!jfm_char_type:array [0..max_widths] of integer;
 @!jfm_char_font:array [0..max_widths] of integer;
@@ -112,23 +135,71 @@ end;
 
 @x [35] JFM by K.A.
 read_tfm_word; lh:=b2*256+b3;
+read_tfm_word; font_bc[nf]:=b0*256+b1; font_ec[nf]:=b2*256+b3;
+if font_ec[nf]<font_bc[nf] then font_bc[nf]:=font_ec[nf]+1;
+if width_ptr+font_ec[nf]-font_bc[nf]+1>max_widths then
+  begin print_ln('---not loaded, DVItype needs larger width table');
+@.DVItype needs larger...@>
+    goto 9998;
+  end;
 @y
 read_tfm_word; lh:=b0*256+b1;
 if (lh = 11) or (lh = 9) then
   begin
     print(' (JFM');
     fnt_jfm_p[nf] := true;
+    fnt_ofm_p[nf] := false;
     if lh = 9 then print(' tate');
     print(')');
     nt:=b2*256+b3;
     read_tfm_word;
   end
+else if (lh = 0) then
+  begin
+    nt:=0;
+    fnt_jfm_p[nf] := false;
+    fnt_ofm_p[nf] := true;
+    fnt_ofm_lv[nf] := b2*256+b3;
+    print(' (OFM level');
+    print((fnt_ofm_lv[nf]):1);
+    print(')');
+  end
 else
   begin
     nt:=0;
     fnt_jfm_p[nf] := false;
+    fnt_ofm_p[nf] := false;
   end;
-lh:=b2*256+b3;
+if fnt_ofm_p[nf] then begin
+  read_tfm_word; { lf }
+  read_tfm_word; lh:=((b0*256+b1)*256+b2)*256+b3;
+  read_tfm_word; font_bc[nf]:=((b0*256+b1)*256+b2)*256+b3;
+  read_tfm_word; font_ec[nf]:=((b0*256+b1)*256+b2)*256+b3;
+end else begin
+  lh:=b2*256+b3;
+  read_tfm_word; font_bc[nf]:=b0*256+b1; font_ec[nf]:=b2*256+b3;
+end;
+if font_ec[nf]<font_bc[nf] then font_bc[nf]:=font_ec[nf]+1;
+if width_ptr+font_ec[nf]-font_bc[nf]+1>max_widths then
+  begin print_ln('---not loaded, DVItype needs larger width table');
+@.DVItype needs larger...@>
+    goto 9998;
+  end;
+@z
+
+@x
+read_tfm_word; nw:=b0*256+b1;
+if (nw=0)or(nw>256) then goto 9997;
+@y
+if fnt_ofm_p[nf] then begin
+  read_tfm_word; nw:=((b0*256+b1)*256+b2)*256+b3;
+  read_tfm_word; { nh }
+  if (nw=0)or(nw>65536) then goto 9997;
+  end
+else begin
+  read_tfm_word; nw:=b0*256+b1;
+  if (nw=0)or(nw>256) then goto 9997;
+  end;
 @z
 
 @x [35] JFM by K.A.

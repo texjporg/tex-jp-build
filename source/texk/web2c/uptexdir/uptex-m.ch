@@ -168,6 +168,7 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d max_cjk_val=@"1000000 {to separate wchar and kcatcode}
 @d max_ivs_val=@"4400000 {to separate wchar with ivs and kcatcode}
 @d max_ucs_val=@"110000 {largest Unicode Scalar Value}
+@d max_latin_val=@"2E80
 @z
 
 @x
@@ -220,10 +221,26 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @y
 @d enable_cjk_token_code=auto_xspacing_code+1
 @d cat_code_base=enable_cjk_token_code+1
-  {table of 256 command codes (the ``catcodes'')}
-@d kcat_code_base=cat_code_base+256
+  {table of max_latin_val command codes (the ``catcodes'')}
+@d kcat_code_base=cat_code_base+max_latin_val
   {table of 512 command codes for the wchar's catcodes }
 @d auto_xsp_code_base=kcat_code_base+512 {table of 256 auto spacer flag}
+@z
+
+@x
+@d lc_code_base=kansuji_base+10 {table of 256 lowercase mappings}
+@d uc_code_base=lc_code_base+256 {table of 256 uppercase mappings}
+@d sf_code_base=uc_code_base+256 {table of 256 spacefactor mappings}
+@d math_code_base=sf_code_base+256 {table of 256 math mode mappings}
+@d char_sub_code_base=math_code_base+256 {table of character substitutions}
+@d int_base=char_sub_code_base+256 {beginning of region 5}
+@y
+@d lc_code_base=kansuji_base+10 {table of max_latin_val lowercase mappings}
+@d uc_code_base=lc_code_base+max_latin_val {table of max_latin_val uppercase mappings}
+@d sf_code_base=uc_code_base+max_latin_val {table of max_latin_val spacefactor mappings}
+@d math_code_base=sf_code_base+max_latin_val {table of 256 math mode mappings}
+@d char_sub_code_base=math_code_base+256 {table of character substitutions}
+@d int_base=char_sub_code_base+256 {beginning of region 5}
 @z
 
 @x
@@ -245,11 +262,14 @@ eqtb[auto_xspacing_code]:=eqtb[cat_code_base];
 eqtb[enable_cjk_token_code]:=eqtb[cat_code_base];
 for k:=0 to 255 do
   begin cat_code(k):=other_char;
-  math_code(k):=hi(k); sf_code(k):=1000;
+  math_code(k):=hi(k);
   auto_xsp_code(k):=0;
   end;
 for k:=0 to 511 do
   begin kcat_code(k):=other_kchar;
+  end;
+for k:=0 to max_latin_val-1 do
+  begin sf_code(k):=1000;
   end;
 @z
 
@@ -338,19 +358,19 @@ kchar_num: print_esc("kchar");
 @y
 @d cs_token_flag=@"1FFFFFFF {amount added to the |eqtb| location in a
   token that stands for a control sequence; is a multiple of~@@"1000000, less~1}
-@d max_char_val=@"100 {to separate char and command code}
-@d left_brace_token=@"100 {$2^8\cdot|left_brace|$}
-@d left_brace_limit=@"200 {$2^8\cdot(|left_brace|+1)$}
-@d right_brace_token=@"200 {$2^8\cdot|right_brace|$}
-@d right_brace_limit=@"300 {$2^8\cdot(|right_brace|+1)$}
-@d math_shift_token=@"300 {$2^8\cdot|math_shift|$}
-@d tab_token=@"400 {$2^8\cdot|tab_mark|$}
-@d out_param_token=@"500 {$2^8\cdot|out_param|$}
-@d space_token=@"A20 {$2^8\cdot|spacer|+|" "|$}
-@d letter_token=@"B00 {$2^8\cdot|letter|$}
-@d other_token=@"C00 {$2^8\cdot|other_char|$}
-@d match_token=@"D00 {$2^8\cdot|match|$}
-@d end_match_token=@"E00 {$2^8\cdot|end_match|$}
+@d max_char_val=@"10000 {to separate char and command code}
+@d left_brace_token=@"10000 {$2^16\cdot|left_brace|$}
+@d left_brace_limit=@"20000 {$2^16\cdot(|left_brace|+1)$}
+@d right_brace_token=@"20000 {$2^16\cdot|right_brace|$}
+@d right_brace_limit=@"30000 {$2^16\cdot(|right_brace|+1)$}
+@d math_shift_token=@"30000 {$2^16\cdot|math_shift|$}
+@d tab_token=@"40000 {$2^16\cdot|tab_mark|$}
+@d out_param_token=@"50000 {$2^16\cdot|out_param|$}
+@d space_token=@"A0020 {$2^16\cdot|spacer|+|" "|$}
+@d letter_token=@"B0000 {$2^16\cdot|letter|$}
+@d other_token=@"C0000 {$2^16\cdot|other_char|$}
+@d match_token=@"D0000 {$2^16\cdot|match|$}
+@d end_match_token=@"E0000 {$2^16\cdot|end_match|$}
 @z
 
 @x
@@ -638,6 +658,16 @@ char_given,math_given: scanned_result(cur_chr)(int_val);
 @z
 
 @x
+else if m<math_code_base then { \.{\\lccode}, \.{\\uccode}, \.{\\sfcode}, \.{\\catcode} }
+  begin scan_ascii_num;
+  scanned_result(equiv(m+cur_val))(int_val) end
+@y
+else if m<math_code_base then { \.{\\lccode}, \.{\\uccode}, \.{\\sfcode}, \.{\\catcode} }
+  begin scan_latin_num;
+  scanned_result(equiv(m+cur_val))(int_val) end
+@z
+
+@x
 @d ptex_minor_version_code=ptex_version_code+1 {code for \.{\\ptexminorversion}}
 @y
 @d uptex_version_code=ptex_version_code+1 {code for \.{\\uptexversion}}
@@ -669,9 +699,48 @@ primitive("uptexversion",last_item,uptex_version_code);
 @z
 
 @x
+procedure scan_ascii_num;
+begin scan_int;
+if (cur_val<0)or(cur_val>255) then
+  begin print_err("Bad character code");
+@.Bad character code@>
+  help2("A character number must be between 0 and 255.")@/
+    ("I changed this one to zero."); int_error(cur_val); cur_val:=0;
+  end;
+end;
+@y
+procedure scan_ascii_num;
+begin scan_int;
+if (cur_val<0)or(cur_val>255) then
+  begin print_err("Bad character code");
+@.Bad character code@>
+  help2("A character number must be between 0 and 255.")@/
+    ("I changed this one to zero."); int_error(cur_val); cur_val:=0;
+  end;
+end;
+procedure scan_latin_num;
+begin scan_int;
+if not is_char_ascii(cur_val) then
+  begin print_err("Bad character code");
+@.Bad character code@>
+  help2("A character number must be between 0 and ""2E7F.")@/
+    ("I changed this one to zero."); int_error(cur_val); cur_val:=0;
+  end;
+end;
+@z
+
+@x
   if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then {|wchar_token|}
 @y
   if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
+@z
+
+@x
+if (cur_val>255)and(cur_cmd<kanji) then
+  begin print_err("Improper alphabetic or KANJI constant");
+@y
+if (cur_val>=max_latin_val)and(cur_cmd<kanji) then
+  begin print_err("Improper alphabetic or KANJI constant");
 @z
 
 @x
@@ -833,11 +902,540 @@ begin
 @z
 
 @x
+@!font_bc: ^eight_bits;
+  {beginning (smallest) character code}
+@!font_ec: ^eight_bits;
+  {ending (largest) character code}
+@y
+@!font_bc: ^sixteen_bits;
+  {beginning (smallest) character code}
+@!font_ec: ^sixteen_bits;
+  {ending (largest) character code}
+@z
+
+@x
+@!char_base: ^integer;
+  {base addresses for |char_info|}
+@y
+@!char_base: ^integer;
+  {base addresses for |char_info|}
+@!char_attr_base: ^integer; {for OFM}
+@!ivalues_start: ^integer; {for OFM}
+@!fvalues_start: ^integer; {for OFM}
+@!mvalues_start: ^integer; {for OFM}
+@!rules_start: ^integer; {for OFM}
+@!glues_start: ^integer; {for OFM}
+@!penalties_start: ^integer; {for OFM}
+@!ivalues_base: ^integer; {for OFM}
+@!fvalues_base: ^integer; {for OFM}
+@!mvalues_base: ^integer; {for OFM}
+@!rules_base: ^integer; {for OFM}
+@!glues_base: ^integer; {for OFM}
+@!penalties_base: ^integer; {for OFM}
+@z
+
+@x
+@d kchar_code_end(#)==#].hh.rh
+@d kchar_code(#)==font_info[ctype_base[#]+kchar_code_end
+@d kchar_type_end(#)==#].hh.lhfield
+@d kchar_type(#)==font_info[ctype_base[#]+kchar_type_end
+@y
+@d kchar_code_end(#)==#].hh.rh
+@d kchar_code(#)==font_info[ctype_base[#]+kchar_code_end
+@d kchar_type_end(#)==#].hh.lhfield
+@d kchar_type(#)==font_info[ctype_base[#]+kchar_type_end
+@d offset_file_size=0
+@d offset_check=1
+@d offset_offset=offset_check+4
+@d offset_size=offset_offset+1
+@d offset_dsize=offset_size+1
+@d offset_params=offset_dsize+1
+@d offset_name_sort=offset_params+1
+@d offset_name=offset_name_sort+1
+@d offset_area=offset_name+1
+@d offset_bc=offset_area+1
+@d offset_ec=offset_bc+1
+@d offset_glue=offset_ec+1
+@d offset_used=offset_glue+1
+@d offset_hyphen=offset_used+1
+@d offset_skew=offset_hyphen+1
+@d offset_bchar_label=offset_skew+1
+@d offset_bchar=offset_bchar_label+1
+@d offset_false_bchar=offset_bchar+1
+@d offset_ivalues_start=offset_false_bchar+1
+@d offset_fvalues_start=offset_ivalues_start+1
+@d offset_mvalues_start=offset_fvalues_start+1
+@d offset_rules_start=offset_mvalues_start+1
+@d offset_glues_start=offset_rules_start+1
+@d offset_penalties_start=offset_glues_start+1
+@d offset_ivalues_base=offset_penalties_start+1
+@d offset_fvalues_base=offset_ivalues_base+1
+@d offset_mvalues_base=offset_fvalues_base+1
+@d offset_rules_base=offset_mvalues_base+1
+@d offset_glues_base=offset_rules_base+1
+@d offset_penalties_base=offset_glues_base+1
+@d offset_char_base=offset_penalties_base+1
+@d offset_char_attr_base=offset_char_base+1
+@d offset_width_base=offset_char_attr_base+1
+@d offset_height_base=offset_width_base+1
+@d offset_depth_base=offset_height_base+1
+@d offset_italic_base=offset_depth_base+1
+@d offset_lig_kern_base=offset_italic_base+1
+@d offset_kern_base=offset_lig_kern_base+1
+@d offset_exten_base=offset_kern_base+1
+@d offset_param_base=offset_exten_base+1
+@d offset_charinfo_base=offset_param_base+1
+@z
+
+@x
+@!cx:KANJI_code; {kanji code}
+@y
+@!cx:KANJI_code; {kanji code}
+@!ofm_flag:integer;
+@!ij,@!kl,@!k_param,@!fparam,@!font_counter:integer;
+@!font_level,@!header_length:integer;
+@!fn_dir:integer;
+@!nco,@!ncw,@!npc,@!nlw,@!neew:integer;
+@!nki,@!nwi,@!nkf,@!nwf,@!nkm,@!nwm:integer;
+@!nkr,@!nwr,@!nkg,@!nwg,@!nkp,@!nwp:integer;
+@!table_size:array [0..31] of integer;
+@!bytes_per_entry,@!extra_char_bytes:integer;
+@!repeat_no,@!table_counter:integer;
+@z
+
+@x
+if file_opened then print(" not loadable: Bad metric (TFM) file")
+else if name_too_long then print(" not loadable: Metric (TFM) file name too long")
+else print(" not loadable: Metric (TFM) file not found");
+@y
+if file_opened then print(" not loadable: Bad metric (TFM/OFM) file")
+else if name_too_long then print(" not loadable: Metric (TFM/OFM) file name too long")
+else print(" not loadable: Metric (TFM/OFM) file not found");
+@z
+
+@x
+pack_file_name(nom,aire,"");
+if not b_open_in(tfm_file) then abort;
+@y
+pack_file_name(nom,aire,"");
+if not ofm_open_in(tfm_file) then
+  if not b_open_in(tfm_file) then abort;
+@z
+
+@x
+@d read_sixteen(#)==begin #:=fbyte;
+  if #>127 then abort;
+  fget; #:=#*@'400+fbyte;
+  end
+@d read_twentyfourx(#)==begin #:=fbyte;
+  fget; #:=#*@"100+fbyte;
+  fget; #:=#+fbyte*@"10000;
+  end
+@d store_four_quarters(#)==begin fget; a:=fbyte; qw.b0:=qi(a);
+  fget; b:=fbyte; qw.b1:=qi(b);
+  fget; c:=fbyte; qw.b2:=qi(c);
+  fget; d:=fbyte; qw.b3:=qi(d);
+  #:=qw;
+  end
+@y
+@d read_sixteen(#)==begin #:=fbyte;
+  if #>127 then abort;
+  fget; #:=#*@'400+fbyte;
+  end
+@d read_sixteen_unsigned(#)==begin #:=fbyte;
+  fget; #:=#*@'400+fbyte;
+  end
+@d read_twentyfourx(#)==begin #:=fbyte;
+  fget; #:=#*@"100+fbyte;
+  fget; #:=#+fbyte*@"10000;
+  end
+@d read_thirtytwo(#)==begin #:=fbyte;
+  if #>127 then abort;
+  fget; #:=#*@'400+fbyte;
+  fget; #:=#*@'400+fbyte;
+  fget; #:=#*@'400+fbyte;
+  end
+@d store_four_quarters(#)==begin
+  if (ofm_flag<>0) then begin
+    fget; read_sixteen_unsigned(a); qw.b0:=a;
+    fget; read_sixteen_unsigned(b); qw.b1:=b;
+    fget; read_sixteen_unsigned(c); qw.b2:=c;
+    fget; read_sixteen_unsigned(d); qw.b3:=d;
+    #:=qw
+    end
+  else begin
+    fget; a:=fbyte; qw.b0:=qi(a);
+    fget; b:=fbyte; qw.b1:=qi(b);
+    fget; c:=fbyte; qw.b2:=qi(c);
+    fget; d:=fbyte; qw.b3:=qi(d);
+    #:=qw
+    end
+  end
+@z
+
+@x
+@ @<Read the {\.{TFM}} size fields@>=
+begin read_sixteen(lf);
+fget; read_sixteen(lh);
+@y
+@ @<Read the {\.{TFM}} size fields@>=
+begin read_sixteen(lf);
+fget; read_sixteen(lh);
+ofm_flag:=0;
+nco:=0; ncw:=0; npc:=0;
+nki:=0; nwi:=0; nkf:=0; nwf:=0; nkm:=0; nwm:=0;
+nkr:=0; nwr:=0; nkg:=0; nwg:=0; nkp:=0; nwp:=0;
+@z
+
+@x
+else if lf=tate_jfm_id then
+  begin jfm_flag:=dir_tate; nt:=lh;
+  fget; read_sixteen(lf);
+  fget; read_sixteen(lh);
+  end
+@y
+else if lf=tate_jfm_id then
+  begin jfm_flag:=dir_tate; nt:=lh;
+  fget; read_sixteen(lf);
+  fget; read_sixteen(lh);
+  end
+else if lf=0 then
+  begin ofm_flag:=1;
+  font_level:=lh;
+  jfm_flag:=dir_default; nt:=0;
+  if (font_level<>0) and (font_level<>1) then abort;
+  fget; read_thirtytwo(lf);
+  fget; read_thirtytwo(lh);
+  end
+@z
+
+@x
+else begin jfm_flag:=dir_default; nt:=0;
+  end;
+fget; read_sixteen(bc);
+fget; read_sixteen(ec);
+if (bc>ec+1)or(ec>255) then abort;
+if bc>255 then {|bc=256| and |ec=255|}
+  begin bc:=1; ec:=0;
+  end;
+fget; read_sixteen(nw);
+fget; read_sixteen(nh);
+fget; read_sixteen(nd);
+fget; read_sixteen(ni);
+fget; read_sixteen(nl);
+fget; read_sixteen(nk);
+fget; read_sixteen(ne);
+fget; read_sixteen(np);
+@y
+else begin jfm_flag:=dir_default; nt:=0;
+  end;
+if ofm_flag<>1 then begin
+  fget; read_sixteen(bc);
+  fget; read_sixteen(ec);
+  if (bc>ec+1)or(ec>255) then abort;
+  if bc>255 then {|bc=256| and |ec=255|}
+    begin bc:=1; ec:=0;
+    end;
+  fget; read_sixteen(nw);
+  fget; read_sixteen(nh);
+  fget; read_sixteen(nd);
+  fget; read_sixteen(ni);
+  fget; read_sixteen(nl);
+  fget; read_sixteen(nk);
+  fget; read_sixteen(ne);
+  fget; read_sixteen(np);
+  end
+else begin
+  fget; read_thirtytwo(bc);
+  fget; read_thirtytwo(ec);
+  if (bc>ec+1)or(ec>65535) then abort;
+  if bc>65535 then {|bc=65536| and |ec=65535|}
+    begin bc:=1; ec:=0;
+    end;
+  fget; read_thirtytwo(nw);
+  fget; read_thirtytwo(nh);
+  fget; read_thirtytwo(nd);
+  fget; read_thirtytwo(ni);
+  fget; read_thirtytwo(nl);
+  fget; read_thirtytwo(nk);
+  fget; read_thirtytwo(ne);
+  fget; read_thirtytwo(np);
+  fget; read_thirtytwo(fn_dir);
+  nlw:=2*nl;
+  neew:=2*ne;
+  if font_level=0 then begin
+    header_length:=14;
+    ncw:=2*(ec-bc+1);
+    end
+  else begin
+    header_length:=29;
+    fget; read_thirtytwo(nco);
+    fget; read_thirtytwo(ncw);
+    fget; read_thirtytwo(npc);
+    fget; read_thirtytwo(nki);
+    fget; read_thirtytwo(nwi);
+    fget; read_thirtytwo(nkf);
+    fget; read_thirtytwo(nwf);
+    fget; read_thirtytwo(nkm);
+    fget; read_thirtytwo(nwm);
+    fget; read_thirtytwo(nkr);
+    fget; read_thirtytwo(nwr);
+    fget; read_thirtytwo(nkg);
+    fget; read_thirtytwo(nwg);
+    fget; read_thirtytwo(nkp);
+    fget; read_thirtytwo(nwp);
+    end;
+end;
+if ofm_flag<>0 then
+  begin if lf<>header_length+lh+ncw+nw+nh+nd+ni+nlw+nk+neew+np+
+      nki+nwi+nkf+nwf+nkm+nwm+nkr+nwr+nkg+nwg+nkp+nwp then abort;
+  end
+else
+@z
+
+@x
+@<Use size fields to allocate font information@>=
+if jfm_flag<>dir_default then
+@y
+@<Use size fields to allocate font information@>=
+if ofm_flag<>0 then begin
+  if font_level=0 then
+    lf:=lf-14-lh-(ec-bc+1)-nl-ne
+  else
+    lf:=lf-29-lh-ncw+(1+npc)*(ec-bc+1)-nl-ne;
+  end
+else
+if jfm_flag<>dir_default then
+@z
+
+@x
+ctype_base[f]:=fmem_ptr;
+char_base[f]:=ctype_base[f]+nt-bc;
+width_base[f]:=char_base[f]+ec+1;
+@y
+ctype_base[f]:=fmem_ptr;
+char_base[f]:=ctype_base[f]+nt-bc;
+char_attr_base[f]:=char_base[f]+ec+1;
+ivalues_start[f]:=char_attr_base[f]+npc*(ec-bc+1);
+fvalues_start[f]:=ivalues_start[f]+nki;
+mvalues_start[f]:=fvalues_start[f]+nkf;
+rules_start[f]:=mvalues_start[f]+nkm;
+glues_start[f]:=rules_start[f]+nkr;
+penalties_start[f]:=glues_start[f]+nkg;
+ivalues_base[f]:=penalties_start[f]+nkp;
+fvalues_base[f]:=ivalues_base[f]+nwi;
+mvalues_base[f]:=fvalues_base[f]+nwf;
+rules_base[f]:=mvalues_base[f]+nwm;
+glues_base[f]:=rules_base[f]+nwr;
+penalties_base[f]:=glues_base[f]+nwg;
+width_base[f]:=penalties_base[f]+nwp;
+@z
+
+@x
+store_four_quarters(font_check[f]);
+@y
+begin
+  fget; a:=fbyte; qw.b0:=qi(a);
+  fget; b:=fbyte; qw.b1:=qi(b);
+  fget; c:=fbyte; qw.b2:=qi(c);
+  fget; d:=fbyte; qw.b3:=qi(d);
+  font_check[f]:=qw;
+  end;
+@z
+
+@x
+@ @<Read character data@>=
+if jfm_flag<>dir_default then
+  for k:=ctype_base[f] to ctype_base[f]+nt-1 do
+    begin
+    fget; read_twentyfourx(cx);
+    if jfm_enc=2 then {Unicode TFM}
+      font_info[k].hh.rh:=toDVI(fromUCS(cx))
+    else if jfm_enc=1 then {JIS-encoded TFM}
+      font_info[k].hh.rh:=toDVI(fromJIS(cx))
+    else
+      font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; cx:=fbyte;
+    font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
+    end;
+for k:=char_base[f]+bc to width_base[f]-1 do
+  begin store_four_quarters(font_info[k].qqqq);
+  if (a>=nw)or(b div @'20>=nh)or(b mod @'20>=nd)or
+    (c div 4>=ni) then abort;
+  case c mod 4 of
+  lig_tag: if d>=nl then abort;
+  ext_tag: if d>=ne then abort;
+  list_tag: @<Check for charlist cycle@>;
+  othercases do_nothing {|no_tag|}
+  endcases;
+  end
+@y
+@ @<Read character data@>=
+if ofm_flag<>0 then begin
+if font_level=1 then begin
+  ij:=0;
+  kl:=ivalues_start[f];
+  font_counter:=ivalues_base[f];
+  while kl<fvalues_start[f] do       {IVALUE starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam;
+    table_size[ij]:=1;
+    incr(ij); incr(kl);
+    end;
+  while kl<mvalues_start[f] do       {FVALUE starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam;
+    table_size[ij]:=1;
+    incr(ij); incr(kl);
+    end;
+  while kl<rules_start[f] do         {MVALUE starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam;
+    table_size[ij]:=1;
+    incr(ij); incr(kl);
+    end;
+  while kl<glues_start[f] do         {RULE starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam*3;
+    table_size[ij]:=3;
+    incr(ij); incr(kl);
+    end;
+  while kl<penalties_start[f] do     {GLUE starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam*4;
+    table_size[ij]:=4;
+    incr(ij); incr(kl);
+    end;
+  while kl<ivalues_base[f] do        {PENALTY starts}
+    begin
+    read_thirtytwo(fparam);
+    font_info[kl].int := font_counter;
+    font_counter:=font_counter+fparam;
+    table_size[ij]:=1;
+    incr(ij); incr(kl);
+    end;
+  while kl<fvalues_base[f] do        {IVALUE entries}
+    begin
+    read_thirtytwo(font_info[kl].int);
+    incr(kl);
+    end;
+  while kl<mvalues_base[f] do        {FVALUE entries}
+    begin
+    read_thirtytwo(font_info[kl].sc);
+    incr(kl);
+    end;
+  while kl<rules_base[f] do          {MVALUE entries}
+    begin
+    read_thirtytwo(font_info[kl].int);
+    incr(kl);
+    end;
+  while kl<glues_base[f] do          {RULE entries}
+    begin
+    store_scaled(font_info[kl].sc);
+    store_scaled(font_info[kl+1].sc);
+    store_scaled(font_info[kl+2].sc);
+    kl:=kl+3;
+    end;
+  while kl<penalties_base[f] do      {GLUE entries}
+    begin
+    fget; read_sixteen(font_info[kl].hh.lhfield);
+    fget; read_sixteen(font_info[kl].hh.rh);
+    store_scaled(font_info[kl+1].sc);
+    store_scaled(font_info[kl+2].sc);
+    store_scaled(font_info[kl+3].sc);
+    kl:=kl+4;
+    end;
+  while kl<offset_charinfo_base do      {PENALTY entries}
+    begin
+    read_thirtytwo(font_info[kl].int);
+    incr(kl);
+    end;
+  end;
+  end
+else
+if jfm_flag<>dir_default then
+  for k:=ctype_base[f] to ctype_base[f]+nt-1 do
+    begin
+    fget; read_twentyfourx(cx);
+    if jfm_enc=2 then {Unicode TFM}
+      font_info[k].hh.rh:=toDVI(fromUCS(cx))
+    else if jfm_enc=1 then {JIS-encoded TFM}
+      font_info[k].hh.rh:=toDVI(fromJIS(cx))
+    else
+      font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
+    fget; cx:=fbyte;
+    font_info[k].hh.lhfield:=tonum(cx); {|kchar_type|}
+    end;
+k:=char_base[f]+bc;
+while k<=width_base[f]-1 do
+  begin store_four_quarters(font_info[k].qqqq);
+  if (a>=nw)or(b div (@'20*(ofm_flag+1))>=nh)
+    or(b mod (@'20*(ofm_flag+1))>=nd)or
+    (c div 4*(ofm_flag+1)>=ni) then abort;
+  case c mod 4*(ofm_flag+1) of
+  lig_tag: if d>=nl then abort;
+  ext_tag: if d>=ne then abort;
+  list_tag: @<Check for charlist cycle@>;
+  othercases do_nothing {|no_tag|}
+  endcases;
+  incr(k);
+  if font_level=1 then begin
+    fget; read_sixteen_unsigned(repeat_no);
+    for ij:=0 to npc-1 do begin
+      fget; read_sixteen(fparam);
+      font_info[k_param].int :=
+         font_info[ivalues_start[f]+ij].int + fparam*table_size[ij];
+      incr(k_param);
+      end;
+    for ij:=1 to extra_char_bytes do fget;
+    for ij:=1 to repeat_no do begin
+      for table_counter:=0 to npc-1 do begin
+        end;
+      end;
+    end;
+  end
+@z
+
+@x
+adjust(ctype_base);
+adjust(char_base); adjust(width_base); adjust(lig_kern_base);
+@y
+adjust(char_attr_base); adjust(ivalues_start); adjust(fvalues_start);
+adjust(mvalues_start); adjust(rules_start); adjust(glues_start);
+adjust(penalties_start); adjust(ivalues_base); adjust(fvalues_base);
+adjust(mvalues_base); adjust(rules_base); adjust(glues_base);
+adjust(penalties_base); adjust(ctype_base);
+adjust(char_base); adjust(width_base); adjust(lig_kern_base);
+@z
+
+@x
 @d set2=129 {typeset a character and move right}
 @y
 @d set2=129 {typeset a character and move right}
 @d set3=130 {typeset a character and move right}
 @d set4=131 {typeset a character and move right}
+@z
+
+@x
+        begin if c>=qi(128) then dvi_out(set1);
+        dvi_out(qo(c));@/
+@y
+        begin if c>=qi(@"100) then begin
+          dvi_out(set2); dvi_out(Hi(c)); dvi_out(Lo(c));
+          end
+        else begin if c>=qi(128) then dvi_out(set1);
+          dvi_out(qo(c));@/
+        end;
 @z
 
 @x
@@ -1182,11 +1780,47 @@ kchar_given: begin print_esc("kchar"); print_hex(chr_code);
 @z
 
 @x
+  if p=kcat_code_base then
+    begin scan_char_num; p:=p+kcatcodekey(cur_val) end
+  else begin scan_ascii_num; p:=p+cur_val; end;
+@y
+  if p=kcat_code_base then
+    begin scan_char_num; p:=p+kcatcodekey(cur_val);
+      if cur_val>=max_latin_val then m:=not_cjk; end
+  else if p<math_code_base then
+    begin scan_latin_num; p:=p+cur_val; end
+  else begin scan_ascii_num; p:=p+cur_val; end;
+@z
+
+@x
 @ @<Let |m| be the minimal...@>=
 if cur_chr=kcat_code_base then m:=kanji else m:=0
+
+@ @<Let |n| be the largest...@>=
+if cur_chr=cat_code_base then n:=invalid_char {1byte |max_char_code|}
+else if cur_chr=kcat_code_base then n:=max_char_code
 @y
 @ @<Let |m| be the minimal...@>=
 if cur_chr=kcat_code_base then m:=latin_ucs else m:=0
+
+@ @<Let |n| be the largest...@>=
+if cur_chr=cat_code_base then n:=invalid_char {1byte |max_char_code|}
+else if cur_chr=kcat_code_base then n:=max_char_code
+else if cur_chr<math_code_base then n:=max_latin_val
+@z
+
+@x
+procedure shift_case;
+var b:pointer; {|lc_code_base| or |uc_code_base|}
+@!p:pointer; {runs through the token list}
+@!t:halfword; {token}
+@!c:eight_bits; {character code}
+@y
+procedure shift_case;
+var b:pointer; {|lc_code_base| or |uc_code_base|}
+@!p:pointer; {runs through the token list}
+@!t:halfword; {token}
+@!c:sixteen_bits; {character code}
 @z
 
 @x
@@ -1197,8 +1831,121 @@ if (t<cs_token_flag+single_base)and(not check_kanji(t)) then
 @y
 @<Change the case of the token in |p|, if a change is appropriate@>=
 t:=info(p);
-if (t<cs_token_flag+single_base)and(not check_kanji(t)) then
+if (t<cs_token_flag+single_base) then
   begin c:=t mod max_char_val;
+@z
+
+@x
+dump_things(ctype_base[null_font], font_ptr+1-null_font);
+dump_things(char_base[null_font], font_ptr+1-null_font);
+@y
+dump_things(char_attr_base[null_font], font_ptr+1-null_font);
+dump_things(ivalues_start[null_font], font_ptr+1-null_font);
+dump_things(fvalues_start[null_font], font_ptr+1-null_font);
+dump_things(mvalues_start[null_font], font_ptr+1-null_font);
+dump_things(rules_start[null_font], font_ptr+1-null_font);
+dump_things(glues_start[null_font], font_ptr+1-null_font);
+dump_things(penalties_start[null_font], font_ptr+1-null_font);
+dump_things(ivalues_base[null_font], font_ptr+1-null_font);
+dump_things(fvalues_base[null_font], font_ptr+1-null_font);
+dump_things(mvalues_base[null_font], font_ptr+1-null_font);
+dump_things(rules_base[null_font], font_ptr+1-null_font);
+dump_things(glues_base[null_font], font_ptr+1-null_font);
+dump_things(penalties_base[null_font], font_ptr+1-null_font);
+dump_things(ctype_base[null_font], font_ptr+1-null_font);
+dump_things(char_base[null_font], font_ptr+1-null_font);
+@z
+
+@x
+font_bc:=xmalloc_array(eight_bits, font_max);
+font_ec:=xmalloc_array(eight_bits, font_max);
+@y
+font_bc:=xmalloc_array(sixteen_bits, font_max);
+font_ec:=xmalloc_array(sixteen_bits, font_max);
+@z
+
+@x
+ctype_base:=xmalloc_array(integer, font_max);
+char_base:=xmalloc_array(integer, font_max);
+@y
+char_attr_base:=xmalloc_array(integer, font_max);
+ivalues_start:=xmalloc_array(integer, font_max);
+fvalues_start:=xmalloc_array(integer, font_max);
+mvalues_start:=xmalloc_array(integer, font_max);
+rules_start:=xmalloc_array(integer, font_max);
+glues_start:=xmalloc_array(integer, font_max);
+penalties_start:=xmalloc_array(integer, font_max);
+ivalues_base:=xmalloc_array(integer, font_max);
+fvalues_base:=xmalloc_array(integer, font_max);
+mvalues_base:=xmalloc_array(integer, font_max);
+rules_base:=xmalloc_array(integer, font_max);
+glues_base:=xmalloc_array(integer, font_max);
+penalties_base:=xmalloc_array(integer, font_max);
+ctype_base:=xmalloc_array(integer, font_max);
+char_base:=xmalloc_array(integer, font_max);
+@z
+
+@x
+undump_things(ctype_base[null_font], font_ptr+1-null_font);
+undump_things(char_base[null_font], font_ptr+1-null_font);
+@y
+undump_things(char_attr_base[null_font], font_ptr+1-null_font);
+undump_things(ivalues_start[null_font], font_ptr+1-null_font);
+undump_things(fvalues_start[null_font], font_ptr+1-null_font);
+undump_things(mvalues_start[null_font], font_ptr+1-null_font);
+undump_things(rules_start[null_font], font_ptr+1-null_font);
+undump_things(glues_start[null_font], font_ptr+1-null_font);
+undump_things(penalties_start[null_font], font_ptr+1-null_font);
+undump_things(ivalues_base[null_font], font_ptr+1-null_font);
+undump_things(fvalues_base[null_font], font_ptr+1-null_font);
+undump_things(mvalues_base[null_font], font_ptr+1-null_font);
+undump_things(rules_base[null_font], font_ptr+1-null_font);
+undump_things(glues_base[null_font], font_ptr+1-null_font);
+undump_things(penalties_base[null_font], font_ptr+1-null_font);
+undump_things(ctype_base[null_font], font_ptr+1-null_font);
+undump_things(char_base[null_font], font_ptr+1-null_font);
+@z
+
+@x
+  font_bc:=xmalloc_array(eight_bits, font_max);
+  font_ec:=xmalloc_array(eight_bits, font_max);
+@y
+  font_bc:=xmalloc_array(sixteen_bits, font_max);
+  font_ec:=xmalloc_array(sixteen_bits, font_max);
+@z
+
+@x
+  ctype_base:=xmalloc_array(integer, font_max);
+  char_base:=xmalloc_array(integer, font_max);
+@y
+  char_attr_base:=xmalloc_array(integer, font_max);
+  ivalues_start:=xmalloc_array(integer, font_max);
+  fvalues_start:=xmalloc_array(integer, font_max);
+  mvalues_start:=xmalloc_array(integer, font_max);
+  rules_start:=xmalloc_array(integer, font_max);
+  glues_start:=xmalloc_array(integer, font_max);
+  penalties_start:=xmalloc_array(integer, font_max);
+  ivalues_base:=xmalloc_array(integer, font_max);
+  fvalues_base:=xmalloc_array(integer, font_max);
+  mvalues_base:=xmalloc_array(integer, font_max);
+  rules_base:=xmalloc_array(integer, font_max);
+  glues_base:=xmalloc_array(integer, font_max);
+  penalties_base:=xmalloc_array(integer, font_max);
+  ctype_base:=xmalloc_array(integer, font_max);
+  char_base:=xmalloc_array(integer, font_max);
+@z
+
+@x
+  ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
+@y
+  char_attr_base[null_font]:=0; ivalues_start[null_font]:=0;
+  fvalues_start[null_font]:=0; mvalues_start[null_font]:=0;
+  rules_start[null_font]:=0; glues_start[null_font]:=0;
+  penalties_start[null_font]:=0; ivalues_base[null_font]:=0;
+  fvalues_base[null_font]:=0; mvalues_base[null_font]:=0;
+  rules_base[null_font]:=0; glues_base[null_font]:=0;
+  penalties_base[null_font]:=0;
+  ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
 @z
 
 @x
@@ -1434,6 +2181,8 @@ end;
 function check_echar_range(@!c:integer):integer;
 begin
 if (c>=0)and(c<256)then
+  check_echar_range:=1
+else if (c>=256)and(c<max_latin_val)and(kcat_code(kcatcodekey(c))=latin_ucs)then
   check_echar_range:=1
 else check_echar_range:=0;
 @z

@@ -171,11 +171,13 @@ uptex_tests = \
 	uptexdir/uptriptest.test uptexdir/ptriptest.test \
 	uptexdir/upver.test \
 	uptexdir/upkcat.test \
-	uptexdir/wcfname.test uptexdir/wcfname0.test
+	uptexdir/wcfname.test uptexdir/wcfname0.test \
+	uptexdir/uptex-ofm.test
 uptexdir/uptriptest.log uptexdir/ptriptest.log: \
 	uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 uptexdir/upver.log uptexdir/upkcat.log \
-	uptexdir/wcfname.log uptexdir/wcfname0.log: uptex$(EXEEXT)
+	uptexdir/wcfname.log uptexdir/wcfname0.log \
+	uptexdir/uptex-ofm.log: uptex$(EXEEXT)
 upweb_tests = \
 	uptexdir/upbibtex.test \
 	uptexdir/updvitype.test \
@@ -263,6 +265,10 @@ DISTCLEANFILES += uptests/ygk256*.*
 DISTCLEANFILES += uptests/xskipjfmp.*
 ## uptexdir/uptriptest
 EXTRA_DIST += uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf
+## uptexdir/uptex-ofm.test
+EXTRA_DIST += uptexdir/tests/up-ofm.tex uptexdir/tests/up-ofm.log
+DISTCLEANFILES += up-ofm.*
+
 uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: uptrip-clean

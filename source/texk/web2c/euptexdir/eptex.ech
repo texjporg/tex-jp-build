@@ -619,7 +619,7 @@ font_char_ic_code: begin scan_font_ident; q:=cur_val;
       end
     else cur_val:=0;
     end
-  else begin scan_ascii_num;
+  else begin scan_latin_num;
     if (font_bc[q]<=cur_val)and(font_ec[q]>=cur_val) then
       begin i:=orig_char_info(q)(qi(cur_val));
       case m of
@@ -767,7 +767,7 @@ if_font_char_code:begin scan_font_ident; n:=cur_val;
       b:=(font_bc[n]<=cur_val)and(font_ec[n]>=cur_val)
       end
     end
-  else begin scan_ascii_num;
+  else begin scan_latin_num;
     if (font_bc[n]<=cur_val)and(font_ec[n]>=cur_val) then @/
       b:=char_exists(orig_char_info(n)(qi(cur_val)))
     else b:=false;

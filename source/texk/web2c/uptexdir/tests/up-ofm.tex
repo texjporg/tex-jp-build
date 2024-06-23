@@ -1,0 +1,79 @@
+% Copyright 2024 Japanese TeX Development Community <issue@texjp.org>
+% You may freely use, modify and/or distribute this file.
+%
+\ifx\fmtname\undefined
+  \input basic
+  \def\fmtname{basic}
+  \expandafter\dump
+\fi
+%==================
+\begingroup % Just there to minimize tracing output
+  \tracingmacros=2
+  \tracingonline=1
+%----
+\message{cmtt10}
+\font\cmtt=cmtt10
+\cmtt
+\char"21\char"22\char"23\char"24\char"25
+
+\char"30\char"31\char"32\char"33 \char"41\char"42\char"43 \char"64\char"65\char"66
+
+0123 ABC def
+
+
+\message{uctt10x}
+\font\uctt=uctt10x
+\uctt
+\char"21\char"22\char"23\char"24\char"25
+
+\char"30\char"31\char"32\char"33 \char"41\char"42\char"43 \char"64\char"65\char"66
+
+0123 ABC def
+
+
+\kcatcode"C6=14 % latin_ucs: not cjk in ucs code
+\catcode"C6=11  \catcode"D8=11  \catcode"DF=11
+\catcode"E6=11  \catcode"F8=11
+
+\char"C6\char"D8\char"DF\char"E6\char"F8
+
+ÆØßæø
+
+\setbox0\hbox{【Æ】}
+\showbox0
+
+\kcatcode"123=14
+\catcode"123=11  \catcode"131=11  \catcode"152=11
+\catcode"153=11
+
+\char"123\char"131\char"152\char"153
+
+ģıŒœ
+
+\kcatcode"393=14
+\catcode"393=11  \catcode"394=11  \catcode"398=11
+\catcode"39B=11  \catcode"39E=11
+
+\char"393\char"394\char"398\char"39B\char"39E
+
+ΓΔΘΛΞ
+
+\kcatcode"2010=14
+\catcode"2010=11  \catcode"2018=11  \catcode"2019=11
+
+\char"2010\char"2018\char"2019
+
+‐‘’
+
+\lccode"C6="E6
+\uccode"E6="C6
+\lccode`Œ=`œ
+\uccode`œ=`Œ
+
+\uppercase{[aeoe æœ]}
+\lowercase{[AEOE ÆŒ]}
+
+%----
+\setbox0=\vbox{} % no dvi output
+\endgroup
+\end
