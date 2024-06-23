@@ -1,3 +1,44 @@
+2024-06-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.ch,
+	* ctang-w2c.ch,
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch: Fix typo (upstream).
+
+2024-06-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-mini.ch,
+	* comm-w2c.ch: Section 'Index.' is on Level 1, not 0.
+	* ctwill-w2c.ch,
+	* ../tests/fix-changefile-lines.py: Ignore CWEB @qcomment@> line(s).
+
+2024-06-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.ch,
+	* ctang-w2c.ch,
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch: Add [part.section] l.ine information.
+
+2024-05-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebacromac.tex: HiTeX has a three-page table-of-contents.
+	* texinputs/pdfwebtocfront.tex: Add \space in PDF code.
+
+2024-05-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* texinputs/pdfwebtocfront.tex: More room for long ToCs.
+
+2024-05-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebacromac.tex,
+	* cwebmac.tex,
+	* texinputs/dcwebmac.tex,
+	* texinputs/fcwebmac.tex,
+	* texinputs/icwebmac.tex,
+	* texinputs/pdfctproofmac.tex,
+	* texinputs/pdfctwimac.tex,
+	* texinputs/pdfwebtocfront.tex: Extend and reshuffle \startpdf.
+
 2024-03-13  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill-mini.ch: Fix page breaks in sections 164 and 173.
