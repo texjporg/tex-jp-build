@@ -432,6 +432,14 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
 @z
 
 @x
+@!c,@!cc:ASCII_code; {constituents of a possible expanded code}
+@!d:2..3; {number of excess characters in an expanded code}
+@y
+@!c,@!cc,@!cd,@!ce:ASCII_code; {constituents of a possible expanded code}
+@!d:2..7; {number of excess characters in an expanded code}
+@z
+
+@x
   begin cur_chr:=buffer[loc]; incr(loc);
     if multistrlen(ustringcast(buffer), limit+1, loc-1)=2 then
       begin cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc-1);
@@ -479,6 +487,40 @@ all_jcode(mid_line):
 hangul_code(skip_blanks),hangul_code(skip_blanks_kanji),hangul_code(new_line),
 hangul_code(mid_kanji):
   state:=mid_line;
+@z
+
+@x
+@d hex_to_cur_chr==
+  if c<="9" then cur_chr:=c-"0" @+else cur_chr:=c-"a"+10;
+  if cc<="9" then cur_chr:=16*cur_chr+cc-"0"
+  else cur_chr:=16*cur_chr+cc-"a"+10
+@y
+@d hex_to_cur_chr==
+  if c<="9" then cur_chr:=c-"0" @+else cur_chr:=c-"a"+10;
+  if cc<="9" then cur_chr:=16*cur_chr+cc-"0"
+  else cur_chr:=16*cur_chr+cc-"a"+10
+@d long_hex_to_cur_chr==
+  if c<="9" then cur_chr:=c-"0" @+else cur_chr:=c-"a"+10;
+  if cc<="9" then cur_chr:=16*cur_chr+cc-"0"
+  else cur_chr:=16*cur_chr+cc-"a"+10;
+  if cd<="9" then cur_chr:=16*cur_chr+cd-"0"
+  else cur_chr:=16*cur_chr+cd-"a"+10;
+  if ce<="9" then cur_chr:=16*cur_chr+ce-"0"
+  else cur_chr:=16*cur_chr+ce-"a"+10
+@z
+
+@x
+  begin c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
+@y
+  begin if (cur_chr=buffer[loc+1]) and (cur_chr=buffer[loc+2]) and
+           ((loc+6)<=limit) then
+     begin c:=buffer[loc+3]; cc:=buffer[loc+4];
+       cd:=buffer[loc+5]; ce:=buffer[loc+6];
+       if is_hex(c) and is_hex(cc) and is_hex(cd) and is_hex(ce) then
+       begin loc:=loc+7; long_hex_to_cur_chr; goto reswitch;
+       end
+     end;
+  c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
 @z
 
 @x
