@@ -1124,6 +1124,7 @@ fget; read_sixteen(lh);
 begin read_sixteen(lf);
 fget; read_sixteen(lh);
 ofm_flag:=0;
+font_level:=-1;
 nco:=0; ncw:=0; npc:=0;
 nki:=0; nwi:=0; nkf:=0; nwf:=0; nkm:=0; nwm:=0;
 nkr:=0; nwr:=0; nkg:=0; nwg:=0; nkp:=0; nwp:=0;
