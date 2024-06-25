@@ -1516,12 +1516,16 @@ hmode+no_boundary: begin get_x_token;
 hmode+kanji,hmode+kana,hmode+other_kchar,hmode+hangul,hmode+modifier: goto main_loop_j;
 hmode+char_given:
   if check_echar_range(cur_chr) then goto main_loop
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+    if (cur_cmd<=not_cjk) then cur_cmd:=other_kchar;
+    goto main_loop_j; end;
 hmode+kchar_given:
   begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
 hmode+char_num: begin scan_char_num; cur_chr:=cur_val;
   if check_echar_range(cur_chr) then goto main_loop
-  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr)); goto main_loop_j; end;
+  else begin cur_cmd:=kcat_code(kcatcodekey(cur_chr));
+    if (cur_cmd<=not_cjk) then cur_cmd:=other_kchar;
+    goto main_loop_j; end;
   end;
 hmode+kchar_num: begin scan_char_num; cur_chr:=cur_val;
   cur_cmd:=kcat_code(kcatcodekey(cur_chr));
