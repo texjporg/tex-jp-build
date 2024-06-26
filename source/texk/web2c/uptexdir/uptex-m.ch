@@ -169,7 +169,6 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d max_ivs_val=@"4400000 {to separate wchar with ivs and kcatcode}
 @d max_ucs_val=@"110000 {largest Unicode Scalar Value}
 @d max_latin_val=@"2E80
-@d latin_ucs_flag=@"800000
 @z
 
 @x
@@ -639,7 +638,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr+latin_ucs_flag
+      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -674,7 +673,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr+latin_ucs_flag
+      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -689,7 +688,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr+latin_ucs_flag
+      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -808,7 +807,7 @@ while k<pool_ptr do
   begin  t:=so(str_pool[k]);
   if t>=@"180 then { there is no |wchar_token| whose code is 0--127. }
     begin t:=fromBUFFshort(str_pool, pool_ptr, k); cc:=kcat_code(kcatcodekey(t));
-    if (cc=latin_ucs) then begin cc:=other_char; t:=t+latin_ucs_flag; end;
+    if (cc=latin_ucs) then cc:=other_char;
     if (cc=not_cjk) then cc:=other_kchar;
     if (cc=kanji)and(t>=max_cjk_val) then cc:=kanji_ivs;
     t:=t+cc*max_cjk_val;
@@ -2126,7 +2125,7 @@ begin if is_char_node(link(p)) then
     else if cur_cmd=not_cjk then
       info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
     else if cur_cmd=latin_ucs then
-      info(main_p):=KANJI(cur_chr)+cat_code(cur_chr)*max_cjk_val+latin_ucs_flag
+      info(main_p):=KANJI(cur_chr)+cat_code(cur_chr)*max_cjk_val
     else { Does this case occur? }
       info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
 @z

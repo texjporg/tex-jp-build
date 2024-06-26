@@ -9,8 +9,8 @@
 #define IVS_CHAR_LIMIT  0x4400000
 #define CJK_CHAR_LIMIT  0x1000000
 #define LATIN_CHAR_LIMIT   0x2E80
-#define LATIN_UCS_FLAG   0x800000
 #define CJK_TOKEN_FLAG   0xFFFFFF
+#define CAT_LEFT_BRACE  1
 #define CAT_DELIM_NUM  15
 #define KCAT_KANJI     16
 #define KCAT_MODIFIER  20
@@ -25,9 +25,9 @@ boolean check_kanji (integer c)
 
     c0 = c & CJK_TOKEN_FLAG;
     c1 = XXHi(c);
-    if (c1<=CAT_DELIM_NUM && (c0 & LATIN_UCS_FLAG) &&
-           (c0 - LATIN_UCS_FLAG) < LATIN_CHAR_LIMIT) { /* kcatcode latin_ucs */
-        return is_char_kanji(c0 - LATIN_UCS_FLAG);
+    if (c1>=CAT_LEFT_BRACE && c1<=CAT_DELIM_NUM &&
+            c0 < LATIN_CHAR_LIMIT) { /* kcatcode latin_ucs */
+        return is_char_kanji(c0);
     }
     else if (c1>=KCAT_KANJI && c1<=KCAT_MODIFIER) {
         return is_char_kanji(c0);
@@ -86,11 +86,8 @@ integer ktoken_to_chr(integer c)
 {
     if (c > KCAT_KANJI_IVS * CJK_CHAR_LIMIT)
         return (c - KCAT_KANJI_IVS * CJK_CHAR_LIMIT);
-    else {
-        if (XXHi(c)<=CAT_DELIM_NUM && (c & LATIN_UCS_FLAG))
-            c = c - LATIN_UCS_FLAG;
+    else
         return (c % CJK_CHAR_LIMIT);
-    }
 }
 
 /* Ref. http://www.unicode.org/Public/UNIDATA/Blocks.txt */
