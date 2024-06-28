@@ -881,16 +881,28 @@ uptex_revision_code: print(upTeX_revision);
 
 @x
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
+  begin m:=cur_cmd; n:=cur_chr;
+  end
+else if (cur_cmd>active_char)or(cur_chr>255) then
 @y
 if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
+  begin m:=cur_cmd; n:=cur_chr;
+  end
+else if (cur_cmd>active_char)or(cur_chr>=max_latin_val) then
 @z
 
 @x
 get_x_token_or_active_char;
 if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then
+  begin cur_cmd:=cur_cmd;
+  end {dummy}
+else if (cur_cmd>active_char)or(cur_chr>255) then
 @y
 get_x_token_or_active_char;
 if (cur_cmd>=kanji)and(cur_cmd<=modifier) then
+  begin cur_cmd:=cur_cmd;
+  end {dummy}
+else if (cur_cmd>active_char)or(cur_chr>=max_latin_val) then
 @z
 
 @x
