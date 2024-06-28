@@ -378,6 +378,9 @@ kchar_num: print_esc("kchar");
     begin m:=kcat_code(kcatcodekey(info(p))); c:=info(p);
     end
   else  begin m:=Hi(info(p)); c:=Lo(info(p));
+    end;
+  if (m<kanji)and(c>256) then print_esc("BAD.")
+@.BAD@>
 @y
   if check_kanji(info(p)) then {|wchar_token|}
     begin
@@ -385,12 +388,23 @@ kchar_num: print_esc("kchar");
       c:=ktokentochr(info(p));
     end
   else  begin m:=info(p) div max_char_val; c:=info(p) mod max_char_val;
+    end;
+  if (m<kanji)and(c>=max_latin_val) then print_esc("BAD.")
+@.BAD@>
 @z
 
 @x
+@<Display the token ...@>=
+case m of
 kanji,kana,other_kchar: print_kanji(KANJI(c));
+left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
+  letter,other_char: print(c);
 @y
+@<Display the token ...@>=
+case m of
 kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
+left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
+  letter,other_char: if (check_echar_range(c)=2) then print_kanji(KANJI(c)) else print(c);
 @z
 
 @x
@@ -2239,9 +2253,9 @@ end;
 
 function check_echar_range(@!c:integer):integer;
 begin
-if (c>=0)and(c<256)then
-  check_echar_range:=1
-else if (c>=256)and(c<max_latin_val)and(kcat_code(kcatcodekey(c))=latin_ucs)then
+if (c>127)and(c<max_latin_val)and(kcat_code(kcatcodekey(c))=latin_ucs)then
+  check_echar_range:=2
+else if (c>=0)and(c<256)then
   check_echar_range:=1
 else check_echar_range:=0;
 @z
