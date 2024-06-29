@@ -213,6 +213,14 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @z
 
 @x
+@d single_base=active_base+256 {equivalents of one-character control sequences}
+@d null_cs=single_base+256 {equivalent of \.{\\csname\\endcsname}}
+@y
+@d single_base=active_base+max_latin_val {equivalents of one-character control sequences}
+@d null_cs=single_base+max_latin_val {equivalent of \.{\\csname\\endcsname}}
+@z
+
+@x
 @d cat_code_base=auto_xspacing_code+1
   {table of 256 command codes (the ``catcodes'')}
 @d kcat_code_base=cat_code_base+256
@@ -323,6 +331,12 @@ end else begin
 end;
 @z
 
+@x
+begin if s<256 then cur_val:=s+single_base
+@y
+begin if s<max_latin_val then cur_val:=s+single_base
+@z
+
 @x l.5897 - upTeX
 primitive("char",char_num,0);@/
 @!@:char_}{\.{\\char} primitive@>
@@ -331,6 +345,12 @@ primitive("char",char_num,0);@/
 @!@:char_}{\.{\\char} primitive@>
 primitive("kchar",kchar_num,0);@/
 @!@:kchar_}{\.{\\kchar} primitive@>
+@z
+
+@x
+primitive("relax",relax,256); {cf.\ |scan_file_name|}
+@y
+primitive("relax",relax,max_cjk_val); {cf.\ |scan_file_name|}
 @z
 
 @x
@@ -457,6 +477,12 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
       s:=get_avail; info(s):=Lo(info(loc));
 @y
       s:=get_avail; info(s):=ktokentochr(info(loc));
+@z
+
+@x
+primitive("par",par_end,256); {cf.\ |scan_file_name|}
+@y
+primitive("par",par_end,max_cjk_val); {cf.\ |scan_file_name|}
 @z
 
 @x
@@ -655,6 +681,12 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
     begin cur_cmd:=t div max_char_val; cur_chr:=t mod max_char_val;
 @z
 
+@x
+@d no_expand_flag=257 {this characterizes a special variant of |relax|}
+@y
+@d no_expand_flag=max_cjk_val+1 {this characterizes a special variant of |relax|}
+@z
+
 @x get_token
   if (cur_cmd=kanji)or(cur_cmd=kana)or(cur_cmd=other_kchar) then {|wchar_token|}
     cur_tok:=cur_chr
@@ -668,6 +700,12 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
   else if (cur_cmd=latin_ucs) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
+@z
+
+@x
+  begin eq_define(cur_cs,relax,256); {N.B.: The |save_stack| might change}
+@y
+  begin eq_define(cur_cs,relax,max_cjk_val); {N.B.: The |save_stack| might change}
 @z
 
 @x
@@ -953,6 +991,8 @@ begin
     begin str_room(2);
     append_char(@"100+Hi(cur_chr)); {kanji upper byte}
     append_char(@"100+Lo(cur_chr)); {kanji lower byte}
+    end
+  else if (cur_cmd>other_char)or(cur_chr>255) then {not an alphabet}
 @y
   if (cur_cmd>=kanji)and(cur_cmd<=modifier) then {|wchar_token|}
     begin
@@ -981,6 +1021,8 @@ begin
       if BYTE3(cur_chr)<>0 then append_char(@"100+BYTE3(cur_chr));
                                 append_char(@"100+BYTE4(cur_chr));
       end;
+    end
+  else if (cur_cmd>other_char)or(cur_chr>=max_latin_val) then {not an alphabet}
 @z
 
 @x
@@ -1538,6 +1580,14 @@ adjust(char_base); adjust(width_base); adjust(lig_kern_base);
       dvi_out(set4); dvi_out(BYTE1(jc)); dvi_out(BYTE2(jc));
     end;
     dvi_out(BYTE3(jc)); dvi_out(BYTE4(jc));
+@z
+
+@x
+@d span_code=256 {distinct from any character}
+@d cr_code=257 {distinct from |span_code| and from any character}
+@y
+@d span_code=max_cjk_val {distinct from any character}
+@d cr_code=max_cjk_val+1 {distinct from |span_code| and from any character}
 @z
 
 @x
