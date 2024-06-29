@@ -627,9 +627,9 @@ var k:pool_pointer; {index into |str_pool|}
 @z
 
 @x \[if]pdfprimitive
-begin if s<256 then cur_val:=s+single_base
+begin if s<max_latin_val then cur_val:=s+single_base
 @y
-begin if s<256 then begin
+begin if s<max_latin_val then begin
   cur_val:=s+single_base;
   prim_val:=prim_lookup(s);
 end
