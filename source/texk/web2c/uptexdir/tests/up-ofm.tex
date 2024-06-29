@@ -44,8 +44,10 @@
 
 \kcatcode"A1=15 % not_cjk: not cjk in legacy encoding
 \kcatcode"1A1=15
+\kcatcode"2DA=15
+\catcode"2DA=11
 
-\char"C6\char"A1^^c6\char"BF
+\char"C6\char"A1^^c6\char"BF^^^^02da
 
 ơ% U+01A1 :: UTF-8 0xC6 0xA1
 ƿ% U+01BF :: UTF-8 0xC6 0xBF
@@ -57,10 +59,12 @@
 \kcatcode"123=14
 \catcode"123=11  \catcode"131=11  \catcode"152=11
 \catcode"153=11
+\kcatcode"2DA=14
+\catcode"2DA=11
 
-\char"123\char"131\char"152\char"153
+\char"123\char"131\char"152\char"153^^^^02da
 
-ģıŒœ
+ģıŒœ˚
 
 \kcatcode`Γ=14 % Γ: U+0393
 \catcode"393=11  \catcode"394=11  \catcode"398=11
