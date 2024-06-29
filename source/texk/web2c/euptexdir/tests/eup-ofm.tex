@@ -35,18 +35,30 @@
 \catcode"C6=11  \catcode"D8=11  \catcode"DF=11
 \catcode"E6=11  \catcode"F8=11
 
-\char"C6\char"D8\char"DF^^e6^^^^00f8
+\char"C6\Uchar"D8\Ucharcat"DF"B^^e6^^^^00f8
 
 ÆØßæø
 
 \setbox0\hbox{【Æ】}
 \showbox0
 
+\kcatcode"A1=15 % not_cjk: not cjk in legacy encoding
+\kcatcode"1A1=15
+
+\char"C6\Uchar"A1^^c6\Ucharcat"BF"B
+
+ơ% U+01A1 :: UTF-8 0xC6 0xA1
+ƿ% U+01BF :: UTF-8 0xC6 0xBF
+
+\setbox0\hbox{【ơ】}
+\showbox0
+
+\kcatcode"A1=14
 \kcatcode"123=14
 \catcode"123=11  \catcode"131=11  \catcode"152=11
 \catcode"153=11
 
-\char"123\char"131\char"152\char"153
+\char"123\char"131\Uchar"152^^^^0153
 
 ģıŒœ
 
@@ -54,14 +66,14 @@
 \catcode"393=11  \catcode"394=11  \catcode"398=11
 \catcode"39B=11  \catcode"39E=11
 
-\char"393\char"394\char`Θ\char"39B^^^^039e
+\char"393\Uchar"394\char`Θ\Ucharcat"39B"B^^^^039e
 
 ΓΔΘΛΞ
 
 \kcatcode"2010=14
 \catcode"2010=11  \catcode"2018=11  \catcode"2019=11
 
-\char"2010\char"2018^^^^2019
+\char"2010\Uchar"2018^^^^2019
 
 ‐‘’
 

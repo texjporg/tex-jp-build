@@ -1201,9 +1201,9 @@ pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
 Uchar_convert_code:
-if is_char_ascii(cur_val) then print_char(cur_val) else print_kanji(cur_val);
+if check_echar_range(cur_val)>1 then print_char(cur_val) else print_kanji(cur_val);
 Ucharcat_convert_code:
-if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
+if (cat<kanji)and(check_echar_range(cur_val)>1) then print_char(cur_val) else print_kanji(cur_val);
 @z
 
 @x e-pTeX: if primitives - leave room for \ifincsname

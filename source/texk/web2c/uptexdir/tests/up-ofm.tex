@@ -42,6 +42,18 @@
 \setbox0\hbox{【Æ】}
 \showbox0
 
+\kcatcode"A1=15 % not_cjk: not cjk in legacy encoding
+\kcatcode"1A1=15
+
+\char"C6\char"A1^^c6\char"BF
+
+ơ% U+01A1 :: UTF-8 0xC6 0xA1
+ƿ% U+01BF :: UTF-8 0xC6 0xBF
+
+\setbox0\hbox{【ơ】}
+\showbox0
+
+\kcatcode"A1=14
 \kcatcode"123=14
 \catcode"123=11  \catcode"131=11  \catcode"152=11
 \catcode"153=11

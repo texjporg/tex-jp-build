@@ -11,5 +11,15 @@
 l.43 \showbox0
               
 
+> \box0=
+\hbox(0.0+0.0)x10.49997, yoko direction
+.\displace 0.0
+.\uctt ^^c6
+.\uctt ^^a1
+
+! OK.
+l.54 \showbox0
+              
+
 [1] )
-Output written on up-ofm.dvi (1 page, 528 bytes).
+Output written on up-ofm.dvi (1 page, 560 bytes).

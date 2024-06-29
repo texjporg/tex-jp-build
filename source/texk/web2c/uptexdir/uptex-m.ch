@@ -404,7 +404,7 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 case m of
 kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char: if (check_echar_range(c)=2) then print_kanji(KANJI(c)) else print(c);
+  letter,other_char: if (check_echar_range(c)=1) then print_kanji(KANJI(c)) else print(c);
 @z
 
 @x
@@ -2254,8 +2254,8 @@ end;
 function check_echar_range(@!c:integer):integer;
 begin
 if (c>127)and(c<max_latin_val)and(kcat_code(kcatcodekey(c))=latin_ucs)then
-  check_echar_range:=2
-else if (c>=0)and(c<256)then
   check_echar_range:=1
+else if (c>=0)and(c<256)then
+  check_echar_range:=2
 else check_echar_range:=0;
 @z
