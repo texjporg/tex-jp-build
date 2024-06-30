@@ -838,9 +838,21 @@ end;
 @z
 
 @x
+    if str_start[m+1]-str_start[m]
+       = multistrlenshort(str_pool, str_start[m+1], str_start[m])
+       then
+      cur_val:=fromBUFFshort(str_pool, str_start[m+1], str_start[m])
+    else begin cur_cmd:=invalid_char; cur_val:=256; end;
+  end;
 if (cur_val>255)and(cur_cmd<kanji) then
   begin print_err("Improper alphabetic or KANJI constant");
 @y
+    if str_start[m+1]-str_start[m]
+       = multistrlenshort(str_pool, str_start[m+1], str_start[m])
+       then
+      cur_val:=fromBUFFshort(str_pool, str_start[m+1], str_start[m])
+    else begin cur_cmd:=invalid_char; cur_val:=max_cjk_val; end;
+  end;
 if (cur_val>=max_latin_val)and(cur_cmd<kanji) then
   begin print_err("Improper alphabetic or KANJI constant");
 @z
