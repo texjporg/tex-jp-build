@@ -331,12 +331,6 @@ end else begin
 end;
 @z
 
-@x
-begin if s<256 then cur_val:=s+single_base
-@y
-begin if s<max_latin_val then cur_val:=s+single_base
-@z
-
 @x l.5897 - upTeX
 primitive("char",char_num,0);@/
 @!@:char_}{\.{\\char} primitive@>
