@@ -55,6 +55,9 @@
 \setbox0\hbox{【ơ】}
 \showbox0
 
+\def\AAA{ơ ^^c6^^a1 ^^^^02da}\AAA
+\edef\mAAA{\meaning\AAA}\mAAA
+
 \kcatcode"A1=14
 \kcatcode"123=14
 \catcode"123=11  \catcode"131=11  \catcode"152=11
@@ -65,6 +68,9 @@
 \char"123\char"131\char"152\char"153^^^^02da
 
 ģıŒœ˚
+
+\def\AAA{Œ ^^^^0152 ^^c6^^a1 ^^^^02da}\AAA
+\edef\mAAA{\meaning\AAA}\mAAA
 
 \kcatcode`Γ=14 % Γ: U+0393
 \catcode"393=11  \catcode"394=11  \catcode"398=11

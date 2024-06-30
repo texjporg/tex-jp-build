@@ -21,5 +21,13 @@ l.43 \showbox0
 l.56 \showbox0
               
 
+
+\AAA ->Æ^^a1 Æ^^a1 ˚
+
+\mAAA ->macro:->Æ^^a1 Æ^^a1 ˚
+
+\AAA ->Œ Œ Æ¡ ˚
+
+\mAAA ->macro:->Œ Œ Æ¡ ˚
 [1] )
-Output written on up-ofm.dvi (1 page, 568 bytes).
+Output written on up-ofm.dvi (1 page, 660 bytes).

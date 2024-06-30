@@ -418,7 +418,8 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 case m of
 kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char: if (check_echar_range(c)=1) then print_kanji(KANJI(c)) else print(c);
+  letter,other_char: if (check_echar_range(c)=1)or((c>255)and(c<max_latin_val))
+    then print_kanji(KANJI(c)) else print(c);
 @z
 
 @x
