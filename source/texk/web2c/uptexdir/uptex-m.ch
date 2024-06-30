@@ -388,18 +388,6 @@ kchar_num: print_esc("kchar");
 @z
 
 @x
-@<Declare the procedure called |show_token_list|@>=
-procedure show_token_list(@!p,@!q:integer;@!l:integer);
-label exit;
-var m,@!c:integer; {pieces of a token}
-@y
-@<Declare the procedure called |show_token_list|@>=
-procedure show_token_list(@!p,@!q:integer;@!l:integer);
-label exit;
-var m,@!c,@!s:integer; {pieces of a token}
-@z
-
-@x
   if check_kanji(info(p)) then {|wchar_token|}
     begin m:=kcat_code(kcatcodekey(info(p))); c:=info(p);
     end
@@ -411,11 +399,9 @@ var m,@!c,@!s:integer; {pieces of a token}
   if check_kanji(info(p)) then {|wchar_token|}
     begin
       m:=ktokentocmd(info(p));
-      c:=ktokentochr(info(p)); s:=1;
+      c:=ktokentochr(info(p));
     end
-  else  begin
-      m:=info(p) div max_char_val;
-      c:=info(p) mod max_char_val; s:=0;
+  else  begin m:=info(p) div max_char_val; c:=info(p) mod max_char_val;
     end;
   if (m<kanji)and(c>=max_latin_val) then print_esc("BAD.")
 @.BAD@>
@@ -432,7 +418,7 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 case m of
 kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char: if s=1 then print_kanji(KANJI(c)) else print(c);
+  letter,other_char: if (check_echar_range(c)=1) then print_kanji(KANJI(c)) else print(c);
 @z
 
 @x
