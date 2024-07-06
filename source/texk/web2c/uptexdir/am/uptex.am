@@ -172,12 +172,12 @@ uptex_tests = \
 	uptexdir/upver.test \
 	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test \
-	uptexdir/uptex-ofm.test
+	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test
 uptexdir/uptriptest.log uptexdir/ptriptest.log: \
 	uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 uptexdir/upver.log uptexdir/upkcat.log \
 	uptexdir/wcfname.log uptexdir/wcfname0.log \
-	uptexdir/uptex-ofm.log: uptex$(EXEEXT)
+	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log: uptex$(EXEEXT)
 upweb_tests = \
 	uptexdir/upbibtex.test \
 	uptexdir/updvitype.test \
@@ -268,6 +268,9 @@ EXTRA_DIST += uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf
 ## uptexdir/uptex-ofm.test
 EXTRA_DIST += uptexdir/tests/up-ofm.tex uptexdir/tests/up-ofm.log
 DISTCLEANFILES += up-ofm.*
+## uptexdir/uptex-prim.test
+EXTRA_DIST += uptexdir/tests/up-prim.tex uptexdir/tests/up-prim.log
+DISTCLEANFILES += up-prim.*
 
 uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@

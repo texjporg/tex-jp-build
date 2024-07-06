@@ -102,14 +102,14 @@ euptex_tests = \
 	euptexdir/eupver.test \
 	euptexdir/upkcat.test \
 	euptexdir/wcfname.test euptexdir/wcfname0.test \
-	euptexdir/euptex-ofm.test
+	euptexdir/euptex-ofm.test euptexdir/euptex-prim.test
 euptexdir/euptriptest.log euptexdir/eptriptest.log: \
 	euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 euptexdir/pdfprimitive.log: euptex$(EXEEXT)
 euptexdir/euptex-ctrlsym.log \
 	euptexdir/eupver.log euptexdir/upkcat.log \
 	euptexdir/wcfname.log euptexdir/wcfname0.log \
-	euptexdir/euptex-ofm.log: euptex$(EXEEXT)
+	euptexdir/euptex-ofm.log euptexdir/euptex-prim.log: euptex$(EXEEXT)
 
 EXTRA_DIST += $(euptex_tests)
 
@@ -139,7 +139,10 @@ EXTRA_DIST += euptexdir/tests/ctrlsym.log euptexdir/tests/ctrlsym.tex
 DISTCLEANFILES += eup-ctrlsym.fmt eup-ctrlsym.log eup-ctrlsym.out eup-ctrlsym.tex
 ## euptex-ofm.test
 EXTRA_DIST += euptexdir/tests/eup-ofm.tex euptexdir/tests/eup-ofm.log
-DISTCLEANFILES += eup-ofm.*
+DISTCLEANFILES += eup-prim.*
+## euptex-prim.test
+EXTRA_DIST += euptexdir/tests/eup-prim.tex euptexdir/tests/eup-prim.log
+DISTCLEANFILES += eup-prim.*
 
 euptrip.diffs: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@

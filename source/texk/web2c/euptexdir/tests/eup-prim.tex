@@ -1,0 +1,34 @@
+% Copyright 2024 Japanese TeX Development Community <issue@texjp.org>
+% You may freely use, modify and/or distribute this file.
+%
+\ifx\fmtname\undefined
+  \input basic
+  \def\fmtname{basic}
+  \expandafter\dump
+\fi
+%==================
+\begingroup % Just there to minimize tracing output
+  \tracingmacros=2
+  \tracingonline=1
+%----
+\newlinechar=10
+
+\catcode"0153=12
+\kcatcode"0153=15\relax
+\message{^^J\the\kcatcode"153:
+  \string\œ. \expandafter\string\csname œ\endcsname. %
+  \the\numexpr`\œ.}
+
+\kcatcode"0153=14\relax
+\message{^^J\the\kcatcode"153:
+  \string\œ. \expandafter\string\csname œ\endcsname. %
+  \the\numexpr`\œ.}
+
+\kcatcode"0153=18\relax
+\message{^^J\the\kcatcode"153:
+  \string\œ. \expandafter\string\csname œ\endcsname. %
+  \the\numexpr`\œ.}
+%----
+\setbox0=\vbox{} % no dvi output
+\endgroup
+\end

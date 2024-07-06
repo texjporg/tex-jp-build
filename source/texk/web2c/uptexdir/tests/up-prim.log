@@ -1,0 +1,8 @@
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**up-prim
+(./up-prim.tex 
+15: \^^c5^^93. \^^c5^^93.  
+14: \œ. \œ.  
+18: \œ. \œ.  )
+No pages of output.

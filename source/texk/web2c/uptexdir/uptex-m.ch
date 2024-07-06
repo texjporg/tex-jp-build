@@ -574,8 +574,7 @@ else  begin k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat,cur_chr) then begin
-    if (cat=latin_ucs) then cat:=cat_code(cur_chr);
-    if (cat=not_cjk) then cat:=other_kchar;
+    if (cat=latin_ucs)or(cat=not_cjk) then cat:=other_kchar;
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
     k:=k+multistrlen(ustringcast(buffer), limit+1, k) end
@@ -678,7 +677,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
+  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
@@ -719,7 +718,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
+  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
@@ -734,7 +733,7 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
+  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
