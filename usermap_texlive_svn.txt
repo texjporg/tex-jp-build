@@ -48,3 +48,4 @@ hironobu = Hironobu Yamashita <h.y.acetaminophen@gmail.com>
 ascherer = Andreas Scherer <andreas_tex@freenet.de>
 mruckert = Martin Ruckert <martin.ruckert@hm.edu>
 ymorimi = Yukimasa Morimi  <h20y6m@yahoo.co.jp>
+mseven = Max Chernoff <mseven@telus.net>
