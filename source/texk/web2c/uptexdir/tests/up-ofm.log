@@ -5,7 +5,7 @@
 > \box0=
 \hbox(0.0+0.0)x5.24998, yoko direction
 .\displace 0.0
-.\uctt ^^c6
+.\uctt Æ
 
 ! OK.
 l.43 \showbox0
@@ -18,13 +18,13 @@ l.43 \showbox0
 .\uctt ^^a1
 
 ! OK.
-l.56 \showbox0
+l.57 \showbox0
               
 
 
-\AAA ->Æ^^a1 Æ^^a1 ˚
+\AAA ->^^c6^^a1 ^^c6^^a1 ˚
 
-\mAAA ->macro:->Æ^^a1 Æ^^a1 ˚
+\mAAA ->macro:->^^c6^^a1 ^^c6^^a1 ˚
 
 \AAA ->Œ Œ Æ¡ ˚
 

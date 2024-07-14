@@ -172,6 +172,36 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @z
 
 @x
+      if font_dir[font(p)]<>dir_default then
+        begin p:=link(p); print_kanji(info(p));
+        end
+      else print_ASCII(qo(character(p)));
+@y
+      if font_dir[font(p)]<>dir_default then
+        begin p:=link(p); print_kanji(info(p));
+        end
+      else if check_echar_range(qo(character(p)))=1 then
+        print_kanji(qo(character(p)))
+      else print_ASCII(qo(character(p)));
+@z
+
+@x
+  print_char(" ");
+  if font_dir[font(p)]<>dir_default then
+    begin p:=link(p); print_kanji(info(p));
+    end
+  else print_ASCII(qo(character(p)));
+@y
+  print_char(" ");
+  if font_dir[font(p)]<>dir_default then
+    begin p:=link(p); print_kanji(info(p));
+    end
+  else if check_echar_range(qo(character(p)))=1 then
+    print_kanji(qo(character(p)))
+  else print_ASCII(qo(character(p)));
+@z
+
+@x
 @d kanji=16 {kanji}
 @d kana=17 {hiragana, katakana, alphabet}
 @d other_kchar=18 {kanji codes}
