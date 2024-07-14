@@ -1150,6 +1150,13 @@ begin
 @z
 
 @x
+@!a,@!b,@!c,@!d:eight_bits; {byte variables}
+@y
+@!a,@!b,@!c,@!d:eight_bits; {byte variables}
+@!ai,@!bi,@!ci,@!di:integer; {byte variables}
+@z
+
+@x
 if file_opened then print(" not loadable: Bad metric (TFM) file")
 else if name_too_long then print(" not loadable: Metric (TFM) file name too long")
 else print(" not loadable: Metric (TFM) file not found");
@@ -1203,11 +1210,11 @@ if not ofm_open_in(tfm_file) then
   end
 @d store_four_quarters(#)==begin
   if (ofm_flag<>0) then begin
-    fget; read_sixteen_unsigned(a); qw.b0:=a;
-    fget; read_sixteen_unsigned(b); qw.b1:=b;
-    fget; read_sixteen_unsigned(c); qw.b2:=c;
-    fget; read_sixteen_unsigned(d); qw.b3:=d;
-    #:=qw
+    fget; read_sixteen_unsigned(ai); qw.b0:=ai;
+    fget; read_sixteen_unsigned(bi); qw.b1:=bi;
+    fget; read_sixteen_unsigned(ci); qw.b2:=ci;
+    fget; read_sixteen_unsigned(di); qw.b3:=di;
+    #:=qw; a:=ai; b:=bi; c:=ci; d:=di
     end
   else begin
     fget; a:=fbyte; qw.b0:=qi(a);
@@ -1551,6 +1558,23 @@ while k<=width_base[f]-1 do
       end;
     end;
   end
+@z
+
+@x
+@<Read ligature/kern program@>=
+bch_label:=@'77777; bchar:=256;
+@y
+@<Read ligature/kern program@>=
+bch_label:=@'77777; bchar:=max_latin_val;
+@z
+
+@x
+  if a=255 then bch_label:=256*c+d;
+  end;
+@y
+  if a=255 then bch_label:=256*c+d;
+  end;
+bchar:=256;
 @z
 
 @x
