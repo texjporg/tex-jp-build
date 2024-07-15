@@ -1221,7 +1221,7 @@ if not ofm_open_in(tfm_file) then
     fget; b:=fbyte; qw.b1:=qi(b);
     fget; c:=fbyte; qw.b2:=qi(c);
     fget; d:=fbyte; qw.b3:=qi(d);
-    #:=qw
+    #:=qw; ai:=a; bi:=b; ci:=c; di:=d
     end
   end
 @z
@@ -1569,10 +1569,38 @@ bch_label:=@'77777; bchar:=max_latin_val;
 @z
 
 @x
+    if a>128 then
+      begin if 256*c+d>=nl then abort;
+      if a=255 then if k=lig_kern_base[f] then bchar:=b;
+      end
+    else begin if b<>bchar then check_existence(b);
+      if c<128 then begin
+        if jfm_flag<>dir_default then
+          begin if 256*c+d>=ne then abort; end {check glue}
+        else check_existence(d); {check ligature}
+        end
+      else if 256*(c-128)+d>=nk then abort; {check kern}
+      if a<128 then if k-lig_kern_base[f]+a+1>=nl then abort;
+      end;
+    end;
   if a=255 then bch_label:=256*c+d;
   end;
 @y
-  if a=255 then bch_label:=256*c+d;
+    if ai>128 then
+      begin if 256*ci+di>=nl then abort;
+      if ai=255 then if k=lig_kern_base[f] then bchar:=bi;
+      end
+    else begin if bi<>bchar then check_existence(bi);
+      if ci<128 then begin
+        if jfm_flag<>dir_default then
+          begin if 256*ci+di>=ne then abort; end {check glue}
+        else check_existence(di); {check ligature}
+        end
+      else if 256*(ci-128)+di>=nk then abort; {check kern}
+      if ai<128 then if k-lig_kern_base[f]+ai+1>=nl then abort;
+      end;
+    end;
+  if ai=255 then bch_label:=256*ci+di;
   end;
 bchar:=256;
 @z
