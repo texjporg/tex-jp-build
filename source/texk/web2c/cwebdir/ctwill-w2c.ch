@@ -62,7 +62,7 @@
 @x [0.0] l.54
 }
 @y
-}}\datecontentspage
+}}
 @z
 
 @x [1.1] l.59
@@ -1072,11 +1072,10 @@ flush_buffer(out_ptr,false,false);
       default: err_print(_("! Improper macro definition")); break;
 @z
 
-@x [12.236] l.4370
+@x [12.237] l.4370
 @ @<Start a format...@>= {
   doing_format=true;
 @y
-
 @ @<Start a format...@>= {
   doing_format=true;
   is_macro=false;

@@ -11,17 +11,13 @@ Written by Tyge Tiessen, 2024. Public domain.
 import getopt, os, re, sys
 
 USAGE = f"""
-Usage: {os.path.basename(sys.argv[0])} [options] <web file> <change file>
+Usage: {os.path.basename(sys.argv[0])} [-i|--init] <web file> <change file>
 
 Reads a WEB file and a change file and writes a change file to stdout with
 potentially corrected part, section and line numbers.
 
-Options influence the '@x [part.section] l.line - text' format:
-    -p, --parts     Suppress the 'part' (starred section) number
-    -s, --sections  Suppress the (unstarred) 'section' number
-    -l, --lines     Suppress the 'l.line' number
-    -h, --hyphens   Suppress the '-'
-    -t, --texts     Suppress the 'text'
+The option '-i' ('--init') forces a '[part.section] l.line' tag after each
+'@x'; this is useful for untagged change files.
 
 Written by Tyge Tiessen, 2024. Public domain.
 """.strip()
@@ -54,13 +50,12 @@ class WebReader:
         self.part_cnt = 0
         self.section_cnt = 0
         try:
-            self._web_file = open(web_file, "r")
+            with open(web_file, "r") as file:
+                self._web_lines = [line.rstrip() for line in file]
         except OSError:
             eprint(f"Could not open {web_file}")
             print(USAGE)
             sys.exit(1)
-        with self._web_file:
-            self._web_lines = [line.rstrip() for line in self._web_file]
 
     def next_line(self):
         """Returns the triple of current part, section and line numbers, as
@@ -69,11 +64,6 @@ class WebReader:
         if self._pos >= len(self._web_lines):
             return None
         line = self._web_lines[self._pos]
-        self._pos += 1
-
-        part = self.part_cnt
-        section = self.section_cnt
-        line_number = self._pos
 
         # Look for starred section == part
         if line.startswith("@*"):
@@ -84,6 +74,11 @@ class WebReader:
         if line.startswith("@ ") or line == "@":
             self.section_cnt += 1
 
+        # Prepare return values
+        part = self.part_cnt
+        section = self.section_cnt
+        line_number = self._pos = self._pos + 1
+
         # Look for '@i'nclude line
         result = re.match("^@i \"?(\\w+(\\.\\w+)?)\"?", line)
         if result:
@@ -92,6 +87,7 @@ class WebReader:
                 pass
             self.part_cnt += inc_reader.part_cnt
             self.section_cnt += inc_reader.section_cnt
+            # Do not increase 'part' and 'section' just yet
             # Ignore line count in include file; we're only one step beyond
 
         return (part, section, line_number), line
@@ -107,13 +103,12 @@ class ChangeReader:
         self._chunk_start = None
         self._match_lines = None
         try:
-            self._change_file = open(change_file, "r")
+            with open(change_file, "r") as file:
+                self._lines = [line.rstrip() for line in file]
         except OSError:
             eprint(f"Could not open {change_file}")
             print(USAGE)
             sys.exit(1)
-        with self._change_file:
-            self._lines = [line.rstrip() for line in self._change_file]
 
     def advance_to_next_chunk(self):
         """Find the next change chunk. Store where it starts and
@@ -127,9 +122,7 @@ class ChangeReader:
                 while True:
                     self._pos += 1
                     if self._pos >= len(self._lines):
-                        eprint(
-                            f"ERROR: Missing @y for @x on l.{self._chunk_start + 1} in change file"
-                        )
+                        eprint(f"! Change file ended before @y. (l. {self._pos+1} of change file)")
                         sys.exit(1)
                     line = self._lines[self._pos]
                     if line.startswith("@y"):
@@ -137,26 +130,34 @@ class ChangeReader:
                             self._chunk_start + 1 : self._pos
                         ]
                         return True
+                    elif line.startswith("@x") or line.startswith("@z"):
+                        eprint(f"! Where is the matching @y?. (l. {self._pos+1} of change file)")
+                        eprint(line)
+                        sys.exit(1)
             self._pos += 1
         return False
 
     def find_match_in_web(self, web_reader):
         """Find the match for the current change chunk in the WEB file.
-        Returns the part number and section number just before the first match line,
-        as well as the line number of the first match line in the WEB file.
+        Returns the part, section, and line number of the first match line in
+        the WEB file.
         """
         while True:
-            (part, section, line_number), tex_line = web_reader.next_line()
-            if tex_line is None:
-                eprint("ERROR: Could not find match for line:")
-                eprint(f"  {self._match_lines[0]}")
+            try:
+                (part, section, line_number), tex_line = web_reader.next_line()
+            except:
+                eprint(f"! Change file entry did not match. (l. {self._chunk_start+2} of change file)")
+                eprint(self._match_lines[0])
                 sys.exit(1)
             if tex_line == self._match_lines[0]:
                 for i in range(1, len(self._match_lines)):
-                    _, tex_line = web_reader.next_line()
+                    try:
+                        _, tex_line = web_reader.next_line()
+                    except:
+                        tex_line = None
                     if tex_line is None or tex_line != self._match_lines[i]:
-                        eprint("ERROR: Could not match all lines following match line:")
-                        eprint(f"  {self._match_lines[0]}")
+                        eprint(f"! Change file entry did not match. (l. {self._chunk_start+2+i} of change file)")
+                        eprint(self._match_lines[i])
                         sys.exit(1)
 
                 return part, section, line_number
@@ -166,60 +167,22 @@ class ChangeReader:
         while self.advance_to_next_chunk():
             part, section, line_number = self.find_match_in_web(web_reader)
 
-            # Attempt to catch the case where something is inserted just before
-            # the start of a section.
-            match_start = self._match_lines[0].strip()[:2]
-            for repl_index in range(self._pos + 1, len(self._lines)):
-                repl_start = self._lines[repl_index].strip()[:2]
-                # CWEB @qcomments@> are ignored; see ctwill-w2c.ch
-                if repl_start != "@q":
-                    break
-            if match_start == "@ ":
-                if repl_start in ["@ ", "@*"]:
-                    section += 1
-            elif match_start == "@*":
-                if repl_start == "@*":
-                    part += 1
-                    section += 1
-                elif repl_start == "@ ":
-                    section += 1
+            # Replace '@x' line with updated information.
+            new_line = self._lines[self._chunk_start]
 
-            # Remove leading @x.
-            text = self._lines[self._chunk_start][2:].strip()
+            new_line = re.sub(
+                    "\\[\\d+\\.\\d+\\]", f"[{part}.{section}]", new_line, 1)
+            new_line = re.sub(
+                    "^@x \\[\\d+\\]", f"@x [{section}]", new_line, 1)
+            new_line = re.sub(
+                    "l\\.\\d+", f"l.{line_number}", new_line, 1)
 
-            # Remove potentially leading [part.section] tag.
-            pattern = "\\[\\d+(\\.\\d+)?\\]"
-            if re.match(pattern, text):
-                text = re.sub(pattern, "", text, 1).strip()
-
-                # Remove potentially line number information.
-                pattern = "l\\.\\d+"
-                if re.match(pattern, text):
-                    text = re.sub(pattern, "", text, 1)
-
-                    # Remove potentially text comment separator.
-                    pattern = " -*"
-                    if re.match(pattern, text):
-                        text = re.sub(pattern, "", text, 1).strip()
-
-            # Create line with standard tag and optional information.
-            new_line = "@x"
-            if opt_handler.part_b or opt_handler.section_b:
-                new_line += " ["
-                if opt_handler.part_b:
-                    new_line += f"{part}"
-                if opt_handler.part_b and opt_handler.section_b:
-                    new_line += "."
-                if opt_handler.section_b:
-                    new_line += f"{section}"
-                new_line += "]"
-            if opt_handler.line_b:
-                new_line += f" l.{line_number}"
-
-            if opt_handler.text_b and text:
-                if opt_handler.hyphen_b:
-                    new_line += " -"
-                new_line += f" {text}"
+            # Force '[part.section] l.line' tag after '@x'; useful for untagged
+            # change files, e.g., CWEB's '*-w2c.ch' monsters.
+            if opt_handler.init_b:
+                new_line = re.sub(
+                        "^@x", f"@x [{part}.{section}] l.{line_number}",
+                        new_line, 1)
 
             ch_line = self._lines[self._chunk_start]
             if new_line[:10] != ch_line[:10]:
@@ -241,33 +204,19 @@ class OptHandler:
     """
 
     def __init__(self):
-        # Optional elements of the output format
-        # '@x [{part}.{section}] l.{line} {-(hyphen)} {text}'
-        self.part_b = True
-        self.section_b = True
-        self.line_b = True
-        self.hyphen_b = True
-        self.text_b = True
+        # Should we insert tag '[{part}.{section}] l.{line}' after '@x'?
+        self.init_b = False
 
         try:
-            opts, self.args = getopt.getopt(sys.argv[1:], "pslht",
-                ["parts", "sections", "lines", "hyphens", "texts"])
+            opts, self.args = getopt.getopt(sys.argv[1:], "i", ["init"])
         except getopt.GetoptError as err:
             eprint(f"\n{os.path.basename(sys.argv[0])}: {err}!\n")
             print(USAGE)
             sys.exit(1)
 
         for opt, _ in opts:
-            if opt in ("-p", "--parts"):
-                self.part_b = False
-            elif opt in ("-s", "--sections"):
-                self.section_b = False
-            elif opt in ("-l", "--lines"):
-                self.line_b = False
-            elif opt in ("-h", "--hyphens"):
-                self.hyphen_b = False
-            elif opt in ("-t", "--texts"):
-                self.text_b = False
+            if opt in ("-i", "--init"):
+                self.init_b = True
             else:
                 assert False, f"Unhandled option {opt}"
 
