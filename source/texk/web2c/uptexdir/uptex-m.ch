@@ -1618,6 +1618,32 @@ adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @z
 
 @x
+@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@y
+@p procedure char_warning(@!f:internal_font_number;@!c:sixteen_bits);
+@z
+
+@x
+  if (c<" ")or(c>"~") then
+    begin print_char("^"); print_char("^");
+    if c<64 then print_char(c+64)
+    else if c<128 then print_char(c-64)
+    else begin print_lc_hex(c div 16);  print_lc_hex(c mod 16); end
+    end
+@y
+  if (c<" ")or(c>"~") then begin
+    print_char("^"); print_char("^");
+    if c<64 then print_char(c+64)
+    else if c<128 then print_char(c-64)
+    else if c<256 then begin
+        print_lc_hex(c div 16);    print_lc_hex(c mod 16); end
+    else begin print_char("^"); print_char("^");
+        print_lc_hex(c div 4096);  print_lc_hex((c mod 4096) div 256);
+        print_lc_hex((c mod 256) div 16);  print_lc_hex(c mod 16); end
+             end
+@z
+
+@x
 @d set2=129 {typeset a character and move right}
 @y
 @d set2=129 {typeset a character and move right}

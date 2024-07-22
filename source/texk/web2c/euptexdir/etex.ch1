@@ -73,10 +73,10 @@ last_node_type:=-1; last_node_subtype:=-1;
 @z
 
 @x [30.581]
-@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@p procedure char_warning(@!f:internal_font_number;@!c:sixteen_bits);
 var @!l:0..255; {small indices or counters}
 @y
-@p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
+@p procedure char_warning(@!f:internal_font_number;@!c:sixteen_bits);
 var @!l:0..255; {small indices or counters}
 old_setting: integer; {saved value of |tracing_online|}
 @z
