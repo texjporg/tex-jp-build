@@ -172,6 +172,38 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @z
 
 @x
+@p function new_ligature(@!f:internal_font_number; @!c:quarterword;
+                         @!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); type(p):=ligature_node;
+font(lig_char(p)):=f; character(lig_char(p)):=c; lig_ptr(p):=q;
+subtype(p):=0; new_ligature:=p;
+end;
+@y
+@p function new_ligature(@!f:internal_font_number; @!c:quarterword;
+                         @!q:pointer):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size);
+c:=ptenc8bitcodetoucs(font_enc[f],c);
+type(p):=ligature_node;
+font(lig_char(p)):=f; character(lig_char(p)):=c; lig_ptr(p):=q;
+subtype(p):=0; new_ligature:=p;
+end;
+@z
+
+@x
+function new_lig_item(@!c:quarterword):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size); character(p):=c; lig_ptr(p):=null;
+@y
+function new_lig_item(@!c:quarterword):pointer;
+var p:pointer; {the new node}
+begin p:=get_node(small_node_size);
+c:=ptenc8bitcodetoucs(font_enc[f],c);
+character(p):=c; lig_ptr(p):=null;
+@z
+
+@x
       if font_dir[font(p)]<>dir_default then
         begin p:=link(p); print_kanji(info(p));
         end
@@ -359,6 +391,20 @@ end else begin
   { $\.{@@"20}+|k| = |kcatcodekey|(|fromKUTEN|(|HILO|(k,1))$ }
   @+@t\1@>for k:=16 to 94 do kcat_code(@"A0+k):=kanji; {2 men 16 ku ... 94 ku}
 end;
+@z
+
+@x
+@d enc_jis=1
+@d enc_ucs=2
+@y
+@d enc_jis=1
+@d enc_ucs=2
+@d enc_t1=@"80
+@d enc_ts1=@"81
+@d enc_ly1=@"82
+@d enc_t2a=@"90
+@d enc_t2b=@"91
+@d enc_t2c=@"92
 @z
 
 @x l.5897 - upTeX
@@ -1363,10 +1409,16 @@ if jfm_flag<>dir_default then
 @z
 
 @x
+font_enc[f]:=jfm_enc; if jfm_flag=dir_default then font_enc[f]:=0;
+font_num_ext[f]:=nt;
 ctype_base[f]:=fmem_ptr;
 char_base[f]:=ctype_base[f]+nt-bc;
 width_base[f]:=char_base[f]+ec+1;
 @y
+font_enc[f]:=0;
+if (jfm_flag=dir_default)and(jfm_enc>=enc_t1) then font_enc[f]:=jfm_enc;
+if (jfm_flag<>dir_default)and(jfm_enc<=enc_ucs) then font_enc[f]:=jfm_enc;
+font_num_ext[f]:=nt;
 ctype_base[f]:=fmem_ptr;
 char_base[f]:=ctype_base[f]+nt-bc;
 char_attr_base[f]:=char_base[f]+ec+1;
@@ -1403,9 +1455,9 @@ if jfm_flag<>dir_default then
   for k:=ctype_base[f] to ctype_base[f]+nt-1 do
     begin
     fget; read_twentyfourx(cx);
-    if jfm_enc=2 then {Unicode TFM}
+    if jfm_enc=enc_ucs then {Unicode TFM}
       font_info[k].hh.rh:=toDVI(fromUCS(cx))
-    else if jfm_enc=1 then {JIS-encoded TFM}
+    else if jfm_enc=enc_jis then {JIS-encoded TFM}
       font_info[k].hh.rh:=toDVI(fromJIS(cx))
     else
       font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
@@ -1521,9 +1573,9 @@ if jfm_flag<>dir_default then
   for k:=ctype_base[f] to ctype_base[f]+nt-1 do
     begin
     fget; read_twentyfourx(cx);
-    if jfm_enc=2 then {Unicode TFM}
+    if jfm_enc=enc_ucs then {Unicode TFM}
       font_info[k].hh.rh:=toDVI(fromUCS(cx))
-    else if jfm_enc=1 then {JIS-encoded TFM}
+    else if jfm_enc=enc_jis then {JIS-encoded TFM}
       font_info[k].hh.rh:=toDVI(fromJIS(cx))
     else
       font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
@@ -1644,6 +1696,38 @@ adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @z
 
 @x
+@p function new_character(@!f:internal_font_number;@!c:eight_bits):pointer;
+label exit;
+var p:pointer; {newly allocated node}
+@!ec:quarterword;  {effective character of |c|}
+begin ec:=effective_char(false,f,qi(c));
+if font_bc[f]<=qo(ec) then if font_ec[f]>=qo(ec) then
+  if char_exists(orig_char_info(f)(ec)) then  {N.B.: not |char_info|}
+    begin p:=get_avail; font(p):=f; character(p):=qi(c);
+    new_character:=p; return;
+    end;
+char_warning(f,c);
+new_character:=null;
+exit:end;
+@y
+@p function new_character(@!f:internal_font_number;@!c:sixteen_bits):pointer;
+label exit;
+var p:pointer; {newly allocated node}
+@!ec,cc:quarterword;  {effective character of |c|}
+begin cc:=c;
+c:=ptencucsto8bitcode(font_enc[f],c);
+ec:=effective_char(false,f,qi(c));
+if font_bc[f]<=qo(ec) then if font_ec[f]>=qo(ec) then
+  if char_exists(orig_char_info(f)(ec)) then  {N.B.: not |char_info|}
+    begin p:=get_avail; font(p):=f; character(p):=qi(c);
+    new_character:=p; return;
+    end;
+char_warning(f,cc);
+new_character:=null;
+exit:end;
+@z
+
+@x
 @d set2=129 {typeset a character and move right}
 @y
 @d set2=129 {typeset a character and move right}
@@ -1652,9 +1736,18 @@ adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @z
 
 @x
+  if font_dir[f]=dir_default then
+    begin chain:=false;
+    if font_ec[f]>=qo(c) then if font_bc[f]<=qo(c) then
+      if char_exists(orig_char_info(f)(c)) then  {N.B.: not |char_info|}
         begin if c>=qi(128) then dvi_out(set1);
         dvi_out(qo(c));@/
 @y
+  if font_dir[f]=dir_default then
+    begin chain:=false;
+    c:=ptencucsto8bitcode(font_enc[f],c);
+    if font_ec[f]>=qo(c) then if font_bc[f]<=qo(c) then
+      if char_exists(orig_char_info(f)(c)) then  {N.B.: not |char_info|}
         begin if c>=qi(@"100) then begin
           dvi_out(set2); dvi_out(Hi(c)); dvi_out(Lo(c));
           end
@@ -1688,6 +1781,15 @@ adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @y
 @d span_code=max_cjk_val {distinct from any character}
 @d cr_code=max_cjk_val+1 {distinct from |span_code| and from any character}
+@z
+
+@x
+var@!t:integer; {general-purpose temporary variable}
+@!cx:KANJI_code; {kanji character}
+@y
+var@!t:integer; {general-purpose temporary variable}
+@!cx:KANJI_code; {kanji character}
+@!cy:sixteen_bits;
 @z
 
 @x
@@ -1725,6 +1827,24 @@ hmode+no_boundary: begin get_x_token;
    ((cur_cmd>=kanji)and(cur_cmd<=modifier))or
    (cur_cmd=char_given)or(cur_cmd=char_num)or
    (cur_cmd=kchar_given)or(cur_cmd=kchar_num) then cancel_boundary:=true;
+@z
+
+@x
+main_loop_move+2:
+if(qo(effective_char(false,main_f,qi(cur_chr)))>font_ec[main_f])or
+  (qo(effective_char(false,main_f,qi(cur_chr)))<font_bc[main_f]) then
+  begin char_warning(main_f,cur_chr); free_avail(lig_stack); goto big_switch;
+  end;
+main_i:=effective_char_info(main_f,cur_l);
+@y
+main_loop_move+2:
+cur_chr:=ptencucsto8bitcode(font_enc[main_f],cur_chr);
+if(qo(effective_char(false,main_f,qi(cur_chr)))>font_ec[main_f])or
+  (qo(effective_char(false,main_f,qi(cur_chr)))<font_bc[main_f]) then
+  begin char_warning(main_f,cur_chr); free_avail(lig_stack); goto big_switch;
+  end;
+if not ligature_present then cur_l:=ptencucsto8bitcode(font_enc[main_f],cur_l);
+main_i:=effective_char_info(main_f,cur_l);
 @z
 
 @x
@@ -1782,6 +1902,22 @@ if cur_cmd=kchar_num then
   cur_cmd:=kcat_code(kcatcodekey(cur_chr));
   @<goto |main_lig_loop|@>;
   end;
+@z
+
+@x
+main_lig_loop+1:main_j:=font_info[main_k].qqqq;
+main_lig_loop+2:if next_char(main_j)=cur_r then
+ if skip_byte(main_j)<=stop_flag then
+  @<Do ligature or kern command, returning to |main_lig_loop|
+  or |main_loop_wrapup| or |main_loop_move|@>;
+@y
+main_lig_loop+1:main_j:=font_info[main_k].qqqq;
+main_lig_loop+2:
+ cy:=ptencucsto8bitcode(font_enc[main_f],cur_r);
+ if next_char(main_j)=cy then
+ if skip_byte(main_j)<=stop_flag then
+  @<Do ligature or kern command, returning to |main_lig_loop|
+  or |main_loop_wrapup| or |main_loop_move|@>;
 @z
 
 @x
@@ -2183,6 +2319,32 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
   rules_base[null_font]:=0; glues_base[null_font]:=0;
   penalties_base[null_font]:=0;
   ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
+@z
+
+@x
+@ @<Scan the font encoding specification@>=
+begin jfm_enc:=0;
+if scan_keyword_noexpand("in") then
+  if scan_keyword_noexpand("jis") then jfm_enc:=enc_jis
+  else if scan_keyword_noexpand("ucs") then jfm_enc:=enc_ucs
+  else begin
+    print_err("Unknown TFM encoding");
+@.Unknown TFM encoding@>
+@y
+@ @<Scan the font encoding specification@>=
+begin jfm_enc:=0;
+if scan_keyword_noexpand("in") then
+  if scan_keyword_noexpand("jis") then jfm_enc:=enc_jis
+  else if scan_keyword_noexpand("ucs") then jfm_enc:=enc_ucs
+  else if scan_keyword_noexpand("t1") then jfm_enc:=enc_t1
+  else if scan_keyword_noexpand("ts1") then jfm_enc:=enc_ts1
+  else if scan_keyword_noexpand("ly1") then jfm_enc:=enc_ly1
+  else if scan_keyword_noexpand("t2a") then jfm_enc:=enc_t2a
+  else if scan_keyword_noexpand("t2b") then jfm_enc:=enc_t2b
+  else if scan_keyword_noexpand("t2c") then jfm_enc:=enc_t2c
+  else begin
+    print_err("Unknown TFM encoding");
+@.Unknown TFM encoding@>
 @z
 
 @x

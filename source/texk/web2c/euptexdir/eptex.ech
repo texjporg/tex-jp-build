@@ -798,6 +798,7 @@ if_font_char_code:begin scan_font_ident; n:=cur_val;
       end
     end
   else begin scan_latin_num;
+    cur_val:=ptencucsto8bitcode(font_enc[n],cur_val);
     if (font_bc[n]<=cur_val)and(font_ec[n]>=cur_val) then @/
       b:=char_exists(orig_char_info(n)(qi(cur_val)))
     else b:=false;
