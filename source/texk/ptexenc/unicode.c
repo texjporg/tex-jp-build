@@ -350,6 +350,18 @@ ptenc_ucs_to_8bit_code(short enc, long uch)
       break;
     case 0x81: UCSto_enc = UCStoTS1enc; size = sizeof(UCStoTS1enc);
       break;
+    case 0x82: UCSto_enc = UCStoLY1enc; size = sizeof(UCStoLY1enc);
+      break;
+    case 0x83: UCSto_enc = UCStoT5enc;  size = sizeof(UCStoT5enc);
+      break;
+    case 0x84: UCSto_enc = UCStoL7Xenc; size = sizeof(UCStoL7Xenc);
+      break;
+    case 0x90: UCSto_enc = UCStoT2Aenc; size = sizeof(UCStoT2Aenc);
+      break;
+    case 0x91: UCSto_enc = UCStoT2Benc; size = sizeof(UCStoT2Benc);
+      break;
+    case 0x92: UCSto_enc = UCStoT2Cenc; size = sizeof(UCStoT2Cenc);
+      break;
     default:
       return 256; /* not supported yet */
     }
@@ -372,12 +384,25 @@ ptenc_8bit_code_to_ucs(short enc, long ech)
     unsigned short *UCSto_enc;
     int ii, size;
 
-    if (enc<0x80 || ech<0x80) return ech; /* no conversion */
+    if (enc<0x80) return ech;    /* no conversion */
+    if (ech>0xFF) return 0xFFFD; /* illegal */
 
     switch (enc) {
     case 0x80: UCSto_enc = UCStoT1enc;  size = sizeof(UCStoT1enc);
       break;
     case 0x81: UCSto_enc = UCStoTS1enc; size = sizeof(UCStoTS1enc);
+      break;
+    case 0x82: UCSto_enc = UCStoLY1enc; size = sizeof(UCStoLY1enc);
+      break;
+    case 0x83: UCSto_enc = UCStoT5enc;  size = sizeof(UCStoT5enc);
+      break;
+    case 0x84: UCSto_enc = UCStoL7Xenc; size = sizeof(UCStoL7Xenc);
+      break;
+    case 0x90: UCSto_enc = UCStoT2Aenc; size = sizeof(UCStoT2Aenc);
+      break;
+    case 0x91: UCSto_enc = UCStoT2Benc; size = sizeof(UCStoT2Benc);
+      break;
+    case 0x92: UCSto_enc = UCStoT2Cenc; size = sizeof(UCStoT2Cenc);
       break;
     default:
       return 0xFFFD; /* not supported yet */
