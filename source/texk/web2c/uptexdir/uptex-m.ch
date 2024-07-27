@@ -402,6 +402,8 @@ end;
 @d enc_t1=@"80
 @d enc_ts1=@"81
 @d enc_ly1=@"82
+@d enc_t5=@"83
+@d enc_l7x=@"84
 @d enc_t2a=@"90
 @d enc_t2b=@"91
 @d enc_t2c=@"92
@@ -2339,6 +2341,8 @@ if scan_keyword_noexpand("in") then
   else if scan_keyword_noexpand("t1") then jfm_enc:=enc_t1
   else if scan_keyword_noexpand("ts1") then jfm_enc:=enc_ts1
   else if scan_keyword_noexpand("ly1") then jfm_enc:=enc_ly1
+  else if scan_keyword_noexpand("t5") then jfm_enc:=enc_t5
+  else if scan_keyword_noexpand("l7x") then jfm_enc:=enc_l7x
   else if scan_keyword_noexpand("t2a") then jfm_enc:=enc_t2a
   else if scan_keyword_noexpand("t2b") then jfm_enc:=enc_t2b
   else if scan_keyword_noexpand("t2c") then jfm_enc:=enc_t2c
