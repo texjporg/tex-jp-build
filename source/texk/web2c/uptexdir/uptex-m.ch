@@ -433,6 +433,22 @@ kchar_num: print_esc("kchar");
 @z
 
 @x
+  if font_enc[f]=enc_ucs then print("+Unicode")
+  else if font_enc[f]=enc_jis then print("+JIS");
+@y
+  if font_enc[f]=enc_ucs then print("+Unicode")
+  else if font_enc[f]=enc_jis then print("+JIS")
+  else if font_enc[f]=enc_t1  then print("/T1")
+  else if font_enc[f]=enc_ts1 then print("/TS1")
+  else if font_enc[f]=enc_ly1 then print("/LY1")
+  else if font_enc[f]=enc_t5  then print("/T5")
+  else if font_enc[f]=enc_l7x then print("/L7x")
+  else if font_enc[f]=enc_t2a then print("/T2A")
+  else if font_enc[f]=enc_t2b then print("/T2B")
+  else if font_enc[f]=enc_t2c then print("/T2C");
+@z
+
+@x
 @d cs_token_flag==@"FFFF {amount added to the |eqtb| location in a
   token that stands for a control sequence; is a multiple of~256, less~1}
 @d left_brace_token=@'0400 {$2^8\cdot|left_brace|$}
