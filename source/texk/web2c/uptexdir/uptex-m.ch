@@ -1802,6 +1802,16 @@ exit:end;
 @z
 
 @x
+@<Local variables for line...@>=
+@!j:small_number; {an index into |hc| or |hu|}
+@!c:0..255; {character being considered for hyphenation}
+@y
+@<Local variables for line...@>=
+@!j:small_number; {an index into |hc| or |hu|}
+@!c:sixteen_bits; {character being considered for hyphenation}
+@z
+
+@x
 var@!t:integer; {general-purpose temporary variable}
 @!cx:KANJI_code; {kanji character}
 @y
