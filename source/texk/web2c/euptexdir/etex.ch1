@@ -128,6 +128,50 @@ hpack:=r;
   disp_node:begin disp:=disp_dimen(p); revdisp:=disp; end;
 @z
 
+@x
+hn:=0;
+loop@+  begin if is_char_node(s) then
+    begin if font(s)<>hf then goto done3;
+    hyf_bchar:=character(s); c:=qo(hyf_bchar);
+    if lc_code(c)=0 then goto done3;
+    if lc_code(c)>max_hyph_char then goto done3;
+    if hn=63 then goto done3;
+    hb:=s; incr(hn); hu[hn]:=c; hc[hn]:=lc_code(c); hyf_bchar:=non_char;
+    end
+@y
+hn:=0;
+loop@+  begin if is_char_node(s) then
+    begin if font(s)<>hf then goto done3;
+    hyf_bchar:=character(s); c:=qo(hyf_bchar);
+    set_lc_code(c);
+    if hc[0]=0 then goto done3;
+    if hc[0]>max_hyph_char then goto done3;
+    if hn=63 then goto done3;
+    hb:=s; incr(hn); hu[hn]:=c; hc[hn]:=hc[0]; hyf_bchar:=non_char;
+    end
+@z
+
+@x
+while q>null do
+  begin c:=qo(character(q));
+  if lc_code(c)=0 then goto done3;
+  if lc_code(c)>max_hyph_char then goto done3;
+  if j=63 then goto done3;
+  incr(j); hu[j]:=c; hc[j]:=lc_code(c);@/
+  q:=link(q);
+  end;
+@y
+while q>null do
+  begin c:=qo(character(q));
+  set_lc_code(c);
+  if hc[0]=0 then goto done3;
+  if hc[0]>max_hyph_char then goto done3;
+  if j=63 then goto done3;
+  incr(j); hu[j]:=c; hc[j]:=hc[0];@/
+  q:=link(q);
+  end;
+@z
+
 @x [44.977]
 q:=prune_page_top(q); p:=list_ptr(v);
 if q=null then box(n):=null {the |eq_level| of the box stays the same}

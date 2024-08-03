@@ -409,6 +409,12 @@ end;
 @d enc_t2c=@"92
 @z
 
+@x
+begin if s<256 then cur_val:=s+single_base
+@y
+begin if s<256 then cur_val:=s+single_base
+@z
+
 @x l.5897 - upTeX
 primitive("char",char_num,0);@/
 @!@:char_}{\.{\\char} primitive@>
@@ -1112,6 +1118,12 @@ begin
 @z
 
 @x
+@d non_char==qi(256) {a |halfword| code that can't match a real character}
+@y
+@d non_char==qi(65535) {a code that can't match a real character}
+@z
+
+@x
 @!font_bc: ^eight_bits;
   {beginning (smallest) character code}
 @!font_ec: ^eight_bits;
@@ -1801,6 +1813,34 @@ exit:end;
 @d cr_code=max_cjk_val+1 {distinct from |span_code| and from any character}
 @z
 
+@x hyhen
+@!hc:array[0..65] of 0..256; {word to be hyphenated}
+@!hn:0..64; {the number of positions occupied in |hc|;
+                                  not always a |small_number|}
+@!ha,@!hb:pointer; {nodes |ha..hb| should be replaced by the hyphenated result}
+@!hf:internal_font_number; {font number of the letters in |hc|}
+@!hu:array[0..63] of 0..256; {like |hc|, before conversion to lowercase}
+@!hyf_char:integer; {hyphen character of the relevant font}
+@!cur_lang,@!init_cur_lang:ASCII_code; {current hyphenation table of interest}
+@!l_hyf,@!r_hyf,@!init_l_hyf,@!init_r_hyf:integer; {limits on fragment sizes}
+@!hyf_bchar:halfword; {boundary character after $c_n$}
+@y
+@!hc:array[0..65] of 0..max_latin_val; {word to be hyphenated}
+@!hn:0..64; {the number of positions occupied in |hc|;
+                                  not always a |small_number|}
+@!ha,@!hb:pointer; {nodes |ha..hb| should be replaced by the hyphenated result}
+@!hf:internal_font_number; {font number of the letters in |hc|}
+@!hu:array[0..63] of 0..max_latin_val; {like |hc|, before conversion to lowercase}
+@!hyf_char:integer; {hyphen character of the relevant font}
+@!cur_lang,@!init_cur_lang:ASCII_code; {current hyphenation table of interest}
+@!l_hyf,@!r_hyf,@!init_l_hyf,@!init_r_hyf:integer; {limits on fragment sizes}
+@!hyf_bchar:halfword; {boundary character after $c_n$}
+@!max_hyph_char:integer;
+
+@ @<Set initial values of key variables@>=
+max_hyph_char:=max_latin_val-1;
+@z
+
 @x
 @<Local variables for line...@>=
 @!j:small_number; {an index into |hc| or |hu|}
@@ -1809,6 +1849,175 @@ exit:end;
 @<Local variables for line...@>=
 @!j:small_number; {an index into |hc| or |hu|}
 @!c:sixteen_bits; {character being considered for hyphenation}
+@z
+
+@x
+if hyf_char>255 then goto done1;
+@y
+if hyf_char>=max_latin_val then goto done1;
+@z
+
+@x
+hn:=0;
+loop@+  begin if is_char_node(s) then
+    begin if font(s)<>hf then goto done3;
+    hyf_bchar:=character(s); c:=qo(hyf_bchar);
+    if lc_code(c)=0 then goto done3;
+    if hn=63 then goto done3;
+    hb:=s; incr(hn); hu[hn]:=c; hc[hn]:=lc_code(c); hyf_bchar:=non_char;
+@y
+hn:=0;
+loop@+  begin if is_char_node(s) then
+    begin if font(s)<>hf then goto done3;
+    hyf_bchar:=character(s); c:=qo(hyf_bchar);
+    if lc_code(c)=0 then goto done3;
+    if lc_code(c)>max_hyph_char then goto done3;
+    if hn=63 then goto done3;
+    hb:=s; incr(hn); hu[hn]:=c; hc[hn]:=lc_code(c); hyf_bchar:=non_char;
+@z
+
+@x
+while q>null do
+  begin c:=qo(character(q));
+  if lc_code(c)=0 then goto done3;
+  if j=63 then goto done3;
+  incr(j); hu[j]:=c; hc[j]:=lc_code(c);@/
+  q:=link(q);
+  end;
+@y
+while q>null do
+  begin c:=qo(character(q));
+  if lc_code(c)=0 then goto done3;
+  if lc_code(c)>max_hyph_char then goto done3;
+  if j=63 then goto done3;
+  incr(j); hu[j]:=c; hc[j]:=lc_code(c);@/
+  q:=link(q);
+  end;
+@z
+
+@x
+      begin hu[0]:=256; init_lig:=false;
+@y
+      begin hu[0]:=max_hyph_char; init_lig:=false;
+@z
+
+@x
+found2: s:=ha; j:=0; hu[0]:=256; init_lig:=false; init_list:=null;
+@y
+found2: s:=ha; j:=0; hu[0]:=max_hyph_char; init_lig:=false; init_list:=null;
+@z
+
+@x
+getting the input $x_j\ldots x_n$ from the |hu| array. If $x_j=256$,
+we consider $x_j$ to be an implicit left boundary character; in this
+case |j| must be strictly less than~|n|. There is a
+parameter |bchar|, which is either 256 or an implicit right boundary character
+@y
+getting the input $x_j\ldots x_n$ from the |hu| array. If $x_j=|max_hyph_char|$,
+we consider $x_j$ to be an implicit left boundary character; in this
+case |j| must be strictly less than~|n|. There is a
+parameter |bchar|, which is either |max_hyph_char|
+or an implicit right boundary character
+@z
+
+@x
+  begin decr(l); c:=hu[l]; c_loc:=l; hu[l]:=256;
+@y
+  begin decr(l); c:=hu[l]; c_loc:=l; hu[l]:=max_hyph_char;
+@z
+
+@x
+hyphenation algorithm is quite short. In the following code we set |hc[hn+2]|
+to the impossible value 256, in order to guarantee that |hc[hn+3]| will
+@y
+hyphenation algorithm is quite short. In the following code we set |hc[hn+2]| to
+the impossible value |max_hyph_char|, in order to guarantee that |hc[hn+3]| will
+@z
+
+@x
+hc[0]:=0; hc[hn+1]:=0; hc[hn+2]:=256; {insert delimiters}
+@y
+hc[0]:=0; hc[hn+1]:=0; hc[hn+2]:=max_hyph_char; {insert delimiters}
+@z
+
+@x first_fit
+@!ll:1..256; {upper limit of |trie_min| updating}
+@y
+@!ll:1..max_latin_val; {upper limit of |trie_min| updating}
+@z
+
+@x
+  @<Ensure that |trie_max>=h+256|@>;
+@y
+  @<Ensure that |trie_max>=h+max_hyph_char|@>;
+@z
+
+@x
+@ By making sure that |trie_max| is at least |h+256|, we can be sure that
+|trie_max>z|, since |h=z-c|. It follows that location |trie_max| will
+never be occupied in |trie|, and we will have |trie_max>=trie_link(z)|.
+
+@<Ensure that |trie_max>=h+256|@>=
+if trie_max<h+256 then
+  begin if trie_size<=h+256 then overflow("pattern memory",trie_size);
+@y
+@ By making sure that |trie_max| is at least |h+max_hyph_char|,
+we can be sure that
+|trie_max>z|, since |h=z-c|. It follows that location |trie_max| will
+never be occupied in |trie|, and we will have |trie_max>=trie_link(z)|.
+
+@<Ensure that |trie_max>=h+max_hyph_char|@>=
+if trie_max<h+max_hyph_char then
+  begin if trie_size<=h+max_hyph_char then overflow("pattern memory",trie_size);
+@z
+
+@x
+  until trie_max=h+256;
+@y
+  until trie_max=h+max_hyph_char;
+@z
+
+@x
+if l<256 then
+  begin if z<256 then ll:=z @+else ll:=256;
+@y
+if l<256 then
+  begin if z<256 then ll:=z @+else ll:=256;
+@z
+
+@x
+  begin for r:=0 to 256 do clear_trie;
+  trie_max:=256;
+  end
+@y
+  begin for r:=0 to max_hyph_char do clear_trie;
+  trie_max:=max_hyph_char;
+  end
+@z
+
+@x
+    if cur_chr=0 then
+      begin print_err("Nonletter");
+@.Nonletter@>
+      help1("(See Appendix H.)"); error;
+      end;
+    end;
+@y
+    if cur_chr=0 then
+      begin print_err("Nonletter");
+@.Nonletter@>
+      help1("(See Appendix H.)"); error;
+      end;
+    end;
+    if cur_chr>max_hyph_char then max_hyph_char:=cur_chr;
+@z
+
+@x
+begin @<Get ready to compress the trie@>;
+@y
+begin
+incr(max_hyph_char);
+@<Get ready to compress the trie@>;
 @z
 
 @x
