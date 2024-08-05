@@ -291,7 +291,7 @@ character(p):=c; lig_ptr(p):=null;
 @y
 @d enable_cjk_token_code=auto_xspacing_code+1
 @d cat_code_base=enable_cjk_token_code+1
-  {table of max_latin_val command codes (the ``catcodes'')}
+  {table of |max_latin_val| command codes (the ``catcodes'')}
 @d kcat_code_base=cat_code_base+max_latin_val
   {table of 512 command codes for the wchar's catcodes }
 @d auto_xsp_code_base=kcat_code_base+512 {table of 256 auto spacer flag}
@@ -305,9 +305,9 @@ character(p):=c; lig_ptr(p):=null;
 @d char_sub_code_base=math_code_base+256 {table of character substitutions}
 @d int_base=char_sub_code_base+256 {beginning of region 5}
 @y
-@d lc_code_base=kansuji_base+10 {table of max_latin_val lowercase mappings}
-@d uc_code_base=lc_code_base+max_latin_val {table of max_latin_val uppercase mappings}
-@d sf_code_base=uc_code_base+max_latin_val {table of max_latin_val spacefactor mappings}
+@d lc_code_base=kansuji_base+10 {table of |max_latin_val| lowercase mappings}
+@d uc_code_base=lc_code_base+max_latin_val {table of |max_latin_val| uppercase mappings}
+@d sf_code_base=uc_code_base+max_latin_val {table of |max_latin_val| spacefactor mappings}
 @d math_code_base=sf_code_base+max_latin_val {table of 256 math mode mappings}
 @d char_sub_code_base=math_code_base+256 {table of character substitutions}
 @d int_base=char_sub_code_base+256 {beginning of region 5}
