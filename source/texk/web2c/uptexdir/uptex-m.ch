@@ -49,6 +49,7 @@
 % (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
 % (2023-09-16) TTK  upTeX u1.30
 % (2024-05-01) TTK  upTeX u1.35
+% (2024-xx-xx) TTK  upTeX u2.00
 
 @x
 \def\pTeX{p\kern-.15em\TeX}
@@ -62,9 +63,9 @@
 @y
   {printed when \pTeX\ starts}
 @#
-@d upTeX_version=1
-@d upTeX_revision==".35"
-@d upTeX_version_string=='-u1.35' {current \upTeX\ version}
+@d upTeX_version=2
+@d upTeX_revision==".00"
+@d upTeX_version_string=='-u2.00' {current \upTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
