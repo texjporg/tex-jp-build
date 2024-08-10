@@ -4,7 +4,7 @@ entering extended mode
 **eup-ofm
 (./eup-ofm.tex cmtt10 uctt10x
 > \box0=
-\hbox(0.0+0.0)x5.24998, yoko direction
+\hbox(6.11+0.0)x5.24998, yoko direction
 .\displace 0.0
 .\uctt Æ
 
@@ -13,7 +13,7 @@ l.43 \showbox0
               
 
 > \box0=
-\hbox(0.0+0.0)x10.49997, yoko direction
+\hbox(6.11+0.0)x10.49997, yoko direction
 .\displace 0.0
 .\uctt ^^c6
 .\uctt ^^a1
@@ -31,4 +31,4 @@ l.57 \showbox0
 
 \mAAA ->macro:->Œ Œ Æ¡ ˚
 We have "2010. We do not have "2014. [1] )
-Output written on eup-ofm.dvi (1 page, 660 bytes).
+Output written on eup-ofm.dvi (1 page, 664 bytes).

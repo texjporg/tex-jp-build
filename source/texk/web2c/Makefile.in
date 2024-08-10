@@ -3282,7 +3282,9 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	uptexdir/tests/gk256k.tfm uptexdir/uptrip/uptrip.diffs \
 	uptexdir/uptrip/texmf.cnf uptexdir/tests/up-ofm.tex \
 	uptexdir/tests/up-ofm.log uptexdir/tests/up-prim.tex \
-	uptexdir/tests/up-prim.log $(euptex_web_srcs) \
+	uptexdir/tests/up-prim.log uptexdir/tests/lmr1.tex \
+	uptexdir/tests/up-lmr1.log uptexdir/tests/lmr2.tex \
+	uptexdir/tests/up-lmr2.log $(euptex_web_srcs) \
 	$(euptex_ch_srcs) euptexdir/euptex.defines euptexdir/COPYRIGHT \
 	euptexdir/COPYRIGHT.jis euptexdir/ChangeLog \
 	euptexdir/EUPTEX.txt $(euptex_tests) \
@@ -3617,8 +3619,8 @@ DISTCLEANFILES = CXXLD.sh tangle.c tangle.h tangle.p tangle-web2c \
 	uptests/x*min10.* uptests/xchcode*.* uptests/xtestnewu*.* \
 	uptests/xuparse.* uptests/yuparse.* uptests/ygkhuge*.* \
 	uptests/ygk256*.* uptests/xskipjfmp.* up-ofm.* up-prim.* \
-	uptrip.diffs $(nodist_euptex_SOURCES) euptex.web euptex.ch \
-	euptex-web2c euptex.p euptex.pool euptex-tangle \
+	up-lmr*.* uptrip.diffs $(nodist_euptex_SOURCES) euptex.web \
+	euptex.ch euptex-web2c euptex.p euptex.pool euptex-tangle \
 	pdfprimitive-euptex.* eup-ctrlsym.fmt eup-ctrlsym.log \
 	eup-ctrlsym.out eup-ctrlsym.tex eup-prim.* eup-prim.* \
 	euptrip.diffs $(nodist_hitex_SOURCES) \
@@ -4506,7 +4508,8 @@ uptex_tests = \
 	uptexdir/upver.test \
 	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test \
-	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test
+	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test \
+	uptexdir/uptex-lmr.test
 
 # uppPLtoTF/upTFtoPL
 upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
@@ -22008,7 +22011,8 @@ uptexdir/uptriptest.log uptexdir/ptriptest.log: \
 	uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 uptexdir/upver.log uptexdir/upkcat.log \
 	uptexdir/wcfname.log uptexdir/wcfname0.log \
-	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log: uptex$(EXEEXT)
+	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log \
+	uptexdir/uptex-lmr.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)

@@ -17,11 +17,12 @@ TEXFORMATS=.; export TEXFORMATS
 rm -f up-prim.*
 $LN_S $srcdir/uptexdir/tests/up-prim.tex ./up-prim.tex
 
-#exit 77
+if test ! -f ./up-basic.fmt; then
+  cp $srcdir/tests/dump-basic.tex ./up-basic.tex
+  $_uptex -ini up-basic || exit 1
+fi
 
-$_uptex -ini up-prim || exit 1
-
-$_uptex -fmt=up-prim -interaction=batchmode up-prim || :
+$_uptex -fmt=up-basic -interaction=batchmode up-prim || :
 
 sed 1d up-prim.log >up-prim.out
 

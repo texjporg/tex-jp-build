@@ -17,11 +17,12 @@ TEXFORMATS=.; export TEXFORMATS
 rm -f eup-prim.*
 $LN_S $srcdir/euptexdir/tests/eup-prim.tex ./eup-prim.tex
 
-#exit 77
+if test ! -f ./eup-basic.fmt; then
+  cp $srcdir/tests/dump-basic.tex ./eup-basic.tex
+  $_euptex -ini -etex eup-basic || exit 1
+fi
 
-$_euptex -ini -etex eup-prim || exit 1
-
-$_euptex -fmt=eup-prim -interaction=batchmode eup-prim || :
+$_euptex -fmt=eup-basic -interaction=batchmode eup-prim || :
 
 sed 1d eup-prim.log >eup-prim.out
 

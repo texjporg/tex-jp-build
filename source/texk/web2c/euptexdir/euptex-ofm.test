@@ -17,11 +17,12 @@ TEXFORMATS=.; export TEXFORMATS
 rm -f eup-ofm.*
 $LN_S $srcdir/euptexdir/tests/eup-ofm.tex ./eup-ofm.tex
 
-#exit 77
+if test ! -f ./eup-basic.fmt; then
+  cp $srcdir/tests/dump-basic.tex ./eup-basic.tex
+  $_euptex -ini -etex eup-basic || exit 1
+fi
 
-$_euptex -ini -etex eup-ofm || exit 1
-
-$_euptex -fmt=eup-ofm -interaction=batchmode eup-ofm || :
+$_euptex -fmt=eup-basic -interaction=batchmode eup-ofm || :
 
 sed 1d eup-ofm.log >eup-ofm.out
 

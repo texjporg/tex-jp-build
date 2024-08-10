@@ -16,11 +16,12 @@ TEXFORMATS=.; export TEXFORMATS
 rm -f eup-ctrlsym.tex
 $LN_S $srcdir/euptexdir/tests/ctrlsym.tex ./eup-ctrlsym.tex
 
-#exit 77
+if test ! -f ./eup-basic.fmt; then
+  cp $srcdir/tests/dump-basic.tex ./eup-basic.tex
+  $_euptex -ini -etex eup-basic || exit 1
+fi
 
-$_euptex -ini -etex eup-ctrlsym || exit 1
-
-$_euptex -etex -fmt=eup-ctrlsym eup-ctrlsym || exit 2
+$_euptex -etex -fmt=eup-basic eup-ctrlsym || exit 2
 
 sed 1d eup-ctrlsym.log >eup-ctrlsym.out
 
