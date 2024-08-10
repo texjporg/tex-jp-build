@@ -556,11 +556,11 @@ function var_delimiter(@!d:pointer;@!s:integer;@!v:scaled):pointer;
 @z
 %-----------------------------------------------
 @x
-@!hd: eight_bits; {height-depth byte}
+@!hd: sixteen_bits; {height-depth byte}
 @!r: four_quarters; {extensible pieces}
 @!z: small_number; {runs through font family members}
 @y
-@!hd: eight_bits; {height-depth byte}
+@!hd: sixteen_bits; {height-depth byte}
 @!r: four_quarters; {extensible pieces}
 @!z: integer; {runs through font family members}
 @z

@@ -1210,6 +1210,32 @@ begin
 @z
 
 @x
+@d char_width_end(#)==#.b0].sc
+@d char_width(#)==font_info[width_base[#]+char_width_end
+@d char_exists(#)==(#.b0>min_quarterword)
+@d char_italic_end(#)==(qo(#.b2)) div 4].sc
+@d char_italic(#)==font_info[italic_base[#]+char_italic_end
+@d height_depth(#)==qo(#.b1)
+@d char_height_end(#)==(#) div 16].sc
+@d char_height(#)==font_info[height_base[#]+char_height_end
+@d char_depth_end(#)==(#) mod 16].sc
+@d char_depth(#)==font_info[depth_base[#]+char_depth_end
+@d char_tag(#)==((qo(#.b2)) mod 4)
+@y
+@d char_width_end(#)==#.b0].sc
+@d char_width(#)==font_info[width_base[#]+char_width_end
+@d char_exists(#)==(#.b0>min_quarterword)
+@d char_italic_end(#)==(qo(#.b2)) div 256].sc
+@d char_italic(#)==font_info[italic_base[#]+char_italic_end
+@d height_depth(#)==qo(#.b1)
+@d char_height_end(#)==(#) div 256].sc
+@d char_height(#)==font_info[height_base[#]+char_height_end
+@d char_depth_end(#)==(#) mod 256].sc
+@d char_depth(#)==font_info[depth_base[#]+char_depth_end
+@d char_tag(#)==((qo(#.b2)) mod 4)
+@z
+
+@x
 @!cx:KANJI_code; {kanji code}
 @y
 @!cx:KANJI_code; {kanji code}
@@ -1228,8 +1254,7 @@ begin
 @x
 @!a,@!b,@!c,@!d:eight_bits; {byte variables}
 @y
-@!a,@!b,@!c,@!d:eight_bits; {byte variables}
-@!ai,@!bi,@!ci,@!di:integer; {byte variables}
+@!a,@!b,@!c,@!d:integer; {byte variables}
 @z
 
 @x
@@ -1286,18 +1311,36 @@ if not ofm_open_in(tfm_file) then
   end
 @d store_four_quarters(#)==begin
   if (ofm_flag<>0) then begin
-    fget; read_sixteen_unsigned(ai); qw.b0:=ai;
-    fget; read_sixteen_unsigned(bi); qw.b1:=bi;
-    fget; read_sixteen_unsigned(ci); qw.b2:=ci;
-    fget; read_sixteen_unsigned(di); qw.b3:=di;
-    #:=qw; a:=ai; b:=bi; c:=ci; d:=di
+    fget; read_sixteen_unsigned(a); qw.b0:=a;
+    fget; read_sixteen_unsigned(b); qw.b1:=b;
+    fget; read_sixteen_unsigned(c); qw.b2:=c;
+    fget; read_sixteen_unsigned(d); qw.b3:=d;
+    #:=qw;
     end
   else begin
     fget; a:=fbyte; qw.b0:=qi(a);
     fget; b:=fbyte; qw.b1:=qi(b);
     fget; c:=fbyte; qw.b2:=qi(c);
     fget; d:=fbyte; qw.b3:=qi(d);
-    #:=qw; ai:=a; bi:=b; ci:=c; di:=d
+    #:=qw;
+    end
+  end
+@d store_character_info(#)==begin
+  if (ofm_flag<>0) then begin
+    fget; read_sixteen_unsigned(a); qw.b0:=a;
+    fget; read_sixteen_unsigned(b); qw.b1:=b;
+    fget; read_sixteen_unsigned(c); qw.b2:=c;
+    fget; read_sixteen_unsigned(d); qw.b3:=d;
+    #:=qw;
+    end
+  else begin
+    fget; a:=fbyte; qw.b0:=qi(a);
+    fget; b:=fbyte;
+    b:=(b div 16)*256 + (b mod 16); qw.b1:=b;
+    fget; c:=fbyte;
+    c:=(c div 4)*256 + (c mod 4); qw.b2:=c;
+    fget; d:=fbyte; qw.b3:=qi(d);
+    #:=qw;
     end
   end
 @z
@@ -1614,11 +1657,10 @@ if jfm_flag<>dir_default then
     end;
 k:=char_base[f]+bc;
 while k<=width_base[f]-1 do
-  begin store_four_quarters(font_info[k].qqqq);
-  if (a>=nw)or(b div (@'20*(ofm_flag+1))>=nh)
-    or(b mod (@'20*(ofm_flag+1))>=nd)or
-    (c div 4*(ofm_flag+1)>=ni) then abort;
-  case c mod 4*(ofm_flag+1) of
+  begin store_character_info(font_info[k].qqqq);
+  if (a>=nw)or((b div 256)>=nh)or((b mod 256)>=nd)or
+    ((c div 256)>=ni) then abort;
+  case c mod 4 of
   lig_tag: if d>=nl then abort;
   ext_tag: if d>=ne then abort;
   list_tag: @<Check for charlist cycle@>;
@@ -1668,23 +1710,22 @@ bch_label:=@'77777; bchar:=max_latin_val;
   if a=255 then bch_label:=256*c+d;
   end;
 @y
-    if ai>128 then
-      begin if 256*ci+di>=nl then abort;
-      if ai=255 then if k=lig_kern_base[f] then bchar:=bi;
+    if a>128 then
+      begin if 256*c+d>=nl then abort;
+      if a=255 then if k=lig_kern_base[f] then bchar:=b;
       end
-    else begin if bi<>bchar then check_existence(bi);
-      if ci<128 then begin
+    else begin if b<>bchar then check_existence(b);
+      if c<128 then begin
         if jfm_flag<>dir_default then
-          begin if 256*ci+di>=ne then abort; end {check glue}
-        else check_existence(di); {check ligature}
+          begin if 256*c+d>=ne then abort; end {check glue}
+        else check_existence(d); {check ligature}
         end
-      else if 256*(ci-128)+di>=nk then abort; {check kern}
-      if ai<128 then if k-lig_kern_base[f]+ai+1>=nl then abort;
+      else if 256*(c-128)+d>=nk then abort; {check kern}
+      if a<128 then if k-lig_kern_base[f]+a+1>=nl then abort;
       end;
     end;
-  if ai=255 then bch_label:=256*ci+di;
+  if a=255 then bch_label:=256*c+d;
   end;
-bchar:=256;
 @z
 
 @x
@@ -1803,6 +1844,40 @@ exit:end;
       dvi_out(set4); dvi_out(BYTE1(jc)); dvi_out(BYTE2(jc));
     end;
     dvi_out(BYTE3(jc)); dvi_out(BYTE4(jc));
+@z
+
+@x
+@!hd:eight_bits; {height and depth indices for a character}
+@y
+@!hd:sixteen_bits; {height and depth indices for a character}
+@!cx:integer;
+@z
+
+@x
+@<Incorporate character dimensions into the dimensions of the hbox...@>=
+begin f:=font(p); i:=char_info(f)(character(p)); hd:=height_depth(i);
+@y
+@<Incorporate character dimensions into the dimensions of the hbox...@>=
+begin f:=font(p); cx:=ptencucsto8bitcode(font_enc[f],character(p));
+i:=char_info(f)(cx); hd:=height_depth(i);
+@z
+
+@x
+@!hd: eight_bits; {height-depth byte}
+@y
+@!hd: sixteen_bits; {height-depth byte}
+@z
+
+@x
+@!hd:eight_bits; {|height_depth| byte}
+@y
+@!hd:sixteen_bits; {|height_depth| byte}
+@z
+
+@x
+@!hd:eight_bits; {|height_depth| byte}
+@y
+@!hd:sixteen_bits; {|height_depth| byte}
 @z
 
 @x
@@ -2584,6 +2659,12 @@ if scan_keyword_noexpand("in") then
   else begin
     print_err("Unknown TFM encoding");
 @.Unknown TFM encoding@>
+@z
+
+@x
+@!t: eight_bits;
+@y
+@!t: sixteen_bits;
 @z
 
 @x
