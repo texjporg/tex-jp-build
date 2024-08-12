@@ -1,5 +1,5 @@
 % $Id$
-% This is a change file for upTeX u1.35
+% This is a change file for upTeX u2.00
 % By Takuji Tanaka.
 %
 % (02/26/2007) TTK  upTeX u0.01
