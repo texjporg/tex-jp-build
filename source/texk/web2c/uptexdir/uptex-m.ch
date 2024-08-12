@@ -1889,6 +1889,21 @@ i:=char_info(f)(cx); hd:=height_depth(i);
 @d cr_code=max_cjk_val+1 {distinct from |span_code| and from any character}
 @z
 
+@x
+@!cc:ASCII_code;
+@y
+@!cc:sixteen_bits;
+@z
+
+@x
+  repeat f:=post_f; cc:=character(cur_p);
+  act_width:=act_width+char_width(f)(orig_char_info(f)(cc));
+@y
+  repeat f:=post_f;
+  cc:=ptencucsto8bitcode(font_enc[f],character(cur_p));
+  act_width:=act_width+char_width(f)(orig_char_info(f)(cc));
+@z
+
 @x hyhen
 @!hc:array[0..65] of 0..256; {word to be hyphenated}
 @!hn:0..64; {the number of positions occupied in |hc|;
