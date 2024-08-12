@@ -1167,47 +1167,6 @@ begin
 @d kchar_code(#)==font_info[ctype_base[#]+kchar_code_end
 @d kchar_type_end(#)==#].hh.lhfield
 @d kchar_type(#)==font_info[ctype_base[#]+kchar_type_end
-@d offset_file_size=0
-@d offset_check=1
-@d offset_offset=offset_check+4
-@d offset_size=offset_offset+1
-@d offset_dsize=offset_size+1
-@d offset_params=offset_dsize+1
-@d offset_name_sort=offset_params+1
-@d offset_name=offset_name_sort+1
-@d offset_area=offset_name+1
-@d offset_bc=offset_area+1
-@d offset_ec=offset_bc+1
-@d offset_glue=offset_ec+1
-@d offset_used=offset_glue+1
-@d offset_hyphen=offset_used+1
-@d offset_skew=offset_hyphen+1
-@d offset_bchar_label=offset_skew+1
-@d offset_bchar=offset_bchar_label+1
-@d offset_false_bchar=offset_bchar+1
-@d offset_ivalues_start=offset_false_bchar+1
-@d offset_fvalues_start=offset_ivalues_start+1
-@d offset_mvalues_start=offset_fvalues_start+1
-@d offset_rules_start=offset_mvalues_start+1
-@d offset_glues_start=offset_rules_start+1
-@d offset_penalties_start=offset_glues_start+1
-@d offset_ivalues_base=offset_penalties_start+1
-@d offset_fvalues_base=offset_ivalues_base+1
-@d offset_mvalues_base=offset_fvalues_base+1
-@d offset_rules_base=offset_mvalues_base+1
-@d offset_glues_base=offset_rules_base+1
-@d offset_penalties_base=offset_glues_base+1
-@d offset_char_base=offset_penalties_base+1
-@d offset_char_attr_base=offset_char_base+1
-@d offset_width_base=offset_char_attr_base+1
-@d offset_height_base=offset_width_base+1
-@d offset_depth_base=offset_height_base+1
-@d offset_italic_base=offset_depth_base+1
-@d offset_lig_kern_base=offset_italic_base+1
-@d offset_kern_base=offset_lig_kern_base+1
-@d offset_exten_base=offset_kern_base+1
-@d offset_param_base=offset_exten_base+1
-@d offset_charinfo_base=offset_param_base+1
 @z
 
 @x
@@ -1241,15 +1200,9 @@ begin
 @y
 @!cx:KANJI_code; {kanji code}
 @!ofm_flag:integer;
-@!ij,@!kl,@!k_param,@!fparam,@!font_counter:integer;
 @!font_level,@!header_length:integer;
 @!fn_dir:integer;
-@!nco,@!ncw,@!npc,@!nlw,@!neew:integer;
-@!nki,@!nwi,@!nkf,@!nwf,@!nkm,@!nwm:integer;
-@!nkr,@!nwr,@!nkg,@!nwg,@!nkp,@!nwp:integer;
-@!table_size:array [0..31] of integer;
-@!bytes_per_entry,@!extra_char_bytes:integer;
-@!repeat_no,@!table_counter:integer;
+@!ncw,@!nlw,@!neew:integer;
 @z
 
 @x
@@ -1356,9 +1309,7 @@ begin read_sixteen(lf);
 fget; read_sixteen(lh);
 ofm_flag:=0;
 font_level:=-1;
-nco:=0; ncw:=0; npc:=0;
-nki:=0; nwi:=0; nkf:=0; nwf:=0; nkm:=0; nwm:=0;
-nkr:=0; nwr:=0; nkg:=0; nwg:=0; nkp:=0; nwp:=0;
+ncw:=0; nlw:=0; neew:=0;
 @z
 
 @x
@@ -1377,7 +1328,7 @@ else if lf=0 then
   begin ofm_flag:=1;
   font_level:=lh;
   jfm_flag:=dir_default; nt:=0;
-  if (font_level<>0) and (font_level<>1) then abort;
+  if (font_level<>0) then abort;
   fget; read_thirtytwo(lf);
   fget; read_thirtytwo(lh);
   end
@@ -1442,27 +1393,12 @@ else begin
     ncw:=2*(ec-bc+1);
     end
   else begin
-    header_length:=29;
-    fget; read_thirtytwo(nco);
-    fget; read_thirtytwo(ncw);
-    fget; read_thirtytwo(npc);
-    fget; read_thirtytwo(nki);
-    fget; read_thirtytwo(nwi);
-    fget; read_thirtytwo(nkf);
-    fget; read_thirtytwo(nwf);
-    fget; read_thirtytwo(nkm);
-    fget; read_thirtytwo(nwm);
-    fget; read_thirtytwo(nkr);
-    fget; read_thirtytwo(nwr);
-    fget; read_thirtytwo(nkg);
-    fget; read_thirtytwo(nwg);
-    fget; read_thirtytwo(nkp);
-    fget; read_thirtytwo(nwp);
+    abort;
     end;
 end;
 if ofm_flag<>0 then
-  begin if lf<>header_length+lh+ncw+nw+nh+nd+ni+nlw+nk+neew+np+
-      nki+nwi+nkf+nwf+nkm+nwm+nkr+nwr+nkg+nwg+nkp+nwp then abort;
+  begin if lf<>header_length+lh+ncw+nw+nh+nd+ni+nlw+nk+neew+np
+      then abort;
   end
 else
 @z
@@ -1476,7 +1412,7 @@ if ofm_flag<>0 then begin
   if font_level=0 then
     lf:=lf-14-lh-(ec-bc+1)-nl-ne
   else
-    lf:=lf-29-lh-ncw+(1+npc)*(ec-bc+1)-nl-ne;
+    abort;
   end
 else
 if jfm_flag<>dir_default then
@@ -1495,20 +1431,7 @@ if (jfm_flag<>dir_default)and(jfm_enc<=enc_ucs) then font_enc[f]:=jfm_enc;
 font_num_ext[f]:=nt;
 ctype_base[f]:=fmem_ptr;
 char_base[f]:=ctype_base[f]+nt-bc;
-char_attr_base[f]:=char_base[f]+ec+1;
-ivalues_start[f]:=char_attr_base[f]+npc*(ec-bc+1);
-fvalues_start[f]:=ivalues_start[f]+nki;
-mvalues_start[f]:=fvalues_start[f]+nkf;
-rules_start[f]:=mvalues_start[f]+nkm;
-glues_start[f]:=rules_start[f]+nkr;
-penalties_start[f]:=glues_start[f]+nkg;
-ivalues_base[f]:=penalties_start[f]+nkp;
-fvalues_base[f]:=ivalues_base[f]+nwi;
-mvalues_base[f]:=fvalues_base[f]+nwf;
-rules_base[f]:=mvalues_base[f]+nwm;
-glues_base[f]:=rules_base[f]+nwr;
-penalties_base[f]:=glues_base[f]+nwg;
-width_base[f]:=penalties_base[f]+nwp;
+width_base[f]:=char_base[f]+ec+1;
 @z
 
 @x
@@ -1553,93 +1476,7 @@ for k:=char_base[f]+bc to width_base[f]-1 do
 @ @<Read character data@>=
 if ofm_flag<>0 then begin
 if font_level=1 then begin
-  ij:=0;
-  kl:=ivalues_start[f];
-  font_counter:=ivalues_base[f];
-  while kl<fvalues_start[f] do       {IVALUE starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam;
-    table_size[ij]:=1;
-    incr(ij); incr(kl);
-    end;
-  while kl<mvalues_start[f] do       {FVALUE starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam;
-    table_size[ij]:=1;
-    incr(ij); incr(kl);
-    end;
-  while kl<rules_start[f] do         {MVALUE starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam;
-    table_size[ij]:=1;
-    incr(ij); incr(kl);
-    end;
-  while kl<glues_start[f] do         {RULE starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam*3;
-    table_size[ij]:=3;
-    incr(ij); incr(kl);
-    end;
-  while kl<penalties_start[f] do     {GLUE starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam*4;
-    table_size[ij]:=4;
-    incr(ij); incr(kl);
-    end;
-  while kl<ivalues_base[f] do        {PENALTY starts}
-    begin
-    read_thirtytwo(fparam);
-    font_info[kl].int := font_counter;
-    font_counter:=font_counter+fparam;
-    table_size[ij]:=1;
-    incr(ij); incr(kl);
-    end;
-  while kl<fvalues_base[f] do        {IVALUE entries}
-    begin
-    read_thirtytwo(font_info[kl].int);
-    incr(kl);
-    end;
-  while kl<mvalues_base[f] do        {FVALUE entries}
-    begin
-    read_thirtytwo(font_info[kl].sc);
-    incr(kl);
-    end;
-  while kl<rules_base[f] do          {MVALUE entries}
-    begin
-    read_thirtytwo(font_info[kl].int);
-    incr(kl);
-    end;
-  while kl<glues_base[f] do          {RULE entries}
-    begin
-    store_scaled(font_info[kl].sc);
-    store_scaled(font_info[kl+1].sc);
-    store_scaled(font_info[kl+2].sc);
-    kl:=kl+3;
-    end;
-  while kl<penalties_base[f] do      {GLUE entries}
-    begin
-    fget; read_sixteen(font_info[kl].hh.lhfield);
-    fget; read_sixteen(font_info[kl].hh.rh);
-    store_scaled(font_info[kl+1].sc);
-    store_scaled(font_info[kl+2].sc);
-    store_scaled(font_info[kl+3].sc);
-    kl:=kl+4;
-    end;
-  while kl<offset_charinfo_base do      {PENALTY entries}
-    begin
-    read_thirtytwo(font_info[kl].int);
-    incr(kl);
-    end;
+  abort;
   end;
   end
 else
@@ -1669,18 +1506,7 @@ while k<=width_base[f]-1 do
   endcases;
   incr(k);
   if font_level=1 then begin
-    fget; read_sixteen_unsigned(repeat_no);
-    for ij:=0 to npc-1 do begin
-      fget; read_sixteen(fparam);
-      font_info[k_param].int :=
-         font_info[ivalues_start[f]+ij].int + fparam*table_size[ij];
-      incr(k_param);
-      end;
-    for ij:=1 to extra_char_bytes do fget;
-    for ij:=1 to repeat_no do begin
-      for table_counter:=0 to npc-1 do begin
-        end;
-      end;
+    abort;
     end;
   end
 @z
@@ -1733,11 +1559,7 @@ bch_label:=@'77777; bchar:=max_latin_val;
 adjust(ctype_base);
 adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @y
-adjust(char_attr_base); adjust(ivalues_start); adjust(fvalues_start);
-adjust(mvalues_start); adjust(rules_start); adjust(glues_start);
-adjust(penalties_start); adjust(ivalues_base); adjust(fvalues_base);
-adjust(mvalues_base); adjust(rules_base); adjust(glues_base);
-adjust(penalties_base); adjust(ctype_base);
+adjust(ctype_base);
 adjust(char_base); adjust(width_base); adjust(lig_kern_base);
 @z
 
@@ -2540,19 +2362,6 @@ if (t<cs_token_flag+single_base) then
 dump_things(ctype_base[null_font], font_ptr+1-null_font);
 dump_things(char_base[null_font], font_ptr+1-null_font);
 @y
-dump_things(char_attr_base[null_font], font_ptr+1-null_font);
-dump_things(ivalues_start[null_font], font_ptr+1-null_font);
-dump_things(fvalues_start[null_font], font_ptr+1-null_font);
-dump_things(mvalues_start[null_font], font_ptr+1-null_font);
-dump_things(rules_start[null_font], font_ptr+1-null_font);
-dump_things(glues_start[null_font], font_ptr+1-null_font);
-dump_things(penalties_start[null_font], font_ptr+1-null_font);
-dump_things(ivalues_base[null_font], font_ptr+1-null_font);
-dump_things(fvalues_base[null_font], font_ptr+1-null_font);
-dump_things(mvalues_base[null_font], font_ptr+1-null_font);
-dump_things(rules_base[null_font], font_ptr+1-null_font);
-dump_things(glues_base[null_font], font_ptr+1-null_font);
-dump_things(penalties_base[null_font], font_ptr+1-null_font);
 dump_things(ctype_base[null_font], font_ptr+1-null_font);
 dump_things(char_base[null_font], font_ptr+1-null_font);
 @z
@@ -2569,19 +2378,6 @@ font_ec:=xmalloc_array(sixteen_bits, font_max);
 ctype_base:=xmalloc_array(integer, font_max);
 char_base:=xmalloc_array(integer, font_max);
 @y
-char_attr_base:=xmalloc_array(integer, font_max);
-ivalues_start:=xmalloc_array(integer, font_max);
-fvalues_start:=xmalloc_array(integer, font_max);
-mvalues_start:=xmalloc_array(integer, font_max);
-rules_start:=xmalloc_array(integer, font_max);
-glues_start:=xmalloc_array(integer, font_max);
-penalties_start:=xmalloc_array(integer, font_max);
-ivalues_base:=xmalloc_array(integer, font_max);
-fvalues_base:=xmalloc_array(integer, font_max);
-mvalues_base:=xmalloc_array(integer, font_max);
-rules_base:=xmalloc_array(integer, font_max);
-glues_base:=xmalloc_array(integer, font_max);
-penalties_base:=xmalloc_array(integer, font_max);
 ctype_base:=xmalloc_array(integer, font_max);
 char_base:=xmalloc_array(integer, font_max);
 @z
@@ -2590,19 +2386,6 @@ char_base:=xmalloc_array(integer, font_max);
 undump_things(ctype_base[null_font], font_ptr+1-null_font);
 undump_things(char_base[null_font], font_ptr+1-null_font);
 @y
-undump_things(char_attr_base[null_font], font_ptr+1-null_font);
-undump_things(ivalues_start[null_font], font_ptr+1-null_font);
-undump_things(fvalues_start[null_font], font_ptr+1-null_font);
-undump_things(mvalues_start[null_font], font_ptr+1-null_font);
-undump_things(rules_start[null_font], font_ptr+1-null_font);
-undump_things(glues_start[null_font], font_ptr+1-null_font);
-undump_things(penalties_start[null_font], font_ptr+1-null_font);
-undump_things(ivalues_base[null_font], font_ptr+1-null_font);
-undump_things(fvalues_base[null_font], font_ptr+1-null_font);
-undump_things(mvalues_base[null_font], font_ptr+1-null_font);
-undump_things(rules_base[null_font], font_ptr+1-null_font);
-undump_things(glues_base[null_font], font_ptr+1-null_font);
-undump_things(penalties_base[null_font], font_ptr+1-null_font);
 undump_things(ctype_base[null_font], font_ptr+1-null_font);
 undump_things(char_base[null_font], font_ptr+1-null_font);
 @z
@@ -2619,19 +2402,6 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
   ctype_base:=xmalloc_array(integer, font_max);
   char_base:=xmalloc_array(integer, font_max);
 @y
-  char_attr_base:=xmalloc_array(integer, font_max);
-  ivalues_start:=xmalloc_array(integer, font_max);
-  fvalues_start:=xmalloc_array(integer, font_max);
-  mvalues_start:=xmalloc_array(integer, font_max);
-  rules_start:=xmalloc_array(integer, font_max);
-  glues_start:=xmalloc_array(integer, font_max);
-  penalties_start:=xmalloc_array(integer, font_max);
-  ivalues_base:=xmalloc_array(integer, font_max);
-  fvalues_base:=xmalloc_array(integer, font_max);
-  mvalues_base:=xmalloc_array(integer, font_max);
-  rules_base:=xmalloc_array(integer, font_max);
-  glues_base:=xmalloc_array(integer, font_max);
-  penalties_base:=xmalloc_array(integer, font_max);
   ctype_base:=xmalloc_array(integer, font_max);
   char_base:=xmalloc_array(integer, font_max);
 @z
@@ -2639,13 +2409,6 @@ undump_things(char_base[null_font], font_ptr+1-null_font);
 @x
   ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
 @y
-  char_attr_base[null_font]:=0; ivalues_start[null_font]:=0;
-  fvalues_start[null_font]:=0; mvalues_start[null_font]:=0;
-  rules_start[null_font]:=0; glues_start[null_font]:=0;
-  penalties_start[null_font]:=0; ivalues_base[null_font]:=0;
-  fvalues_base[null_font]:=0; mvalues_base[null_font]:=0;
-  rules_base[null_font]:=0; glues_base[null_font]:=0;
-  penalties_base[null_font]:=0;
   ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
 @z
 
