@@ -268,7 +268,8 @@ DISTCLEANFILES += uptests/xskipjfmp.*
 ## uptexdir/uptriptest
 EXTRA_DIST += uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf
 ## uptexdir/uptex-ofm.test
-EXTRA_DIST += uptexdir/tests/up-ofm.tex uptexdir/tests/up-ofm.log
+EXTRA_DIST += uptexdir/tests/up-ofm.tex uptexdir/tests/up-ofm.log \
+	uptexdir/tests/up-ofma.typ
 DISTCLEANFILES += up-ofm.*
 ## uptexdir/uptex-prim.test
 EXTRA_DIST += uptexdir/tests/up-prim.tex uptexdir/tests/up-prim.log

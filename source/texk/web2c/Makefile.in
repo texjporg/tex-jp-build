@@ -3281,13 +3281,13 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	uptexdir/tests/gkhugeng.err uptexdir/tests/gk256g.tfm \
 	uptexdir/tests/gk256k.tfm uptexdir/uptrip/uptrip.diffs \
 	uptexdir/uptrip/texmf.cnf uptexdir/tests/up-ofm.tex \
-	uptexdir/tests/up-ofm.log uptexdir/tests/up-prim.tex \
-	uptexdir/tests/up-prim.log uptexdir/tests/lmr1.tex \
-	uptexdir/tests/up-lmr1.log uptexdir/tests/lmr2.tex \
-	uptexdir/tests/up-lmr2.log $(euptex_web_srcs) \
-	$(euptex_ch_srcs) euptexdir/euptex.defines euptexdir/COPYRIGHT \
-	euptexdir/COPYRIGHT.jis euptexdir/ChangeLog \
-	euptexdir/EUPTEX.txt $(euptex_tests) \
+	uptexdir/tests/up-ofm.log uptexdir/tests/up-ofma.typ \
+	uptexdir/tests/up-prim.tex uptexdir/tests/up-prim.log \
+	uptexdir/tests/lmr1.tex uptexdir/tests/up-lmr1.log \
+	uptexdir/tests/lmr2.tex uptexdir/tests/up-lmr2.log \
+	$(euptex_web_srcs) $(euptex_ch_srcs) euptexdir/euptex.defines \
+	euptexdir/COPYRIGHT euptexdir/COPYRIGHT.jis \
+	euptexdir/ChangeLog euptexdir/EUPTEX.txt $(euptex_tests) \
 	euptexdir/eptrip/eptrip.log euptexdir/eptrip/eptrip.tex \
 	euptexdir/euptrip/euptrip.diffs euptexdir/euptrip/texmf.cnf \
 	euptexdir/pdfprimitive.test \
