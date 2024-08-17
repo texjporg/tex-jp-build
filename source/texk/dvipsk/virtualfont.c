@@ -235,7 +235,7 @@ virtualfont(register fontdesctype *curfnt)
                font_level = tfm16();
                tfm32(); tfm32(); tfm32(); /* li, hd, bc */
                ec = tfm32();
-               if (font_level==1 && ec>=0x2E00)  /* We interpret the ofm is for pTeX */
+               if (font_level==1 && ec>=0x2E80)  /* We interpret the ofm is for pTeX */
                   curfnt->kind = VF_PTEX;
             }
             fclose(tfmfile);
