@@ -2771,14 +2771,8 @@
    (STOP)
    )
 (MAPFONT D 0
-   (FONTNAME ec-lmr10)
-   (FONTCHECKSUM H AE811A07)
-   (FONTAT R 1.0)
-   (FONTDSIZE R 10.0)
-   )
-(MAPFONT D 1
-   (FONTNAME texnansi-lmr10)
-   (FONTCHECKSUM H 274268BF)
+   (FONTNAME eu3-lmr10_ucs)
+   (FONTCHECKSUM H 0)
    (FONTAT R 1.0)
    (FONTDSIZE R 10.0)
    )
@@ -2787,7 +2781,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 0)
+      (SETCHAR H 60)
       )
    )
 (CHARACTER H 1
@@ -2795,7 +2789,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1)
+      (SETCHAR H B4)
       )
    )
 (CHARACTER H 2
@@ -2803,7 +2797,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 2)
+      (SETCHAR H 2C6)
       )
    )
 (CHARACTER H 3
@@ -2811,7 +2805,7 @@
    (CHARHT R 0.6297245)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 3)
+      (SETCHAR H 2DC)
       )
    )
 (CHARACTER H 4
@@ -2819,7 +2813,7 @@
    (CHARHT R 0.6297245)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 4)
+      (SETCHAR H A8)
       )
    )
 (CHARACTER H 5
@@ -2827,7 +2821,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 5)
+      (SETCHAR H 2DD)
       )
    )
 (CHARACTER H 6
@@ -2835,7 +2829,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 6)
+      (SETCHAR H 2DA)
       )
    )
 (CHARACTER H 7
@@ -2843,7 +2837,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 7)
+      (SETCHAR H 2C7)
       )
    )
 (CHARACTER H 8
@@ -2851,7 +2845,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8)
+      (SETCHAR H 2D8)
       )
    )
 (CHARACTER H 9
@@ -2859,7 +2853,7 @@
    (CHARHT R 0.6297245)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 9)
+      (SETCHAR H AF)
       )
    )
 (CHARACTER H A
@@ -2867,7 +2861,7 @@
    (CHARHT R 0.6297245)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A)
+      (SETCHAR H 2D9)
       )
    )
 (CHARACTER H B
@@ -2875,7 +2869,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B)
+      (SETCHAR H B8)
       )
    )
 (CHARACTER H C
@@ -2883,7 +2877,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H C)
+      (SETCHAR H 2DB)
       )
    )
 (CHARACTER H D
@@ -2926,7 +2920,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H D)
+      (SETCHAR H 201A)
       )
    )
 (CHARACTER H E
@@ -2934,7 +2928,7 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H E)
+      (SETCHAR H 2039)
       )
    )
 (CHARACTER H F
@@ -2942,7 +2936,7 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H F)
+      (SETCHAR H 203A)
       )
    )
 (CHARACTER H 10
@@ -2956,7 +2950,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 10)
+      (SETCHAR H 201C)
       )
    )
 (CHARACTER H 11
@@ -2970,7 +2964,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 11)
+      (SETCHAR H 201D)
       )
    )
 (CHARACTER H 12
@@ -3015,7 +3009,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 12)
+      (SETCHAR H 201E)
       )
    )
 (CHARACTER H 13
@@ -3023,7 +3017,7 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 13)
+      (SETCHAR H AB)
       )
    )
 (CHARACTER H 14
@@ -3035,7 +3029,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 14)
+      (SETCHAR H BB)
       )
    )
 (CHARACTER H 15
@@ -3047,7 +3041,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 15)
+      (SETCHAR H 2013)
       )
    )
 (CHARACTER H 16
@@ -3056,7 +3050,7 @@
    (CHARIC R 0.026777)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 16)
+      (SETCHAR H 2014)
       )
    )
 (CHARACTER H 17
@@ -3072,7 +3066,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 17)
+      (SETCHAR H 200C)
       )
    )
 (CHARACTER H 18
@@ -3081,7 +3075,7 @@
    (CHARDP R 0.056)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 18)
+      (SETCHAR H EB4D)
       )
    )
 (CHARACTER H 19
@@ -3089,7 +3083,7 @@
    (CHARHT R 0.43055)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 19)
+      (SETCHAR H 131)
       )
    )
 (CHARACTER H 1A
@@ -3098,7 +3092,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1A)
+      (SETCHAR H 237)
       )
    )
 (CHARACTER H 1B
@@ -3119,7 +3113,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1B)
+      (SETCHAR H FB00)
       )
    )
 (CHARACTER H 1C
@@ -3127,7 +3121,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1C)
+      (SETCHAR H FB01)
       )
    )
 (CHARACTER H 1D
@@ -3135,7 +3129,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1D)
+      (SETCHAR H FB02)
       )
    )
 (CHARACTER H 1E
@@ -3143,7 +3137,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1E)
+      (SETCHAR H FB03)
       )
    )
 (CHARACTER H 1F
@@ -3151,7 +3145,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1F)
+      (SETCHAR H FB04)
       )
    )
 (CHARACTER H 20
@@ -3160,7 +3154,7 @@
    (CHARDP R 0.097223)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 20)
+      (SETCHAR H 2423)
       )
    )
 (CHARACTER H 21
@@ -3229,7 +3223,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 27)
+      (SETCHAR H 2019)
       )
    )
 (CHARACTER H 28
@@ -4405,7 +4399,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 60)
+      (SETCHAR H 2018)
       )
    )
 (CHARACTER H 61
@@ -5007,7 +5001,7 @@
 (CHARACTER H A0
    (CHARWD R 0.5)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A0)
       )
    )
@@ -5017,7 +5011,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BD)
+      (SETCHAR H A1)
       )
    )
 (CHARACTER H A2
@@ -5025,7 +5019,7 @@
    (CHARHT R 0.487999)
    (CHARDP R 0.045)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A2)
       )
    )
@@ -5035,14 +5029,14 @@
    (CHARDP R 0.035001)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BF)
+      (SETCHAR H A3)
       )
    )
 (CHARACTER H A4
    (CHARWD R 0.7778)
    (CHARHT R 0.487999)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A4)
       )
    )
@@ -5051,7 +5045,7 @@
    (CHARHT R 0.688875)
    (CHARIC R 0.015778)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A5)
       )
    )
@@ -5060,7 +5054,7 @@
    (CHARHT R 0.75)
    (CHARDP R 0.25)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A6)
       )
    )
@@ -5069,7 +5063,7 @@
    (CHARHT R 0.688875)
    (CHARDP R 0.194443)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A7)
       )
    )
@@ -5077,7 +5071,7 @@
    (CHARWD R 0.5)
    (CHARHT R 0.6297245)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A8)
       )
    )
@@ -5086,7 +5080,7 @@
    (CHARHT R 0.688875)
    (CHARIC R 0.027478)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H A9)
       )
    )
@@ -5094,7 +5088,7 @@
    (CHARWD R 0.4494)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H AA)
       )
    )
@@ -5103,14 +5097,14 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 13)
+      (SETCHAR H AB)
       )
    )
 (CHARACTER H AC
    (CHARWD R 0.7778)
    (CHARHT R 0.381)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H AC)
       )
    )
@@ -5118,7 +5112,7 @@
    (CHARWD R 0.333333)
    (CHARHT R 0.255834)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H AD)
       )
    )
@@ -5127,7 +5121,7 @@
    (CHARHT R 0.688875)
    (CHARIC R 0.027478)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H AE)
       )
    )
@@ -5135,7 +5129,7 @@
    (CHARWD R 0.5)
    (CHARHT R 0.6297245)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H AF)
       )
    )
@@ -5143,7 +5137,7 @@
    (CHARWD R 0.375)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B0)
       )
    )
@@ -5151,7 +5145,7 @@
    (CHARWD R 0.7778)
    (CHARHT R 0.6297245)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B1)
       )
    )
@@ -5159,7 +5153,7 @@
    (CHARWD R 0.359301)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B2)
       )
    )
@@ -5167,7 +5161,7 @@
    (CHARWD R 0.359301)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B3)
       )
    )
@@ -5175,7 +5169,7 @@
    (CHARWD R 0.5)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B4)
       )
    )
@@ -5185,7 +5179,7 @@
    (CHARDP R 0.194443)
    (CHARIC R 0.006223)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B5)
       )
    )
@@ -5194,7 +5188,7 @@
    (CHARHT R 0.688875)
    (CHARDP R 0.194443)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B6)
       )
    )
@@ -5202,7 +5196,7 @@
    (CHARWD R 0.7778)
    (CHARHT R 0.381)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B7)
       )
    )
@@ -5210,7 +5204,7 @@
    (CHARWD R 0.44445)
    (CHARDP R 0.194443)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B8)
       )
    )
@@ -5218,7 +5212,7 @@
    (CHARWD R 0.365767)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H B9)
       )
    )
@@ -5227,7 +5221,7 @@
    (CHARHT R 0.688875)
    (CHARIC R 0.004621)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H BA)
       )
    )
@@ -5240,14 +5234,14 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 14)
+      (SETCHAR H BB)
       )
    )
 (CHARACTER H BC
    (CHARWD R 0.825)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H BC)
       )
    )
@@ -5255,7 +5249,7 @@
    (CHARWD R 0.825)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H BD)
       )
    )
@@ -5263,7 +5257,7 @@
    (CHARWD R 0.825)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H BE)
       )
    )
@@ -5273,7 +5267,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BE)
+      (SETCHAR H BF)
       )
    )
 (CHARACTER H C0
@@ -6000,7 +5994,7 @@
    (CHARWD R 0.7778)
    (CHARHT R 0.487999)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H D7)
       )
    )
@@ -6160,7 +6154,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H FF)
+      (SETCHAR H DF)
       )
    )
 (CHARACTER H E0
@@ -6596,7 +6590,7 @@
    (CHARWD R 0.7778)
    (CHARHT R 0.445274)
    (MAP
-      (SELECTFONT D 1)
+      (SELECTFONT D 0)
       (SETCHAR H F7)
       )
    )
@@ -6776,7 +6770,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B8)
+      (SETCHAR H FF)
       )
    )
 (CHARACTER H 102
@@ -6855,7 +6849,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 80)
+      (SETCHAR H 102)
       )
    )
 (CHARACTER H 103
@@ -6872,7 +6866,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A0)
+      (SETCHAR H 103)
       )
    )
 (CHARACTER H 104
@@ -6952,7 +6946,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 81)
+      (SETCHAR H 104)
       )
    )
 (CHARACTER H 105
@@ -6973,7 +6967,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A1)
+      (SETCHAR H 105)
       )
    )
 (CHARACTER H 106
@@ -6981,7 +6975,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 82)
+      (SETCHAR H 106)
       )
    )
 (CHARACTER H 107
@@ -6993,7 +6987,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A2)
+      (SETCHAR H 107)
       )
    )
 (CHARACTER H 10C
@@ -7001,7 +6995,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 83)
+      (SETCHAR H 10C)
       )
    )
 (CHARACTER H 10D
@@ -7013,7 +7007,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A3)
+      (SETCHAR H 10D)
       )
    )
 (CHARACTER H 10E
@@ -7039,7 +7033,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 84)
+      (SETCHAR H 10E)
       )
    )
 (CHARACTER H 10F
@@ -7062,7 +7056,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A4)
+      (SETCHAR H 10F)
       )
    )
 (CHARACTER H 110
@@ -7088,7 +7082,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H D0)
+      (SETCHAR H 110)
       )
    )
 (CHARACTER H 111
@@ -7096,7 +7090,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 9E)
+      (SETCHAR H 111)
       )
    )
 
@@ -7106,7 +7100,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 86)
+      (SETCHAR H 118)
       )
    )
 (CHARACTER H 119
@@ -7115,7 +7109,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A6)
+      (SETCHAR H 119)
       )
    )
 (CHARACTER H 11A
@@ -7123,7 +7117,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 85)
+      (SETCHAR H 11A)
       )
    )
 (CHARACTER H 11B
@@ -7131,7 +7125,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A5)
+      (SETCHAR H 11B)
       )
    )
 (CHARACTER H 11E
@@ -7139,7 +7133,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 87)
+      (SETCHAR H 11E)
       )
    )
 (CHARACTER H 11F
@@ -7152,7 +7146,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A7)
+      (SETCHAR H 11F)
       )
    )
 (CHARACTER H 130
@@ -7160,7 +7154,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 9D)
+      (SETCHAR H 130)
       )
    )
 (CHARACTER H 131
@@ -7168,7 +7162,7 @@
    (CHARHT R 0.43055)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 19)
+      (SETCHAR H 131)
       )
    )
 (CHARACTER H 132
@@ -7176,7 +7170,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 9C)
+      (SETCHAR H 132)
       )
    )
 
@@ -7186,7 +7180,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BC)
+      (SETCHAR H 133)
       )
    )
 (CHARACTER H 139
@@ -7203,7 +7197,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 88)
+      (SETCHAR H 139)
       )
    )
 (CHARACTER H 13A
@@ -7212,7 +7206,7 @@
    (CHARIC R 0.026587)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A8)
+      (SETCHAR H 13A)
       )
    )
 (CHARACTER H 13D
@@ -7229,7 +7223,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 89)
+      (SETCHAR H 13D)
       )
    )
 (CHARACTER H 13E
@@ -7252,7 +7246,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H A9)
+      (SETCHAR H 13E)
       )
    )
 
@@ -7268,7 +7262,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8A)
+      (SETCHAR H 141)
       )
    )
 (CHARACTER H 142
@@ -7279,7 +7273,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AA)
+      (SETCHAR H 142)
       )
    )
 (CHARACTER H 143
@@ -7287,7 +7281,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8B)
+      (SETCHAR H 143)
       )
    )
 (CHARACTER H 144
@@ -7313,7 +7307,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AB)
+      (SETCHAR H 144)
       )
    )
 (CHARACTER H 147
@@ -7321,7 +7315,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8C)
+      (SETCHAR H 147)
       )
    )
 (CHARACTER H 148
@@ -7347,7 +7341,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AC)
+      (SETCHAR H 148)
       )
    )
 (CHARACTER H 14A
@@ -7355,7 +7349,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8D)
+      (SETCHAR H 14A)
       )
    )
 (CHARACTER H 14B
@@ -7381,7 +7375,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AD)
+      (SETCHAR H 14B)
       )
    )
 (CHARACTER H 150
@@ -7407,7 +7401,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8E)
+      (SETCHAR H 150)
       )
    )
 (CHARACTER H 151
@@ -7448,7 +7442,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AE)
+      (SETCHAR H 151)
       )
    )
 (CHARACTER H 152
@@ -7456,7 +7450,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H D7)
+      (SETCHAR H 152)
       )
    )
 (CHARACTER H 153
@@ -7464,7 +7458,7 @@
    (CHARHT R 0.43055)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H F7)
+      (SETCHAR H 153)
       )
    )
 (CHARACTER H 154
@@ -7519,7 +7513,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 8F)
+      (SETCHAR H 154)
       )
    )
 (CHARACTER H 155
@@ -7528,7 +7522,7 @@
    (CHARIC R 0.000112)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H AF)
+      (SETCHAR H 155)
       )
    )
 (CHARACTER H 158
@@ -7583,7 +7577,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 90)
+      (SETCHAR H 158)
       )
    )
 (CHARACTER H 159
@@ -7592,7 +7586,7 @@
    (CHARIC R 0.000112)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B0)
+      (SETCHAR H 159)
       )
    )
 (CHARACTER H 15A
@@ -7600,7 +7594,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 91)
+      (SETCHAR H 15A)
       )
    )
 (CHARACTER H 15B
@@ -7608,7 +7602,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B1)
+      (SETCHAR H 15B)
       )
    )
 (CHARACTER H 15E
@@ -7617,7 +7611,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 93)
+      (SETCHAR H 15E)
       )
    )
 (CHARACTER H 15F
@@ -7626,7 +7620,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B3)
+      (SETCHAR H 15F)
       )
    )
 (CHARACTER H 160
@@ -7634,7 +7628,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 92)
+      (SETCHAR H 160)
       )
    )
 (CHARACTER H 161
@@ -7642,7 +7636,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B2)
+      (SETCHAR H 161)
       )
    )
 (CHARACTER H 162
@@ -7651,7 +7645,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 95)
+      (SETCHAR H 162)
       )
    )
 (CHARACTER H 163
@@ -7660,7 +7654,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B5)
+      (SETCHAR H 163)
       )
    )
 (CHARACTER H 164
@@ -7746,7 +7740,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 94)
+      (SETCHAR H 164)
       )
    )
 (CHARACTER H 165
@@ -7772,7 +7766,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B4)
+      (SETCHAR H 165)
       )
    )
 (CHARACTER H 16E
@@ -7780,7 +7774,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 97)
+      (SETCHAR H 16E)
       )
    )
 (CHARACTER H 16F
@@ -7792,7 +7786,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B7)
+      (SETCHAR H 16F)
       )
    )
 (CHARACTER H 170
@@ -7800,7 +7794,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 96)
+      (SETCHAR H 170)
       )
    )
 (CHARACTER H 171
@@ -7812,7 +7806,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B6)
+      (SETCHAR H 171)
       )
    )
 (CHARACTER H 178
@@ -7896,7 +7890,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 98)
+      (SETCHAR H 178)
       )
    )
 (CHARACTER H 179
@@ -7904,7 +7898,7 @@
    (CHARHT R 0.9205)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 99)
+      (SETCHAR H 179)
       )
    )
 (CHARACTER H 17A
@@ -7912,7 +7906,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H B9)
+      (SETCHAR H 17A)
       )
    )
 (CHARACTER H 17B
@@ -7920,7 +7914,7 @@
    (CHARHT R 0.878)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 9B)
+      (SETCHAR H 17B)
       )
    )
 (CHARACTER H 17C
@@ -7928,7 +7922,7 @@
    (CHARHT R 0.6297245)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BB)
+      (SETCHAR H 17C)
       )
    )
 (CHARACTER H 17D
@@ -7944,7 +7938,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H BA)
+      (SETCHAR H 17E)
       )
    )
 (CHARACTER H 192
@@ -7952,8 +7946,8 @@
    (CHARHT R 0.688875)
    (CHARIC R 0.079222)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 83)
+      (SELECTFONT D 0)
+      (SETCHAR H 192)
       )
    )
 (CHARACTER H 237
@@ -7962,7 +7956,7 @@
    (CHARDP R 0.194443)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 1A)
+      (SETCHAR H 237)
       )
    )
 (CHARACTER H 1E9E
@@ -7970,7 +7964,7 @@
    (CHARHT R 0.688875)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H DF)
+      (SETCHAR H 1E9E)
       )
    )
 (CHARACTER H 200C
@@ -7986,7 +7980,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 17)
+      (SETCHAR H 200C)
       )
    )
 (CHARACTER H 2010
@@ -7995,7 +7989,7 @@
    (CHARIC R 0.135111)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 7F)
+      (SETCHAR H 2010)
       )
    )
 (CHARACTER H 2013
@@ -8007,7 +8001,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 15)
+      (SETCHAR H 2013)
       )
    )
 (CHARACTER H 2014
@@ -8016,7 +8010,7 @@
    (CHARIC R 0.026777)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 16)
+      (SETCHAR H 2014)
       )
    )
 (CHARACTER H 2018
@@ -8031,7 +8025,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 60)
+      (SETCHAR H 2018)
       )
    )
 (CHARACTER H 2019
@@ -8046,7 +8040,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 27)
+      (SETCHAR H 2019)
       )
    )
 (CHARACTER H 201A
@@ -8089,7 +8083,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H D)
+      (SETCHAR H 201A)
       )
    )
 (CHARACTER H 201C
@@ -8103,7 +8097,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 10)
+      (SETCHAR H 201C)
       )
    )
 (CHARACTER H 201D
@@ -8117,7 +8111,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 11)
+      (SETCHAR H 201D)
       )
    )
 (CHARACTER H 201E
@@ -8162,7 +8156,7 @@
       )
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 12)
+      (SETCHAR H 201E)
       )
    )
 (CHARACTER H 2020
@@ -8170,8 +8164,8 @@
    (CHARHT R 0.688875)
    (CHARDP R 0.194443)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 86)
+      (SELECTFONT D 0)
+      (SETCHAR H 2020)
       )
    )
 (CHARACTER H 2021
@@ -8179,24 +8173,24 @@
    (CHARHT R 0.688875)
    (CHARDP R 0.194443)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 87)
+      (SELECTFONT D 0)
+      (SETCHAR H 2021)
       )
    )
 (CHARACTER H 2022
    (CHARWD R 0.7778)
    (CHARHT R 0.381)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 95)
+      (SELECTFONT D 0)
+      (SETCHAR H 2022)
       )
    )
 (CHARACTER H 2026
    (CHARWD R 0.67)
    (CHARHT R 0.105556)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 85)
+      (SELECTFONT D 0)
+      (SETCHAR H 2026)
       )
    )
 (CHARACTER H 2030
@@ -8204,8 +8198,8 @@
    (CHARHT R 0.75)
    (CHARDP R 0.056)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 89)
+      (SELECTFONT D 0)
+      (SETCHAR H 2030)
       )
    )
 (CHARACTER H 2039
@@ -8213,7 +8207,7 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H E)
+      (SETCHAR H 2039)
       )
    )
 (CHARACTER H 203A
@@ -8221,15 +8215,15 @@
    (CHARHT R 0.491666)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H F)
+      (SETCHAR H 203A)
       )
    )
 (CHARACTER H 20AC
    (CHARWD R 0.626551)
    (CHARHT R 0.688875)
    (MAP
-      (SELECTFONT D 1)
-      (SETCHAR H 1)
+      (SELECTFONT D 0)
+      (SETCHAR H 20AC)
       )
    )
 (CHARACTER H 2423
@@ -8238,6 +8232,59 @@
    (CHARDP R 0.097223)
    (MAP
       (SELECTFONT D 0)
-      (SETCHAR H 20)
+      (SETCHAR H 2423)
+      )
+   )
+(CHARACTER H FB00
+   (CHARWD R 0.5833)
+   (CHARHT R 0.688875)
+   (CHARIC R 0.072444)
+   (COMMENT
+      (LIG H 69 H 1E)
+      (LIG H 6C H 1F)
+      (KRN H 5D R 0.027779)
+      (KRN H 21 R 0.027779)
+      (KRN H 29 R 0.027779)
+      (KRN H 3F R 0.027779)
+      (KRN H 10 R 0.027779)
+      (KRN H 11 R 0.027779)
+      (KRN H 60 R 0.027779)
+      (KRN H 27 R 0.027779)
+      )
+   (MAP
+      (SELECTFONT D 0)
+      (SETCHAR H FB00)
+      )
+   )
+(CHARACTER H FB01
+   (CHARWD R 0.55555)
+   (CHARHT R 0.688875)
+   (MAP
+      (SELECTFONT D 0)
+      (SETCHAR H FB01)
+      )
+   )
+(CHARACTER H FB02
+   (CHARWD R 0.55555)
+   (CHARHT R 0.688875)
+   (MAP
+      (SELECTFONT D 0)
+      (SETCHAR H FB02)
+      )
+   )
+(CHARACTER H FB03
+   (CHARWD R 0.8333)
+   (CHARHT R 0.688875)
+   (MAP
+      (SELECTFONT D 0)
+      (SETCHAR H FB03)
+      )
+   )
+(CHARACTER H FB04
+   (CHARWD R 0.8333)
+   (CHARHT R 0.688875)
+   (MAP
+      (SELECTFONT D 0)
+      (SETCHAR H FB04)
       )
    )
