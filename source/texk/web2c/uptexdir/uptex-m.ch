@@ -408,6 +408,7 @@ end;
 @d enc_t2a=@"90
 @d enc_t2b=@"91
 @d enc_t2c=@"92
+@d enc_lgr=@"A0
 @z
 
 @x
@@ -452,7 +453,8 @@ kchar_num: print_esc("kchar");
   else if font_enc[f]=enc_l7x then print("/L7x")
   else if font_enc[f]=enc_t2a then print("/T2A")
   else if font_enc[f]=enc_t2b then print("/T2B")
-  else if font_enc[f]=enc_t2c then print("/T2C");
+  else if font_enc[f]=enc_t2c then print("/T2C")
+  else if font_enc[f]=enc_lgr then print("/LGR");
 @z
 
 @x
@@ -2458,6 +2460,7 @@ if scan_keyword_noexpand("in") then
   else if scan_keyword_noexpand("t2a") then jfm_enc:=enc_t2a
   else if scan_keyword_noexpand("t2b") then jfm_enc:=enc_t2b
   else if scan_keyword_noexpand("t2c") then jfm_enc:=enc_t2c
+  else if scan_keyword_noexpand("lgr") then jfm_enc:=enc_lgr
   else begin
     print_err("Unknown TFM encoding");
 @.Unknown TFM encoding@>
