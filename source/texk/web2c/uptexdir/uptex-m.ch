@@ -1726,7 +1726,7 @@ i:=char_info(f)(cx); hd:=height_depth(i);
   act_width:=act_width+char_width(f)(orig_char_info(f)(cc));
 @z
 
-@x hyhen
+@x hyphen
 @!hc:array[0..65] of 0..256; {word to be hyphenated}
 @!hn:0..64; {the number of positions occupied in |hc|;
                                   not always a |small_number|}
@@ -1831,6 +1831,18 @@ we consider $x_j$ to be an implicit left boundary character; in this
 case |j| must be strictly less than~|n|. There is a
 parameter |bchar|, which is either |max_hyph_char|
 or an implicit right boundary character
+@z
+
+@x
+@<Local variables for hyph...@>=
+@!major_tail,@!minor_tail:pointer; {the end of lists in the main and
+  discretionary branches being reconstructed}
+@!c:ASCII_code; {character temporarily replaced by a hyphen}
+@y
+@<Local variables for hyph...@>=
+@!major_tail,@!minor_tail:pointer; {the end of lists in the main and
+  discretionary branches being reconstructed}
+@!c:sixteen_bits; {character temporarily replaced by a hyphen}
 @z
 
 @x
@@ -2081,6 +2093,17 @@ vmode+letter,vmode+other_char,vmode+char_num,vmode+char_given,
    vmode+math_shift,vmode+un_hbox,vmode+vrule,
    vmode+accent,vmode+discretionary,vmode+hskip,vmode+valign,
    vmode+kanji,vmode+kana,vmode+other_kchar,vmode+hangul,vmode+modifier,
+@z
+
+
+@x
+  begin c:=hyphen_char[cur_font];
+  if c>=0 then if c<256 then pre_break(tail):=new_character(cur_font,c);
+  end
+@y
+  begin c:=hyphen_char[cur_font];
+  if c>=0 then if c<max_latin_val then pre_break(tail):=new_character(cur_font,c);
+  end
 @z
 
 @x
@@ -2491,6 +2514,14 @@ end;
   define(p,data,cur_chr);
 end;
 set_enable_cjk_token: define(enable_cjk_token_code,data,cur_chr);
+@z
+
+@x
+  cx:KANJI_code; {temporary register for KANJI character}
+  ax:ASCII_code; {temporary register for ASCII character}
+@y
+  cx:KANJI_code; {temporary register for KANJI character}
+  ax:sixteen_bits; {temporary register for ASCII character}
 @z
 
 @x
