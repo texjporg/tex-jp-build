@@ -2,7 +2,7 @@
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
 % It is distributed WITHOUT ANY WARRANTY, express or implied.
-% Version 4.11 --- December 2023
+% Version 4.12 --- August 2024
 
 % Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -27,16 +27,15 @@
 \def\dleft{[\![} \def\dright{]\!]} % double brackets
 \mathchardef\RA="3221 % right arrow
 \mathchardef\BA="3224 % double arrow
-\def\({} % ) kludge for alphabetizing certain section names
 \def\TeXxstring{\\{\TEX/\_string}}
 \def\skipxTeX{\\{skip\_\TEX/}}
 \def\copyxTeX{\\{copy\_\TEX/}}
 
-\def\title{CWEAVE (Version 4.11)}
+\def\title{CWEAVE (Version 4.12)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The {\ttitlefont CWEAVE} processor}
   \vskip 15pt
-  \centerline{(Version 4.11)}
+  \centerline{(Version 4.12)}
   \vfill}
 \def\botofcontents{\vfill
 \noindent
@@ -67,7 +66,7 @@ Crusius, and others who have contributed improvements.
 The ``banner line'' defined here should be changed whenever \.{CWEAVE}
 is modified.
 
-@d banner "This is CWEAVE (Version 4.11)"
+@d banner "This is CWEAVE (Version 4.12)"
 
 @c
 @<Include files@>@/
