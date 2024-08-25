@@ -362,6 +362,8 @@ ptenc_ucs_to_8bit_code(short enc, long uch)
       break;
     case 0x92: UCSto_enc = UCStoT2Cenc; size = sizeof(UCStoT2Cenc);
       break;
+    case 0xA0: UCSto_enc = UCStoLGRenc; size = sizeof(UCStoLGRenc);
+      break;
     default:
       return 256; /* not supported yet */
     }
@@ -403,6 +405,8 @@ ptenc_8bit_code_to_ucs(short enc, long ech)
     case 0x91: UCSto_enc = UCStoT2Benc; size = sizeof(UCStoT2Benc);
       break;
     case 0x92: UCSto_enc = UCStoT2Cenc; size = sizeof(UCStoT2Cenc);
+      break;
+    case 0xA0: UCSto_enc = UCStoLGRenc; size = sizeof(UCStoLGRenc);
       break;
     default:
       return 0xFFFD; /* not supported yet */

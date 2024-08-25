@@ -128,7 +128,7 @@ static unsigned short UCStoT1enc[] = {
    0x15F,    0xB3,  // LATIN SMALL LETTER S WITH CEDILLA
    0x160,    0x92,  // LATIN CAPITAL LETTER S WITH CARON
    0x161,    0xB2,  // LATIN SMALL LETTER S WITH CARON
-   0x162,    0xB5,  // LATIN CAPITAL LETTER T WITH CEDILLA
+   0x162,    0x95,  // LATIN CAPITAL LETTER T WITH CEDILLA
    0x163,    0xB5,  // LATIN SMALL LETTER T WITH CEDILLA
    0x164,    0x94,  // LATIN CAPITAL LETTER T WITH CARON
    0x165,    0xB4,  // LATIN SMALL LETTER T WITH CARON
@@ -719,6 +719,10 @@ static unsigned short UCStoL7Xenc[] = {
 /* UCS -> T2A mapping table */
 static unsigned short UCStoT2Aenc[] = {
     /* from,  to */
+    0x49,    0x49,  // Latin Capital Letter I; glyph for \CYRII, U+0406 І
+    0x4A,    0x4A,  // Latin Capital Letter J; glyph for \CYRJE, U+0408 Ј
+    0x69,    0x69,  // Latin Small Letter I;   glyph for \cyrii, U+0456 і
+    0x6A,    0x6A,  // Latin Small Letter J;   glyph for \cyrje, U+0458 ј
     0xA4,    0x9E,
     0xA7,    0x9F,
     0xA8,    0x04,
@@ -741,7 +745,9 @@ static unsigned short UCStoT2Aenc[] = {
    0x402,    0x82,  // CYRILLIC CAPITAL LETTER DJE
    0x404,    0x99,  // CYRILLIC CAPITAL LETTER UKRAINIAN IE
    0x405,    0x8F,  // CYRILLIC CAPITAL LETTER DZE
+   0x406,    0x49,  // CYRILLIC CAPITAL LETTER BYELORUSSIAN-UKRAINIAN I; \CYRII
    0x407,    0x88,  // CYRILLIC CAPITAL LETTER YI
+   0x408,    0x4A,  // CYRILLIC CAPITAL LETTER JE                      ; \CYRJE
    0x409,    0x87,  // CYRILLIC CAPITAL LETTER LJE
    0x40A,    0x9B,  // CYRILLIC CAPITAL LETTER NJE
    0x40B,    0x83,  // CYRILLIC CAPITAL LETTER TSHE
@@ -815,7 +821,9 @@ static unsigned short UCStoT2Aenc[] = {
    0x452,    0xA2,  // CYRILLIC SMALL LETTER DJE
    0x454,    0xB9,  // CYRILLIC SMALL LETTER UKRAINIAN IE
    0x455,    0xAF,  // CYRILLIC SMALL LETTER DZE
+   0x456,    0x69,  // CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I;   \cyrii
    0x457,    0xA8,  // CYRILLIC SMALL LETTER YI
+   0x458,    0x6A,  // CYRILLIC SMALL LETTER JE;                         \cyrje
    0x459,    0xA7,  // CYRILLIC SMALL LETTER LJE
    0x45A,    0xBB,  // CYRILLIC SMALL LETTER NJE
    0x45B,    0xA3,  // CYRILLIC SMALL LETTER TSHE
@@ -873,12 +881,15 @@ static unsigned short UCStoT2Aenc[] = {
   0x2329,    0x0E,
   0x232A,    0x0F,
   0x2423,    0x20,
-
 };
 
 /* UCS -> T2B mapping table */
 static unsigned short UCStoT2Benc[] = {
     /* from,  to */
+    0x49,    0x49,  // Latin Capital Letter I; glyph for \CYRII, U+0406 І
+    0x4A,    0x4A,  // Latin Capital Letter J; glyph for \CYRJE, U+0408 Ј
+    0x69,    0x69,  // Latin Small Letter I;   glyph for \cyrii, U+0456 і
+    0x6A,    0x6A,  // Latin Small Letter J;   glyph for \cyrje, U+0458 ј
     0xA4,    0x9E,
     0xA7,    0x9F,
     0xA8,    0x04,
@@ -898,6 +909,8 @@ static unsigned short UCStoT2Benc[] = {
    0x2DC,    0x03,
    0x2DD,    0x05,
    0x401,    0x9C,  // CYRILLIC CAPITAL LETTER IO
+   0x406,    0x49,  // CYRILLIC CAPITAL LETTER BYELORUSSIAN-UKRAINIAN I; \CYRII
+   0x408,    0x4A,  // CYRILLIC CAPITAL LETTER JE                      ; \CYRJE
    0x409,    0x88,  // CYRILLIC CAPITAL LETTER LJE
    0x40A,    0x99,  // CYRILLIC CAPITAL LETTER NJE
    0x40E,    0x92,  // CYRILLIC CAPITAL LETTER SHORT U
@@ -966,6 +979,8 @@ static unsigned short UCStoT2Benc[] = {
    0x44E,    0xFE,  // CYRILLIC SMALL LETTER YU
    0x44F,    0xFF,  // CYRILLIC SMALL LETTER YA
    0x451,    0xBC,  // CYRILLIC SMALL LETTER IO
+   0x456,    0x69,  // CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I;   \cyrii
+   0x458,    0x6A,  // CYRILLIC SMALL LETTER JE;                         \cyrje
    0x459,    0xA8,  // CYRILLIC SMALL LETTER LJE
    0x45A,    0xB9,  // CYRILLIC SMALL LETTER NJE
    0x45E,    0xB2,  // CYRILLIC SMALL LETTER SHORT U
@@ -1034,6 +1049,10 @@ static unsigned short UCStoT2Benc[] = {
 /* UCS -> T2C mapping table */
 static unsigned short UCStoT2Cenc[] = {
     /* from,  to */
+    0x49,    0x49,  // Latin Capital Letter I; glyph for \CYRII, U+0406 І
+    0x4A,    0x4A,  // Latin Capital Letter J; glyph for \CYRJE, U+0408 Ј
+    0x69,    0x69,  // Latin Small Letter I;   glyph for \cyrii, U+0456 і
+    0x6A,    0x6A,  // Latin Small Letter J;   glyph for \cyrje, U+0458 ј
     0xA4,    0x9E,
     0xA7,    0x9F,
     0xA8,    0x04,
@@ -1053,6 +1072,8 @@ static unsigned short UCStoT2Cenc[] = {
    0x2DC,    0x03,
    0x2DD,    0x05,
    0x401,    0x9C,  // CYRILLIC CAPITAL LETTER IO
+   0x406,    0x49,  // CYRILLIC CAPITAL LETTER BYELORUSSIAN-UKRAINIAN I; \CYRII
+   0x408,    0x4A,  // CYRILLIC CAPITAL LETTER JE                      ; \CYRJE
    0x40F,    0x96,  // CYRILLIC CAPITAL LETTER DZHE
    0x410,    0xC0,  // CYRILLIC CAPITAL LETTER A
    0x411,    0xC1,  // CYRILLIC CAPITAL LETTER BE
@@ -1119,6 +1140,8 @@ static unsigned short UCStoT2Cenc[] = {
    0x44E,    0xFE,  // CYRILLIC SMALL LETTER YU
    0x44F,    0xFF,  // CYRILLIC SMALL LETTER YA
    0x451,    0xBC,  // CYRILLIC SMALL LETTER IO
+   0x456,    0x69,  // CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I;   \cyrii
+   0x458,    0x6A,  // CYRILLIC SMALL LETTER JE;                         \cyrje
    0x45F,    0xB6,  // CYRILLIC SMALL LETTER DZHE
    0x48A,    0x94,  // CYRILLIC CAPITAL LETTER SHORT I WITH TAIL
    0x48B,    0xB4,  // CYRILLIC SMALL LETTER SHORT I WITH TAIL
@@ -1182,6 +1205,199 @@ static unsigned short UCStoT2Cenc[] = {
   0x2329,    0x0E,
   0x232A,    0x0F,
   0x2423,    0x20,
+};
+
+/* UCS -> LGR mapping table */
+static unsigned short UCStoLGRenc[] = {
+    /* from,  to */
+    0xAB,    0x7B,
+    0xBB,    0x7D,
+   0x259,    0x1A,  // Latin Small Letter Schwa
+   0x374,    0xFE,  // Greek Numeral Sign
+   0x375,    0xFF,  // Greek Lower Numeral Sign
+   0x37A,    0x7C,  // Greek Ypogegrammeni
+   0x37E,    0x3F,  // Greek Question Mark
+   0x387,    0x26,  // Greek Ano Teleia
+   0x386,    0xFD,  // Greek Capital Letter Alpha with Tonos
+   0x388,    0xC7,  // Greek Capital Letter Epsilon with Tonos
+   0x389,    0x9F,  // Greek Capital Letter Eta with Tonos
+   0x38A,    0x9B,  // Greek Capital Letter Iota with Tonos
+   0x38C,    0x97,  // Greek Capital Letter Omicron with Tonos
+   0x390,    0xF2,  // Greek Small Letter Iota with Dialytika and Tonos
+
+   0x391,    0x41,  // Greek Capital Letter Alpha
+   0x392,    0x42,  // Greek Capital Letter Beta
+   0x393,    0x47,  // Greek Capital Letter Gamma
+   0x394,    0x44,  // Greek Capital Letter Delta
+   0x395,    0x45,  // Greek Capital Letter Epsilon
+   0x396,    0x5A,  // Greek Capital Letter Zeta
+   0x397,    0x48,  // Greek Capital Letter Eta
+   0x398,    0x4A,  // Greek Capital Letter Theta
+   0x399,    0x49,  // Greek Capital Letter Iota
+   0x39A,    0x4B,  // Greek Capital Letter Kappa
+   0x39B,    0x4C,  // Greek Capital Letter Lamda
+   0x39C,    0x4D,  // Greek Capital Letter Mu
+   0x39D,    0x4E,  // Greek Capital Letter Nu
+   0x39E,    0x58,  // Greek Capital Letter Xi
+   0x39F,    0x4F,  // Greek Capital Letter Omicron
+   0x3A0,    0x50,  // Greek Capital Letter Pi
+   0x3A1,    0x52,  // Greek Capital Letter Rho
+   0x3A3,    0x53,  // Greek Capital Letter Sigma
+   0x3A4,    0x54,  // Greek Capital Letter Tau
+   0x3A5,    0x55,  // Greek Capital Letter Upsilon
+   0x3A6,    0x46,  // Greek Capital Letter Phi
+   0x3A7,    0x51,  // Greek Capital Letter Chi
+   0x3A8,    0x59,  // Greek Capital Letter Psi
+   0x3A9,    0x57,  // Greek Capital Letter Omega
+
+   0x3AC,    0x88,  // Greek Small Letter Alpha with Tonos
+   0x3AD,    0xE8,  // Greek Small Letter Epsilon with Tonos
+   0x3AE,    0xA0,  // Greek Small Letter Eta with Tonos
+   0x3AF,    0xD0,  // Greek Small Letter Iota with Tonos
+   0x3B0,    0xF6,  // Greek Small Letter Upsilon with Dialytika and Tonos
+
+   0x3B1,    0x61,  // Greek Small Letter Alpha
+   0x3B2,    0x62,  // Greek Small Letter Beta
+   0x3B3,    0x67,  // Greek Small Letter Gamma
+   0x3B4,    0x64,  // Greek Small Letter Delta
+   0x3B5,    0x65,  // Greek Small Letter Epsilon
+   0x3B6,    0x7A,  // Greek Small Letter Zeta
+   0x3B7,    0x68,  // Greek Small Letter Eta
+   0x3B8,    0x6A,  // Greek Small Letter Theta
+   0x3B9,    0x69,  // Greek Small Letter Iota
+   0x3BA,    0x6B,  // Greek Small Letter Kappa
+   0x3BB,    0x6C,  // Greek Small Letter Lamda
+   0x3BC,    0x6D,  // Greek Small Letter Mu
+   0x3BD,    0x6E,  // Greek Small Letter Nu
+   0x3BE,    0x78,  // Greek Small Letter Xi
+   0x3BF,    0x6F,  // Greek Small Letter Omicron
+   0x3C0,    0x70,  // Greek Small Letter Pi
+   0x3C1,    0x72,  // Greek Small Letter Rho
+   0x3C2,    0x63,  // Greek Small Letter Final Sigma
+   0x3C3,    0x73,  // Greek Small Letter Sigma
+   0x3C4,    0x74,  // Greek Small Letter Tau
+   0x3C5,    0x75,  // Greek Small Letter Upsilon
+   0x3C6,    0x66,  // Greek Small Letter Phi
+   0x3C7,    0x71,  // Greek Small Letter Chi
+   0x3C8,    0x79,  // Greek Small Letter Psi
+   0x3C9,    0x77,  // Greek Small Letter Omega
+
+   0x3CA,    0xF0,  // Greek Small Letter Iota with Dialytika
+   0x3CB,    0xF4,  // Greek Small Letter Upsilon with Dialytika
+   0x3CC,    0xEC,  // Greek Small Letter Omicron with Tonos
+   0x3CD,    0xD4,  // Greek Small Letter Upsilon with Tonos
+   0x3CE,    0xB8,  // Greek Small Letter Omega with Tonos
+   0x3D8,    0x15,  // Greek Letter Archaic Koppa
+   0x3D9,    0x13,  // Greek Small Letter Archaic Koppa
+   0x3DA,    0x16,  // Greek Letter Stigma
+   0x3DB,    0x06,  // Greek Small Letter Stigma
+   0x3DD,    0x93,  // Greek Small Letter Digamma
+   0x3DF,    0x12,  // Greek Small Letter Koppa
+   0x3E0,    0x17,  // Greek Letter Sampi
+   0x3E1,    0x1B,  // Greek Small Letter Sampi
+
+  0x1F00,    0x82,  // Greek Small Letter Alpha with Psili
+  0x1F01,    0x81,  // Greek Small Letter Alpha with Dasia
+  0x1F02,    0x8B,  // Greek Small Letter Alpha with Psili and Varia
+  0x1F03,    0x83,  // Greek Small Letter Alpha with Dasia and Varia
+  0x1F04,    0x8A,  // Greek Small Letter Alpha with Psili and Oxia
+  0x1F05,    0x89,  // Greek Small Letter Alpha with Dasia and Oxia
+  0x1F06,    0x92,  // Greek Small Letter Alpha with Psili and Perispomeni
+  0x1F07,    0x91,  // Greek Small Letter Alpha with Dasia and Perispomeni
+  0x1F10,    0xE2,  // Greek Small Letter Epsilon with Psili
+  0x1F11,    0xE1,  // Greek Small Letter Epsilon with Dasia
+  0x1F12,    0xEB,  // Greek Small Letter Epsilon with Psili and Varia
+  0x1F13,    0xE3,  // Greek Small Letter Epsilon with Dasia and Varia
+  0x1F14,    0xEA,  // Greek Small Letter Epsilon with Psili and Oxia
+  0x1F15,    0xE9,  // Greek Small Letter Epsilon with Dasia and Oxia
+  0x1F20,    0x9A,  // Greek Small Letter Eta with Psili
+  0x1F21,    0x99,  // Greek Small Letter Eta with Dasia
+  0x1F22,    0xAB,  // Greek Small Letter Eta with Psili and Varia
+  0x1F23,    0xA3,  // Greek Small Letter Eta with Dasia and Varia
+  0x1F24,    0xA2,  // Greek Small Letter Eta with Psili and Oxia
+  0x1F25,    0xA1,  // Greek Small Letter Eta with Dasia and Oxia
+  0x1F26,    0xAA,  // Greek Small Letter Eta with Psili and Perispomeni
+  0x1F27,    0xA9,  // Greek Small Letter Eta with Dasia and Perispomeni
+  0x1F30,    0xCA,  // Greek Small Letter Iota with Psili
+  0x1F31,    0xC9,  // Greek Small Letter Iota with Dasia
+  0x1F32,    0xD3,  // Greek Small Letter Iota with Psili and Varia
+  0x1F33,    0xCB,  // Greek Small Letter Iota with Dasia and Varia
+  0x1F34,    0xD2,  // Greek Small Letter Iota with Psili and Oxia
+  0x1F35,    0xD1,  // Greek Small Letter Iota with Dasia and Oxia
+  0x1F36,    0xDA,  // Greek Small Letter Iota with Psili and Perispomeni
+  0x1F37,    0xD9,  // Greek Small Letter Iota with Dasia and Perispomeni
+  0x1F40,    0xE6,  // Greek Small Letter Omicron with Psili
+  0x1F41,    0xE5,  // Greek Small Letter Omicron with Dasia
+  0x1F42,    0xEF,  // Greek Small Letter Omicron with Psili and Varia
+  0x1F43,    0xE7,  // Greek Small Letter Omicron with Dasia and Varia
+  0x1F44,    0xEE,  // Greek Small Letter Omicron with Psili and Oxia
+  0x1F45,    0xED,  // Greek Small Letter Omicron with Dasia and Oxia
+  0x1F50,    0xCE,  // Greek Small Letter Upsilon with Psili
+  0x1F51,    0xCD,  // Greek Small Letter Upsilon with Dasia
+  0x1F52,    0xD7,  // Greek Small Letter Upsilon with Psili and Varia
+  0x1F53,    0xCF,  // Greek Small Letter Upsilon with Dasia and Varia
+  0x1F54,    0xD6,  // Greek Small Letter Upsilon with Psili and Oxia
+  0x1F55,    0xD5,  // Greek Small Letter Upsilon with Dasia and Oxia
+  0x1F56,    0xDE,  // Greek Small Letter Upsilon with Psili and Perispomeni
+  0x1F57,    0xDD,  // Greek Small Letter Upsilon with Dasia and Perispomeni
+  0x1F60,    0xB2,  // Greek Small Letter Omega with Psili
+  0x1F61,    0xB1,  // Greek Small Letter Omega with Dasia
+  0x1F62,    0xBB,  // Greek Small Letter Omega with Psili and Varia
+  0x1F63,    0xB3,  // Greek Small Letter Omega with Dasia and Varia
+  0x1F64,    0xBA,  // Greek Small Letter Omega with Psili and Oxia
+  0x1F65,    0xB9,  // Greek Small Letter Omega with Dasia and Oxia
+  0x1F66,    0xC2,  // Greek Small Letter Omega with Psili and Perispomeni
+  0x1F67,    0xC1,  // Greek Small Letter Omega with Dasia and Perispomeni
+  0x1F70,    0x80,  // Greek Small Letter Alpha with Varia
+  0x1F71,    0x88,  // Greek Small Letter Alpha with Oxia
+  0x1F72,    0xE0,  // Greek Small Letter Epsilon with Varia
+  0x1F73,    0xE8,  // Greek Small Letter Epsilon with Oxia
+  0x1F74,    0x98,  // Greek Small Letter Eta with Varia
+  0x1F75,    0xA0,  // Greek Small Letter Eta with Oxia
+  0x1F76,    0xC8,  // Greek Small Letter Iota with Varia
+  0x1F77,    0xD0,  // Greek Small Letter Iota with Oxia
+  0x1F78,    0xE4,  // Greek Small Letter Omicron with Varia
+  0x1F79,    0xEC,  // Greek Small Letter Omicron with Oxia
+  0x1F7A,    0xCC,  // Greek Small Letter Upsilon with Varia
+  0x1F7B,    0xD4,  // Greek Small Letter Upsilon with Oxia
+  0x1F7C,    0xB0,  // Greek Small Letter Omega with Varia
+  0x1F7D,    0xB8,  // Greek Small Letter Omega with Oxia
+  0x1FB6,    0x88,  // Greek Small Letter Alpha with Perispomeni
+  0x1FBD,    0x3E,  // Greek Koronis
+  0x1FBE,    0x08,  // Greek Prosgegrammeni
+  0x1FBF,    0x3E,  // Greek Psili
+  0x1FC0,    0x7E,  // Greek Perispomeni
+  0x1FC1,    0x20,  // Greek Dialytika and Perispomeni
+  0x1FC6,    0xA8,  // Greek Small Letter Eta with Perispomeni
+  0x1FCD,    0x5F,  // Greek Psili and Varia
+  0x1FCE,    0x5E,  // Greek Psili and Oxia
+  0x1FCF,    0x5C,  // Greek Psili and Perispomeni
+  0x1FD2,    0xF1,  // Greek Small Letter Iota with Dialytika and Varia
+  0x1FD3,    0xF2,  // Greek Small Letter Iota with Dialytika and Oxia
+  0x1FD6,    0xD8,  // Greek Small Letter Iota with Perispomeni
+  0x1FD7,    0xF3,  // Greek Small Letter Iota with Dialytika and Perispomeni
+  0x1FDD,    0x43,  // Greek Dasia and Varia
+  0x1FDE,    0x56,  // Greek Dasia and Oxia
+  0x1FDF,    0x40,  // Greek Dasia and Perispomeni
+  0x1FE2,    0xF5,  // Greek Small Letter Upsilon with Dialytika and Varia
+  0x1FE3,    0xF6,  // Greek Small Letter Upsilon with Dialytika and Oxia
+  0x1FE4,    0xFC,  // Greek Small Letter Rho with Psili
+  0x1FE5,    0xFB,  // Greek Small Letter Rho with Dasia
+  0x1FE6,    0xDC,  // Greek Small Letter Upsilon with Perispomeni
+  0x1FE7,    0xF7,  // Greek Small Letter Upsilon with Dialytika and Perispomeni
+  0x1FED,    0x23,  // Greek Dialytika and Varia
+  0x1FEE,    0x24,  // Greek Dialytika and Oxia
+  0x1FEF,    0x60,  // Greek Varia
+  0x1FF6,    0xC0,  // Greek Small Letter Omega with Perispomeni
+  0x1FFD,    0x27,  // Greek Oxia
+  0x1FFE,    0x3C,  // Greek Dasia
+  0x2013,    0x00,
+  0x2014,    0x7F,
+  0x2018,    0x1C,
+  0x2019,    0x1D,
+  0x2030,    0x19,
+  0x20AC,    0x18,
+  0x2126,    0x57,
 };
 
 #endif /* TEX8BENC_H */
