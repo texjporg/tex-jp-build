@@ -1217,15 +1217,17 @@ static unsigned short UCStoLGRenc[] = {
    0x375,    0xFF,  // Greek Lower Numeral Sign
    0x37A,    0x7C,  // Greek Ypogegrammeni
    0x37E,    0x3F,  // Greek Question Mark
-   0x387,    0x26,  // Greek Ano Teleia
+   0x384,    0x27,  // Greek Tonos
    0x386,    0xFD,  // Greek Capital Letter Alpha with Tonos
+   0x387,    0x26,  // Greek Ano Teleia
    0x388,    0xC7,  // Greek Capital Letter Epsilon with Tonos
    0x389,    0x9F,  // Greek Capital Letter Eta with Tonos
    0x38A,    0x9B,  // Greek Capital Letter Iota with Tonos
    0x38C,    0x97,  // Greek Capital Letter Omicron with Tonos
    0x390,    0xF2,  // Greek Small Letter Iota with Dialytika and Tonos
 
-   0x391,    0x41,  // Greek Capital Letter Alpha
+   0x391,    0x0C,  // Greek Capital Letter Alpha
+//   0x391,    0x41,  // Greek Capital Letter Alpha
    0x392,    0x42,  // Greek Capital Letter Beta
    0x393,    0x47,  // Greek Capital Letter Gamma
    0x394,    0x44,  // Greek Capital Letter Delta
@@ -1250,13 +1252,17 @@ static unsigned short UCStoLGRenc[] = {
    0x3A8,    0x59,  // Greek Capital Letter Psi
    0x3A9,    0x57,  // Greek Capital Letter Omega
 
+   0x3AA,    0xDB,  // Greek Capital Letter Iota with Dialytika
+//   0x3AB,    0x13,  // Greek Capital Letter Upsilon with Dialytika
+   0x3AB,    0xDF,  // Greek Capital Letter Upsilon with Dialytika
    0x3AC,    0x88,  // Greek Small Letter Alpha with Tonos
    0x3AD,    0xE8,  // Greek Small Letter Epsilon with Tonos
    0x3AE,    0xA0,  // Greek Small Letter Eta with Tonos
    0x3AF,    0xD0,  // Greek Small Letter Iota with Tonos
    0x3B0,    0xF6,  // Greek Small Letter Upsilon with Dialytika and Tonos
 
-   0x3B1,    0x61,  // Greek Small Letter Alpha
+   0x3B1,    0x0E,  // Greek Small Letter Alpha
+//   0x3B1,    0x61,  // Greek Small Letter Alpha
    0x3B2,    0x62,  // Greek Small Letter Beta
    0x3B3,    0x67,  // Greek Small Letter Gamma
    0x3B4,    0x64,  // Greek Small Letter Delta
@@ -1283,6 +1289,7 @@ static unsigned short UCStoLGRenc[] = {
    0x3C9,    0x77,  // Greek Small Letter Omega
 
    0x3CA,    0xF0,  // Greek Small Letter Iota with Dialytika
+//   0x3CB,    0x0F,  // Greek Small Letter Upsilon with Dialytika
    0x3CB,    0xF4,  // Greek Small Letter Upsilon with Dialytika
    0x3CC,    0xEC,  // Greek Small Letter Omicron with Tonos
    0x3CD,    0xD4,  // Greek Small Letter Upsilon with Tonos
@@ -1362,13 +1369,47 @@ static unsigned short UCStoLGRenc[] = {
   0x1F7B,    0xD4,  // Greek Small Letter Upsilon with Oxia
   0x1F7C,    0xB0,  // Greek Small Letter Omega with Varia
   0x1F7D,    0xB8,  // Greek Small Letter Omega with Oxia
-  0x1FB6,    0x88,  // Greek Small Letter Alpha with Perispomeni
+  0x1F80,    0x86,  // Greek Small Letter Alpha with Psili and Ypogegrammeni
+  0x1F81,    0x85,  // Greek Small Letter Alpha with Dasia and Ypogegrammeni
+  0x1F82,    0x8F,  // Greek Small Letter Alpha with Psili and Varia and Ypogegrammeni
+  0x1F83,    0x87,  // Greek Small Letter Alpha with Dasia and Varia and Ypogegrammeni
+  0x1F84,    0x8E,  // Greek Small Letter Alpha with Psili and Oxia and Ypogegrammeni
+  0x1F85,    0x8D,  // Greek Small Letter Alpha with Dasia and Oxia and Ypogegrammeni
+  0x1F86,    0x96,  // Greek Small Letter Alpha with Psili and Perispomeni and Ypogegrammeni
+  0x1F87,    0x95,  // Greek Small Letter Alpha with Dasia and Perispomeni and Ypogegrammeni
+  0x1F90,    0x9E,  // Greek Small Letter Eta with Psili and Ypogegrammeni
+  0x1F91,    0x9D,  // Greek Small Letter Eta with Dasia and Ypogegrammeni
+  0x1F92,    0xAF,  // Greek Small Letter Eta with Psili and Varia and Ypogegrammeni
+  0x1F93,    0xA7,  // Greek Small Letter Eta with Dasia and Varia and Ypogegrammeni
+  0x1F94,    0xA6,  // Greek Small Letter Eta with Psili and Oxia and Ypogegrammeni
+  0x1F95,    0xA5,  // Greek Small Letter Eta with Dasia and Oxia and Ypogegrammeni
+  0x1F96,    0xAE,  // Greek Small Letter Eta with Psili and Perispomeni and Ypogegrammeni
+  0x1F97,    0xAD,  // Greek Small Letter Eta with Dasia and Perispomeni and Ypogegrammeni
+  0x1FA0,    0xB6,  // Greek Small Letter Omega with Psili and Ypogegrammeni
+  0x1FA1,    0xB5,  // Greek Small Letter Omega with Dasia and Ypogegrammeni
+  0x1FA2,    0xBF,  // Greek Small Letter Omega with Psili and Varia and Ypogegrammeni
+  0x1FA3,    0xB7,  // Greek Small Letter Omega with Dasia and Varia and Ypogegrammeni
+  0x1FA4,    0xBE,  // Greek Small Letter Omega with Psili and Oxia and Ypogegrammeni
+  0x1FA5,    0xBD,  // Greek Small Letter Omega with Dasia and Oxia and Ypogegrammeni
+  0x1FA6,    0xC6,  // Greek Small Letter Omega with Psili and Perispomeni and Ypogegrammeni
+  0x1FA7,    0xC5,  // Greek Small Letter Omega with Dasia and Perispomeni and Ypogegrammeni
+  0x1FB2,    0x84,  // Greek Small Letter Alpha with Varia and Ypogegrammeni
+  0x1FB3,    0xF8,  // Greek Small Letter Alpha with Ypogegrammeni
+  0x1FB4,    0x8C,  // Greek Small Letter Alpha with Oxia and Ypogegrammeni
+  0x1FB6,    0x90,  // Greek Small Letter Alpha with Perispomeni
+  0x1FB7,    0x94,  // Greek Small Letter Alpha with Perispomeni and Ypogegrammeni
+  0x1FBC,    0x09,  // Greek Capital Letter Alpha with Prosgegrammeni
   0x1FBD,    0x3E,  // Greek Koronis
   0x1FBE,    0x08,  // Greek Prosgegrammeni
   0x1FBF,    0x3E,  // Greek Psili
   0x1FC0,    0x7E,  // Greek Perispomeni
   0x1FC1,    0x20,  // Greek Dialytika and Perispomeni
+  0x1FC2,    0x9C,  // Greek Small Letter Eta with Varia and Ypogegrammeni
+  0x1FC3,    0xF9,  // Greek Small Letter Eta with Ypogegrammeni
+  0x1FC4,    0xA4,  // Greek Small Letter Eta with Oxia and Ypogegrammeni
   0x1FC6,    0xA8,  // Greek Small Letter Eta with Perispomeni
+  0x1FC7,    0xAC,  // Greek Small Letter Eta with Perispomeni and Ypogegrammeni
+  0x1FCC,    0x0A,  // Greek Capital Letter Eta with Prosgegrammeni
   0x1FCD,    0x5F,  // Greek Psili and Varia
   0x1FCE,    0x5E,  // Greek Psili and Oxia
   0x1FCF,    0x5C,  // Greek Psili and Perispomeni
@@ -1388,7 +1429,12 @@ static unsigned short UCStoLGRenc[] = {
   0x1FED,    0x23,  // Greek Dialytika and Varia
   0x1FEE,    0x24,  // Greek Dialytika and Oxia
   0x1FEF,    0x60,  // Greek Varia
+  0x1FF2,    0xB4,  // Greek Small Letter Omega with Varia and Ypogegrammeni
+  0x1FF3,    0xFA,  // Greek Small Letter Omega with Ypogegrammeni
+  0x1FF4,    0xBC,  // Greek Small Letter Omega with Oxia and Ypogegrammeni
   0x1FF6,    0xC0,  // Greek Small Letter Omega with Perispomeni
+  0x1FF7,    0xC4,  // Greek Small Letter Omega with Perispomeni and Ypogegrammeni
+  0x1FFC,    0x0B,  // Greek Capital Letter Omega with Prosgegrammeni
   0x1FFD,    0x27,  // Greek Oxia
   0x1FFE,    0x3C,  // Greek Dasia
   0x2013,    0x00,
