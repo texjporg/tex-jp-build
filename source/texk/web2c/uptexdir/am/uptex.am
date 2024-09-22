@@ -267,6 +267,8 @@ DISTCLEANFILES += uptests/ygk256*.*
 DISTCLEANFILES += uptests/xskipjfmp.*
 ## uptexdir/uptriptest
 EXTRA_DIST += uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf
+DISTCLEANFILES += uptrip.diffs
+
 ## uptexdir/uptex-ofm.test
 EXTRA_DIST += uptexdir/tests/up-ofm.tex uptexdir/tests/up-ofm.log \
 	uptexdir/tests/up-ofma.typ
@@ -284,7 +286,5 @@ uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 .PHONY: uptrip-clean
 uptrip-clean:
 	rm -rf uptripdir
-
-DISTCLEANFILES += uptrip.diffs
 
 # (end of uptex.am)

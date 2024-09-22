@@ -1,3 +1,13 @@
+2024-09-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.c,
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch,
+	* cweave.w,
+	* cwebacromac.tex,
+	* cwebmac.tex,
+	* refsort.ch: Fix sorting order in Names-of-the-Sections.
+
 2024-08-12  Andreas Scherer  <https://ascherer.github.io>
 
 	* Makefile

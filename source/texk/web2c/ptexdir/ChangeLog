@@ -1,3 +1,25 @@
+2024-09-21  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-base.ch:
+	Fix a bug in initialization of inhibit_xsp/kinsoku tables
+	(Bug introduced on commit 2022-12-12 r65248).
+	* ptex-ctrlsym.test, tests/{ptexlineendmode,ucs}.tex,
+	(chartoken,ucs-{e,s}}.log, p-lineenda.typ:
+	Add more regression tests.
+	* tests/{free_{ixsp,pena},inhibitglue,kinsoku_{search,table},
+	postpena}.tex: Move to ../euptexdir/tests .
+	* am/ptex.am: Adjust.
+
+2024-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-base.ch: Use constants enc_jis and enc_ucs.
+	* ptex-{ctrlsym,prntknj,ucs}.test,
+	tests/{control-symbol,ctrlsym,endlinechar,printkanji,ucs}.tex,
+	tests/{ctrlsym,endline,jctrlsym,pknj-{e,s},ucs-{e,s}).log,
+	tests/p-{endline,jctrlsym,pknj-{e,s}}a.typ:
+	Add regression tests by using Kitagawa-san's sample files.
+	* am/ptex.am: Adjust.
+
 2024-05-18  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
 
 	* ptex-base.ch: Enable to get character codes
