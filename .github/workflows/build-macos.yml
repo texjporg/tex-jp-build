@@ -1,0 +1,334 @@
+name: Build on MacOS
+run-name: building & testing on MacOS
+on:
+  push:
+    branches:
+      - 'build-macos/**'
+      - 'build/**'
+      - 'master'
+jobs:
+  Build-on-macos:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub."
+      - run: echo "Branch [ ${{ github.ref }} ]  Repository [ ${{ github.repository }} ]"
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: brew
+        shell: bash
+        run: |
+          #brew install icu4c
+          brew info icu4c
+
+      - name: make libs
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/libs/{zlib,libpng,libpaper}
+          cd ${{ github.workspace }}/source/Work/libs/zlib
+          ../../../libs/zlib/configure
+          make
+          make check
+          cd ${{ github.workspace }}/source/Work/libs/libpng
+          ../../../libs/libpng/configure
+          make
+          make check
+          cd ${{ github.workspace }}/source/Work/libs/libpaper
+          ../../../libs/libpaper/configure
+          make
+          make check
+#          cd ${{ github.workspace }}/source/Work/libs/icu
+#          ../../../libs/icu/configure
+#          make
+#          make check
+
+      - name: make kpathsea, ptexenc
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/{kpathsea,ptexenc}
+          cd ${{ github.workspace }}/source/Work/texk/kpathsea
+          ../../../texk/kpathsea/configure
+          make
+          make check || cat tests/kpsesafe.log
+          cd ${{ github.workspace }}/source/Work/texk/ptexenc
+          ../../../texk/ptexenc/configure
+          make
+
+      - name: icu
+        shell: bash
+        run: |
+          ICU_PREFIX=`find /opt/homebrew/Cellar -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
+          # ICU_PREFIX="/opt/homebrew/Cellar/icu4c/74.2"
+          echo "ICU_PREFIX: "$ICU_PREFIX
+          echo "ICU_PREFIX=$ICU_PREFIX" >> $GITHUB_ENV
+
+      - name: bibtex-x
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/bibtex-x
+          cd ./source/Work/texk/bibtex-x
+          CPPFLAGS=-I$ICU_PREFIX/include \
+          LDFLAGS=-L$ICU_PREFIX/lib \
+          LIBS="-licuio -licui18n -licuuc -licudata" \
+          ../../../texk/bibtex-x/configure \
+            --with-system-icu
+          make
+          ./bibtex8 --version
+          ./bibtexu --version
+          make check
+
+      - name: upmendex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/upmendex
+          cd ./source/Work/texk/upmendex
+          CPPFLAGS=-I$ICU_PREFIX/include \
+          LDFLAGS=-L$ICU_PREFIX/lib \
+          LIBS="-licuio -licui18n -licuuc -licudata" \
+          ../../../texk/upmendex/configure \
+            --with-system-icu
+          make
+          ./upmendex --help
+          make check
+
+      - name: dvipdfm-x
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvipdfm-x
+          cd ./source/Work/texk/dvipdfm-x
+          ../../../texk/dvipdfm-x/configure
+          make
+          make check
+
+      - name: dvipsk
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvipsk
+          cd ./source/Work/texk/dvipsk
+          ../../../texk/dvipsk/configure
+          make
+          make check
+
+      - name: makejvf
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/makejvf
+          cd ./source/Work/texk/makejvf
+          ../../../texk/makejvf/configure
+          make
+          make check
+
+      - name: mendex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/mendexk
+          cd ./source/Work/texk/mendexk
+          ../../../texk/mendexk/configure
+          make
+          make check
+
+      - name: dviout-util
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dviout-util
+          cd ./source/Work/texk/dviout-util
+          ../../../texk/dviout-util/configure
+          make
+          make check
+
+      - name: dvi2tty
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvi2tty
+          cd ./source/Work/texk/dvi2tty
+          ../../../texk/dvi2tty/configure
+          make
+          make check
+
+      - name: seetex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/seetexk
+          cd ./source/Work/texk/seetexk
+          ../../../texk/seetexk/configure
+          make
+          make check
+
+      - name: dvidvi
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvidvi
+          cd ./source/Work/texk/dvidvi
+          ../../../texk/dvidvi/configure
+          make
+          make check
+
+      - name: make libs
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/libs/{gmp,mpfr,mpfi}
+          cd ${{ github.workspace }}/source/Work/libs/gmp
+          ../../../libs/gmp/configure
+          make
+          make check
+          cd ${{ github.workspace }}/source/Work/libs/mpfr
+          ../../../libs/mpfr/configure
+          make
+          make check
+          cd ${{ github.workspace }}/source/Work/libs/mpfi
+          ../../../libs/mpfi/configure
+          make
+          make check
+
+      - name: web2c
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/web2c
+          cd ./source/Work/texk/web2c
+          ../../../texk/web2c/configure \
+            --srcdir=../../../texk/web2c \
+            --disable-all-pkgs \
+            --enable-debug \
+            --enable-tex  --disable-tex-synctex \
+            --enable-etex  --enable-etex-synctex \
+            --enable-ptex  --enable-ptex-synctex \
+            --enable-uptex  --enable-uptex-synctex \
+            --enable-euptex  --enable-euptex-synctex \
+            --enable-mp  --enable-pmp  --enable-upmp \
+            --disable-pdftex  --disable-pdftex-synctex \
+            --enable-web-progs \
+            --enable-synctex \
+            --disable-mf  --disable-mf-nowin \
+            --disable-aleph \
+            --disable-luatex  --disable-luajittex  --disable-luahbtex  --disable-luajithbtex \
+            --disable-xetex  --disable-xetex-synctex \
+            --disable-mflua  --disable-mflua-nowin  --disable-mfluajit  --disable-mfluajit-nowin \
+            --disable-epsfwin  --disable-hp2627win  --disable-mftalkwin  --disable-nextwin \
+            --disable-regiswin  --disable-suntoolswin  --disable-tektronixwin  --disable-unitermwin \
+            --disable-missing \
+            --with-gnu-ld \
+            --without-x \
+            --without-mf-x-toolkit \
+            --without-system-kpathsea \
+            --without-system-ptexenc \
+            --without-system-zlib \
+            --without-system-libpng \
+            --without-system-freetype2 \
+            --with-system-pixman \
+            --with-system-cairo \
+            --without-system-gmp \
+            --without-system-mpfr \
+            --without-system-poppler \
+            --without-system-xpdf \
+            --without-system-zziplib \
+            --without-system-teckit \
+            --without-system-icu \
+            --without-system-graphite2 \
+            --without-system-harfbuzz
+          make
+
+      - name: web2c triptest
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
+          export abs_srcdir=../$srcdir
+          export DIFF=diff
+          export KPSEWHICH="../kpathsea/kpsewhich"
+          export LN_S="ln -s"
+          $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
+          echo ""
+          $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
+          echo ""
+          $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
+          echo ""
+          $srcdir/euptexdir/eptriptest.test || cat eupptripdir/eptrip.log
+          echo ""
+          $srcdir/euptexdir/euptriptest.test || cat euptripdir/euptrip.log
+          echo ""
+        env:
+          srcdir: "../../../texk/web2c"
+          TEXMFCNF: "../../../texk/kpathsea"
+
+      - name: web2c
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
+          make check
+
+      - name: web2c version check
+        shell: bash
+        run: |
+          cd ./source/Work/texk/web2c
+          ./ctie --version || echo "ctie"
+          echo ""
+          ./ctwill --version || echo "ctwill"
+          echo ""
+          ./cweave --version || echo "cwaeve"
+          echo ""
+          ./tie --version || echo "tie"
+          echo ""
+          ./twill --version || echo "twill"
+          echo ""
+          ./tex --version || echo "tex"
+          echo ""
+          ./etex --version || echo "etex"
+          echo ""
+          ./ptex --version || echo "ptex"
+          echo ""
+          ./uptex --version || echo "uptex"
+          echo ""
+          ./euptex --version || echo "euptex"
+          echo ""
+          ./updvitype --version || echo "updvitype"
+          echo ""
+          ./uppltotf --version || echo "uppltotf"
+          echo ""
+          ./uptftopl --version || echo "uptftopl"
+          echo ""
+          ./upbibtex --version || echo "upbibtex"
+          echo ""
+          ./dvitype --version || echo "dvitype"
+          echo ""
+          ./dvicopy --version || echo "dvicopy"
+          echo ""
+          ./pltotf --version || echo "pltotf"
+          echo ""
+          ./tftopl --version || echo "tftopl"
+          echo ""
+          ./bibtex --version || echo "bibtex"
+          echo ""
+          ./gftodvi --version || echo "gftodvi"
+          echo ""
+          ./gftopk --version || echo "gftopk"
+          echo ""
+          ./gftype --version || echo "gftype"
+          echo ""
+          ./mft --version || echo "mft"
+          echo ""
+          ./patgen --version || echo "patgen"
+          echo ""
+          ./pktogf --version || echo "pktogf"
+          echo ""
+          ./pktype --version || echo "pktype"
+          echo ""
+          ./pooltype --version || echo "pooltype"
+          echo ""
+          ./vftovp --version || echo "vftovp"
+          echo ""
+          ./vptovf --version || echo "vptovf"
+          echo ""
+          ./weave --version || echo "weave"
+          echo ""
+          ./mpost --version || echo "mpost"
+          echo ""
+          ./pmpost --version || echo "pmpost"
+          echo ""
+          ./upmpost --version || echo "upmpost"
+          echo ""
+          ./synctex help || echo "synctex"
+        env:
+          TEXMFCNF: "../../../texk/kpathsea"
+
+      - run: echo "⛄ This job's status is ${{ job.status }}."
