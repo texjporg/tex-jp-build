@@ -23,7 +23,7 @@ Section 1.
 \else
   \pdfpagewidth=\pagewd \advance\pdfpagewidth by 2cm
   \pdfpageheight=\pageht \advance\pdfpageheight by 5cm
-  \ifpdftex \pdfhorigin=1cm \pdfvorigin=1cm
+  \ifpdflua \pdfhorigin=1cm \pdfvorigin=1cm
   \else \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
 \fi
 
@@ -32,14 +32,14 @@ Section 1.
 
 @x
 A kind of ``user manual'' for \.{CTWILL} can be found in the appendix
-\X271:Mogrify \.{CWEAVE} into \.{CTWILL}\X~and beyond, together with
+\X270:Mogrify \.{CWEAVE} into \.{CTWILL}\X~and beyond, together with
 additional material specific to \.{CTWILL}. % FIXME
 Until then, \.{CWEAVE}'s sequence of sections will be preserved.
 
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
 @y
 A kind of ``user manual'' for \.{CTWILL} can be found in section~%
-\X288:Mogrify {\tentex CWEAVE} into {\tentex CTWILL}\X~and beyond,
+\X287:Mogrify {\tentex CWEAVE} into {\tentex CTWILL}\X~and beyond,
 together with additional material specific to \.{CTWILL}. % FIXME
 \bigskip
 {\font\itt=cmitt10 \font\bit=cmbxti10
@@ -494,6 +494,14 @@ handles \CEE/ text with embedded comments.
 @ The |outer_xref| subroutine is like |C_xref| except that it begins
 with |next_control| |!='|'| and ends with |next_control>=format_code|.
 Thus, it handles \CEE/ text with embedded comments.
+@z
+
+Section 75.
+
+@x
+@ @<Replace `\.{@@@@}' by `\.{@@}'@>=
+@y
+@r @ @<Replace `\.{@@@@}' by `\.{@@}'@>=
 @z
 
 Section 80.
@@ -1335,7 +1343,7 @@ Section 164.
 }
 else if (cat1==attr) {
 @y
-  else reduce(pp,0,else_like,0,65);
+  @+else reduce(pp,0,else_like,0,65);
 }
 @+ else @/ if (cat1==attr) {
 @z
@@ -1344,24 +1352,20 @@ Section 170.
 
 @x
 @d force_lines flags['f'] /* should each statement be on its own line? */
+@d force_first flags['F'] /* should compound statement start on new line? */
 @y
 @d force_lines flags['f'] /* should each statement be on its own line? */
-@-force_lines@>
-@$force_lines {CTWILL}170 =\\{flags}[\.{'f'}]@>
+@-force_lines@> @$force_lines {CTWILL}170 =\\{flags}[\.{'f'}]@>
+@d force_first flags['F'] /* should compound statement start on new line? */
+@-force_first@> @$force_first {CTWILL}170 =\\{flags}[\.{'F'}]@>
 @z
 
 Section 173.
 
 @x
-if (cat1==if_like || cat1==else_like || cat1==define_like)
-@y
-if (cat1==if_like || cat1==else_like || cat1==define_like) @/
-@z
-
-@x
 } else if (cat1==exp || cat1==function) {
 @y
-} else @/ if (cat1==exp || cat1==function) {
+} @+ else @/ if (cat1==exp || cat1==function) {
 @z
 
 Section 178.
@@ -1408,7 +1412,7 @@ Section 197.
 @r @ Now here's the |reduce| procedure used in our code for productions,
 @z
 
-Section 202.
+Section 200.
 
 @x
 @ @<Print a snapsh...@>=
@@ -1417,7 +1421,17 @@ Section 202.
 @-n@>
 @%
 @$n {CTWILL}197 \&{short}@>
-@$n {CTWILL}198 \&{short}@>
+@z
+
+Section 202.
+
+@x
+@ If we get to the end of the scrap list, category codes equal to zero are
+@y
+@r @ If we get to the end of the scrap list, category codes equal to zero are
+@-j@>
+@%
+@$j {CTWILL}203 \&{scrap\_pointer}@>
 @z
 
 Section 204.
@@ -1575,9 +1589,9 @@ Section 212--213.
 Section 215.
 
 @x
-@<Append a string or...@>={@+ int count=-1; /* characters remaining before string break */
+@<Append a \9{s}string or...@>={@+ int count=-1; /* characters remaining before string break */
 @y
-@<Append a string or...@>={int count=-1; /* characters remaining before string break */
+@<Append a \9{s}string or...@>={@+ int count=-1; /* characters remaining before string break */
 @z
 
 Section 220.
@@ -1805,12 +1819,12 @@ Section 247.
 
 @x
 @ @d usage_sentinel (struct perm_meaning *)1
-@<Translate the current section@>= {
+@<Translate the \9{c}current section@>= {
 @y
 @ @d usage_sentinel (struct perm_meaning *)1
 @-usage_sentinel@>
 @$usage_sentinel {CTWILL}247 =(\&{struct} \&{perm\_meaning} ${}{*}{}$) \T{1}@>
-@<Translate the current section@>=@+ {
+@<Translate the \9{c}current section@>= {
 @z
 
 Section 251.
@@ -1837,9 +1851,9 @@ Section 252.
 Section 254.
 
 @x
-@ @<Start a format...@>= {
+@ @<Start \9{a}a format...@>= {
 @y
-@r @ @<Start a format...@>= {
+@r @ @<Start \9{a}a format...@>= {
 @z
 
 Section 255.
@@ -1891,16 +1905,23 @@ Section 265.
 @-phase_three@>
 @z
 
-Section 268.
+Section 267.
 
 @x
 @ A left-to-right radix sorting method is used, since this makes it easy to
 @y
-@r @ A left-to-right radix sorting method is used, since this makes it easy to
+@ A left-to-right radix sorting method is used, since this makes it easy to
 @-c@>
 @z
 
-Section 270.
+@x l.4596
+the |blink| array.
+@y
+the |blink| array.
+\vadjust{\goodbreak}%
+@z
+
+Section 269.
 
 @x
 @<Rest of |trans_plus| union@>=
@@ -1910,7 +1931,7 @@ Section 270.
 @-k@>
 @z
 
-Section 271.
+Section 270.
 
 @x
 @ @d depth cat /* reclaims memory that is no longer needed for parsing */
@@ -1920,12 +1941,12 @@ Section 271.
 @-head@>
 @-sort_ptr@>
 @-max_sorts@>
-@$depth {CTWILL}271 =\\{cat}@>
-@$head {CTWILL}271 =\\{trans\_plus}.\\{Head}@>
-@$sort_ptr {CTWILL}271 =\\{scrap\_ptr}@>
+@$depth {CTWILL}270 =\\{cat}@>
+@$head {CTWILL}270 =\\{trans\_plus}.\\{Head}@>
+@$sort_ptr {CTWILL}270 =\\{scrap\_ptr}@>
 @z
 
-Section 273.
+Section 272.
 
 @x
 $|collate|[0]<|collate|[1]<\cdots<|collate|[100]$.
@@ -1933,26 +1954,26 @@ $|collate|[0]<|collate|[1]<\cdots<|collate|[100]$.
 |collate[0]| ${}<{}$|collate[1]|${}<\cdots<{}$|collate[100]|.
 @z
 
+Section 274.
+
+@x
+@ Procedure |unbucket| goes through the buckets and adds nonempty lists
+@y
+@ Procedure |unbucket| goes through the buckets and adds nonempty lists
+@-unbucket@>
+@$unbucket {CTWILL}274 \&{static} \&{void} (\,)@>
+@z
+
 Section 275.
 
 @x
-@ Procedure |unbucket| goes through the buckets and adds nonempty lists
-@y
-@ Procedure |unbucket| goes through the buckets and adds nonempty lists
-@-unbucket@>
-@$unbucket {CTWILL}275 \&{static} \&{void} (\,)@>
-@z
-
-Section 276.
-
-@x
 @ @<Predecl...@>=@+static void unbucket(eight_bits);
 @y
 @ @<Predecl...@>=@+static void unbucket(eight_bits);
 @-unbucket@>
 @z
 
-Section 278.
+Section 277.
 
 @x
 @ @<Split the list...@>= {
@@ -1964,7 +1985,7 @@ Section 278.
   next_name=sort_ptr->head;@/
 @z
 
-Section 279.
+Section 278.
 
 @x
 @ @<Output index...@>= {
@@ -1974,7 +1995,7 @@ Section 279.
   cur_name=sort_ptr->head;@/
 @z
 
-Section 281.
+Section 280.
 
 @x
   else {out_str("\\["); out_section(cur_val-def_flag); out(']');}
@@ -1982,7 +2003,7 @@ Section 281.
   else {@+out_str("\\["); out_section(cur_val-def_flag); out(']');@+}
 @z
 
-Section 285.
+Section 284.
 
 @x
 @ @<Predecl...@>=@+static void section_print(name_pointer);
@@ -1991,7 +2012,7 @@ Section 285.
 @-section_print@>
 @z
 
-Section 287.
+Section 286.
 
 @x
   puts(_("\nMemory usage statistics:"));
@@ -2055,7 +2076,7 @@ Section 287.
             @t\5\5\5\5@>(long)max_scraps);
 @z
 
-Section 288.
+Section 287.
 
 @x
 @** Mogrify {\tentex CWEAVE} into {\tentex CTWILL}.  The following sections
@@ -2063,12 +2084,15 @@ introduce material that is specific to \.{CTWILL}.
 
 Care has been taken to keep the original section numbering of \.{CWEAVE}
 up to this point intact, so this new material should nicely integrate
-with the original ``\&{271.~Index}.''
+with the original ``\&{270.~Index}.''
 
-@q Section 2->272. @>
+@q Section 2->271. @>
 @* {\tentex CTWILL} user manual.
+Here is a sort of user manual for \.{CTWILL}---which is exactly like
 @y
 @** Mogrify {\tentex CWEAVE} into {\tentex CTWILL}.
+Here is a sort of user manual for \.{CTWILL}%
+\ifluatex, \else---\fi which is exactly like
 @-s@>
 @z
 
@@ -2080,7 +2104,7 @@ give it the necessary hints in other places via your change file.
 @-x@>
 @z
 
-Section 289--290.
+Section 288--289.
 
 @x
 The current meaning of every identifier is initially `\.{\\uninitialized}'.
@@ -2105,17 +2129,17 @@ must have fewer than 80 characters.
 @y
 @z
 
-Section 292.
+Section 291.
 
 @x
 static struct perm_meaning {
 @y
 static struct perm_meaning {
 @-perm_meaning@>
-@$perm_meaning {CTWILL}292 \&{static} \&{struct}@>
+@$perm_meaning {CTWILL}291 \&{static} \&{struct}@>
 @z
 
-Section 301.
+Section 300.
 
 @x
 @ @<Predec...@>=@+static boolean app_supp(text_pointer);
@@ -2124,7 +2148,7 @@ Section 301.
 @-app_supp@>
 @z
 
-Section 302.
+Section 301.
 
 @x
 @ The trickiest part of \.{CTWILL} is the procedure |make_ministring(pp+l)|,
@@ -2135,10 +2159,10 @@ Section 302.
 @-c@>
 @-l@>
 @-make_ministring@>
-@$make_ministring {CTWILL}302 \&{static} \&{void} (\,)@>
+@$make_ministring {CTWILL}301 \&{static} \&{void} (\,)@>
 @z
 
-Section 303.
+Section 302.
 
 @x
 @ @<Predec...@>=@+static void make_ministring(scrap_pointer);
@@ -2147,7 +2171,7 @@ Section 303.
 @-make_ministring@>
 @z
 
-Section 306.
+Section 305.
 
 @x
 @ @<Append tokens for type |q|@>=
@@ -2161,18 +2185,18 @@ Section 306.
    @|&& *(*r+1)=='{') app(**q); /* |struct_like| identifier */
 @z
 
-Section 311.
+Section 310.
 
 @x
 @ @<Write the new meaning to the \.{.aux} file@>=
 @y
 @ @<Write the new meaning to the \.{.aux} file@>=
 @%
-@$p {CTWILL}295 \&{name\_pointer}@>
-@$q {CTWILL}295 \&{struct perm\_meaning} ${}{*}{}$@>
+@$p {CTWILL}294 \&{name\_pointer}@>
+@$q {CTWILL}294 \&{struct perm\_meaning} ${}{*}{}$@>
 @z
 
-Section 312.
+Section 311.
 
 @x
 @<Flag the usage of this identifier, for the mini-index@>=
@@ -2182,7 +2206,7 @@ Section 312.
 @$p {CTWILL}218 \&{name\_pointer}@>
 @z
 
-Section 315.
+Section 314.
 
 @x
 @ @<Predec...@>=@+static void out_mini(meaning_struct *);
@@ -2191,7 +2215,7 @@ Section 315.
 @-out_mini@>
 @z
 
-Section 318.
+Section 317.
 
 @x
 @ @<Predec...@>=@+static sixteen_bits title_lookup(void);
@@ -2200,27 +2224,27 @@ Section 318.
 @-title_lookup@>
 @z
 
-Section 321.
+Section 320.
 
 @x
 @d indent_param_decl flags['i'] /* should formal parameter declarations be indented? */
 @y
 @d indent_param_decl flags['i'] /* should formal parameter declarations be indented? */
 @-indent_param_decl@>
-@$indent_param_decl {CTWILL}321 =\\{flags}[\.{'i'}]@>
+@$indent_param_decl {CTWILL}320 =\\{flags}[\.{'i'}]@>
 @z
 
-Section 322.
+Section 321.
 
 @x
 @d order_decl_stmt flags['o'] /* should declarations and statements be separated? */
 @y
 @d order_decl_stmt flags['o'] /* should declarations and statements be separated? */
 @-order_decl_stmt@>
-@$order_decl_stmt {CTWILL}322 =\\{flags}[\.{'o'}]@>
+@$order_decl_stmt {CTWILL}321 =\\{flags}[\.{'o'}]@>
 @z
 
-Section 328.
+Section 327.
 
 @x l.102 of CTWILL-TEXLIVE.CH
 @d kpse_find_cweb(name) kpse_find_file(name,kpse_cweb_format,true)
@@ -2229,7 +2253,7 @@ Section 328.
 @-name@>
 @z
 
-Section 330.
+Section 329.
 
 @x
 @** Index.

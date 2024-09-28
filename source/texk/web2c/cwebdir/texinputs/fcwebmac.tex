@@ -28,6 +28,7 @@
 % Version 3.64 [p21] --- Andreas Scherer, October 2005
 % Version 3.64 [p22] --- Andreas Scherer, March 2016
 % Version 4.9  --- Andreas Scherer, June 2022
+% Version 4.12 --- Andreas Scherer, August 2024
 
 % french translations --- Denis Roegel, 18 September 1994
 
@@ -74,7 +75,7 @@
 \def\fin{\par\vfill\eject % this is done when we are ending the index
   \ifpagesaved\null\vfill\eject\fi % output a null index column
   \if L\lr\else\null\vfill\eject\fi % finish the current page
-  \ifpdf \ifpdftex \makebookmarks % added in Version 3.68
+  \ifpdf \ifpdflua \makebookmarks % added in Version 3.68
     \countsections \fi\fi % and in Version 4.9
   \parfillskip 0pt plus 1fil
   \def\grouptitle{NOMS DES SECTIONS}
@@ -89,8 +90,8 @@
   \def\Us{\note{Utilis\'e dans les sections}} % crossref for uses of a section
   \def\I{\par\hangindent 2em}\let\*=*
   \ifpdf \def\outsecname{Noms des sections} \let\Xpdf\X
-%  \ifpdftex \makebookmarks \pdfdest name {NOS} fitb % in versions < 3.68
-  \ifpdftex \pdfdest name {NOS} fith % changed in version 3.69
+%  \ifpdflua \makebookmarks \pdfdest name {NOS} fitb % in versions < 3.68
+  \ifpdflua \pdfdest name {NOS} fith % changed in version 3.69
     \pdfoutline goto name {NOS} count -\the\countD {\outsecname}
     \def\X##1:##2\X{\Xpdf##1:##2\X \firstsecno##1.%
       {\toksF={}\makeoutlinetoks##2\outlinedone\outlinedone}%
@@ -107,12 +108,12 @@
 % \ifodd\pageno\else\titletrue\null\vfill\eject\fi % for duplex printers
   \rightskip 0pt \hyphenpenalty 50 \tolerance 200
   \setpage \output={\normaloutput\page\lheader\rheader}
-  \titletrue % prepare to output the table of contents
+  \ifpdf\startpdf\fi \titletrue % prepare to output the table of contents
   \pageno=\contentspagenumber
   \def\grouptitle{SOMMAIRE:}
   \message{Sommaire:}
   \ifhint\HINThome\fi% Mark the Table of contents as home page
-  \topofcontents \startpdf
+  \topofcontents
   \line{\hfil Section\ifhint\else\hbox to3em{\hss Page}\fi}% No Page in HINT
   \let\ZZ=\contentsline
   \readcontents\relax % read the contents info

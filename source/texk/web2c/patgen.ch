@@ -5,12 +5,17 @@
 %		 properly---it is hard to test without more information.
 % 03/23/88 (ETM) Brought up to date, converted for use with WEB to C.
 
+@x [0] Extend program title.
+\def\title{PATGEN}
+@y
+\def\title{PATGEN changes for C}
+@z
+
 @x WEAVE: print changes only
 \pageno=\contentspagenumber \advance\pageno by 1
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{PATGEN changes for C}
 @z
 
 @x [1] Define my_name
@@ -20,7 +25,7 @@
 @d banner=='This is PATGEN, Version 2.4' {printed when the program starts}
 @z
 
-@x Terminal I/O, Need standard input.
+@x [3] Terminal I/O, Need standard input.
 @d get_input(#)==read(input,#)
 @d get_input_ln(#)==
   begin if eoln(input) then read_ln(input);
@@ -34,7 +39,7 @@
 @d std_input==stdin
 @z
 
-@x Eliminate the |end_of_PATGEN| label.
+@x [3] Eliminate the |end_of_PATGEN| label.
 @d end_of_PATGEN=9999
 @y
 @z
@@ -43,12 +48,12 @@ label end_of_PATGEN;
 @y
 @z
 
-@x Add file opening to initialization
+@x [3] Add file opening to initialization
 procedure initialize; {this procedure gets things started properly}
   var @<Local variables for initialization@>@/
   begin print_ln(banner);@/
 @y
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize; {this procedure gets things started properly}
   var @<Local variables for initialization@>@/
 begin
@@ -79,7 +84,7 @@ error message about what caused the error.
 @d error(#)==begin write_ln(stderr, #); uexit(1); end;
 @z
 
-@x Fix signed char problem
+@x [12] Fix signed char problem
 @!text_char=char; {the data type of characters in text files}
 @!ASCII_code=0..last_ASCII_code; {internal representation of input characters}
 @y
@@ -92,14 +97,14 @@ error message about what caused the error.
 % machines, from Johannes Hielscher, 10 Jul 2019 00:00:03 (tex-live list),
 % and later from Mojca Miklavec, 23 Sep 2019 21:21:42.
 % It seems hopeless, so went back to the original values (10000000/500000).
-% 
+%
 % The real solution is to provide a way to allocate the arrays
 % dynamically, so that the large arrays can be used by those who need
 % them but other are not affected.
-% 
+%
 % If the values here are still too big, you can probably get it to work
 % by adding swap or zram; or write a patch to allocate the arrays dynamically.
-@x
+@x [27]
 @!trie_size=55000; {space for pattern trie}
 @!triec_size=26000; {space for pattern count trie, must be less than
  |trie_size| and greater than the number of occurrences of any pattern in
@@ -116,7 +121,7 @@ error message about what caused the error.
 @!max_buf_len=3000; {maximum length of input lines, must be at least |max_len|}
 @z
 
-@x Close both input and output files.
+@x [51] Close both input and output files.
 @d close_out(#)==close(#) {close an output file}
 @d close_in(#)==do_nothing {close an input file}
 @y
@@ -124,7 +129,7 @@ error message about what caused the error.
 @d close_in(#)==xfclose(#, 'inputfile') {close an input file}
 @z
 
-@x Add f_name declaration, and temporaries for efficiency printing.
+@x [51] Add f_name declaration, and temporaries for efficiency printing.
 @!dictionary, @!patterns, @!translate, @!patout, @!pattmp: text_file;
 @y
 @!dictionary, @!patterns, @!translate, @!patout, @!pattmp: text_file;
@@ -132,20 +137,20 @@ error message about what caused the error.
 @!bad_frac, @!denom, @!eff: real;
 @z
 
-@x Get translate filename from command line.
+@x [54] Get translate filename from command line.
 reset(translate);
 @y
 f_name := cmdline (4);
 reset (translate, f_name);
 @z
 
-@x Input kludge.
+@x [57] Input kludge.
   repeat print('left_hyphen_min, right_hyphen_min: '); get_input(n1,n2);@/
 @y
   repeat print('left_hyphen_min, right_hyphen_min: '); input_2ints(n1,n2);@/
 @z
 
-@x Floating point output kludge for Web2c.
+@x [67] Floating point output kludge for Web2c.
   print_ln(', efficiency = ',
     good_count/(good_pat_count+bad_count/bad_eff):1:2)
 @y
@@ -156,7 +161,7 @@ begin
 end
 @z
 
-@x Get dictionary filename from command line.
+@x [88] Get dictionary filename from command line.
   reset(dictionary);@/
 @y
 f_name := cmdline(1);
@@ -165,7 +170,7 @@ reset (dictionary, f_name);
 
 % Fix file name initialization, since can't assign a constant string
 % that we're going to write into.
-@x
+@x [88]
     begin filnam:='pattmp. ';
     filnam[8]:=xdig[hyph_level];
 @y
@@ -173,7 +178,7 @@ reset (dictionary, f_name);
     filnam[7]:=xdig[hyph_level];
 @z
 
-@x Work around floating point I/O deficiency; reorder to avoid overflow.
+@x [88] Work around floating point I/O deficiency; reorder to avoid overflow.
   if (good_count+miss_count)>0 then
     print_ln((100*good_count/(good_count+miss_count)):1:2,' %, ',
       (100*bad_count/(good_count+miss_count)):1:2,' %, ',
@@ -189,14 +194,14 @@ reset (dictionary, f_name);
   end;
 @z
 
-@x Get pattern filename from command line.
+@x [90] Get pattern filename from command line.
 reset(patterns);
 @y
 f_name := cmdline (2);
 reset (patterns, f_name);
 @z
 
-@x Fix reading of multiple variables in the same line
+@x [94] Fix reading of multiple variables in the same line
 repeat print('hyph_start, hyph_finish: '); get_input(n1,n2);@/
 @y
 repeat print('hyph_start, hyph_finish: '); input_2ints(n1,n2);@/
@@ -212,19 +217,19 @@ repeat print('hyph_start, hyph_finish: '); input_2ints(n1,n2);@/
     input_3ints(n1,n2,n3);@/
 @z
 
-@x Get output file name from command line.
+@x [94] Get output file name from command line.
 rewrite(patout);
 @y
 f_name := cmdline (3);
 rewrite (patout, f_name);
 @z
 
-@x Eliminate the |end_of_PATGEN| label.
+@x [94] Eliminate the |end_of_PATGEN| label.
 end_of_PATGEN:
 @y
 @z
 
-@x System-dependent changes.
+@x [98] System-dependent changes.
 This section should be replaced, if necessary, by changes to the program
 that are necessary to make \.{PATGEN} work at a particular installation.
 It is usually best to design your change file so that all changes to
@@ -238,7 +243,7 @@ Parse a Unix-style command line.
 
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 2; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

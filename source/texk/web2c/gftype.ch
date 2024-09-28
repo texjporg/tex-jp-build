@@ -15,12 +15,23 @@
 % turns on images.  There is no terminal input to this program.
 % Output is to stdout, and may, of course, be redirected.
 
+@x [0] l.27
+\def\(#1){} % this is used to make section names sort themselves better
+@y
+\def\({} % this is used to make section names sort themselves better
+@z
+
+@x [0] l.30
+\def\title{GFtype}
+@y
+\def\title{GF$\,$\lowercase{type} changes for C}
+@z
+
 @x [0] WEAVE: print changes only.
 \pageno=\contentspagenumber \advance\pageno by 1
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{GF$\,$\lowercase{type} changes for C}
 @z
 
 @x [1] Define my_name
@@ -52,7 +63,7 @@ procedure initialize; {this procedure gets things started properly}
 const @<Constants in the outer block@>@/
 type @<Types in the outer block@>@/
 var @<Globals in the outer block@>@/
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize; {this procedure gets things started properly}
   var i:integer; {loop index for initializations}
   @!bound_default:integer; {temporary for setup}
@@ -73,7 +84,7 @@ begin
 @<Labels...@>=final_end;
 @y
 @ This module is deleted, because it is only useful for
-a non-local goto, which we can't use in C.
+a non-local |goto|\unskip, which we can't use in C.
 
 Instead, we define parameters settable at runtime.
 
@@ -374,7 +385,7 @@ othercases abort('internal error')
 endcases;
 @z
 
-@x [64] Break up the second oversized case statement.
+@x [51] Break up the second oversized case statement.
 sixty_four_cases(new_row_0), sixty_four_cases(new_row_0+64),
  thirty_seven_cases(new_row_0+128):
   @<Translate a |new_row| command@>;
@@ -398,7 +409,7 @@ othercases error('undefined command ',o:1,'!')
 endcases
 @z
 
-@x [65] No label and no dialog; finish last line written.
+@x [66] No label and no dialog; finish last line written.
 @p begin initialize; {get all variables initialized}
 dialog; {set up all the options}
 @<Process the preamble@>;
@@ -423,7 +434,7 @@ print_ln(' altogether.');
 end.
 @z
 
-@x System-dependent changes.
+@x [73] System-dependent changes.
 This section should be replaced, if necessary, by changes to the program
 that are necessary to make \.{GFtype} work at a particular installation.
 It is usually best to design your change file so that all changes to
@@ -438,7 +449,7 @@ Parse a Unix-style command line.
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 @d do_nothing ==        {empty statement}
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 4; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

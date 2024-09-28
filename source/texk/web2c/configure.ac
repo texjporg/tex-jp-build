@@ -1,7 +1,7 @@
 dnl $Id$
 dnl Process this file with Autoconf to produce a configure script for Web2c.
 dnl
-dnl   Copyright 2015-2023 Karl Berry <tex-live@tug.org>
+dnl   Copyright 2015-2024 Karl Berry <tex-live@tug.org>
 dnl   Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 dnl
 dnl   This file is free software; the copyright holder
@@ -33,6 +33,17 @@ AC_CONFIG_MACRO_DIRS([../../m4 m4])
 WEB2CVERSION=tex_live_version()
 AC_SUBST([WEB2CVERSION])
 
+# LuaTeX requires system extensions for socket support.
+# Must be at the very beginning or warnings about compiler tests.
+# SyncTeX and plenty of others unconditionally define GNU_SOURCE,
+# so it's probably more consistent to always use it.
+
+# Also, we can't easily make it conditional on LuaTeX only because then
+# OBJEXT ends up defined as the empty string (error: no way to make
+# "basechsuffix."), which seems odd, but whatever.
+AC_MSG_NOTICE([using system extensions])
+AC_USE_SYSTEM_EXTENSIONS
+
 KPSE_COMMON([web2c programs])
 
 AM_CONDITIONAL([cross], [test "x$cross_compiling" = xyes])
@@ -46,7 +57,7 @@ KPSE_LT_HACK
 KPSE_WEB2C_PREPARE
 m4_include([ac/web2c.ac])
 
-# XeTeX now requires C++11 because ICU does :(.
+# XeTeX requires C++11 because ICU does :(.
 if test "x$enable_xetex" = xyes; then
   AC_MSG_NOTICE([checking for C++11, since XeTeX is enabled])
   AX_CXX_COMPILE_STDCXX([11])
@@ -105,6 +116,9 @@ kpse_save_LIBS=$LIBS
 KPSE_LUA53_DEFINES
 KPSE_LUA52_DEFINES
 KPSE_LUAJIT_DEFINES
+KPSE_LARGEFILE([LUA53_DEFINES], [_LARGEFILE64_SOURCE])
+KPSE_LARGEFILE([LUA52_DEFINES], [_LARGEFILE64_SOURCE])
+KPSE_LARGEFILE([LUAJIT_DEFINES], [_LARGEFILE64_SOURCE])
 LIBS=$kpse_save_LIBS
 if test "x$kpse_cv_have_win32" = xno; then
   AC_SEARCH_LIBS([gethostbyname], [nsl])
@@ -260,6 +274,7 @@ KPSE_CAIRO_FLAGS
 KPSE_POTRACE_FLAGS
 KPSE_GMP_FLAGS
 KPSE_MPFR_FLAGS
+KPSE_MPFI_FLAGS
 KPSE_XPDF_FLAGS
 KPSE_ZZIPLIB_FLAGS
 KPSE_TECKIT_FLAGS
@@ -282,7 +297,7 @@ AC_CHECK_SIZEOF([off_t], , AC_INCLUDES_DEFAULT
 [#include <kpathsea/config.h>])
 
 if test "x$with_system_kpathsea" = xyes; then
-dnl Although quite unusual, it is possible to build Web2C (TeX & Co)
+dnl It is possible to build Web2C (TeX & Co)
 dnl using installed (system) kpathsea headers and library.
 dnl In that case we need the location of <kpathsea/paths.h>.
   list="/usr/include /usr/local/include `echo $KPATHSEA_INCLUDES | sed 's/-I//g'`"

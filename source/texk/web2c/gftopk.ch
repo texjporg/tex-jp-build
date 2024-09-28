@@ -11,12 +11,23 @@
 % on the origin of fonts in both gf and pk formats.  The program runs
 % silently unless it is given the -v switch in the command line.
 
+@x [0] l.41
+\def\(#1){} % this is used to make section names sort themselves better
+@y
+\def\({} % this is used to make section names sort themselves better
+@z
+
+@x [0] l.44
+\def\title{GFtoPK}
+@y
+\def\title{GF$\,$\lowercase{to}$\,$PK changes C}
+@z
+
 @x [0] WEAVE: print changes only.
 \pageno=\contentspagenumber \advance\pageno by 1
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{GF$\,$\lowercase{to}$\,$PK changes C}
 @z
 
 @x [1] Define my_name
@@ -58,7 +69,7 @@ produced only when the \.{-v} command line flag is presented.
 const @<Constants in the outer block@>@/
 type @<Types in the outer block@>@/
 var @<Globals in the outer block@>@/
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize; {this procedure gets things started properly}
   var i:integer; {loop index for initializations}
 begin
@@ -77,7 +88,7 @@ begin
 @<Labels...@>=final_end;
 @y
 @ This module is deleted, because it is only useful for
-a non-local goto, which we can't use in C.
+a non-local |goto|\unskip, which we can't use in C.
 @z
 
 @x [6] Dynamic allocation of |row| array.
@@ -239,7 +250,7 @@ begin
 end ;
 @z
 
-@x [47] Redefine find_gf_length and move_to_byte.
+@x [46] Redefine find_gf_length and move_to_byte.
 @p procedure find_gf_length ;
 begin
    set_pos(gf_file, -1) ; gf_len := cur_pos(gf_file) ;
@@ -263,14 +274,14 @@ begin xfseek (gf_file, n, 0, gf_name);
 end;
 @z
 
-@x [49] Dynamic allocation of |row| array.
+@x [48] Dynamic allocation of |row| array.
 @!row: array[0..max_row] of integer; {the row counts for working}
 @y
 @!row: ^integer; {the row counts for working}
 @!max_row: integer; {largest index in the main |row| array}
 @z
 
-@x [50] Dynamic allocation of |row| array.
+@x [49] Dynamic allocation of |row| array.
 @<Set init...@>=
 @y
 @<Set init...@>=
@@ -278,7 +289,7 @@ row := xmalloc_array (integer, MAX_ROW);
 max_row := MAX_ROW;
 @z
 
-@x [52] Dynamic allocation of |row| array.
+@x [51] Dynamic allocation of |row| array.
 procedure convert_gf_file;
 @y
 procedure row_overflow;
@@ -293,7 +304,7 @@ end;
 procedure convert_gf_file;
 @z
 
-@x [still 52] Add do_the_rows to break up huge run of cases.
+@x [still 51] Add do_the_rows to break up huge run of cases.
    repeat
      gf_com := gf_byte ;
      case gf_com of
@@ -304,7 +315,7 @@ procedure convert_gf_file;
      case gf_com of
 @z
 
-@x [53] Declare |thirty_seven_cases| to help avoid breaking yacc.
+@x [52] Declare |thirty_seven_cases| to help avoid breaking yacc.
 @d one_sixty_five_cases(#)==sixty_four_cases(#),sixty_four_cases(#+64),
          sixteen_cases(#+128),sixteen_cases(#+144),four_cases(#+160),#+164
 @y
@@ -314,7 +325,7 @@ procedure convert_gf_file;
 @d new_row_128=new_row_64 + 64
 @z
 
-@x [57] Dynamic allocation of |row| array.
+@x [56] Dynamic allocation of |row| array.
 @d put_in_rows(#)==begin if row_ptr > max_row then bad := true else begin
 row[row_ptr]:=#; incr(row_ptr); end ; end
 @y
@@ -322,12 +333,12 @@ row[row_ptr]:=#; incr(row_ptr); end ; end
 row[row_ptr]:=#; incr(row_ptr); end
 @z
 
-@x [58] Dynamic allocation of |row| array.
+@x [57] Dynamic allocation of |row| array.
   bad := false ;
 @y
 @z
 
-@x [still 58] Break up an oversized sequence of cases for yacc.
+@x [still 57] Break up an oversized sequence of cases for yacc.
 one_sixty_five_cases(new_row_0) : begin
   if on = state then put_in_rows(extra) ;
   put_in_rows(end_of_row) ;
@@ -339,13 +350,13 @@ sixty_four_cases(new_row_64) : do_the_rows:=true;
 thirty_seven_cases(new_row_128) : do_the_rows:=true;
 @z
 
-@x [still 58] Dynamic allocation of |row| array.
+@x [still 57] Dynamic allocation of |row| array.
   if bad then abort('Ran out of internal memory for row counts!') ;
 @.Ran out of memory@>
 @y
 @z
 
-@x [still 58] Break up an oversized sequence of cases for yacc.
+@x [still 57] Break up an oversized sequence of cases for yacc.
     endcases ;
 @y
     endcases ;
@@ -357,7 +368,7 @@ if do_the_rows then begin
 end ;
 @z
 
-@x [59] Add do_the_rows to break up huge run of cases.
+@x [58] Add do_the_rows to break up huge run of cases.
 @ A few more locals used above and below:
 
 @<Locals to |convert_gf_file|@>=
@@ -368,12 +379,12 @@ end ;
 @!do_the_rows:boolean;
 @z
 
-@x [still 59] Dynamic allocation of |row| array.
+@x [still 58] Dynamic allocation of |row| array.
 @!bad : boolean ; {did we run out of space?}
 @y
 @z
 
-@x [82] Don't add `GFtoPK 2.3 output from ' to the font comment.
+@x [81] Don't add `GFtoPK 2.3 output from ' to the font comment.
 @d comm_length = 23 {length of |preamble_comment|}
 @d from_length = 6 {length of its |' from '| part}
 @y
@@ -394,7 +405,7 @@ final_end : end .
 end.
 @z
 
-@x System-dependent changes.
+@x [88] System-dependent changes.
 This section should be replaced, if necessary, by changes to the program
 that are necessary to make \.{GFtoPK} work at a particular installation.
 It is usually best to design your change file so that all changes to
@@ -409,7 +420,7 @@ Parse a Unix-style command line.
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 @d do_nothing ==        {empty statement}
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 3; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

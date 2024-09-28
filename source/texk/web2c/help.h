@@ -88,6 +88,7 @@ const_string CWEAVEHELP[] = {
     "-dN         set 'kpathsea_debug' to N (0..127)",
     "-e          do not enclose C material in \\PB{...}",
     "-f          do not force a newline after every C statement in output",
+    "-F          do not force a compound statement to start on a new line",
     "-i          suppress indentation of parameter declarations",
     "-o          suppress separation of declarations and statements",
     "-x          omit indices, section names, table of contents",
@@ -116,6 +117,7 @@ const_string CTWILLHELP[] = {
     "-dN         set 'kpathsea_debug' to N (0..127)",
     "-e          do not enclose C material in \\PB{...}",
     "-f          do not force a newline after every C statement in output",
+    "-F          do not force a compound statement to start on a new line",
     "-i          suppress indentation of parameter declarations",
     "-o          suppress separation of declarations and statements",
     "-x          omit indices, section names, table of contents",
@@ -348,6 +350,9 @@ const_string OVP2OVFHELP[] = {
     "  Default OVFFILE is basename of OVPFILE extended with `.ovf'.",
     "  Default OFMFILE is basename of OVFFILE extended with `.ofm'.",
     "",
+#ifdef OMFONTS
+    "-omit-ofm              do not output OFMFILE",
+#endif
     "-help                  display this help and exit",
     "-verbose               display progress reports",
     "-version               output version information and exit",
@@ -639,6 +644,7 @@ const_string WEAVEHELP[] = {
     "  unless otherwise specified by OUTFILE;",
     "  in this case, '-' specifies a null CHANGEFILE.",
     "",
+    "-p          use alternative macros for PDF output",
     "-x          omit cross-reference information",
     "-help       display this help and exit",
     "-version    output version information and exit",

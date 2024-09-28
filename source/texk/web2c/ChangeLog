@@ -1,3 +1,329 @@
+2024-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/ec-lmr10.tfm, tests/dump-basic.tex:
+	Add for tests of pTeX family
+
+2024-09-07  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (texprof.am): include.
+	* ac/web2c.ac (kpse_tex_progs) <texprof>: new entry in table.
+
+2024-09-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch,
+	* weave.ch: Sort section names in TWILL.
+
+2024-09-02  Andreas Scherer  <https://ascherer.github.io>
+
+	* bibtex.ch,
+	* dvitype.ch,
+	* gftodvi.ch,
+	* gftopk.ch,
+	* gftype.ch,
+	* mft.ch,
+	* pktype.ch,
+	* pltotf.ch,
+	* pooltype.ch,
+	* tangle.ch,
+	* tftopl.ch,
+	* vftovp.ch,
+	* vptovf.ch,
+	* weave.ch: Flip two section names in the index.
+	* dvicopy.ch,
+	* dvicopy.web,
+	* patgen.ch,
+	* patgen.web,
+	* pktogf.ch,
+	* pktogf.web: Fix sorting order in 'other' WEB codees.
+
+2024-08-31  Andreas Scherer  <https://ascherer.github.io>
+
+	* vftovp.ch: Fix sorting order of new named sections.
+
+2024-08-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* gftopk.ch,
+	* gftype.ch,
+	* pktogf.ch,
+	* pktype.ch: Fix a few spaces.
+
+2024-08-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch: Prime the title page.
+
+2024-08-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* showstream.ch: Restore section numbering as far as possible.
+
+2024-08-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.12 release.
+
+2024-07-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* mft.ch: Preserve Metafont logo on title page.
+
+2024-06-28  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebdir/ctwill-w2c.ch,
+	* tests/fix-changefile-lines.py,
+	* tex.ch: Simpler check for 'change section'.
+
+2024-06-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* bibtex.ch: Update a few tags.
+
+2024-06-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* dvicopy.ch: Output '@x' with optional information.
+
+2024-06-05  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* tangle.ch,
+	* weave.ch: Correctly count section start markers.
+	* mf.ch,
+	* tex.ch: Recount parts and sections.
+
+2024-06-03  David Fuchs  <drfuchs@yahoo.com>
+
+	* tex.ch (check_outer_validity): don't check unless OK_to_interrupt,
+	to avoid getting into an erroneous state if an \outer token
+	is deleted interactively.
+	Report from Tyge Thiessen:
+	https://tug.org/pipermail/tex-k/2024-March/004021.html
+	DEK bug entry: https://tug.org/texmfbug/newbug.html#B142outer
+
+2024-06-03  Karl Berry  <karl@freefriends.org>
+
+	* tests/fix-changefile-lines.py: new script from Tyge Thiessen
+	to update the chapter/section/line numbers in a .ch file,
+	following my request:
+	https://tug.org/pipermail/tex-k/2024-June/004064.html
+	* tex.ch,
+	* mf.ch: update with the script.
+	
+	* unbalanced-braces.ch: tweak text.
+
+2024-04-28  Luigi Scarso  <luigi.scarso@gmail.com>
+
+	* configure.ac (LUA53_DEFINES, LUA52_DEFINES, LUAJIT_DEFINES): 
+	define _LARGEFILE_SOURCE to help avoid off64_t errors. Specifically:
+
+In file included from /home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/types.h:25,
+                 from /home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/zzip.h:17,
+                 from ../../../texk/web2c/luatexdir/luazip/src/luazip.c:13:
+/home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/conf.h:50:23: error: unknown type name 'off64_t'
+ #define _zzip_off64_t off64_t
+                       ^~~~~~~
+/home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/types.h:35:15: note: in expansion of macro '_zzip_off64_t'
+ typedef       _zzip_off64_t     zzip_off64_t;
+               ^~~~~~~~~~~~~
+make[5]: *** [Makefile:10380: luatexdir/luazip/src/libluajitmisc_a-luazip.o] Error 1
+
+2024-04-21  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (AC_USE_SYSTEM_EXTENSIONS): make it unconditional,
+        since otherwise we get:
+make[5]: *** No rule to make target 'basechsuffix.', needed by 'lib.a'.  Stop.
+
+2024-04-18  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (AC_USE_SYSTEM_EXTENSIONS) [enable_luatex]: call this.
+	From the Makefile of busytex, via Luigi mail to karl
+	of 12 Apr 2024 06:26:23:
+	"For example `gethostbyaddr()` requires `_GNU_SOURCE` or similar".
+
+2024-04-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ac/web2c.ac (eptex), Makefile.am,
+	euptexdir/am/euptex.am, eptexdir/*: Remove eptex and eptexdir/.
+	* {mftraptest,triptest}.test:
+	Filter Web2C year/dev in banner.
+
+2024-03-24  Karl Berry  <karl@freefriends.org>
+
+	* unbalanced-braces.ch: fix from DRF in order to make
+	\aftergroup work again with the output routine. Report
+	from David Carlisle and Frank Mittelbach, thread starts at:
+	https://tug.org/pipermail/tex-live/2024-March/050290.html
+
+2024-03-10  Karl Berry  <karl@tug.org>
+
+	* TL'24 release.
+
+2024-03-10  Andreas Scherer  <https://ascherer.github.io>
+
+	* help.h: Add new option '-F' for CWEAVE/CTWILL.
+
+2024-02-28  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* eptexdir/unbalanced-braces-eptex.ch: avoid crashing with devious
+	uses of \output and \write braces. Slightly modified one for
+	eptex and euptex.
+	* eptexdir/am/eptex.am (eptex_ch_srcs),
+	* euptexdir/am/euptex.am (euptex_ch_srcs) : include
+	eptexdir/unbalanced-braces-eptex.ch.
+	* ptexdir/am/ptex.am (ptex_ch_srcs),
+	* uptexdir/am/uptex.am (uptex_ch_srcs): include unbalanced-braces.ch.
+
+2024-02-26  Karl Berry  <karl@freefriends.org>
+
+	* unbalanced-braces.ch: avoid crashing with devious uses of
+	\output and \write braces. From DRF.
+	* pdftexdir/am/pdftex.am (pdftex_ch_srcs),
+	* xetexdir/am/xetex.am (xetex_ch_srcs): include unbalanced-braces.ch.
+	* tests/unbalanced-braces.test: doc file for tests (not runnable).
+
+2024-02-25  Karl Berry  <karl@freefriends.org>
+
+	* locnull-optimize.ch: inner loop optimization (removing one
+	unnecessary condition) from DRF.
+	* eptexdir/am/eptex.am (eptex_web_srcs),
+	* euptexdir/am/euptex.am (euptex_web_srcs),
+	* pdftexdir/am/pdftex.am (pdftex_ch_srcs),
+	* ptexdir/am/ptex.am (ptex_web_srcs),
+	* uptexdir/am/uptex.am (uptex_web_srcs),
+	* xetexdir/am/xetex.am (xetex_ch_srcs): include locnull-optimize.ch.
+
+2024-02-20  Karl Berry  <karl@tug.org>
+
+	* doc/web2c.texi: 2024.
+
+2024-02-11  Karl Berry  <karl@tug.org>
+
+	* am/cweb.am (dist_bin_SCRIPTS): add cwebdir/twill-refsort.
+	
+	* Add keyword expansion to files that had a literal $Id$:
+cwebdir/twill-refsort
+eptexdir/epver.test
+euptexdir/eptriptest.test
+euptexdir/eupver.test
+euptexdir/upkcat.test
+mplibdir/mpmathbinary.w
+mplibdir/mpmathdecimal.w
+mplibdir/mpmathinterval.w
+ptexdir/pver.test
+tests/expanded-overflow.tex
+twill.test
+uptexdir/gk256.test
+uptexdir/gkhuge.test
+uptexdir/nissya.test
+uptexdir/ptriptest.test
+uptexdir/sample.test
+uptexdir/skipjfmp.test
+uptexdir/unibib.test
+uptexdir/uparse.test
+uptexdir/upbibtex-mem.test
+uptexdir/upkcat.test
+uptexdir/upver.test
+web2c/Makefile.am
+
+2024-02-01  Luigi Scarso  <luigi.scarso@gmail.com>
+
+	* ac/web2c.ac (mp, pmp, upmp): depend on mpfi.
+	* Makefile.am (MPFI_RULE): add.
+	* configure.ac (KPSE_MPFI_FLAGS): add.
+	* mplibdir: pervasive changes to support mpfi.
+	* luatexdir/lua/mplibstuff.c: mpfi bindings.
+
+2024-02-01  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/enc-utf8.bib, tests/enc-{,e,s}[pu].bbl:
+	Add tests for guess encodings & upBibTeX &
+	Kana (semi)voiced sounds.
+
+2023-12-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/fn-generate.perl:
+	Add option -randgen for parallel tests.
+
+2023-12-23  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* Makefile.in, ac/web2c.ac (eptex):
+	Do not build binaries of e-pTeX and
+	we use alias of e-upTeX for e-pTeX by default.
+	https://github.com/texjporg/tex-jp-build/issues/32
+
+2023-12-02  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.11 release.
+
+2023-11-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/fn-generate.perl: Add test for file names with
+	over-BMP (4byte UTF-8).
+	https://tug.org/pipermail/tex-live/2023-November/049685.html
+
+2023-11-19  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch,
+	* mf.ch (Undump the dynamic memory): improve fmt/base corruption
+	checks, from DRF.
+
+2023-11-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Use zero-initialisation.
+
+2023-11-15  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch,
+	* mf.ch (Undump the dynamic memory): check that p does not
+	become too small, due to fmt/base corruption.
+	Report from Gregory James DUCK to Karl, 14 Sep 2023.
+	Found with a fuzz tester similar to AFL-fuzz. 
+
+2023-10-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* weave.ch: Fine print for command-line options.
+
+2023-10-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangleboot.pin,
+	* tangle.ch,
+	* weav-twill.ch,
+	* weave.ch: 'current_option' runs from '0..n_options'.
+
+2023-10-13  Andreas Scherer  <https://ascherer.github.io>
+
+	* help.h,
+	* weav-twill.ch,
+	* weave.ch: Add option '-p' to '\input pwebmac'.
+
+2023-10-09  Karl Berry  <karl@freefriends.org>
+
+	* lib/texmfmp.c (parse_options): if --output-directory was
+	specified, putenv the value to TEXMF_OUTPUT_DIRECTORY.
+	If --output-directory was not specified, and
+	TEXMF_OUTPUT_DIRECTORY is set in the environment (not config file),
+	set the output_directory variable to its value.
+	* tests/outputdir.test: new test.
+	* am/texmf.am (tex_tests): add it.
+	* doc/web2c.texi (Output file location),
+	* NEWS: document this.
+	* bibtex.ch: mention failure to implement TEXMF_OUTPUT_DIRECTORY.
+
+	* doc/web2c.texi (Shell escape commands): xref kpathsea doc
+	on output paranoia.
+	* tests/tex-closeout.test: tweak description.
+
+2023-10-09  Karl Berry  <karl@freefriends.org>
+
+	* cpascal.h: typo.
+
+2023-09-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Avoid shadow variables.
+
+2023-09-17  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* {mftraptest,triptest,twill}.test:
+	Make easier to test on Windows.
+
 2023-09-04  Andreas Scherer  <https://ascherer.github.io>
 
 	* tangle.ch: Fix typo as in weave.web.

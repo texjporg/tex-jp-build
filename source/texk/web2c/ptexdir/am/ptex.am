@@ -1,7 +1,7 @@
 ## $Id$
 ## texk/web2c/ptexdir/am/ptex.am: Makefile fragment for pTeX.
 ##
-## Copyright 2015-2022 Karl Berry <tex-live@tug.org>
+## Copyright 2015-2024 Karl Berry <tex-live@tug.org>
 ## Copyright 2010-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 
@@ -76,6 +76,7 @@ ptex_web_srcs = \
 	tex.ch \
 	tracingstacklevels.ch \
 	partoken.ch \
+	locnull-optimize.ch \
 	zlib-fmt.ch
 
 # Generate ptex.ch
@@ -83,6 +84,7 @@ ptex.ch: tie$(EXEEXT) ptex.web $(ptex_ch_srcs)
 	$(tie_c) ptex.web $(ptex_ch_srcs)
 ptex_ch_srcs = \
 	ptexdir/ptex-base.ch \
+	unbalanced-braces.ch \
 	$(ptex_ch_synctex) \
 	tex-binpool.ch
 
@@ -102,9 +104,17 @@ EXTRA_DIST += \
 
 # pTeX Tests
 #
-ptex_tests = ptexdir/ptriptest.test ptexdir/pver.test ptexdir/wcfname.test
+ptex_tests = \
+	ptexdir/ptriptest.test \
+	ptexdir/pver.test \
+	ptexdir/wcfname.test \
+	ptexdir/ptex-ctrlsym.test \
+	ptexdir/ptex-prntknj.test \
+	ptexdir/ptex-ucs.test
 ptexdir/ptriptest.log: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
-ptexdir/pver.log ptexdir/wcfname.log: ptex$(EXEEXT)
+ptexdir/pver.log ptexdir/wcfname.log \
+	ptexdir/ptex-ctrlsym.log ptexdir/ptex-prntknj.log \
+	ptexdir/ptex-ucs.log: ptex$(EXEEXT)
 
 EXTRA_DIST += $(ptex_tests) $(pweb_tests)
 DISTCLEANFILES += $(pweb_programs:=.c) $(pweb_programs:=.h) \
@@ -125,8 +135,10 @@ endif PWEB
 EXTRA_DIST += ptexdir/tests/nissya.bst ptexdir/tests/sample.bib
 DISTCLEANFILES += ptests/nissya_bib.*
 ## ptexdir/pbibtex.test
-EXTRA_DIST += tests/testfield.bst tests/enc-asc.bib tests/enc-jis.bib tests/enc-sjis.bib \
-	tests/enc-euc.bib tests/enc-utf8.bib tests/enc-utf8a.bib tests/enc-utf8b.bib \
+EXTRA_DIST += tests/testfield.bst \
+	tests/enc-asc.bib tests/enc-jis.bib tests/enc-sjis.bib \
+	tests/enc-euc.bib tests/enc-utf8.bib \
+	tests/enc-utf8a.bib tests/enc-utf8b.bib \
 	tests/enc-amb0.bib tests/enc-amb1.bib tests/enc-amb2.bib \
 	tests/enc.aux tests/enc-e.aux tests/enc-s.aux tests/enc-u.aux \
 	tests/enc-p.bbl tests/enc-ep.bbl tests/enc-sp.bbl tests/enc-up.bbl
@@ -159,12 +171,31 @@ EXTRA_DIST += ptexdir/tests/skipjfmp.pl ptexdir/tests/skipjfmp.tfm
 DISTCLEANFILES += ptests/xskipjfmp.*
 ## ptexdir/ptriptest
 EXTRA_DIST += ptexdir/ptrip/ptrip.diffs ptexdir/ptrip/texmf.cnf
+DISTCLEANFILES += ptrip.diffs
+
+## ptex-ctrlsym.test
+EXTRA_DIST += ptexdir/tests/ctrlsym.tex ptexdir/tests/ctrlsym.log \
+	ptexdir/tests/endlinechar.tex ptexdir/tests/endline.log \
+	ptexdir/tests/control-symbol.tex ptexdir/tests/jctrlsym.log \
+	ptexdir/tests/p-endlinea.typ ptexdir/tests/p-jctrlsyma.typ \
+	ptexdir/tests/let_char_token.tex ptexdir/tests/chartoken.log \
+	ptexdir/tests/ptexlineendmode.tex ptexdir/tests/p-lineenda.typ
+DISTCLEANFILES += p-ctrlsym.log p-ctrlsym.out p-ctrlsym.tex \
+	p-endline*.* p-jctrlsym*.* p-chartoken.* p-lineend.*
+## ptex-prntknj.test
+EXTRA_DIST += ptexdir/tests/printkanji.tex \
+	ptexdir/tests/pknj-s.log ptexdir/tests/pknj-e.log \
+	ptexdir/tests/p-pknj-sa.typ ptexdir/tests/p-pknj-ea.typ
+DISTCLEANFILES += p-pknj-*.*
+## ptex-ucs.test
+EXTRA_DIST += ptexdir/tests/ucs.tex ptexdir/tests/ucs-s.log \
+	ptexdir/tests/ucs-e.log
+DISTCLEANFILES += p-ucs*.*
+
 ptrip.diffs: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
 .PHONY: ptrip-clean
 ptrip-clean:
 	rm -rf ptripdir
-
-DISTCLEANFILES += ptrip.diffs
 
 # (end of ptex.am)

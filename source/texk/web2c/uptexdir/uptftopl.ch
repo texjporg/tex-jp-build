@@ -1,5 +1,7 @@
 % This is a change file for TFtoPL
 %
+% (2024-04-27) TTK Support upTeX new encoding for combining characters
+% (2023-09-17) HY Support more than 256 different glue/kern
 % (2022-12-03) TTK Merge pTFtoPL source/binary into upTFtoPL
 % (2018-01-27) HY pTFtoPL p2.0 - new JFM spec by texjporg
 % (07/18/2006) ST TFtoPL p1.7 (3.1, Web2c 7.2)
@@ -16,7 +18,7 @@
 @d banner=='This is TFtoPL, Version 3.3' {printed when the program starts}
 @y
 @d my_name=='uptftopl'
-@d banner=='This is upTFtoPL, Version 3.3-p221203'
+@d banner=='This is upTFtoPL, Version 3.3-p240427'
   {printed when the program starts}
 @z
 
@@ -258,6 +260,12 @@ if file_format<>tfm_format then
   out_ln;@/
 @z
 
+@x [68] l.1075 - pTeX: no need to check for loop
+  @<Check for ligature cycles@>;
+@y
+  if file_format=tfm_format then begin @<Check for ligature cycles@>; end;
+@z
+
 @x [69] l.1090 - pTeX: we print Glue/kern instead of Ligature/kern
     print('Ligature/kern starting index for character '); print_octal(c);
     print_ln(' is too large;'); print_ln('so I removed it.'); reset_tag(c);
@@ -399,7 +407,7 @@ incr(current_option);
 @* For Japanese Font Metric routines. % pTeX:
 We need to include some routines for handling kanji character.
 
-@d max_kanji=1114111 {number of the kanji characters - 1}
+@d max_kanji=@"2FFFFF {number of the kanji characters - 1}
 
 @<Glob...@>=
 @!this_code:integer; {to hold jis code of the current kanji character}
@@ -411,22 +419,21 @@ We need to include some routines for handling kanji character.
 @!kanji_type:array[0..max_kanji] of -1..255; {kanji type index}
 
 @ @<Output a glue step@>=
-begin  if nonexistent(tfm[k+1]) then
-  correct_bad_char('Glue step for')(k+1)
+begin if nonexistent(tfm[k+1]) then if tfm[k+1]<>boundary_char then
+  correct_bad_char('Glue step for')(k+1);
 @.Glue step for nonexistent...@>
-else
-  begin left; out('GLUE'); out_char(tfm[k+1]);
-    if 3*tfm[k+3]>=ng then
-      begin bad('Glue index too large.');
+left; out('GLUE'); out_char(tfm[k+1]);
+r:=3*(256*tfm[k+2]+tfm[k+3]);
+if r>=ng then
+  begin bad('Glue index too large.');
 @.Glue index too large@>
-      out(' R 0.0 R 0.0 R 0.0');
-      end
-    else begin out_fix(glue(3*tfm[k+3]));
-      out_fix(glue(3*tfm[k+3]+1));
-      out_fix(glue(3*tfm[k+3]+2));
-      end;
-    right;
+  out(' R 0.0 R 0.0 R 0.0');
+  end
+else begin out_fix(glue(r));
+  out_fix(glue(r+1));
+  out_fix(glue(r+2));
   end;
+right;
 end
 
 @ list the |char_type| table in a similar way to the type table.
@@ -483,7 +490,7 @@ for k:=@'40 to 255 do xchr[k]:=k;
 
 @ @<declare kanji conversion functions@>=
 procedure out_kanji(jis_code:integer); { prints a kanji character }
-var @!cx:integer; {KANJI code}
+var @!cx,@!v,@!nn,@!jj:integer; {KANJI code}
 i:0..5; {index of array}
 begin@/
 if (charcode_format=charcode_octal)or(jis_code<128) then
@@ -509,18 +516,36 @@ if (charcode_format=charcode_octal)or(jis_code<128) then
     end;
   end
 else begin
-  cx:=toBUFF(fromDVI(jis_code));
-  if BYTE1(cx)<>0 then out(xchr[BYTE1(cx)]);
-  if BYTE2(cx)<>0 then out(xchr[BYTE2(cx)]);
-  if BYTE3(cx)<>0 then out(xchr[BYTE3(cx)]);
-                       out(xchr[BYTE4(cx)]);
+  if (isinternalUPTEX) then begin
+    cx:=fromDVI(jis_code);
+    nn:=UVSgetcodepointlength(cx);
+    jj:=1;
+    while jj<=nn do begin
+      v:=UVSgetcodepointinsequence(cx,jj);
+      if (v>0) then begin
+        v:=UCStoUTF8(v);
+        if BYTE1(v)<>0 then out(xchr[BYTE1(v)]);
+        if BYTE2(v)<>0 then out(xchr[BYTE2(v)]);
+        if BYTE3(v)<>0 then out(xchr[BYTE3(v)]);
+                            out(xchr[BYTE4(v)]);
+        end;
+      incr(jj);
+      end
+    end
+  else begin
+    cx:=toBUFF(fromDVI(jis_code));
+    if BYTE1(cx)<>0 then out(xchr[BYTE1(cx)]);
+    if BYTE2(cx)<>0 then out(xchr[BYTE2(cx)]);
+    if BYTE3(cx)<>0 then out(xchr[BYTE3(cx)]);
+                         out(xchr[BYTE4(cx)]);
+    end;
   end;
 end;
 
 @ @<declare kanji conversion functions@>=
 function valid_jis_code(cx:integer):boolean;
 begin valid_jis_code:=true;
-if (cx>@"10FFFF)or(not is_char_kanji(fromDVI(cx)))
+if (cx>max_kanji)or(not is_char_kanji(fromDVI(cx)))
   or(toDVI(fromDVI(cx))<>cx) then valid_jis_code:=false;
 end;
 

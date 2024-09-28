@@ -35,12 +35,23 @@
 % Revision 0.3  84/11/17  23:51:56  richards
 % 	Base version for GFtoDVI Version 0.3
 
+@x [0] l.29
+\def\(#1){} % this is used to make section names sort themselves better
+@y
+\def\({} % this is used to make section names sort themselves better
+@z
+
+@x [0] l.32
+\def\title{GF$\,$\lowercase{to}$\,$DVI}
+@y
+\def\title{GF$\,$\lowercase{to}$\,$DVI changes for C}
+@z
+
 @x [0] WEAVE: print changes only.
 \pageno=\contentspagenumber \advance\pageno by 1
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{GF$\,$\lowercase{to}$\,$DVI changes for C}
 @z
 
 @x [1] Define my_name
@@ -72,7 +83,7 @@ procedure initialize; {this procedure gets things started properly}
 const @<Constants in the outer block@>@/
 type @<Types in the outer block@>@/
 var @<Globals in the outer block@>@/
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize; {this procedure gets things started properly}
   var @!i,@!j,@!m,@!n:integer; {loop indices for initializations}
   begin
@@ -143,7 +154,7 @@ for i:=@'177 to @'377 do xchr[i]:=chr(i);
 @z
 
 
-@x [15] Change `update_terminal' to `flush', `term_in' is stdin.
+@x [16] Change `update_terminal' to `flush', `term_in' is stdin.
 Since the terminal is being used for both input and output, some systems
 need a special routine to make sure that the user can see a prompt message
 before waiting for input based on that message. (Otherwise the message
@@ -586,7 +597,7 @@ loop  @+begin continue:
   endcases;@/
 @z
 
-@x [still 219] If verbose, output a newline at the end.
+@x [219] If verbose, output a newline at the end.
 final_end:end.
 @y
   if verbose and (total_pages mod 13 <> 0) then print_ln (' ');
@@ -607,7 +618,7 @@ Parse a Unix-style command line.
 
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 4; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

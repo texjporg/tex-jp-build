@@ -11,10 +11,11 @@ bootstrap_man_sources = ctie.man cweb.man ctwill.man tangle.man tie.man
 
 # Symlinks within $(man1dir): FILE:LINK indicates LINK.1->FILE.1
 man1_links = cweb:ctangle cweb:cweave
-man1_links += ctwill:ctwill-refsort ctwill:ctwill-twinx
+man1_links += ctwill:ctwill-proofsort ctwill:ctwill-refsort ctwill:ctwill-twinx
 
 if WEB
 man_sources += $(web_man_sources)
+man1_links += twill:twill-refsort
 endif WEB
 EXTRA_DIST += $(web_man_sources)
 web_man_sources = bibtex.man dvicopy.man dvitomp.man dvitype.man gftodvi.man \
@@ -54,14 +55,14 @@ endif PDFTEX
 pdftex_man_sources = pdftex.man pdftosrc.man ttf2afm.man
 EXTRA_DIST += $(pdftex_man_sources)
 
-if EPTEX
+if EUPTEX
 man_sources += ptex.man
 man1_links += ptex:eptex ptex:euptex ptex:uptex
 man_sources += ppltotf.man ptftopl.man
 man1_links += ppltotf:uppltotf ptftopl:uptftopl
 man_sources += pbibtex.man
 man1_links += pbibtex:upbibtex
-endif EPTEX
+endif EUPTEX
 EXTRA_DIST += ptex.man ppltotf.man ptftopl.man pbibtex.man
 
 if LUATEX

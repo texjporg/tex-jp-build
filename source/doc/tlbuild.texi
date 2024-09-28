@@ -1,8 +1,8 @@
 \input texinfo
 @setfilename tlbuild.info
 
-@set version 2023
-@set month-year June 2023
+@set version 2024
+@set month-year April 2024
 
 @set mytitle Building @TeX{} Live (@value{version})
 @settitle @value{mytitle}
@@ -15,7 +15,7 @@
 This file documents the @TL{} build system and more.
 
 @noindent
-Copyright @copyright{} 2016--2023 Karl Berry.@*
+Copyright @copyright{} 2016--2024 Karl Berry.@*
 Copyright @copyright{} 2013--2015 Karl Berry & Peter Breitenlohner.
 
 Permission is granted to make and distribute verbatim copies of this
@@ -349,7 +349,7 @@ Building in the source directory itself is not supported (sorry).
 @menu
 * Build iteration::     What @code{configure} and @code{make} do in TL.
 * Build in parallel::   Simultaneous @code{make} processes.
-* Build distribution::  Making a distribution tarball.
+* Build distribution::  (Not) making a distribution tarball.
 * Build one package::   Example of working on just one program.
 * Build one engine::    Example of building just one @TeX{} engine.
 * Cross compilation::   Building on host X for target Y.
@@ -402,11 +402,16 @@ and @code{convert}) creates several output files.  This allows for
 parallel builds (@code{make -j @var{n}} with @math{@var{n}>1} or even
 @code{make -j}) that can considerably speed up the TL build.
 
+@vindex TL_MAKE_FLAGS
+If you're using TL's @code{Build} script, you can enable @code{-j}
+with the environment variable @code{TL_MAKE_FLAGS}, as in:
+@samp{env TL_MAKE_FLAGS=-j`nproc` ./Build}.
+
 @cindex cache file, for @code{configure}
 @vindex -C configure @r{option}
-Incidentally, a noticeable speed-up can be independently gained by
-using a configure cache file, i.e., specifying the @code{configure}
-option @code{-C} (recommended).
+Independently, a noticeable speed-up can also be gained by using a
+configure cache file, i.e., specifying the @code{configure} option
+@code{-C} (recommended).
 
 @node Build distribution
 @section Build distribution
@@ -415,16 +420,21 @@ option @code{-C} (recommended).
 @cindex distribution tarball, making
 
 @cindex @code{dist} and @code{distcheck} targets for @code{make}
-Running @code{make dist} at the top level creates a tarball
-@file{tex-live-@var{yyyy}-@var{mm}-@var{dd}.tar.xz} from the TL source
-tree.  Running @code{make distcheck} also verifies that this tarball
-suffices to build and install all of TL.
+Running @code{make dist} or related targets at the top level outputs an
+error message and fails. We no longer try to keep @code{make dist}
+working, although it could be restored if there is some use for it.
 
-This is useful for checking consistency of the source tree and
-Makefiles, but the result is not a complete or even usable @TeX{}
-system, since all the support files are lacking; @pxref{Installing}.
-We do not actually distribute any such tarball, and have no plans to
-do so.
+The @code{dist} target used to create a tarball
+@file{tex-live-@var{yyyy}-@var{mm}-@var{dd}.tar.xz} from the TL source
+tree, and @code{distcheck} also verifies that this tarball suffices to
+build and install all of TL.
+
+However, the result was not a complete or even usable @TeX{} system,
+since all the support files are lacking.  We do not actually
+distribute any such tarball, and have no plans to do so.
+
+@xref{Installing}, for more information on what to do with the results
+of a build.
 
 @node Build one package
 @section Build one package
@@ -806,8 +816,9 @@ not present in the TL source tree.  The best basis for dealing with them
 is the @TL{} (plain text) database in
 @file{Master/tlpkg/texlive.tlpdb}, and/or the @TL{} installer,
 @code{install-tl}.  More information is under @file{Master/tlpkg} and
-at @url{https://tug.org/texlive/distro.html}.
-
+at @url{https://tug.org/texlive/distro.html} and 
+ @url{https://tug.org/texlive/build.html#deploy}.
+ 
 @menu
 * Installation directories::    The prefix, @code{bindir}, etc., directories.
 * Linked scripts::              Scripts not maintained in the sources.
@@ -1228,11 +1239,14 @@ This macro caches its results in the @code{kpse_cv_warning_cflags},
 @end defmac
 
 @defmac KPSE_COMPILER_VISIBILITY
+@vindex -fvisibility=hidden
+@vindex -fvisibility-inlines-hidden
 When using the C or C++ compiler, try to set
 @code{VISIBILITY_C[XX]FLAGS} to flags to hide external symbols.  Call
-@code{AC_SUBST} for this variable.  At present this only tests for
-the compiler option @code{-fvisibility=hidden}, but could be
-extended if necessary.
+@code{AC_SUBST} for this variable.  This tests for the compiler option
+@code{-fvisibility=hidden} and, except for C,
+@code{-fvisibility-inlines-hidden}.  Reports or patches for additional
+tests are welcome.
 
 @vindex kpse_cv_visibility_c[xx]flags
 This macro caches its results in the @code{kpse_cv_visibility_cflags}

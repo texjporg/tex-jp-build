@@ -32,6 +32,30 @@ __declspec(dllexport) int dllrunscript( int argc, char *argv[] )
   int k, quoted, lua_argc;
   HMODULE module_handle = NULL;
 
+/* change argv[0] into long file name */
+
+  char buff[260];
+  char infile[260];
+  char *fp;
+
+  if (argc) {
+    char *pp;
+    char ppp[260];
+    strcpy(ppp, argv[0]);
+    pp = strrchr(ppp, '.');
+    if (!pp || stricmp(pp, ".exe")) {
+      strcat(ppp, ".exe");
+    }
+    argv[0] = ppp;
+    k = SearchPath(NULL, argv[0], NULL, 260, infile, &fp);
+    if (!k)
+      DIE("cannot find %s\n", argv[0]);
+    k = GetLongPathNameA(infile, buff, 260);
+    if (!k)
+      DIE("cannot find %s\n", argv[0]);
+    argv[0] = buff;
+  }
+
   // file path of the executable
   k = (int) GetModuleFileName(NULL, own_path, MAX_PATH);
   if ( !k || (k == MAX_PATH) ) 
@@ -77,8 +101,10 @@ __declspec(dllexport) int dllrunscript( int argc, char *argv[] )
   return k;
 
 DIE:
-  fprintf(stderr, "%s: ", module_name);
-  fprintf(stderr, msg_buf);
+  if (*subsys_mode != 'G') {
+    fprintf(stderr, "%s: ", module_name);
+    fprintf(stderr, msg_buf);
+  }
   if (*subsys_mode == 'G')
     MessageBox( NULL, msg_buf, module_name, MB_ICONERROR | MB_SETFOREGROUND );
   return 1;
@@ -88,8 +114,16 @@ void finalize( void )
 {
   // check for and display error message if any
   char *err_msg;
-  if ( err_msg = (char *) getenv(err_env_var) )
-    MessageBox( NULL, err_msg, script_name, MB_ICONERROR | MB_SETFOREGROUND );
+  if (*subsys_mode == 'G') {
+    if ( err_msg = (char *) getenv(err_env_var) )
+      MessageBox( NULL, err_msg, script_name, MB_ICONERROR | MB_SETFOREGROUND );
+  }
+  if (*subsys_mode != 'G') {
+    if ( err_msg = (char *) getenv(err_env_var) ) {
+      fprintf(stderr, "%s: ", script_name);
+      fprintf(stderr, "%s\n", err_msg);
+    }
+  }
 }
 
 __declspec(dllexport) int dllwrunscript( 
@@ -117,5 +151,3 @@ __declspec(dllexport) int dllwrunscript(
   return dllrunscript( 0, NULL );
 #endif
 }
-
-

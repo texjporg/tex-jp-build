@@ -16,14 +16,15 @@
 
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
-@x
+@x l.4
 \input cwebmac
 \pdffalse\acrohintfalse
 @y
 \input cwebmac
+\ifhint \input hiplainpage \fi
 @z
 
-@x
+@x l.6
 \def\page{\box255 } \normalbottom
 @y
 \let\page=\pagebody \raggedbottom
@@ -32,7 +33,7 @@
   \advance\footnotecount by 1\relax}
 @z
 
-@x
+@x l.28
 \outer\def\section #1.{\penalty-500\bigskip
         \centerline{\sectionfont\def\.##1{{\twelvett##1}} #1}\nobreak\vskip 6pt
         \everypar{\hskip-\parindent\everypar{}}}
@@ -40,7 +41,7 @@
 \ifacro
   \pdfpagewidth=\pagewidth \advance\pdfpagewidth by 2cm
   \pdfpageheight=\pageheight \advance\pdfpageheight by 3cm
-  \ifpdftex \pdfhorigin=1cm \pdfvorigin=1cm
+  \ifpdflua \pdfhorigin=1cm \pdfvorigin=1cm
   \else \advance\pdfpageheight by 1cm \global\pageshift=-1.54cm
     \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
 \fi
@@ -51,10 +52,10 @@
 \outer\def\section #1.{\penalty-500\bigskip
         \centerline{\sectionfont\def\.##1{{\twelvett##1}}
   \ifacro\vbox to 0pt{\kern-2.5ex\relax
-    \ifpdftex\pdfdest num \destcount fitbh\relax
-    \else\special{pdf: dest (\the\destcount) [ @thispage /FitBH @ypos ]}\fi
+    \ifpdflua\pdfdest num \destcount fith\relax
+    \else\special{pdf: dest (\the\destcount) [ @thispage /FitH @ypos ]}\fi
     \def\.##1{##1}\def\TeX{TeX}%
-    \ifpdftex\pdfoutline goto num \destcount
+    \ifpdflua\pdfoutline goto num \destcount
       \ifnum\subsections>0 count -\subsections\fi {#1}\relax
     \else\special{pdf: outline 0 << /Title (#1)
       /A << /S /GoTo /D (\the\destcount) >> >>}\fi
@@ -69,7 +70,7 @@
 \def\appC{17}
 
 \def\Appendix#1{\leavevmode
-  \ifacro\ifpdftex
+  \ifacro\ifpdflua
     \pdfstartlink attr{/Border[0 0 0]} goto num\csname app#1\endcsname\relax
     \Blue\hbox{Appendix}~#1\Black
     \pdfendlink
@@ -83,30 +84,30 @@
 \newcount\subdestcount \subdestcount=151\relax
 
 \outer\def\subsection #1.{\ifacro
-    \ifpdftex\pdfdest num \subdestcount fitbh\relax
+    \ifpdflua\pdfdest num \subdestcount fith\relax
       \pdfoutline goto num \subdestcount {#1}\relax
-    \else\special{pdf: dest (\the\subdestcount) [ @thispage /FitBH @ypos ]}%
+    \else\special{pdf: dest (\the\subdestcount) [ @thispage /FitH @ypos ]}%
       \special{pdf: outline 1 << /Title (#1)
         /A << /S /GoTo /D (\the\subdestcount) >> >>}\fi
     \global\advance\subdestcount by 1\relax
   \fi}
 @z
 
-@x
-\def\runninghead{{\tentt CWEB} USER MANUAL (VERSION 4.10)}
+@x l.34
+\def\runninghead{{\ninett CWEB} USER MANUAL (VERSION 4.12)}
 @y
 \def\Kpathsea/{{\mc KPATHSEA\spacefactor1000}}
-\def\runninghead{{\tentt CWEB} USER MANUAL (Version 4.10 [\TeX~Live])}
+\def\runninghead{{\ninett CWEB} USER MANUAL (Version 4.12 [\TeX~Live])}
 @z
 
-@x
-\vskip 18pt\centerline{(Version 4.10 --- August 2023)}
+@x l.48
+\vskip 18pt\centerline{(Version 4.12 --- August 2024)}
 @y
-\vskip 18pt\centerline{(Version 4.10 --- August 2023)%
-\footnote*{This document describes the extended \.{CWEB} (Version 4.10 [\TeX~Live]).}}
+\vskip 18pt\centerline{(Version 4.12 --- August 2024)%
+\footnote*{This document describes the extended \.{CWEB} (Version 4.12 [\TeX~Live]).}}
 @z
 
-@x
+@x l.79
 Internet page \.{http://www-cs-faculty.stanford.edu/\char`\~knuth/cweb.html}
 @y
 Internet page
@@ -114,7 +115,7 @@ Internet page
           {http://www-cs-faculty.stanford.edu/\TILDE/knuth/cweb.html}
 @z
 
-@x
+@x l.84
 \.{https://github.com/ascherer/cweb} with the really current news.
 @y
 \pdfURL{\.{https://github.com/ascherer/cweb}}%
@@ -122,7 +123,7 @@ Internet page
 with the really current news.
 @z
 
-@x
+@x l.102
 should be sent to the \TeX-related mailing list \.{tex-k@tug.org}.
 @y
 should be sent to the \TeX-related mailing list
@@ -130,7 +131,15 @@ should be sent to the \TeX-related mailing list
    {mailto:tex-k@tug.org}.
 @z
 
-@x
+@x l.104
+Readers who are familiar with Knuth's memo ``The \.{WEB} System of Structured
+Documentation'' will be able
+@y
+Readers who are familiar with Knuth's memo ``\pdfURL{The \.{WEB} System of
+Structured Documentation}{../web/webman.pdf}'' will be able
+@z
+
+@x l.523
 email address in a \.{CWEB} file (e.g., \.{tex-k@@tug.org}).
 @y
 email address in a \.{CWEB} file (e.g.,
@@ -138,7 +147,7 @@ email address in a \.{CWEB} file (e.g.,
    {mailto:tex-k@tug.org}).
 @z
 
-@x
+@x l.918
 it cannot find them in the current directory.
 @y
 it cannot find them in the current directory.%
@@ -151,7 +160,7 @@ for it.
 (This is true for any other input or change file lookup.)}
 @z
 
-@x
+@x l.1025
 except for error messages.
 @y
 except for error messages.%
@@ -159,7 +168,7 @@ except for error messages.%
 options `\.{b}', `\.{h}', and `\.{p}' are `off' by default.}
 @z
 
-@x
+@x l.1031
 options are currently implemented:
 
 \yskip
@@ -185,7 +194,7 @@ argument to switch between different user languages and macro packages.
 (Off by default.) (Has no effect on \.{CTANGLE}.)
 \hfil\vskip\normallineskip
 \option o Separate declarations and the first statement in a function block.
-(On by default.) (Has no effect on \.{CTANGLE}.)
+(On by default.) (\.{CWEAVE} only.)
 \hfil\vskip\normallineskip
 \option u Transliteration of UTF-8 multi-byte characters.
 (Off by default.) (Has no effect on \.{CWEAVE}.)}
@@ -193,23 +202,33 @@ argument to switch between different user languages and macro packages.
 \yskip
 @z
 
-@x
+@x l.1067
+\option x Include indexes and a table of contents in the \TEX/ file
+output by \.{CWEAVE}. (On by default.) (Has no effect on \.{CTANGLE}.)
+@y
+\option x Include indexes and a table of contents in the \TEX/ file
+output by \.{CWEAVE}. (On by default.) (\.{CWEAVE} only.)
+
+\vfill\eject
+@z
+
+@x l.1123
 Sometimes things don't work as smoothly, and you get a bunch of
 @y
 \pdffalse\acrohintfalse
 Sometimes things don't work as smoothly, and you get a bunch of
 @z
 
-@x
+@x l.1131
 `$\\{main}(\\{argc},\39\\{argv}{}$)'.
 @y
 `$\\{main}(\\{argc},\39\\{argv}{}$)'.
 \ifx\pdf+\pdftrue\fi \ifxetex\pdftrue\fi
-\ifpdftex\ifnum\pdfoutput>0\pdftrue\fi\fi
+\ifpdflua\ifnum\pdfoutput>0\pdftrue\fi\fi
 \ifpdf\acrohinttrue\fi \ifhint\acrohinttrue\fi
 @z
 
-@x
+@x l.1141
 the `\.{@\#}' will put extra space after `$\langle\,$Other locals$\,\rangle$'.
 @y
 the `\.{@\#}' will put extra space after `$\langle\,$Other locals$\,\rangle$'.%
@@ -217,14 +236,22 @@ the `\.{@\#}' will put extra space after `$\langle\,$Other locals$\,\rangle$'.%
 to suppress the extra space globally.}
 @z
 
-@x
+@x l.1143
 \section Hypertext and hyperdocumentation.
 @y
 \vfill\eject
 \section Hypertext and hyperdocumentation.
 @z
 
-@x
+@x l.1167
+from \.{https://hint.userweb.mwn.de/hint/hintview.html}.
+@y
+from
+\pdfURL{\.{https://hint.userweb.mwn.de/hint/hintview.html}}%
+          {https://hint.userweb.mwn.de/hint/hintview.html}.%
+@z
+
+@x l.1176
 the program sources at \.{ftp://ftp.cs.stanford.edu/pub/ctwill}.
 @y
 the program sources at
@@ -234,21 +261,21 @@ the program sources at
 \.{ctwill} executable -- and its associated helpers -- out of the box.}
 @z
 
-@x
+@x l.1180
 As an example of a real program written in \.{CWEB}, Appendix~A
 @y
 As an example of a real program written in \.{CWEB}, \Appendix A
 @z
 
-@x
-Appendix B is the file that sets \TEX/ up to accept
+@x l.1185
+Appendix B displays the files that set \TEX/ up to accept
 the output of \.{CWEAVE}, and Appendix~C discusses how to use some of those
 @y
-\Appendix B is the file that sets \TEX/ up to accept
+\Appendix B displays the files that set \TEX/ up to accept
 the output of \.{CWEAVE}, and \Appendix C discusses how to use some of those
 @z
 
-@x
+@x l.1191
 appendices D, E, and~F, which exhibit the complete source code for
 \.{CTANGLE} and \.{CWEAVE}.
 
@@ -261,10 +288,10 @@ and~\pdfURL{F}{cweave.pdf}, which exhibit the complete source code for
 code for \.{COMMON}, and the additional \pdfURL{Appendix~G}{ctwill.pdf}
 exhibits the source code for \.{CTWILL}, which is based on \.{CWEAVE}.}
 
-\eject\titletrue
+\vfill\eject\titletrue
 @z
 
-@x
+@x l.1197
 \section Appendix A: Excerpts from a \.{CWEB} Program.
 @y
 \def\subsections{4}
@@ -272,28 +299,28 @@ exhibits the source code for \.{CTWILL}, which is based on \.{CWEAVE}.}
 \subsection CWEB file format.
 @z
 
-@x
+@x l.1201
 generated sections 27--31 of the file \.{common.w}, which contains
 @y
 generated sections 27--31 of the file
 \pdfURL{\.{common.w}}{common.pdf}, which contains
 @z
 
-@x
-\def\runninghead{APPENDIX A --- TRANSLATION BY {\tentt CTANGLE}}
+@x l.1272
+\def\runninghead{APPENDIX A --- TRANSLATION BY {\ninett CTANGLE}}
 @y
-\def\runninghead{APPENDIX A --- TRANSLATION BY {\tentt CTANGLE}}
+\def\runninghead{APPENDIX A --- TRANSLATION BY {\ninett CTANGLE}}
 \subsection Translation by CTANGLE.
 @z
 
-@x
-\def\runninghead{APPENDIX A --- TRANSLATION BY {\tentt CWEAVE}}
+@x l.1340
+\def\runninghead{APPENDIX A --- TRANSLATION BY {\ninett CWEAVE}}
 @y
-\def\runninghead{APPENDIX A --- TRANSLATION BY {\tentt CWEAVE}}
+\def\runninghead{APPENDIX A --- TRANSLATION BY {\ninett CWEAVE}}
 \subsection Translation by CWEAVE.
 @z
 
-@x
+@x l.1429
 \def\runninghead{APPENDIX A --- FINAL DOCUMENT}
 
 And here's what the same excerpt looks like when typeset.
@@ -310,33 +337,49 @@ And here's what the same excerpt looks like when typeset.
 \def\C#1{\5\5\quad$\triangleright\,${\cmntfont#1}$\,\triangleleft$}
 @z
 
-@x
+@x l.1511
 \vfil\eject\titletrue
 @y
-\vfil\eject\titletrue
+\vfill\eject\titletrue
 \ifx\pdf+\pdftrue\fi \ifxetex\pdftrue\fi
-\ifpdftex\ifnum\pdfoutput>0 \pdftrue\fi\fi
+\ifpdflua\ifnum\pdfoutput>0 \pdftrue\fi\fi
 \ifacro\acrohinttrue\fi \ifhint\acrohinttrue\fi
 @z
 
-@x
-  \.{ { }\\vskip 15pt \\centerline\{(Version 4.10)\}{ }\\vfill\}}\cr}$$
+@x l.1613
+  \.{ { }\\vskip 15pt \\centerline\{(Version 4.12)\}{ }\\vfill\}}\cr}$$
 @y
-  \.{ { }\\vskip 15pt \\centerline\{(Version 4.10)\}{ }\\vfill\}}\cr}$$
+  \.{ { }\\vskip 15pt \\centerline\{(Version 4.12)\}{ }\\vfill\}}\cr}$$
 @z
 
-@x
+@x l.1728
 if you have a duplex printer. Appendices D, E, and F of the complete
+version of this manual are printed using a commented-out option that
+substitutes `$\gets$' for `$=$' in the program listings. Looking at those
 @y
 if you have a duplex printer. Appendices \pdfURL{D}{common.pdf},
 \pdfURL{E}{ctangle.pdf}, and \pdfURL{F}{cweave.pdf}\cwebfootnote{And
 \pdfURL{Appendix~G}{ctwill.pdf}.} of the complete
+version of this manual are printed using a commented-out option that
+substitutes `$\gets$' for `$=$' in the program listings.\cwebfootnote{They
+also make use of the alternative format for \CEE/ comments.}
+Looking at those
 @z
 
-@x
+@x l.1780
 \point 20. Furthermore, group titles can be converted to an arbitrary
 @y
 \vfill\eject
 \point 20. Furthermore, group titles can be converted to an arbitrary
 @z
 
+@x l.1791
+\bye
+@y
+\point 21. With modern \TeX\ engines like `\.{luatex}', `\.{pdftex}', and
+`\.{xetex}' (but \\{not} with classic `\.{tex}') you can say `\.{\\input
+pdfwebtocfront}' as the last command in the limbo section and run \TeX\
+\\{twice} on your woven \.{CWEB} document, in order to shift the
+table-of-contents to the front of the {\mc PDF} output.
+\bye
+@z

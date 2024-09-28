@@ -5,11 +5,20 @@
 % Support for MP included from a changefile by Wlodek Bzyl.
 % This file is in the public domain.
 
-@x [0] l.16 - WEAVE: use logo font to get the S
+@x [0] l.17 - WEAVE: use logo font to get the S
 \font\logo=manfnt % font used for the METAFONT logo
+\def\MF{{\logo META}\-{\logo FONT}}
 @y
-\font\logo=logo10 % font used for the METAFONT logo
-\def\MP{{\logo META}\-{\logo POST}}
+\font\logo=manfnt % font used for the METAFONT logo
+\font\tenlogo=logo10 % font used for the METAPOST logo
+\def\MF{{\logo META}\-{\logo FONT}}
+\def\MP{{\tenlogo META}\-{\tenlogo POST}}
+@z
+
+@x [0] l.26
+\def\title{MFT}
+@y
+\def\title{MFT changes for C and METAPOST}
 @z
 
 @x [0] WEAVE: print changes only.
@@ -17,7 +26,6 @@
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{MFT changes for C and METAPOST}
 @z
 
 @x [1]
@@ -66,7 +74,7 @@ procedure initialize;
   var @<Local variables for initialization@>@/
   begin @<Set initial values@>@/
 @y
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize;
   var @<Local variables for initialization@>@/
 begin
@@ -981,7 +989,7 @@ used to provide basic formatting.
 
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 5; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

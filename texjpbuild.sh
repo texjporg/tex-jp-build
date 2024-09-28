@@ -24,7 +24,6 @@ cd source && mkdir -p Work && cd Work
   --enable-seetexk \
   --enable-web2c \
   --enable-etex \
-  --enable-eptex \
   --enable-euptex \
   --enable-pmp \
   --enable-upmp \
@@ -56,6 +55,7 @@ cd source && mkdir -p Work && cd Work
   --without-system-pixman \
   --without-system-cairo \
   --without-system-gmp \
+  --without-system-mpfi \
   --without-system-mpfr \
   --without-system-poppler \
   --without-system-xpdf \
