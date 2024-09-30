@@ -176,7 +176,6 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d other_kchar=18 {kanji codes}
 @d max_char_code=18 {largest catcode for individual characters}
 @y
-@d latin_ucs=14 {is not cjk characters in ucs code}
 @d not_cjk=15 {is not cjk characters}
 @d kanji=16 {kanji}
 @d kana=17 {hiragana, katakana, alphabet}
@@ -283,12 +282,12 @@ if (isinternalUPTEX) then begin
   @t\hskip10pt@>kcat_code(@"99):=kanji; { CJK Compatibility Ideographs }
   @t\hskip10pt@>kcat_code(@"9C):=modifier; { Variation Selectors }
   { \hskip10pt|kcat_code(@"A2):=other_kchar;| Halfwidth and Fullwidth Forms }
-  @+@t\1@>for k:=@"10D to @"110 do kcat_code(k):=kana; { Kana Extended-B .. Small Kana Extension }
-  @+@t\1@>for k:=@"13B to @"143 do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. H }
-  @t\hskip10pt@>kcat_code(@"150):=modifier; { Variation Selectors Supplement }
-  @+@t\1@>for k:=@"165 to @"166 do kcat_code(k):=kana; { Kana with (Semi-)Voiced Sound Mark }
-  @t\hskip10pt@>kcat_code(@"16A):=kanji; { Standardized Variation Sequence }
-  @+@t\1@>for k:=@"16C to @"16D do kcat_code(k):=kanji; { Ideographic Variation Sequence }
+  @+@t\1@>for k:=@"115 to @"118 do kcat_code(k):=kana; { Kana Extended-B .. Small Kana Extension }
+  @+@t\1@>for k:=@"145 to @"14F do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. J }
+  @t\hskip10pt@>kcat_code(@"15B):=modifier; { Variation Selectors Supplement }
+  @+@t\1@>for k:=@"170 to @"171 do kcat_code(k):=kana; { Kana with (Semi-)Voiced Sound Mark }
+  @t\hskip10pt@>kcat_code(@"175):=kanji; { Standardized Variation Sequence }
+  @+@t\1@>for k:=@"177 to @"178 do kcat_code(k):=kanji; { Ideographic Variation Sequence }
   @+@t\1@>for k:=@"1F9 to @"1FC do kcat_code(k):=modifier;
     { Combining Katakana-Hiragana (Semi-)Voiced Sound Mark .. Emoji Modifier Fitzpatrick }
   @t\hskip10pt@>kcat_code(@"1FD):=not_cjk; { Latin-1 Letters }
@@ -428,7 +427,6 @@ if ((kcp mod @'10)>0)and(nrestmultichr(kcp)>0) then p:=p-(kcp mod @'10);
     cur_chr:=fromBUFF(ustringcast(buffer), limit+1, loc);
     cur_cmd:=kcat_code(kcatcodekey(cur_chr));
     if (multistrlen(ustringcast(buffer), limit+1, loc)>1) and check_kcat_code(cur_cmd,cur_chr) then begin
-      if (cur_cmd=latin_ucs) then cur_cmd:=cat_code(cur_chr);
       if (cur_cmd=not_cjk) then cur_cmd:=other_kchar;
       for l:=loc to loc-1+multistrlen(ustringcast(buffer), limit+1, loc) do
         buffer2[l]:=1;
@@ -479,7 +477,6 @@ else  begin k:=loc;
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat,cur_chr) then begin
-    if (cat=latin_ucs) then cat:=cat_code(cur_chr);
     if (cat=not_cjk) then cat:=other_kchar;
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
@@ -522,7 +519,6 @@ begin repeat
   cur_chr:=fromBUFF(ustringcast(buffer), limit+1, k);
   cat:=kcat_code(kcatcodekey(cur_chr));
   if (multistrlen(ustringcast(buffer), limit+1, k)>1) and check_kcat_code(cat,cur_chr) then begin
-    if (cat=latin_ucs) then cat:=cat_code(cur_chr);
     if (cat=not_cjk) then cat:=other_kchar;
     for l:=k to k-1+multistrlen(ustringcast(buffer), limit+1, k) do
       buffer2[l]:=1;
@@ -577,8 +573,6 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -612,8 +606,6 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -627,8 +619,6 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs) then
-      cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -698,7 +688,6 @@ while k<pool_ptr do
   begin  t:=so(str_pool[k]);
   if t>=@"180 then { there is no |wchar_token| whose code is 0--127. }
     begin t:=fromBUFFshort(str_pool, pool_ptr, k); cc:=kcat_code(kcatcodekey(t));
-    if (cc=latin_ucs) then cc:=other_char;
     if (cc=not_cjk) then cc:=other_kchar;
     if (cc=kanji)and(t>=max_cjk_val) then cc:=kanji_ivs;
     t:=t+cc*max_cjk_val;
@@ -1188,7 +1177,7 @@ kchar_given: begin print_esc("kchar"); print_hex(chr_code);
 if cur_chr=kcat_code_base then m:=kanji else m:=0
 @y
 @ @<Let |m| be the minimal...@>=
-if cur_chr=kcat_code_base then m:=latin_ucs else m:=0
+if cur_chr=kcat_code_base then m:=not_cjk else m:=0
 @z
 
 @x
@@ -1332,8 +1321,6 @@ begin if is_char_node(link(p)) then
       info(main_p):=KANJI(cur_chr)+cur_cmd*max_cjk_val
     else if cur_cmd=not_cjk then
       info(main_p):=KANJI(cur_chr)+other_kchar*max_cjk_val
-    else if cur_cmd=latin_ucs then
-      info(main_p):=KANJI(cur_chr)+cat_code(cur_chr)*max_cjk_val
     else { Does this case occur? }
       info(main_p):=KANJI(cur_chr)+kcat_code(kcatcodekey(KANJI(cur_chr)))*max_cjk_val;
 @z
@@ -1428,7 +1415,7 @@ end;
 
 function check_kcat_code(@!ct:integer;@!cx:integer):integer;
 begin
-if (((ct>=kanji)or((ct=latin_ucs)and(cx<max_ucs_val)))and(enable_cjk_token=0))or(enable_cjk_token=2)then
+if ((ct>=kanji)and(enable_cjk_token=0))or(enable_cjk_token=2)then
   check_kcat_code:=1
 else check_kcat_code:=0;
 end;

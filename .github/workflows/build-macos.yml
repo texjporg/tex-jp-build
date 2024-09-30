@@ -5,6 +5,7 @@ on:
     branches:
       - 'build-macos/**'
       - 'build/**'
+      - 'master'
 jobs:
   Build-on-macos:
     runs-on: macos-latest
