@@ -2053,7 +2053,7 @@ squeeze/stamp-squeeze:
 test-afm2tfm-test.log: afm2tfm$(EXEEXT)
 beginfontk1.log eepic-nan.log pfbincl.log \
 	quotecmd-test.log same-name.log test-dvips.log \
-	test-overflow-buffers.log \
+	test-missing-image.log test-overflow-buffers.log \
 	uptex-vf.log uptex-upjf2.log ofm-lmr.log \
 	: dvips$(EXEEXT)
 dist-hook:

@@ -121,7 +121,7 @@ TESTS += beginfontk1.test eepic-nan.test pfbincl.test \
 	uptex-vf.test uptex-upjf2.test ofm-lmr.test
 beginfontk1.log eepic-nan.log pfbincl.log \
 	quotecmd-test.log same-name.log test-dvips.log \
-	test-overflow-buffers.log \
+	test-missing-image.log test-overflow-buffers.log \
 	uptex-vf.log uptex-upjf2.log ofm-lmr.log \
 	: dvips$(EXEEXT)
 
@@ -171,7 +171,7 @@ DISTCLEANFILES += eepic-nan.ps
 EXTRA_DIST += testdata/pfbincl.eps testdata/pfbincl.tex testdata/pfbincl.xdv testdata/pfbincl.xps 
 DISTCLEANFILES += pfbincl.ps
 ## quotecmd-test.pl
-EXTRA_DIST += testdata/quotecmd.dvi testdata/quotecmd.tex 
+EXTRA_DIST += testdata/quotecmd.dvi testdata/quotecmd.tex
 DISTCLEANFILES += *badnews*
 ## same-name.test
 DISTCLEANFILES += same-name.out

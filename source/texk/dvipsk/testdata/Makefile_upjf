@@ -74,3 +74,4 @@ upjf2.dvi: upjf2.tex
 	sed -i '/xxx/d' upjf2.dvitxt
 	dvispc -x upjf2.dvitxt upjf2.dvi
 	rm upjf2.dvitxt
+

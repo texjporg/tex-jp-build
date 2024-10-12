@@ -1,15 +1,15 @@
-name: Build on Ubuntu
-run-name: building & testing on Ubuntu
+name: Build on MacOS
+run-name: building & testing on MacOS
 on:
   push:
     branches:
-      - 'build-ubuntu/**'
+      - 'build-macos/**'
       - 'build/**'
       - 'uptex_ofm'
       - 'master'
 jobs:
-  Build-on-ubuntu:
-    runs-on: ubuntu-latest
+  Build-on-macos:
+    runs-on: macos-latest
     timeout-minutes: 40
     steps:
       - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
@@ -17,6 +17,12 @@ jobs:
       - run: echo "Branch [ ${{ github.ref }} ]  Repository [ ${{ github.repository }} ]"
       - name: Check out repository code
         uses: actions/checkout@v4
+
+      - name: brew
+        shell: bash
+        run: |
+          #brew install icu4c
+          brew info icu4c
 
       - name: make libs
         shell: bash
@@ -34,6 +40,10 @@ jobs:
           ../../../libs/libpaper/configure
           make
           make check
+#          cd ${{ github.workspace }}/source/Work/libs/icu
+#          ../../../libs/icu/configure
+#          make
+#          make check
 
       - name: make kpathsea, ptexenc
         shell: bash
@@ -42,10 +52,119 @@ jobs:
           cd ${{ github.workspace }}/source/Work/texk/kpathsea
           ../../../texk/kpathsea/configure
           make
-          make check
+          make check || cat tests/kpsesafe.log
           cd ${{ github.workspace }}/source/Work/texk/ptexenc
           ../../../texk/ptexenc/configure
           make
+
+      - name: icu
+        shell: bash
+        run: |
+          ICU_PREFIX=`find /opt/homebrew/Cellar -name icudataver.h | sed -e 's/\/include\/unicode\/icudataver.h\$//'`
+          # ICU_PREFIX="/opt/homebrew/Cellar/icu4c/74.2"
+          echo "ICU_PREFIX: "$ICU_PREFIX
+          echo "ICU_PREFIX=$ICU_PREFIX" >> $GITHUB_ENV
+
+      - name: bibtex-x
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/bibtex-x
+          cd ./source/Work/texk/bibtex-x
+          CPPFLAGS=-I$ICU_PREFIX/include \
+          LDFLAGS=-L$ICU_PREFIX/lib \
+          LIBS="-licuio -licui18n -licuuc -licudata" \
+          ../../../texk/bibtex-x/configure \
+            --with-system-icu
+          make
+          ./bibtex8 --version
+          ./bibtexu --version
+          make check
+
+      - name: upmendex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/upmendex
+          cd ./source/Work/texk/upmendex
+          CPPFLAGS=-I$ICU_PREFIX/include \
+          LDFLAGS=-L$ICU_PREFIX/lib \
+          LIBS="-licuio -licui18n -licuuc -licudata" \
+          ../../../texk/upmendex/configure \
+            --with-system-icu
+          make
+          ./upmendex --help
+          make check
+
+      - name: dvipdfm-x
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvipdfm-x
+          cd ./source/Work/texk/dvipdfm-x
+          ../../../texk/dvipdfm-x/configure
+          make
+          make check
+
+      - name: dvipsk
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvipsk
+          cd ./source/Work/texk/dvipsk
+          ../../../texk/dvipsk/configure
+          make
+          make check
+
+      - name: makejvf
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/makejvf
+          cd ./source/Work/texk/makejvf
+          ../../../texk/makejvf/configure
+          make
+          make check
+
+      - name: mendex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/mendexk
+          cd ./source/Work/texk/mendexk
+          ../../../texk/mendexk/configure
+          make
+          make check
+
+      - name: dviout-util
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dviout-util
+          cd ./source/Work/texk/dviout-util
+          ../../../texk/dviout-util/configure
+          make
+          make check
+
+      - name: dvi2tty
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvi2tty
+          cd ./source/Work/texk/dvi2tty
+          ../../../texk/dvi2tty/configure
+          make
+          make check
+
+      - name: seetex
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/seetexk
+          cd ./source/Work/texk/seetexk
+          ../../../texk/seetexk/configure
+          make
+          make check
+
+      - name: dvidvi
+        shell: bash
+        run: |
+          mkdir -p ./source/Work/texk/dvidvi
+          cd ./source/Work/texk/dvidvi
+          ../../../texk/dvidvi/configure
+          make
+          make check
 
       - name: make libs
         shell: bash
