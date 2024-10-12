@@ -1141,39 +1141,6 @@ begin
 @z
 
 @x
-@!char_base: ^integer;
-  {base addresses for |char_info|}
-@y
-@!char_base: ^integer;
-  {base addresses for |char_info|}
-@!char_attr_base: ^integer; {for OFM}
-@!ivalues_start: ^integer; {for OFM}
-@!fvalues_start: ^integer; {for OFM}
-@!mvalues_start: ^integer; {for OFM}
-@!rules_start: ^integer; {for OFM}
-@!glues_start: ^integer; {for OFM}
-@!penalties_start: ^integer; {for OFM}
-@!ivalues_base: ^integer; {for OFM}
-@!fvalues_base: ^integer; {for OFM}
-@!mvalues_base: ^integer; {for OFM}
-@!rules_base: ^integer; {for OFM}
-@!glues_base: ^integer; {for OFM}
-@!penalties_base: ^integer; {for OFM}
-@z
-
-@x
-@d kchar_code_end(#)==#].hh.rh
-@d kchar_code(#)==font_info[ctype_base[#]+kchar_code_end
-@d kchar_type_end(#)==#].hh.lhfield
-@d kchar_type(#)==font_info[ctype_base[#]+kchar_type_end
-@y
-@d kchar_code_end(#)==#].hh.rh
-@d kchar_code(#)==font_info[ctype_base[#]+kchar_code_end
-@d kchar_type_end(#)==#].hh.lhfield
-@d kchar_type(#)==font_info[ctype_base[#]+kchar_type_end
-@z
-
-@x
 @d char_width_end(#)==#.b0].sc
 @d char_width(#)==font_info[width_base[#]+char_width_end
 @d char_exists(#)==(#.b0>min_quarterword)
@@ -1524,50 +1491,6 @@ bch_label:=@'77777; bchar:=max_latin_val;
 @z
 
 @x
-    if a>128 then
-      begin if 256*c+d>=nl then abort;
-      if a=255 then if k=lig_kern_base[f] then bchar:=b;
-      end
-    else begin if b<>bchar then check_existence(b);
-      if c<128 then begin
-        if jfm_flag<>dir_default then
-          begin if 256*c+d>=ne then abort; end {check glue}
-        else check_existence(d); {check ligature}
-        end
-      else if 256*(c-128)+d>=nk then abort; {check kern}
-      if a<128 then if k-lig_kern_base[f]+a+1>=nl then abort;
-      end;
-    end;
-  if a=255 then bch_label:=256*c+d;
-  end;
-@y
-    if a>128 then
-      begin if 256*c+d>=nl then abort;
-      if a=255 then if k=lig_kern_base[f] then bchar:=b;
-      end
-    else begin if b<>bchar then check_existence(b);
-      if c<128 then begin
-        if jfm_flag<>dir_default then
-          begin if 256*c+d>=ne then abort; end {check glue}
-        else check_existence(d); {check ligature}
-        end
-      else if 256*(c-128)+d>=nk then abort; {check kern}
-      if a<128 then if k-lig_kern_base[f]+a+1>=nl then abort;
-      end;
-    end;
-  if a=255 then bch_label:=256*c+d;
-  end;
-@z
-
-@x
-adjust(ctype_base);
-adjust(char_base); adjust(width_base); adjust(lig_kern_base);
-@y
-adjust(ctype_base);
-adjust(char_base); adjust(width_base); adjust(lig_kern_base);
-@z
-
-@x
 @p procedure char_warning(@!f:internal_font_number;@!c:eight_bits);
 @y
 @p procedure char_warning(@!f:internal_font_number;@!c:sixteen_bits);
@@ -1904,14 +1827,6 @@ if trie_max<h+max_hyph_char then
   until trie_max=h+256;
 @y
   until trie_max=h+max_hyph_char;
-@z
-
-@x
-if l<256 then
-  begin if z<256 then ll:=z @+else ll:=256;
-@y
-if l<256 then
-  begin if z<256 then ll:=z @+else ll:=256;
 @z
 
 @x
@@ -2386,14 +2301,6 @@ if (t<cs_token_flag+single_base) then
 @z
 
 @x
-dump_things(ctype_base[null_font], font_ptr+1-null_font);
-dump_things(char_base[null_font], font_ptr+1-null_font);
-@y
-dump_things(ctype_base[null_font], font_ptr+1-null_font);
-dump_things(char_base[null_font], font_ptr+1-null_font);
-@z
-
-@x
 font_bc:=xmalloc_array(eight_bits, font_max);
 font_ec:=xmalloc_array(eight_bits, font_max);
 @y
@@ -2402,41 +2309,11 @@ font_ec:=xmalloc_array(sixteen_bits, font_max);
 @z
 
 @x
-ctype_base:=xmalloc_array(integer, font_max);
-char_base:=xmalloc_array(integer, font_max);
-@y
-ctype_base:=xmalloc_array(integer, font_max);
-char_base:=xmalloc_array(integer, font_max);
-@z
-
-@x
-undump_things(ctype_base[null_font], font_ptr+1-null_font);
-undump_things(char_base[null_font], font_ptr+1-null_font);
-@y
-undump_things(ctype_base[null_font], font_ptr+1-null_font);
-undump_things(char_base[null_font], font_ptr+1-null_font);
-@z
-
-@x
   font_bc:=xmalloc_array(eight_bits, font_max);
   font_ec:=xmalloc_array(eight_bits, font_max);
 @y
   font_bc:=xmalloc_array(sixteen_bits, font_max);
   font_ec:=xmalloc_array(sixteen_bits, font_max);
-@z
-
-@x
-  ctype_base:=xmalloc_array(integer, font_max);
-  char_base:=xmalloc_array(integer, font_max);
-@y
-  ctype_base:=xmalloc_array(integer, font_max);
-  char_base:=xmalloc_array(integer, font_max);
-@z
-
-@x
-  ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
-@y
-  ctype_base[null_font]:=0; char_base[null_font]:=0; width_base[null_font]:=0;
 @z
 
 @x
