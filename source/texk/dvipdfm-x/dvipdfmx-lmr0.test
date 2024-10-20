@@ -39,28 +39,6 @@ echo "*** dvipdfmx: test for lmr0-up-8bit.pdf" && echo \
 	|| failed="$failed dvipdfmx-lmr0-up-8bit"
 
 
-#####  following tests require Latin Modern OpenType fonts  #####
-
-$_kpsewhich lmroman10-regular.otf
-otfpath=`$_kpsewhich lmroman10-regular.otf` || exit 77
-OPENTYPEFONTS=`echo $otfpath | sed -e 's,lmroman10-regular\.otf,,' -e 's,/fonts/opentype/.*$,/fonts/opentype//,'`
-export OPENTYPEFONTS
-
-rm -f ./tmp100/eu3-lmr10.ovf
-
-echo "*** dvipdfmx: test for lmr0-al-ucs.pdf" && echo \
-	&& cp $srcdir/../web2c/tests/eu3-lmr10_eu3.ovf ./tmp100/eu3-lmr10.ovf \
-	&& cp $srcdir/../web2c/tests/eu3-lmr10_ucs.ofm ./tmp100/eu3-lmr10_ucs.ofm \
-	&& $_xdvipdfmx --dvipdfmx -vv -f lm.map -o lmr0-al-ucs.pdf $srcdir/tests/lmr0-al.dvi \
-	&& echo && echo "dvipdfmx-lmr0-al-ucs tests OK" && echo \
-	|| failed="$failed dvipdfmx-lmr0-al-ucs"
-
-echo "*** dvipdfmx: test for lmr0-up-ucs.pdf" && echo \
-	&& $_xdvipdfmx --dvipdfmx -vv -f lm.map -f upjf.map -o lmr0-up-ucs.pdf $srcdir/tests/lmr0-up.dvi \
-	&& echo && echo "dvipdfmx-lmr0-up-ucs tests OK" && echo \
-	|| failed="$failed dvipdfmx-lmr0-up-ucs"
-
-
 test -z "$failed" && exit 0
 echo
 echo "failed tests:$failed"

@@ -839,7 +839,8 @@ TESTS = xdvipdfmx.test xdvipdfm-ann.test xdvipdfm-bad.test \
 	xdvipdfm-bb.test xdvipdfm-bkm.test xdvipdfm-psz.test \
 	xdvipdfm-ptx.test xdvipdfm-res.test xdvipdfm-rev.test \
 	xdvipdfm-ttc.test dvipdfmx-upjf.test dvipdfmx-upjf2.test \
-	dvipdfmx-upjf3.test dvipdfmx-incl.test dvipdfmx-lmr0.test
+	dvipdfmx-upjf3.test dvipdfmx-incl.test dvipdfmx-lmr0.test \
+	dvipdfmx-lmr1.test
 EXTRA_DIST = $(TESTS) tests/dvipdfmx.cfg tests/psfonts.map \
 	tests/cmr10.pfb tests/cmr10.tfm tests/image.dvi \
 	tests/image.tex tests/xbmc.dvi tests/xbmc.tex \
@@ -2065,7 +2066,7 @@ xdvipdfmx.log xdvipdfm-ann.log xdvipdfm-bad.log xdvipdfm-bb.log \
 	xdvipdfm-bkm.log xdvipdfm-psz.log xdvipdfm-ptx.log xdvipdfm-res.log \
 	xdvipdfm-rev.log xdvipdfm-ttc.log \
 	dvipdfmx-upjf.log dvipdfmx-upjf2.log dvipdfmx-upjf3.log dvipdfmx-incl.log \
-	dvipdfmx-lmr0.log: \
+	dvipdfmx-lmr0.log dvipdfmx-lmr1.log: \
 	xdvipdfmx$(EXEEXT)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
