@@ -17,6 +17,16 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
+      - name: apt-get texlive
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install texlive-binaries texlive-fonts-recommended texlive-fonts-extra texlive-lang-japanese
+          kpsewhich lmroman10-regular.otf
+          kpsewhich HaranoAjiMincho-Regular.otf
+          kpsewhich HaranoAjiGothic-Normal.otf
+          kpsewhich -show-path='opentype fonts'
+
       - name: make libs
         shell: bash
         run: |
