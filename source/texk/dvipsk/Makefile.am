@@ -168,7 +168,7 @@ DISTCLEANFILES += beginfontk1.ps
 EXTRA_DIST += testdata/eepic-nan.dvi testdata/eepic-nan.tex
 DISTCLEANFILES += eepic-nan.ps
 ## pfbincl.test
-EXTRA_DIST += testdata/pfbincl.eps testdata/pfbincl.tex testdata/pfbincl.xdv testdata/pfbincl.xps 
+EXTRA_DIST += testdata/pfbincl.eps testdata/pfbincl.tex testdata/pfbincl.xdv testdata/pfbincl.xps
 DISTCLEANFILES += pfbincl.ps
 ## quotecmd-test.pl
 EXTRA_DIST += testdata/quotecmd.dvi testdata/quotecmd.tex
