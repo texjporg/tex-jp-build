@@ -15,10 +15,12 @@ TEXFORMATS=.; export TEXFORMATS
 
 # get same filename in log
 rm -f up-lmr*.*
-cp $srcdir/tests/dump-basic.tex ./up-basic.tex
 $LN_S $srcdir/uptexdir/tests/lmr1.tex ./up-lmr1.tex
 $LN_S $srcdir/uptexdir/tests/lmr2.tex ./up-lmr2.tex
 
+if test ! -f ./up-basic.tex; then
+  cp $srcdir/tests/dump-basic.tex ./up-basic.tex
+fi
 if test ! -f ./up-basic.fmt; then
   cp $srcdir/tests/dump-basic.tex ./up-basic.tex
   $_uptex -ini up-basic || exit 1

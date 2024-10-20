@@ -3304,6 +3304,7 @@ EXTRA_DIST = PROJECTS cftests cpascal.h help.h w2c/config.h \
 	uptexdir/tests/up-prim.tex uptexdir/tests/up-prim.log \
 	uptexdir/tests/lmr1.tex uptexdir/tests/up-lmr1.log \
 	uptexdir/tests/lmr2.tex uptexdir/tests/up-lmr2.log \
+	uptexdir/tests/noto1.tex uptexdir/tests/up-noto1.log \
 	$(euptex_web_srcs) $(euptex_ch_srcs) euptexdir/euptex.defines \
 	euptexdir/COPYRIGHT euptexdir/COPYRIGHT.jis \
 	euptexdir/ChangeLog euptexdir/EUPTEX.txt $(euptex_tests) \
@@ -3661,13 +3662,13 @@ DISTCLEANFILES = CXXLD.sh tangle.c tangle.h tangle.p tangle-web2c \
 	uptests/x*min10.* uptests/xchcode*.* uptests/xtestnewu*.* \
 	uptests/xuparse.* uptests/yuparse.* uptests/ygkhuge*.* \
 	uptests/ygk256*.* uptests/xskipjfmp.* uptrip.diffs up-ofm.* \
-	up-prim.* up-lmr*.* $(nodist_euptex_SOURCES) euptex.web \
-	euptex.ch euptex-web2c euptex.p euptex.pool euptex-tangle \
-	euptrip.diffs pdfprimitive-euptex.* eup-ctrlsym.log \
-	eup-ctrlsym.out eup-ctrlsym.tex eup-endline*.* eup-jctrlsym*.* \
-	eup-pknj-*.* eup-postpena*.* eup-free_*.* eup-inhibitglue*.* \
-	eup-kinsoku*.* eup-ofm.* eup-prim.* eup-ucs*.* \
-	$(nodist_hitex_SOURCES) $(nodist_hishrink_SOURCES) \
+	up-prim.* up-lmr*.* up-noto*.* $(nodist_euptex_SOURCES) \
+	euptex.web euptex.ch euptex-web2c euptex.p euptex.pool \
+	euptex-tangle euptrip.diffs pdfprimitive-euptex.* \
+	eup-ctrlsym.log eup-ctrlsym.out eup-ctrlsym.tex eup-endline*.* \
+	eup-jctrlsym*.* eup-pknj-*.* eup-postpena*.* eup-free_*.* \
+	eup-inhibitglue*.* eup-kinsoku*.* eup-ofm.* eup-prim.* \
+	eup-ucs*.* $(nodist_hitex_SOURCES) $(nodist_hishrink_SOURCES) \
 	$(nodist_histretch_SOURCES) hiformat-tangle hitex-tangle \
 	hello.log rule.log $(nodist_pdftex_SOURCES) pdftex-final.ch \
 	pdftex-web2c pdftex.p pdftex.pool pdftex-tangle pwprob.log \
@@ -4557,7 +4558,7 @@ uptex_tests = \
 	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test \
 	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test \
-	uptexdir/uptex-lmr.test
+	uptexdir/uptex-lmr.test uptexdir/uptex-noto.test
 
 # uppPLtoTF/upTFtoPL
 upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
@@ -22133,7 +22134,7 @@ uptexdir/uptriptest.log uptexdir/ptriptest.log: \
 uptexdir/upver.log uptexdir/upkcat.log \
 	uptexdir/wcfname.log uptexdir/wcfname0.log \
 	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log \
-	uptexdir/uptex-lmr.log: uptex$(EXEEXT)
+	uptexdir/uptex-lmr.log uptexdir/uptex-noto.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)

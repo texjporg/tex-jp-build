@@ -18,8 +18,10 @@ TEXFORMATS=.; export TEXFORMATS
 rm -f up-ofm.* uptests/xup-ofm*
 $LN_S $srcdir/uptexdir/tests/up-ofm.tex ./up-ofm.tex
 
-if test ! -f ./up-basic.fmt; then
+if test ! -f ./up-basic.tex; then
   cp $srcdir/tests/dump-basic.tex ./up-basic.tex
+fi
+if test ! -f ./up-basic.fmt; then
   $_uptex -ini up-basic || exit 1
 fi
 
