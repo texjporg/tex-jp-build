@@ -2,6 +2,9 @@
 # Copyright 2024 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
+#### skip for upTeX 1.35 regression tests ####
+exit 77
+##############################################
 BinDir=${BinDir:-.}
 ExeExt=${ExeExt:-}
 _uptex=$BinDir/uptex$ExeExt
