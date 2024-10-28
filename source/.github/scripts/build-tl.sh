@@ -34,8 +34,8 @@ then
        ;;
      almalinux)
        yum update -y
-       yum install -y gcc-toolset-9 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
-       . /opt/rh/gcc-toolset-9/enable
+       yum install -y gcc-toolset-11 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
+       . /opt/rh/gcc-toolset-11/enable
        ;;
      centos)
        yum update -y
@@ -121,7 +121,7 @@ case "$arch" in
     export CFLAGS=-D_NETBSD_SOURCE
     export CXXFLAGS='-D_NETBSD_SOURCE -std=c++17'
     ;;
-  i386-linux)
+  x86_64-linux|i386-linux|x86_64-linuxmusl)
     export CXXFLAGS='-std=c++17'
     ;;
 esac
