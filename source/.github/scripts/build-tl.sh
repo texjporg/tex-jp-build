@@ -96,11 +96,13 @@ BUILDARGS=""
 
 # special cases
 case "$arch" in
-  armhf-linux)
+  armhf-linux) # debian:buster
     TL_MAKE_FLAGS="-j 1"
+    export CXXFLAGS='-std=c++17'
     ;;
-  aarch64-linux)
+  aarch64-linux) # debian:buster
     BUILDARGS="--enable-arm-neon=on"
+    export CXXFLAGS='-std=c++17'
     ;;
   *-solaris)
     export PATH=/opt/csw/bin:$PATH

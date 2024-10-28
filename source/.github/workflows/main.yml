@@ -57,7 +57,7 @@ jobs:
             platform: 386
             ci_build: true
             use_qemu: false
-            buildsys: ubuntu
+            buildsys: debian
           - tl_name: x86_64-linux
             image: almalinux:8
             platform: amd64
