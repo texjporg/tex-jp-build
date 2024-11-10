@@ -34,8 +34,8 @@ then
        ;;
      almalinux)
        yum update -y
-       yum install -y gcc-toolset-9 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
-       . /opt/rh/gcc-toolset-9/enable
+       yum install -y gcc-toolset-11 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
+       . /opt/rh/gcc-toolset-11/enable
        ;;
      centos)
        yum update -y
@@ -96,11 +96,13 @@ BUILDARGS=""
 
 # special cases
 case "$arch" in
-  armhf-linux)
+  armhf-linux) # debian:buster
     TL_MAKE_FLAGS="-j 1"
+    export CXXFLAGS='-std=c++17'
     ;;
-  aarch64-linux)
+  aarch64-linux) # debian:buster
     BUILDARGS="--enable-arm-neon=on"
+    export CXXFLAGS='-std=c++17'
     ;;
   *-solaris)
     export PATH=/opt/csw/bin:$PATH
@@ -119,7 +121,10 @@ case "$arch" in
     export CC=gcc 
     export CXX=g++
     export CFLAGS=-D_NETBSD_SOURCE
-    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++11'
+    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++17'
+    ;;
+  x86_64-linux|i386-linux|x86_64-linuxmusl)
+    export CXXFLAGS='-std=c++17'
     ;;
 esac
 export TL_MAKE_FLAGS
