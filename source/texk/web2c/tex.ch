@@ -787,6 +787,7 @@ if translate_filename then begin
 end;
 @z
 
+% Original report: https://tug.org/pipermail/tex-k/2021-July/003630.html
 @x [5.71] l.1713 - term_input: set limit when fatal_error
 if not input_ln(term_in,true) then fatal_error("End of file on the terminal!");
 @y
@@ -880,6 +881,15 @@ if (halt_on_error_p) then begin
    here; just give up in that case. If files are truncated, too bad.}
   if (halting_on_error_p) then do_final_end; {quit immediately}
   halting_on_error_p:=true;
+
+  {This module is executed at the end of the |error| procedure in
+   \.{tex.web}, but we'll never get there when |halt_on_error_p|, so the
+   error help shouldn't get duplicated. It's potentially useful to see,
+   especially if \.{\\errhelp} is being used. See thread at:
+   \.{https://tug.org/pipermail/tex-live/2024-July/050741.html}.}
+  @<Put help message on the transcript file@>;
+
+  {Proceed with normal exit.}
   history:=fatal_error_stop;
   jump_out;
 end;
@@ -1501,6 +1511,14 @@ begin input_ptr:=0; max_in_stack:=0;
 source_filename_stack[0]:=0;full_source_filename_stack[0]:=0;
 @z
 
+% This one is a consequence of the limit:=0 fix.
+@x [23.331] l.7095 - initialize buffer[0]
+first:=buf_size; repeat buffer[first]:=0; decr(first); until first=0;
+@y
+first:=buf_size; repeat buffer[first]:=0; decr(first); until first=0;
+buffer[0]:=0;
+@z
+
 % Original report: https://tug.org/pipermail/tex-k/2024-March/004021.html
 % TeX bug entry:   https://tug.org/texmfbug/newbug.html#B142outer
 @x [24.336] l.7152 - allow interactive deletion of \outer token
@@ -1560,6 +1578,7 @@ if t>=cs_token_flag then
 if (t>=cs_token_flag)and(t<>end_write_token) then
 @z
 
+% See above change "term_input: set limit when fatal_error" for references.
 @x [27.484] l.9495 - set limit when fatal_error
 else fatal_error("*** (cannot \read from terminal in nonstop modes)")
 @y
