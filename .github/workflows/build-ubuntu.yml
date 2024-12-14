@@ -144,7 +144,11 @@ jobs:
       - name: make libs
         shell: bash
         run: |
-          mkdir -p ./source/Work/libs/{gmp,mpfr,mpfi}
+          mkdir -p ./source/Work/libs/{cairo,gmp,mpfr,mpfi}
+          cd ${{ github.workspace }}/source/Work/libs/cairo
+          ../../../libs/cairo/configure
+          make
+          make check
           cd ${{ github.workspace }}/source/Work/libs/gmp
           ../../../libs/gmp/configure
           make
@@ -193,7 +197,7 @@ jobs:
             --without-system-libpng \
             --without-system-freetype2 \
             --with-system-pixman \
-            --with-system-cairo \
+            --without-system-cairo \
             --without-system-gmp \
             --without-system-mpfr \
             --without-system-poppler \
