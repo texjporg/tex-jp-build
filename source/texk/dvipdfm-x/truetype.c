@@ -294,6 +294,7 @@ do_builtin_encoding (pdf_font *font, const char *usedchars, sfnt *sfont)
   USHORT            gid, idx;
   int               code, count;
   double            widths[256];
+  USHORT            code_to_idx[256] = {0};
 
   ttcm = tt_cmap_read(sfont, TT_MAC, TT_MAC_ROMAN);
   if (!ttcm) {
@@ -335,7 +336,14 @@ do_builtin_encoding (pdf_font *font, const char *usedchars, sfnt *sfont)
       if (idx == 0)
         idx  = tt_add_glyph(glyphs, (USHORT)gid, (USHORT)count); /* count returned. */
     }
-    cmap_table[18+code] = idx & 0xff; /* bug here */
+    code_to_idx[code] = idx;
+    if (idx >= 256) {
+      WARN("Font font-file=\"%s\" uses more than 255 glyphs", font->filename);
+      WARN(">> Glyph for character code=0x%02x will be inaccessible.", code);
+      cmap_table[18 + code] = 0;
+    } else {
+      cmap_table[18 + code] = (char)(BYTE)idx;
+    }
     count++;
   }
   tt_cmap_release(ttcm);
@@ -352,7 +360,7 @@ do_builtin_encoding (pdf_font *font, const char *usedchars, sfnt *sfont)
 
   for (code = 0; code < 256; code++) {
     if (usedchars[code]) {
-      idx = tt_get_index(glyphs, (USHORT) cmap_table[18+code]);
+      idx = tt_get_index(glyphs, code_to_idx[code]);
       widths[code] = PDFUNIT(glyphs->gd[idx].advw);
     } else {
       widths[code] = 0.0;
@@ -780,6 +788,7 @@ do_custom_encoding (pdf_font *font,
   double                 widths[256];
   struct glyph_mapper    gm;
   USHORT                 idx, gid;
+  USHORT                 code_to_idx[256] = {0};
   int                    error = 0;
 
   ASSERT(font && encoding && usedchars && sfont);
@@ -837,7 +846,14 @@ do_custom_encoding (pdf_font *font,
         count++;
       }
     }
-    cmap_table[18 + code] = idx & 0xff; /* bug here */
+    code_to_idx[code] = idx;
+    if (idx >= 256) {
+      WARN("Font font-file=\"%s\" uses more than 255 glyphs", font->filename);
+      WARN(">> Glyph glyph-name=\"%s\" will be inaccessible.", encoding[code]);
+      cmap_table[18 + code] = 0;
+    } else {
+      cmap_table[18 + code] = (char)(BYTE)idx;
+    }
   }
   clean_glyph_mapper(&gm);
 
@@ -850,7 +866,7 @@ do_custom_encoding (pdf_font *font,
 
   for (code = 0; code < 256; code++) {
     if (usedchars[code]) {
-      idx = tt_get_index(glyphs, (USHORT) cmap_table[18+code]);
+      idx = tt_get_index(glyphs, code_to_idx[code]);
       widths[code] = PDFUNIT(glyphs->gd[idx].advw);
     } else {
       widths[code] = 0.0;
