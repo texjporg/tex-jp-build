@@ -1,3 +1,29 @@
+2024-12-01  Luigi Scarso  <luigi.scarso@gmail.com>
+
+	* doc/luatex: development LuaTeX Reference Manual, kept in sync with
+	the current version of LuaTeX.
+
+2024-12-01  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (error): do @<Put help message on the transcript file@>
+	before exiting if halt_on_error_p, to be closer to behavior of TeX
+	without -halt-on-error. Suggestion from jfbu:
+	https://tug.org/pipermail/tex-live/2024-July/050741.html
+
+2024-11-24  David Fuchs  <drfuchs@yahoo.com>
+
+	* tex.ch (Initialize the input routines): also initialize
+	buffer[0]:=0 for uninitialized virtex read, in the
+	cases of printing garbage fixed by Kitagawa-san on 2021-07-19.
+
+2024-11-13  Karl Berry  <karl@freefriends.org>
+
+	* mf.ch (Calculate integers $\alpha$...): comment out erroneous
+	change that "simplified" the assignment of alpha, resulting in a
+	few pen polygons being affected, but don't know if any extant
+	fonts are impacted. Report from Tim Stadelman,
+	https://tug.org/pipermail/tex-k/2021-August/003648.html.
+
 2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* lib/texmfmp.c (maininit): Support ofm in {,e}upTeX.
