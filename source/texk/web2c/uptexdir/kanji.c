@@ -8,7 +8,7 @@
 #define CS_TOKEN_FLAG  0x1FFFFFFF
 #define IVS_CHAR_LIMIT  0x4400000
 #define CJK_CHAR_LIMIT  0x1000000
-#define UCS_CHAR_LIMIT   0x120000
+#define LATIN_CHAR_LIMIT   0x2E80
 #define CJK_TOKEN_FLAG   0xFFFFFF
 #define CAT_LEFT_BRACE  1
 #define CAT_DELIM_NUM  15
@@ -26,7 +26,7 @@ boolean check_kanji (integer c)
     c0 = c & CJK_TOKEN_FLAG;
     c1 = XXHi(c);
     if (c1>=CAT_LEFT_BRACE && c1<=CAT_DELIM_NUM &&
-            c0 < UCS_CHAR_LIMIT) {
+            c0 < LATIN_CHAR_LIMIT) { /* kcatcode latin_ucs */
         return is_char_kanji(c0);
     }
     else if (c1>=KCAT_KANJI && c1<=KCAT_MODIFIER) {
@@ -40,12 +40,12 @@ boolean check_kanji (integer c)
 
 boolean is_char_ascii(integer c)
 {
-    return (0 <= c && c < 0x100);
+    return (0 <= c && c < LATIN_CHAR_LIMIT);
 }
 
 boolean is_char_kanji(integer c)
 {
-    if (is_internalUPTEX()) 
+    if (is_internalUPTEX())
         return ((c >= 0)&&(c<IVS_CHAR_LIMIT));
     else
         return iskanji1(Hi(c)) && iskanji2(Lo(c));
