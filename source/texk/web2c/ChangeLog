@@ -1,3 +1,16 @@
+2024-12-01  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (error): do @<Put help message on the transcript file@>
+	before exiting if halt_on_error_p, to be closer to behavior of TeX
+	without -halt-on-error. Suggestion from jfbu:
+	https://tug.org/pipermail/tex-live/2024-July/050741.html
+
+2024-11-24  David Fuchs  <drfuchs@yahoo.com>
+
+	* tex.ch (Initialize the input routines): also initialize
+	buffer[0]:=0 for uninitialized virtex read, in the
+	cases of printing garbage fixed by Kitagawa-san on 2021-07-19.
+
 2024-11-13  Karl Berry  <karl@freefriends.org>
 
 	* mf.ch (Calculate integers $\alpha$...): comment out erroneous
