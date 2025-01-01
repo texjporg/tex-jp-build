@@ -285,8 +285,6 @@ if (isinternalUPTEX) then begin
   @+@t\1@>for k:=@"115 to @"118 do kcat_code(k):=kana; { Kana Extended-B .. Small Kana Extension }
   @+@t\1@>for k:=@"145 to @"14F do kcat_code(k):=kanji; { CJK Unified Ideographs Extension B .. J }
   @t\hskip10pt@>kcat_code(@"15B):=modifier; { Variation Selectors Supplement }
-  @+@t\1@>for k:=@"170 to @"171 do kcat_code(k):=kana; { Kana with (Semi-)Voiced Sound Mark }
-  @t\hskip10pt@>kcat_code(@"175):=kanji; { Standardized Variation Sequence }
   @+@t\1@>for k:=@"177 to @"178 do kcat_code(k):=kanji; { Ideographic Variation Sequence }
   @+@t\1@>for k:=@"1F9 to @"1FC do kcat_code(k):=modifier;
     { Combining Katakana-Hiragana (Semi-)Voiced Sound Mark .. Emoji Modifier Fitzpatrick }
@@ -302,6 +300,10 @@ end else begin
   { $\.{@@"20}+|k| = |kcatcodekey|(|fromKUTEN|(|HILO|(k,1))$ }
   @+@t\1@>for k:=16 to 94 do kcat_code(@"A0+k):=kanji; {2 men 16 ku ... 94 ku}
 end;
+@+@t\1@>for k:=@"15F to @"162 do kcat_code(k):=kanji; { for japanese-otf, japanese-otf-uptex }
+@+@t\1@>for k:=@"170 to @"171 do kcat_code(k):=kana; { Kana with (Semi-)Voiced Sound Mark }
+@t\hskip10pt@>kcat_code(@"175):=kanji; { Standardized Variation Sequence }
+@+@t\1@>for k:=@"177 to @"178 do kcat_code(k):=kanji; { Ideographic Variation Sequence }
 @z
 
 @x l.5897 - upTeX

@@ -8,7 +8,7 @@
 #define CS_TOKEN_FLAG  0x1FFFFFFF
 #define IVS_CHAR_LIMIT  0x4400000
 #define CJK_CHAR_LIMIT  0x1000000
-#define UCS_CHAR_LIMIT   0x120000
+#define UCS_CHAR_LIMIT   0x110000
 #define CJK_TOKEN_FLAG   0xFFFFFF
 #define CAT_LEFT_BRACE  1
 #define CAT_DELIM_NUM  15
@@ -48,7 +48,8 @@ boolean is_char_kanji(integer c)
     if (is_internalUPTEX())
         return ((c >= 0)&&(c<IVS_CHAR_LIMIT));
     else
-        return iskanji1(Hi(c)) && iskanji2(Lo(c));
+        return ((iskanji1(Hi(c)) && iskanji2(Lo(c))) ||
+                (UCS_CHAR_LIMIT<=c && c<IVS_CHAR_LIMIT));
 }
 
 boolean ismultiprn(integer c)
@@ -523,7 +524,7 @@ binary_search (long x, long *a, int left, int right)
 integer kcatcodekey(integer c)
 {
     integer block;
-    if (is_internalUPTEX()) {
+    if (is_internalUPTEX() || (UCS_CHAR_LIMIT<=c && c<IVS_CHAR_LIMIT)) {
         block = binary_search((long)c, ucs_range, 0, NUCS_RANGE-1);
         switch (block) {
         case 0x01:         /* Block : Latin-1 Supplement */
