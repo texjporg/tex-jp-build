@@ -105,7 +105,7 @@ euptex_tests = \
 	euptexdir/euptex-prntknj.test \
 	euptexdir/euptex-kinsoku.test \
 	euptexdir/euptex-ofm.test euptexdir/euptex-prim.test \
-	euptexdir/euptex-ucs.test
+	euptexdir/euptex-ucs.test euptexdir/euptex-widow.test
 euptexdir/euptriptest.log euptexdir/eptriptest.log: \
 	euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 euptexdir/pdfprimitive.log: euptex$(EXEEXT)
@@ -114,7 +114,7 @@ euptexdir/eupver.log euptexdir/upkcat.log \
 	euptexdir/euptex-ctrlsym.log euptexdir/euptex-prntknj.log \
 	euptexdir/euptex-kinsoku.log \
 	euptexdir/euptex-ofm.log euptexdir/euptex-prim.log \
-	euptexdir/euptex-ucs.log: euptex$(EXEEXT)
+	euptexdir/euptex-ucs.log euptexdir/euptex-widow.log: euptex$(EXEEXT)
 
 EXTRA_DIST += $(euptex_tests)
 

@@ -4561,7 +4561,8 @@ uptex_tests = \
 	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test \
 	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test \
-	uptexdir/uptex-lmr.test uptexdir/uptex-noto.test
+	uptexdir/uptex-lmr.test uptexdir/uptex-noto.test \
+	uptexdir/uptex-widow.test
 
 # uppPLtoTF/upTFtoPL
 upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
@@ -4629,7 +4630,7 @@ euptex_tests = \
 	euptexdir/euptex-prntknj.test \
 	euptexdir/euptex-kinsoku.test \
 	euptexdir/euptex-ofm.test euptexdir/euptex-prim.test \
-	euptexdir/euptex-ucs.test
+	euptexdir/euptex-ucs.test euptexdir/euptex-widow.test
 
 
 # At the moment, these are the only man pages handled in the
@@ -22140,7 +22141,8 @@ uptexdir/uptriptest.log uptexdir/ptriptest.log: \
 uptexdir/upver.log uptexdir/upkcat.log \
 	uptexdir/wcfname.log uptexdir/wcfname0.log \
 	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log \
-	uptexdir/uptex-lmr.log uptexdir/uptex-noto.log: uptex$(EXEEXT)
+	uptexdir/uptex-lmr.log uptexdir/uptex-noto.log \
+	uptexdir/uptex-widow.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)
@@ -22191,7 +22193,7 @@ euptexdir/eupver.log euptexdir/upkcat.log \
 	euptexdir/euptex-ctrlsym.log euptexdir/euptex-prntknj.log \
 	euptexdir/euptex-kinsoku.log \
 	euptexdir/euptex-ofm.log euptexdir/euptex-prim.log \
-	euptexdir/euptex-ucs.log: euptex$(EXEEXT)
+	euptexdir/euptex-ucs.log euptexdir/euptex-widow.log: euptex$(EXEEXT)
 
 euptrip.diffs: euptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@
