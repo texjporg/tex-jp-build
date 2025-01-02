@@ -5311,6 +5311,8 @@ nodist_libluaffi_a_SOURCES = $(libluaffi_sources)
 #nodist_liblua53ffi_a_SOURCES = $(libluaffi_sources)
 libluaffi_sources = \
 	luatexdir/luaffi/call_arm.h \
+	luatexdir/luaffi/call_arm64.h \
+	luatexdir/luaffi/call_arm_hf.h \
 	luatexdir/luaffi/call.c \
 	luatexdir/luaffi/call_x64.h \
 	luatexdir/luaffi/call_x64win.h \
