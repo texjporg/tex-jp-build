@@ -285,6 +285,9 @@ DISTCLEANFILES += up-lmr*.*
 ## uptexdir/uptex-noto.test
 EXTRA_DIST += uptexdir/tests/noto1.tex uptexdir/tests/up-noto1.log
 DISTCLEANFILES += up-noto*.*
+## uptexdir/uptex-widow.test
+EXTRA_DIST += uptexdir/tests/jchwidow.tex uptexdir/tests/up-jchwidow.log
+DISTCLEANFILES += up-jchwidow.*
 
 uptrip.diffs: uptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)
 	$(triptrap_diffs) $@

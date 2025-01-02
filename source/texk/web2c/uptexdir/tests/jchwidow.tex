@@ -27,10 +27,13 @@
 
 \TEST{す。}
 \TEST{す\char\kuten"0103}
+\ifx\kchar\undefined\else
 \TEST{す\kchar\kuten"0103}
+\fi
 
 \TEST{\char\kuten"0419。}
 \TEST{\char\kuten"0419\char\kuten"0103}
+\ifx\kchar\undefined\else
 \TEST{\char\kuten"0419\kchar\kuten"0103}
 
 \kchardef\KR=`す
@@ -38,8 +41,10 @@
 \TEST{\kchar\kuten"0419。}
 \TEST{\kchar\kuten"0419\char\kuten"0103}
 \TEST{\kchar\kuten"0419\kchar\kuten"0103}
+\fi
 
 {\kcatcode`α=15
+\ifx\kchar\undefined\else
   \message{KCHAR"3B1, kcatcode=15}
   \def\S{\kchar"03B1}
   \TEST{い\kchar"03B1。}
@@ -48,6 +53,7 @@
   \TEST{\vrule\kchar"03B1。}
   \TEST{b\kchar"03B1。}
   \TEST{い\S。}
+\fi
 
   \message{CHAR"3B1, kcatcode=15}
   \def\S{\char"03B1}
@@ -58,14 +64,16 @@
   \TEST{b\char"03B1。}
   \TEST{い\S。}
 
+\ifx\kchardef\undefined\else
   \message{KCHARDEF"3B1, kcatcode=15}
-  \chardef\KA="3B1
+  \kchardef\KA="3B1
   \TEST{い\KA 。}
   \TEST{\KA 。}
   \TEST{\relax\KA 。}
   \TEST{\vrule\KA 。}
   \TEST{b\KA 。}
   \TEST{い\S。}
+\fi
 
   \message{CHARDEF"3B1, kcatcode=15}
   \chardef\CA="3B1

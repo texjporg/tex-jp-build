@@ -209,7 +209,7 @@ l.29 \TEST{す\char\kuten"0103}
 ! OK.
 <to be read again> 
                    }
-l.30 \TEST{す\kchar\kuten"0103}
+l.31 \TEST{す\kchar\kuten"0103}
                                 
 
 > \box0=
@@ -232,7 +232,7 @@ l.30 \TEST{す\kchar\kuten"0103}
 ! OK.
 <to be read again> 
                    }
-l.32 \TEST{\char\kuten"0419。}
+l.34 \TEST{\char\kuten"0419。}
                                
 
 > \box0=
@@ -255,7 +255,7 @@ l.32 \TEST{\char\kuten"0419。}
 ! OK.
 <to be read again> 
                    }
-l.33 \TEST{\char\kuten"0419\char\kuten"0103}
+l.35 \TEST{\char\kuten"0419\char\kuten"0103}
                                             
 
 > \box0=
@@ -278,7 +278,7 @@ l.33 \TEST{\char\kuten"0419\char\kuten"0103}
 ! OK.
 <to be read again> 
                    }
-l.34 \TEST{\char\kuten"0419\kchar\kuten"0103}
+l.37 \TEST{\char\kuten"0419\kchar\kuten"0103}
                                              
 
 > \box0=
@@ -301,7 +301,7 @@ l.34 \TEST{\char\kuten"0419\kchar\kuten"0103}
 ! OK.
 <to be read again> 
                    }
-l.37 \TEST{\KR。}
+l.40 \TEST{\KR。}
                   
 
 > \box0=
@@ -324,7 +324,7 @@ l.37 \TEST{\KR。}
 ! OK.
 <to be read again> 
                    }
-l.38 \TEST{\kchar\kuten"0419。}
+l.41 \TEST{\kchar\kuten"0419。}
                                 
 
 > \box0=
@@ -347,7 +347,7 @@ l.38 \TEST{\kchar\kuten"0419。}
 ! OK.
 <to be read again> 
                    }
-l.39 \TEST{\kchar\kuten"0419\char\kuten"0103}
+l.42 \TEST{\kchar\kuten"0419\char\kuten"0103}
                                              
 
 > \box0=
@@ -370,7 +370,7 @@ l.39 \TEST{\kchar\kuten"0419\char\kuten"0103}
 ! OK.
 <to be read again> 
                    }
-l.40 \TEST{\kchar\kuten"0419\kchar\kuten"0103}
+l.43 \TEST{\kchar\kuten"0419\kchar\kuten"0103}
                                               
 
 KCHAR"3B1, kcatcode=15
@@ -394,7 +394,7 @@ KCHAR"3B1, kcatcode=15
 ! OK.
 <to be read again> 
                    }
-l.45   \TEST{い\kchar"03B1。}
+l.50   \TEST{い\kchar"03B1。}
                                
 
 > \box0=
@@ -416,7 +416,7 @@ l.45   \TEST{い\kchar"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.46   \TEST{\kchar"03B1。}
+l.51   \TEST{\kchar"03B1。}
                             
 
 > \box0=
@@ -438,7 +438,7 @@ l.46   \TEST{\kchar"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.47   \TEST{\relax\kchar"03B1。}
+l.52   \TEST{\relax\kchar"03B1。}
                                   
 
 > \box0=
@@ -461,7 +461,7 @@ l.47   \TEST{\relax\kchar"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.48   \TEST{\vrule\kchar"03B1。}
+l.53   \TEST{\vrule\kchar"03B1。}
                                   
 
 > \box0=
@@ -486,7 +486,7 @@ l.48   \TEST{\vrule\kchar"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.49   \TEST{b\kchar"03B1。}
+l.54   \TEST{b\kchar"03B1。}
                              
 
 > \box0=
@@ -509,7 +509,7 @@ l.49   \TEST{b\kchar"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.50   \TEST{い\S。}
+l.55   \TEST{い\S。}
                       
 
 CHAR"3B1, kcatcode=15
@@ -533,7 +533,7 @@ CHAR"3B1, kcatcode=15
 ! OK.
 <to be read again> 
                    }
-l.54   \TEST{い\char"03B1。}
+l.60   \TEST{い\char"03B1。}
                               
 
 > \box0=
@@ -555,7 +555,7 @@ l.54   \TEST{い\char"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.55   \TEST{\char"03B1。}
+l.61   \TEST{\char"03B1。}
                            
 
 > \box0=
@@ -577,7 +577,7 @@ l.55   \TEST{\char"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.56   \TEST{\relax\char"03B1。}
+l.62   \TEST{\relax\char"03B1。}
                                  
 
 > \box0=
@@ -600,7 +600,7 @@ l.56   \TEST{\relax\char"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.57   \TEST{\vrule\char"03B1。}
+l.63   \TEST{\vrule\char"03B1。}
                                  
 
 > \box0=
@@ -625,7 +625,7 @@ l.57   \TEST{\vrule\char"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.58   \TEST{b\char"03B1。}
+l.64   \TEST{b\char"03B1。}
                             
 
 > \box0=
@@ -648,7 +648,7 @@ l.58   \TEST{b\char"03B1。}
 ! OK.
 <to be read again> 
                    }
-l.59   \TEST{い\S。}
+l.65   \TEST{い\S。}
                       
 
 KCHARDEF"3B1, kcatcode=15
@@ -672,7 +672,7 @@ KCHARDEF"3B1, kcatcode=15
 ! OK.
 <to be read again> 
                    }
-l.63   \TEST{い\KA 。}
+l.70   \TEST{い\KA 。}
                         
 
 > \box0=
@@ -694,7 +694,7 @@ l.63   \TEST{い\KA 。}
 ! OK.
 <to be read again> 
                    }
-l.64   \TEST{\KA 。}
+l.71   \TEST{\KA 。}
                      
 
 > \box0=
@@ -716,7 +716,7 @@ l.64   \TEST{\KA 。}
 ! OK.
 <to be read again> 
                    }
-l.65   \TEST{\relax\KA 。}
+l.72   \TEST{\relax\KA 。}
                            
 
 > \box0=
@@ -739,7 +739,7 @@ l.65   \TEST{\relax\KA 。}
 ! OK.
 <to be read again> 
                    }
-l.66   \TEST{\vrule\KA 。}
+l.73   \TEST{\vrule\KA 。}
                            
 
 > \box0=
@@ -764,7 +764,7 @@ l.66   \TEST{\vrule\KA 。}
 ! OK.
 <to be read again> 
                    }
-l.67   \TEST{b\KA 。}
+l.74   \TEST{b\KA 。}
                       
 
 > \box0=
@@ -787,7 +787,7 @@ l.67   \TEST{b\KA 。}
 ! OK.
 <to be read again> 
                    }
-l.68   \TEST{い\S。}
+l.75   \TEST{い\S。}
                       
 
 CHARDEF"3B1, kcatcode=15
@@ -811,7 +811,7 @@ CHARDEF"3B1, kcatcode=15
 ! OK.
 <to be read again> 
                    }
-l.72   \TEST{い\CA 。}
+l.80   \TEST{い\CA 。}
                         
 
 > \box0=
@@ -833,7 +833,7 @@ l.72   \TEST{い\CA 。}
 ! OK.
 <to be read again> 
                    }
-l.73   \TEST{\CA 。}
+l.81   \TEST{\CA 。}
                      
 
 > \box0=
@@ -855,7 +855,7 @@ l.73   \TEST{\CA 。}
 ! OK.
 <to be read again> 
                    }
-l.74   \TEST{\relax\CA 。}
+l.82   \TEST{\relax\CA 。}
                            
 
 > \box0=
@@ -878,7 +878,7 @@ l.74   \TEST{\relax\CA 。}
 ! OK.
 <to be read again> 
                    }
-l.75   \TEST{\vrule\CA 。}
+l.83   \TEST{\vrule\CA 。}
                            
 
 > \box0=
@@ -903,7 +903,7 @@ l.75   \TEST{\vrule\CA 。}
 ! OK.
 <to be read again> 
                    }
-l.76   \TEST{b\CA 。}
+l.84   \TEST{b\CA 。}
                       
 
  )
