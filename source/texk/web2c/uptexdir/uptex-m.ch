@@ -49,6 +49,7 @@
 % (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
 % (2023-09-16) TTK  upTeX u1.30
 % (2024-09-30) TTK  upTeX u1.35
+% (2025-01-02) TTK  Accept upTeX internal encoding also in internal encoding EUC/SJIS.
 
 @x
 \def\pTeX{p\kern-.15em\TeX}

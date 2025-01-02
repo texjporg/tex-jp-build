@@ -1,6 +1,6 @@
 #! /bin/sh -vx
 # $Id$
-# Copyright 2022 TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+# Copyright 2022-2025 TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 # You may freely use, modify and/or distribute this file.
 
 BinDir=${BinDir:-.}
