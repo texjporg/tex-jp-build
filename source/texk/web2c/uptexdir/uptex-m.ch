@@ -530,6 +530,16 @@ left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
 @z
 
 @x
+@d chr_cmd(#)==begin print(#); print_ASCII(chr_code);
+  end
+@y
+@d chr_cmd(#)==begin print(#);
+   if chr_code < @"100 then print_ASCII(chr_code)
+   else print_kanji(chr_code);
+  end
+@z
+
+@x
 kanji,kana,other_kchar: begin print("kanji character ");
 @y
 kanji,kana,other_kchar,hangul,modifier: begin print("kanji character ");
