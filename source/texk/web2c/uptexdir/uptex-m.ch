@@ -495,6 +495,18 @@ kchar_num: print_esc("kchar");
 @z
 
 @x
+procedure show_token_list(@!p,@!q:integer;@!l:integer);
+label exit;
+var m,@!c:integer; {pieces of a token}
+@!match_chr:ASCII_code; {character used in a `|match|'}
+@y
+procedure show_token_list(@!p,@!q:integer;@!l:integer);
+label exit;
+var m,@!c:integer; {pieces of a token}
+@!match_chr:0..max_latin_val; {character used in a `|match|'}
+@z
+
+@x
   if check_kanji(info(p)) then {|wchar_token|}
     begin m:=kcat_code(kcatcodekey(info(p))); c:=info(p);
     end
@@ -520,13 +532,40 @@ case m of
 kanji,kana,other_kchar: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
   letter,other_char: print(c);
+mac_param: begin print(c); print(c);
+  end;
+out_param: begin print(match_chr);
+  if c<=9 then print_char(c+"0")
+  else  begin print_char("!"); return;
+    end;
+  end;
+match: begin match_chr:=c; print(c); incr(n); print_char(n);
+  if n>"9" then return;
+  end;
 @y
 @<Display the token ...@>=
 case m of
 kanji,kana,other_kchar,hangul,modifier: print_kanji(KANJI(c));
 left_brace,right_brace,math_shift,tab_mark,sup_mark,sub_mark,spacer,
-  letter,other_char: if (check_echar_range(c)=1)or((c>255)and(c<max_latin_val))
+  letter,other_char: if (check_echar_range(c)=1)or(check_mchar_range(c))
     then print_kanji(KANJI(c)) else print(c);
+mac_param: begin if (check_echar_range(c)=1)or(check_mchar_range(c))
+    then begin print_kanji(KANJI(c)); print_kanji(KANJI(c)); end
+    else begin print(c); print(c); end
+  end;
+out_param: begin
+  if (check_echar_range(match_chr)=1)or(check_mchar_range(match_chr))
+    then print_kanji(KANJI(match_chr)) else print(match_chr);
+  if c<=9 then print_char(c+"0")
+  else  begin print_char("!"); return;
+    end;
+  end;
+match: begin match_chr:=c;
+  if (check_echar_range(c)=1)or(check_mchar_range(c))
+    then print_kanji(KANJI(c)) else print(c);
+  incr(n); print_char(n);
+  if n>"9" then return;
+  end;
 @z
 
 @x
@@ -2608,4 +2647,11 @@ if (c>127)and(c<max_latin_val)and(kcat_code(kcatcodekey(c))=latin_ucs)then
 else if (c>=0)and(c<256)then
   check_echar_range:=2
 else check_echar_range:=0;
+end;
+
+function check_mchar_range(@!c:integer):integer;
+begin
+if (c>255)and(c<max_latin_val)then
+  check_mchar_range:=1
+else check_mchar_range:=0;
 @z
