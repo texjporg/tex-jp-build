@@ -4565,8 +4565,8 @@ uptex_tests = \
 	uptexdir/upkcat.test \
 	uptexdir/wcfname.test uptexdir/wcfname0.test \
 	uptexdir/uptex-ofm.test uptexdir/uptex-prim.test \
-	uptexdir/uptex-lmr.test uptexdir/uptex-noto.test \
-	uptexdir/uptex-widow.test
+	uptexdir/uptex-lmr.test uptexdir/uptex-cat.test \
+	uptexdir/uptex-noto.test uptexdir/uptex-widow.test
 
 # uppPLtoTF/upTFtoPL
 upweb_tests = uptexdir/upbibtex.test uptexdir/updvitype.test \
@@ -5311,8 +5311,6 @@ nodist_libluaffi_a_SOURCES = $(libluaffi_sources)
 #nodist_liblua53ffi_a_SOURCES = $(libluaffi_sources)
 libluaffi_sources = \
 	luatexdir/luaffi/call_arm.h \
-	luatexdir/luaffi/call_arm64.h \
-	luatexdir/luaffi/call_arm_hf.h \
 	luatexdir/luaffi/call.c \
 	luatexdir/luaffi/call_x64.h \
 	luatexdir/luaffi/call_x64win.h \
@@ -5613,7 +5611,8 @@ aleph_ch_srcs = \
 # Aleph Tests
 #
 aleph_tests = alephdir/aleph.test \
-	alephdir/aleph-ofm.test alephdir/aleph-lmr.test
+	alephdir/aleph-ofm.test alephdir/aleph-lmr.test \
+	alephdir/aleph-cat.test
 
 synctex_SOURCES = \
 	synctexdir/synctex_main.c
@@ -21823,7 +21822,7 @@ mfluajittrap.diffs: mfluajit$(EXEEXT) gftype$(EXEEXT) tftopl$(EXEEXT)
 mfluajittrap-clean:
 	rm -rf mfluajittrapdir
 
-$(libmfluajitlpeg_a_OBJECTS): $(LUAJIT_DEPEND)
+$(libmfluajitlpeg_a_OBJECTS): $(LUA_DEPEND)
 
 .PHONY: install-mpost-links uninstall-mpost-links
 @WIN32_TRUE@install-mpost-links: call_mpost$(EXEEXT)
@@ -22148,7 +22147,7 @@ uptexdir/upver.log uptexdir/upkcat.log \
 	uptexdir/wcfname.log uptexdir/wcfname0.log \
 	uptexdir/uptex-ofm.log uptexdir/uptex-prim.log \
 	uptexdir/uptex-lmr.log uptexdir/uptex-noto.log \
-	uptexdir/uptex-widow.log: uptex$(EXEEXT)
+	uptexdir/uptex-cat.log uptexdir/uptex-widow.log: uptex$(EXEEXT)
 uptexdir/upbibtex.log: upbibtex$(EXEEXT)
 uptexdir/updvitype.log: updvitype$(EXEEXT)
 uptexdir/uppltotf.log: uppltotf$(EXEEXT)
@@ -22530,6 +22529,7 @@ aleph.ch: tie$(EXEEXT) aleph.web $(aleph_ch_srcs)
 	$(tie_c) aleph.web $(aleph_ch_srcs)
 alephdir/aleph.log \
 	alephdir/aleph-ofm.log alephdir/aleph-lmr.log \
+	alephdir/aleph-cat.log \
 	: aleph$(EXEEXT)
 
 # (end of aleph.am)
