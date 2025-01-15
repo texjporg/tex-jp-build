@@ -833,8 +833,10 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
+  else if (cur_cmd=latin_ucs) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
+  else if (check_echar_range(cur_chr)=1) then
+      cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -874,8 +876,10 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
+  else if (cur_cmd=latin_ucs) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
+  else if (check_echar_range(cur_chr)=1) then
+      cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
@@ -889,8 +893,10 @@ if cat=other_kchar then k:=k-multilenbuffchar(cur_chr)+1; {now |k| points to fir
       cur_tok:=(kanji_ivs*max_cjk_val)+cur_chr
     else
       cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
-  else if (cur_cmd=latin_ucs)or(check_echar_range(cur_chr)=1) then
+  else if (cur_cmd=latin_ucs) then
       cur_tok:=(cat_code(cur_chr)*max_cjk_val)+cur_chr
+  else if (check_echar_range(cur_chr)=1) then
+      cur_tok:=(cur_cmd*max_cjk_val)+cur_chr
   else cur_tok:=(cur_cmd*max_char_val)+cur_chr
 @z
 
