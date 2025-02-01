@@ -3,7 +3,7 @@
 	* suppresserrors.ch: Add \ignoreprimitiveerror
 	as in pdfTeX and XeTeX.
 	* eptex_version.h, eptex.ech:
-	Bump version to 240930.
+	Bump version to 250202.
 
 2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
