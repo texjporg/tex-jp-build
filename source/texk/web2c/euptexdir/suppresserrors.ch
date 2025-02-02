@@ -56,7 +56,7 @@ end;
 @d suppress_long_error_code=etex_int_base+10
 @d suppress_outer_error_code=etex_int_base+11
 @d suppress_mathpar_error_code=etex_int_base+12
-@d ignore_primitive_error_code=etex_int_base+13 {ignore some primitive/engine errors} 
+@d ignore_primitive_error_code=etex_int_base+13 {ignore some primitive/engine errors}
 @d eTeX_state_code=etex_int_base+14 {\eTeX\ state variables}
 @z
 
@@ -140,7 +140,7 @@ if cur_tok=par_token then if long_state<>long_call then
         ("shrinkable glue, e.g., `\vss' or `\vskip 0pt minus 1fil'.")@/
         ("Such glue doesn't belong there; but you can safely proceed,")@/
         ("since the offensive shrinkability has been made finite.");
-      error; 
+      error;
     end;
     r:=new_spec(q); shrink_order(r):=normal; delete_glue_ref(q);
 @z
