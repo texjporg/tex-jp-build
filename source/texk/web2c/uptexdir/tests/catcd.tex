@@ -97,12 +97,11 @@
   ddd ô eee ô fff \cr
   ggg Ą hhh Ą iii \cr}
 
-% (e)uptex makes erros for following.
-\ifx\kcatcode\undefined\else\end\fi
-
 % catcode 6 : macro parameter character
 \catcode"F5=6  % õ
 \catcode"105=6 % ą
+\def\oWz#1{o{#1}z}\relax
+\oWz{r}
 \def\oXzõ1{o{õ1}z}\relax
 \oXz{r}
 \def\oYzą1{o{ą1}z}\relax
