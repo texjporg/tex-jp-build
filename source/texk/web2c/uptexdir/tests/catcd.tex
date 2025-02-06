@@ -7,6 +7,7 @@
 % for (e)upTeX
   \kcatcode"C0=14  % Latin-1 Supplement
   \kcatcode"100=14 % Latin Extended-A
+  \kcatcode"1E00=14 % Latin Extended Additional
 \fi
 \ifx\ocp\undefined\else
 % for aleph
@@ -56,6 +57,26 @@
 \immediate\write16{\meaning Ĉ.}% the letter
 \immediate\write16{\meaning ĉ.}% the characer
 
+% Latin Extended Additional
+\catcode"1E01=1
+\catcode"1E02=2
+\catcode"1E03=3
+\catcode"1E04=4
+\catcode"1E05=6
+\catcode"1E06=7
+\catcode"1E07=8
+\catcode"1E08=11
+\catcode"1E09=12
+\immediate\write16{\meaning ḁ; % begin-group character
+                   \meaning Ḃ.}% end-group character
+\immediate\write16{\meaning ḃ.}% math shift character
+\immediate\write16{\meaning Ḅ.}% alignment tab character
+\immediate\write16{\meaning ḅ.}% macro parameter character
+\immediate\write16{\meaning Ḇ.}% superscript character
+\immediate\write16{\meaning ḇ.}% subscript character
+\immediate\write16{\meaning Ḉ.}% the letter
+\immediate\write16{\meaning ḉ.}% the characer
+
 
 % catcode 1,2 : begin-group, end-group character
 \catcode"F2=1  % ò
@@ -100,12 +121,15 @@
 % catcode 6 : macro parameter character
 \catcode"F5=6  % õ
 \catcode"105=6 % ą
+\catcode"1E00=6 % Ḁ
 \def\oWz#1{o{#1}z}\relax
 \oWz{r}
 \def\oXzõ1{o{õ1}z}\relax
 \oXz{r}
 \def\oYzą1{o{ą1}z}\relax
 \oYz{r}
+\def\oZzḀ1{o{Ḁ1}z}\relax
+\oZz{r}
 
 \end
 
