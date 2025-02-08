@@ -25,6 +25,9 @@ Section 1.
   \pdfpageheight=\pageheight \advance\pdfpageheight by 5cm
   \ifpdflua \pdfhorigin=1cm \pdfvorigin=1cm
   \else \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
+  \def\startpdf{\def\pagemode{/PageMode /UseOutlines}
+    \ifpdflua\pdfcatalog{\pagemode}
+    \else\special{pdf: docview << \pagemode >>}\fi}
 \fi
 
 @** Introduction.
@@ -260,6 +263,14 @@ Section 25.
 @-p@>
 @-no_xref@>
 @$no_xref {CTWILL}25 =$\R\\{make\_xrefs}$@>
+@z
+
+Section 27.
+
+@x
+        while (q->num>section_xref_switch) {r=q; q=q->xlink;}
+@y
+        while (q->num>section_xref_switch) {@+r=q; q=q->xlink;@+}
 @z
 
 Section 36.
@@ -514,6 +525,18 @@ Section 80.
 @y
 @ Finally, when the \TEX/ and definition parts have been treated, we have
 \hfil\break|next_control>=begin_C|.
+@z
+
+Section 82.
+
+@x
+  if (p) {
+@y
+  @+ if (!p) return;
+@z
+@x
+  }
+@y
 @z
 
 Section 86.
@@ -1311,9 +1334,21 @@ scrap_pointer p)
 Section 141.
 
 @x
+  xref_pointer q=(xref_pointer)p->xref; /* pointer to cross-reference being examined */
+@y
+  @+ xref_pointer q=(xref_pointer)p->xref; /* pointer to cross-reference being examined */
+@z
+@x
   while (q != xmem) {
 @y
   while (q != xmem) { @+
+@z
+@x
+    else if (m==n+def_flag) {
+        q->num=m; return;
+@y
+    else if (m==n+def_flag) { @+
+        q->num=m; return; @+
 @z
 
 Section 143.
@@ -1413,6 +1448,31 @@ Section 197.
 @y
 @r @ Now here's the |reduce| procedure used in our code for productions,
 @z
+@x
+  scrap_pointer i; /* pointer into scrap memory */
+@y
+  @+ scrap_pointer i; /* pointer into scrap memory */
+@z
+@x
+  pp--; /* we next say |pp++| */
+@y
+@z
+
+Section 198.
+
+@x
+  switch (k) {
+@y
+  @+ switch (k) {
+@z
+
+Section 199.
+
+@x
+static int tracing=off; /* can be used to show parsing details */
+@y
+@+ static int tracing=off; /* used to show parsing details */
+@z
 
 Section 200.
 
@@ -1423,6 +1483,12 @@ Section 200.
 @-n@>
 @%
 @$n {CTWILL}197 \&{short}@>
+@z
+@x
+}
+@y
+}
+pp--; /* we next say |pp++| */
 @z
 
 Section 202.
