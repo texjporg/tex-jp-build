@@ -424,7 +424,7 @@ static int getestr(char *buff, char *estr)
 	for (i=0,j=0;i<strlen(buff);i++,j++) {
 		/* If a "quote" character is found, it is removed and the
 		   following character is not treated as a special character.
-           If a "quote" character follows an odd number of
+		   If a "quote" character follows an odd number of
 		   consecutive "escape" characters, it is not treated as a
 		   special character and is left as is.
 		   Note that the "escape" characters are not removed.  */
