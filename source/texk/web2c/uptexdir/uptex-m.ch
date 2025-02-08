@@ -703,8 +703,8 @@ hangul_code(mid_kanji):
 @x
   begin c:=buffer[loc+1]; @+if c<@'200 then {yes we have an expanded char}
 @y
-  begin if (cur_chr=buffer[loc+1]) and (cur_chr=buffer[loc+2]) and
-           ((loc+6)<=limit) then
+  begin if (isinternalUPTEX) and ((loc+6)<=limit) and
+           (cur_chr=buffer[loc+1]) and (cur_chr=buffer[loc+2]) then
      begin c:=buffer[loc+3]; cc:=buffer[loc+4];
        cd:=buffer[loc+5]; ce:=buffer[loc+6];
        if is_hex(c) and is_hex(cc) and is_hex(cd) and is_hex(ce) then
