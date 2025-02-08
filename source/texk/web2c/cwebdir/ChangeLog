@@ -1,3 +1,23 @@
+2025-02-02  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.ch: Avoid several 'Overfull \vbox'es.
+
+2025-01-29  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/ham.ch: Add line information.
+
+2025-01-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.ch: Don't mess with /PageLabels in CTWILL output.
+
+2025-01-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* texinputs/pdfctwimac.tex: Switch on PDF outlines.
+
+2025-01-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-proofsort: Support multiple definitions of identifiers.
+
 2025-01-01  Andreas Scherer  <https://ascherer.github.io>
 
 	* Makefile,
