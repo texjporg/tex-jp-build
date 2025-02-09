@@ -1505,8 +1505,8 @@ primitive("ptextracingfonts",assign_int,int_base+ptex_tracing_fonts_code);@/
 @d dimen_pars=23 {total number of dimension parameters}
 @d scaled_base=dimen_base+dimen_pars
   {table of 256 user-defined \.{\\dimen} registers}
-@d kinsoku_penalty_base=scaled_base+256 {table of 256 kinsoku registers}
-@d eqtb_size=kinsoku_penalty_base+255 {largest subscript of |eqtb|}
+@d kinsoku_penalty_base=scaled_base+1024 {table of 256 kinsoku registers}
+@d eqtb_size=kinsoku_penalty_base+1023 {largest subscript of |eqtb|}
 @z
 
 @x l.5498 - pTeX: kinsoku, t_baseline_shift, y_baseline_shift
