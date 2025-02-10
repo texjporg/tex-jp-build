@@ -34,7 +34,7 @@ then
        apt-get install -y --no-install-recommends build-essential pkg-config libeigen3-dev libcurl4-openssl-dev libreadline-dev libboost-filesystem-dev flex libglu1-mesa-dev freeglut3-dev libosmesa6-dev libreadline6-dev zlib1g-dev bison libglm-dev libncurses-dev python3 libtirpc-dev
        ;;
      freebsd)
-       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5 eigen readline flex libGLU freeglut libosmesa zlib-ng bison glm ncurses python python3
+       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5 eigen readline flex libGLU freeglut libosmesa zlib-ng bison glm ncurses python python3 libtool
        ;;
      *)
        echo "Unsupported build system: $buildsys" >&2
@@ -62,8 +62,8 @@ case "$arch" in
     export TL_MAKE=gmake
     export CC=gcc
     export CXX=g++
-    #export CFLAGS=-D_NETBSD_SOURCE
-    #export CXXFLAGS='-D_NETBSD_SOURCE -std=c++11'
+    export CFLAGS=-D_NETBSD_SOURCE
+    export CXXFLAGS=-D_NETBSD_SOURCE
     ;;
 esac
 
@@ -71,7 +71,6 @@ esac
 find . -name \*.info -exec touch '{}' \;
 touch ./utils/asymptote/camp.tab.cc
 touch ./utils/asymptote/camp.tab.h
-touch ./utils/asymptote/GUI/pyUIClass/*
 
 cd utils/asymptote
 ./configure --prefix=/tmp/asyinst --enable-static --enable-texlive-build \
