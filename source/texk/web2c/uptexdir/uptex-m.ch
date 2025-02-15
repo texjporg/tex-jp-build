@@ -297,7 +297,8 @@ character(p):=c; lig_ptr(p):=null;
   {table of |max_latin_val| command codes (the ``catcodes'')}
 @d kcat_code_base=cat_code_base+max_latin_val
   {table of 512 command codes for the wchar's catcodes }
-@d auto_xsp_code_base=kcat_code_base+512 {table of 512 auto spacer flag}
+@d auto_xsp_code_base=kcat_code_base+512
+  {table of |max_latin_val| auto spacer flag}
 @d inhibit_xsp_code_base=auto_xsp_code_base+max_latin_val
 @z
 
