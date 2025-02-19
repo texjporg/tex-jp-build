@@ -12,12 +12,10 @@ bin_PROGRAMS += euptex
 if !UPTEX
 bin_links += euptex$(EXEEXT):uptex
 endif !UPTEX
-if !EPTEX
 bin_links += euptex$(EXEEXT):eptex
 if !PTEX
 bin_links += euptex$(EXEEXT):ptex
 endif !PTEX
-endif !EPTEX
 endif EUPTEX
 EXTRA_PROGRAMS += euptex
 
@@ -72,11 +70,11 @@ euptex.ch: tie$(EXEEXT) euptex.web $(euptex_ch_srcs)
 euptex_ch_srcs = \
 	euptexdir/euptex-base.ch \
 	$(euptex_ch_synctex) \
-	eptexdir/fam256.ch \
+	euptexdir/fam256.ch \
 	euptexdir/pdfutils-eup.ch \
-	eptexdir/suppresserrors.ch \
-	eptexdir/unbalanced-braces-eptex.ch \
-	eptexdir/char-warning-eptex.ch \
+	euptexdir/suppresserrors.ch \
+	euptexdir/unbalanced-braces-eptex.ch \
+	euptexdir/char-warning-eptex.ch \
 	tex-binpool.ch
 
 EXTRA_DIST += $(euptex_web_srcs) $(euptex_ch_srcs) euptexdir/euptex.defines
