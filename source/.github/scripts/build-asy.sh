@@ -71,12 +71,13 @@ esac
 find . -name \*.info -exec touch '{}' \;
 touch ./utils/asymptote/camp.tab.cc
 touch ./utils/asymptote/camp.tab.h
+touch ./configure ./Makefile.in
 
 cd utils/asymptote
 ./configure --prefix=/tmp/asyinst --enable-static --enable-texlive-build \
 	--disable-gsl --disable-fftw --disable-lsp --disable-curl
 	LDFLAGS="-static-libgcc -static-libstdc++"
-$TL_MAKE -j2
+$TL_MAKE SIlENT_MAKE= -j2
 
 strip asy
 
