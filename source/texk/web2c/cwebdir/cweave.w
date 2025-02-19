@@ -2,7 +2,7 @@
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
 % It is distributed WITHOUT ANY WARRANTY, express or implied.
-% Version 4.10 --- August 2023
+% Version 4.11 --- December 2023
 
 % Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -32,11 +32,11 @@
 \def\skipxTeX{\\{skip\_\TEX/}}
 \def\copyxTeX{\\{copy\_\TEX/}}
 
-\def\title{CWEAVE (Version 4.10)}
+\def\title{CWEAVE (Version 4.11)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The {\ttitlefont CWEAVE} processor}
   \vskip 15pt
-  \centerline{(Version 4.10)}
+  \centerline{(Version 4.11)}
   \vfill}
 \def\botofcontents{\vfill
 \noindent
@@ -67,7 +67,7 @@ Crusius, and others who have contributed improvements.
 The ``banner line'' defined here should be changed whenever \.{CWEAVE}
 is modified.
 
-@d banner "This is CWEAVE (Version 4.10)"
+@d banner "This is CWEAVE (Version 4.11)"
 
 @c
 @<Include files@>@/
@@ -564,12 +564,9 @@ scanning routines.
 representation by means of the table |ccode|.
 
 @<Private...@>=
-static eight_bits ccode[256]; /* meaning of a char following \.{@@} */
+static eight_bits ccode[256]={ignore}; /* meaning of a char following \.{@@} */
 
-@ @<Set ini...@>= {
-  int c; /* must be |int| so the |for| loop will end */
-  for (c=0; c<256; c++) ccode[c]=ignore;
-}
+@ @<Set ini...@>=
 ccode[' ']=ccode['\t']=ccode['\n']=ccode['\v']=ccode['\r']=ccode['\f']
   =ccode['*']=new_section;
 ccode['@@']='@@'; /* `quoted' at sign */
@@ -1816,6 +1813,10 @@ static char cat_name[256][12]; /* |12==strlen("struct_head")+1| */
     strcpy(cat_name[typedef_like],"typedef");
     strcpy(cat_name[define_like],"define");
     strcpy(cat_name[template_like],"template");
+    strcpy(cat_name[alignas_like],"alignas");
+    strcpy(cat_name[using_like],"using");
+    strcpy(cat_name[default_like],"default");
+    strcpy(cat_name[attr],"attr");
     strcpy(cat_name[ftemplate],"ftemplate");
     strcpy(cat_name[new_exp],"new_exp");
     strcpy(cat_name[begin_arg],"@@["@q]@>);
@@ -1823,10 +1824,6 @@ static char cat_name[256][12]; /* |12==strlen("struct_head")+1| */
     strcpy(cat_name[lbrack],"[");
     strcpy(cat_name[rbrack],"]");
     strcpy(cat_name[attr_head],"attr_head");
-    strcpy(cat_name[attr],"attr");
-    strcpy(cat_name[alignas_like],"alignas");
-    strcpy(cat_name[using_like],"using");
-    strcpy(cat_name[default_like],"default");
     strcpy(cat_name[0],"zero");
 
 @ This code allows \.{CWEAVE} to display its parsing steps.
@@ -2858,7 +2855,8 @@ if (cat1==rbrace) {
   reduce(pp,2,stmt,-1,54);
 }
 else if ((cat1==stmt||cat1==decl||cat1==function) && cat2==rbrace) {
-  big_app(force); big_app1(pp); big_app(indent); big_app(force);
+  big_app(force); big_app1(pp); big_app(indent);
+  big_app(force_first ? force : break_space);
   big_app1(pp+1); big_app(force); big_app(backup); big_app1(pp+2);
   big_app(outdent); big_app(force); reduce(pp,3,stmt,-1,55);
 }
@@ -2920,9 +2918,12 @@ if (cat1==stmt || cat1==exp) {
 
 @ @<Cases for |do_like|@>=
 if (cat1==stmt && cat2==else_like && cat3==semi) {
+  if (!force_lines) big_app(force);
   big_app1(pp); big_app(break_space); app(noop); big_app(cancel);
   big_app1(pp+1); big_app(cancel); app(noop); big_app(break_space);
-  big_app2(pp+2); reduce(pp,4,stmt,-1,69);
+  big_app2(pp+2);
+  if (!force_lines) big_app(force);
+  reduce(pp,4,stmt,-1,69);
 }
 
 @ @<Cases for |case_like|@>=
@@ -2948,12 +2949,15 @@ else if (cat1==stmt||cat1==decl||cat1==function) {
 else if (cat1==rbrace) reduce(pp,0,decl,-1,156);
 
 @ The user can decide at run-time whether short statements should be
-grouped together on the same line.
+grouped together on the same line. Another form of compaction places
+the first line of a `compound statement', a.k.a.\ `block', next to
+the opening curly brace.
 
 @d force_lines flags['f'] /* should each statement be on its own line? */
+@d force_first flags['F'] /* should compound statement start on new line? */
 
 @<Set init...@>=
-force_lines=true;
+force_lines=force_first=true;
 
 @ @<Cases for |stmt|@>=
 if (cat1==stmt || cat1==decl || cat1==function) {
@@ -4576,12 +4580,9 @@ check_complete(); /* was all of the change file used? */
 @ Just before the index comes a list of all the changed sections, including
 the index section itself.
 
-@<Private...@>=
-static sixteen_bits k_section; /* runs through the sections */
-
-@ @<Tell about changed sections@>=
+@<Tell about changed sections@>=
 /* remember that the index is already marked as changed */
-k_section=0;
+sixteen_bits k_section=0; /* runs through the sections */
 while (!changed_section[++k_section]);
 out_str("\\ch ");
 @.\\ch@>
@@ -4602,27 +4603,24 @@ list for character |c| begins at location |bucket[c]| and continues through
 the |blink| array.
 
 @<Private...@>=
-static name_pointer bucket[256];
+static name_pointer bucket[256]={NULL};
 static name_pointer next_name; /* successor of |cur_name| when sorting */
 static name_pointer blink[max_names]; /* links in the buckets */
 
 @ To begin the sorting, we go through all the hash lists and put each entry
 having a nonempty cross-reference list into the proper bucket.
 
-@<Do the first pass...@>= {
-int c;
-for (c=0; c<256; c++) bucket[c]=NULL;
+@<Do the first pass...@>=
 for (hash_ptr=hash; hash_ptr<=hash_end; hash_ptr++) {
   next_name=*hash_ptr;
   while (next_name) {
     cur_name=next_name; next_name=cur_name->link;
     if (cur_name->xref!=(void *)xmem) {
-      c=(cur_name->byte_start)[0];
+      int c=(cur_name->byte_start)[0];
       if (xisupper(c)) c=tolower(c);
       blink[cur_name-name_dir]=bucket[c]; bucket[c]=cur_name;
     }
   }
-}
 }
 
 @ During the sorting phase we shall use the |cat| and |trans| arrays from
@@ -4751,11 +4749,8 @@ while (sort_ptr>scrap_info) {
     cur_name=next_name; next_name=blink[cur_name-name_dir];
     cur_byte=cur_name->byte_start+cur_depth;
     if (cur_byte==(cur_name+1)->byte_start) c=0; /* hit end of the name */
-    else {
-      c=*cur_byte;
-      if (xisupper(c)) c=tolower(c);
-    }
-  blink[cur_name-name_dir]=bucket[c]; bucket[c]=cur_name;
+    else if (xisupper(c=*cur_byte)) c=tolower(c);
+    blink[cur_name-name_dir]=bucket[c]; bucket[c]=cur_name;
   } while (next_name);
   --sort_ptr; unbucket(cur_depth+1);
 }

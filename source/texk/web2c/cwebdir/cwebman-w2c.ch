@@ -100,9 +100,9 @@
 @z
 
 @x
-\vskip 18pt\centerline{(Version 4.11 --- September 2023)}
+\vskip 18pt\centerline{(Version 4.11 --- December 2023)}
 @y
-\vskip 18pt\centerline{(Version 4.11 --- September 2023)%
+\vskip 18pt\centerline{(Version 4.11 --- December 2023)%
 \footnote*{This document describes the extended \.{CWEB} (Version 4.11 [\TeX~Live]).}}
 @z
 
@@ -185,12 +185,20 @@ argument to switch between different user languages and macro packages.
 (Off by default.) (Has no effect on \.{CTANGLE}.)
 \hfil\vskip\normallineskip
 \option o Separate declarations and the first statement in a function block.
-(On by default.) (Has no effect on \.{CTANGLE}.)
+(On by default.) (\.{CWEAVE} only.)
 \hfil\vskip\normallineskip
 \option u Transliteration of UTF-8 multi-byte characters.
 (Off by default.) (Has no effect on \.{CWEAVE}.)}
 
 \yskip
+@z
+
+@x
+\option x Include indexes and a table of contents in the \TEX/ file
+output by \.{CWEAVE}. (On by default.) (Has no effect on \.{CTANGLE}.)
+@y
+\option x Include indexes and a table of contents in the \TEX/ file
+output by \.{CWEAVE}. (On by default.) (\.{CWEAVE} only.)
 @z
 
 @x

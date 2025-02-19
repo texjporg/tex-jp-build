@@ -2,7 +2,7 @@
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
 % It is distributed WITHOUT ANY WARRANTY, express or implied.
-% Version 4.10 --- August 2023
+% Version 4.11 --- December 2023
 
 % Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -27,11 +27,11 @@
 \mathchardef\RA="3221 % right arrow
 \mathchardef\BA="3224 % double arrow
 
-\def\title{CTANGLE (Version 4.10)}
+\def\title{CTANGLE (Version 4.11)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont The {\ttitlefont CTANGLE} processor}
   \vskip 15pt
-  \centerline{(Version 4.10)}
+  \centerline{(Version 4.11)}
   \vfill}
 \def\botofcontents{\vfill
 \noindent
@@ -61,7 +61,7 @@ Joachim Schrod, Lee Wittenberg, and others who have contributed improvements.
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (Version 4.10)"
+@d banner "This is CTANGLE (Version 4.11)"
 
 @c
 @<Include files@>@/
@@ -768,12 +768,9 @@ milestones.
 @d new_section 0312 /* control code for `\.{@@\ }' and `\.{@@*}' */
 
 @<Private...@>=
-static eight_bits ccode[256]; /* meaning of a char following \.{@@} */
+static eight_bits ccode[256]={ignore}; /* meaning of a char following \.{@@} */
 
-@ @<Set ini...@>= {
-  int c; /* must be |int| so the |for| loop will end */
-  for (c=0; c<256; c++) ccode[c]=ignore;
-}
+@ @<Set ini...@>=
 ccode[' ']=ccode['\t']=ccode['\n']=ccode['\v']=ccode['\r']=ccode['\f']
   =ccode['*']=new_section;
 ccode['@@']=(eight_bits)'@@'; ccode['=']=string;

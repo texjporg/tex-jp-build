@@ -17,15 +17,15 @@
 @q Please send comments, suggestions, etc. to tex-k@@tug.org.            @>
 
 @x
-\def\title{CWEAVE (Version 4.10)}
+\def\title{CWEAVE (Version 4.11)}
 @y
-\def\title{CWEAVE (Version 4.10 [\TeX~Live])}
+\def\title{CWEAVE (Version 4.11 [\TeX~Live])}
 @z
 
 @x
-  \centerline{(Version 4.10)}
+  \centerline{(Version 4.11)}
 @y
-  \centerline{(Version 4.10 [\TeX~Live])}
+  \centerline{(Version 4.11 [\TeX~Live])}
 @z
 
 @x
@@ -41,9 +41,9 @@
 @z
 
 @x
-@d banner "This is CWEAVE (Version 4.10)"
+@d banner "This is CWEAVE (Version 4.11)"
 @y
-@d banner "This is CWEAVE, Version 4.10"
+@d banner "This is CWEAVE, Version 4.11"
   /* will be extended by the \TeX~Live |versionstring| */
 @z
 
@@ -603,7 +603,7 @@ improved features that have been created by numerous contributors over the
 course of a quarter century.
 
 Care has been taken to keep the original section numbering intact, so this new
-material should nicely integrate with the original ``\&{271.~Index}.''
+material should nicely integrate with the original ``\&{270.~Index}.''
 
 @* Formatting alternatives.
 \.{CWEAVE} indents declarations after old-style function definitions and

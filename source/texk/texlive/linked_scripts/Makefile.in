@@ -315,6 +315,8 @@ texmf_shell_scripts = \
 	typeoutfileinfo/typeoutfileinfo.sh \
 	wordcount/wordcount.sh
 
+
+# 
 texmf_other_scripts = \
 	a2ping/a2ping.pl \
 	accfonts/mkt1font \
@@ -327,6 +329,7 @@ texmf_other_scripts = \
 	bib2gls/bib2gls.sh \
 	bib2gls/convertgls2bib.sh \
 	bibcop/bibcop.pl \
+	bibtexperllibs/ltx2unitxt \
 	bundledoc/arlatex \
 	bundledoc/bundledoc \
 	cachepic/cachepic.tlu \
@@ -355,6 +358,7 @@ texmf_other_scripts = \
 	dviinfox/dviinfox.pl \
 	easydtx/edtx2dtx.pl \
 	ebong/ebong.py \
+	eolang/eolang.pl \
 	epspdf/epspdf.tlu \
 	epspdf/epspdftk.tcl \
 	epstopdf/epstopdf.pl \
@@ -375,6 +379,7 @@ texmf_other_scripts = \
 	kotex-utils/komkindex.pl \
 	kotex-utils/ttf2kotexfont.pl \
 	l3build/l3build.lua \
+	l3sys-query/l3sys-query.lua \
 	latex-git-log/latex-git-log \
 	latex-papersize/latex-papersize.py \
 	latex2man/latex2man \
@@ -439,6 +444,7 @@ texmf_other_scripts = \
 	sty2dtx/sty2dtx.pl \
 	svn-multi/svn-multi.pl \
 	tex4ebook/tex4ebook \
+	texblend/texblend \
 	texcount/texcount.pl \
 	texdef/texdef.pl \
 	texdiff/texdiff \
@@ -766,7 +772,8 @@ install-data-hook: installdirs-local
 @WIN32_FALSE@	cd $(DESTDIR)$(bindir) && \
 @WIN32_FALSE@	  for s in $(nobase_dist_texmf_scripts_SCRIPTS); do \
 @WIN32_FALSE@	    target=`basename $$s | tr '[A-Z]' '[a-z]'`; \
-@WIN32_FALSE@	    echo "$$s" | grep listings-ext.sh >/dev/null \
+@WIN32_FALSE@	    echo "$$s" | grep 'memoize-.*\.' >/dev/null \
+@WIN32_FALSE@	    || echo "$$s" | grep 'listings-ext.sh' >/dev/null \
 @WIN32_FALSE@	    || target=`echo $$target | sed 's,\.[^/]*$$,,'`; \
 @WIN32_FALSE@	    rm -f $$target; \
 @WIN32_FALSE@	    echo "creating link '$$target' -> '$$REL/texmf-dist/scripts/$$s'"; \
@@ -793,7 +800,8 @@ install-links:
 uninstall-hook:
 	@for s in $(nobase_dist_texmf_scripts_SCRIPTS); do \
 	  target=`basename $$s | tr '[A-Z]' '[a-z]'`; \
-	  echo "$$s" | grep listings-ext.sh >/dev/null \
+	  echo "$$s" | grep 'memoize-.*\.' >/dev/null \
+	  || echo "$$s" | grep 'listings-ext.sh' >/dev/null \
 	  || target=`echo $$target | sed 's,\.[^/]*$$,,'`; \
 	  rm -f $(DESTDIR)$(bindir)/$$target$(WINEXT); \
 	done

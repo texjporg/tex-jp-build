@@ -1,3 +1,84 @@
+2024-03-13  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-mini.ch: Fix page breaks in sections 164 and 173.
+
+2024-03-10  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-hint.ch,
+	* ctwill-mini.ch,
+	* cweave.w,
+	* cweb.1,
+	* cwebman-w2c.ch,
+	* cwebman.tex,
+	* po/de/web2c-help.po,
+	* po/web2c-help.pot,
+	* prod-cweave.w,
+	* prod-twill.w,
+	* prod.w: Add new option '-F' for CWEAVE/CTWILL.
+
+2024-02-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-proofsort: In-place invocation.
+
+2024-01-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* cweave.w,
+	* cwebmac.tex,
+	* prod-cweave.w,
+	* prod-twill.w,
+	* prod.w: Changes for CWEB 4.12 (dev).
+
+2023-12-02  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile,
+	* comm-{mac,mini,ql,w2c}.ch,
+	* comm-w2c.h,
+	* common.h,
+	* common.w,
+	* ctang-{bs,pc,ql,vms,w2c,w32}.ch,
+	* ctangle.c,
+	* ctangle.w,
+	* ctwill-w2c.ch,
+	* cweav-{bs,pc,ql,vms,w2c,w32}.ch,
+	* cweave.w,
+	* cwebman-w2c.ch,
+	* cwebman.tex,
+	* po/cweb-tl.pot,
+	* po/cweb.pot,
+	* po/de/cweb-tl.po,
+	* po/de/cweb.po,
+	* po/it/cweb.po,
+	* prod-{cweave,twill}.w,
+	* prod.w: CWEB 4.11 release.
+
+2023-11-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-hint.ch,
+	* ctwill-mini.ch,
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch,
+	* cweave.w: Make 'k_section' block-local.
+
+2023-11-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* common.c,
+	* common.w,
+	* ctangle.c,
+	* ctangle.w,
+	* ctwill-mini.ch,
+	* cweave.w: Use zero-initialisation.
+
+2023-10-29  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-proofsort,
+	* ctwill.test: Make 'proofsort' like 'refsort'.
+
+2023-10-25  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebmac.tex,
+	* texinputs/pdfctproofmac.tex,
+	* texinputs/pdfctwimac.tex: Bring PDF/HINT macros together.
+
 2023-10-18  Andreas Scherer  <https://ascherer.github.io>
 
 	* cwebmac.tex,

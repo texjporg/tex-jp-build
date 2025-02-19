@@ -2,7 +2,7 @@
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
 % It is distributed WITHOUT ANY WARRANTY, express or implied.
-% Version 4.10 --- August 2023
+% Version 4.11 --- December 2023
 
 % Copyright (C) 1987,1990,1993,2000 Silvio Levy and Donald E. Knuth
 
@@ -22,12 +22,12 @@
 
 \def\v{\char'174} % vertical (|) in typewriter font
 
-\def\title{Common code for CTANGLE and CWEAVE (Version 4.10)}
+\def\title{Common code for CTANGLE and CWEAVE (Version 4.11)}
 \def\topofcontents{\null\vfill
   \centerline{\titlefont Common code for {\ttitlefont CTANGLE} and
     {\ttitlefont CWEAVE}}
   \vskip 15pt
-  \centerline{(Version 4.10)}
+  \centerline{(Version 4.11)}
   \vfill}
 \def\botofcontents{\vfill
 \noindent
@@ -619,14 +619,11 @@ it is inserted into the table.
 @d hash_size 353 /* should be prime */
 
 @<Global var...@>=
-name_pointer hash[hash_size]; /* heads of hash lists */
+name_pointer hash[hash_size]={NULL}; /* heads of hash lists */
 hash_pointer hash_end = hash+hash_size-1; /* end of |hash| */
 hash_pointer hash_ptr; /* index into hash-head array */
 
 @ Initially all the hash lists are empty.
-
-@<Init...@>=
-for (hash_ptr=hash; hash_ptr<=hash_end; *hash_ptr++=NULL) ;
 
 @ Here is the main procedure for finding identifiers:
 
