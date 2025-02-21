@@ -2468,6 +2468,33 @@ set_enable_cjk_token: define(enable_cjk_token_code,data,cur_chr);
 @z
 
 @x
+@<Insert kinsoku penalty@>=
+begin kp:=get_kinsoku_pos(cx,cur_pos);
+if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
+  begin if kinsoku_type(kp)=pre_break_penalty_code then
+    begin if not is_char_node(cur_q)and(type(cur_q)=penalty_node) then
+      penalty(cur_q):=penalty(cur_q)+kinsoku_penalty(kp)
+    else
+      begin main_p:=link(cur_q); link(cur_q):=new_penalty(kinsoku_penalty(kp));
+      subtype(link(cur_q)):=kinsoku_pena; link(link(cur_q)):=main_p;
+      end;
+    end
+@y
+@<Insert kinsoku penalty@>=
+begin kp:=get_kinsoku_pos(cx,cur_pos);
+if kp<>no_entry then if kinsoku_penalty(kp)<>0 then
+  begin if kinsoku_type(kp)=pre_break_penalty_code then
+    begin if not is_char_node(cur_q)and(type(cur_q)=penalty_node) then
+      penalty(cur_q):=penalty(cur_q)+kinsoku_penalty(kp)
+    else
+      begin main_p:=link(cur_q); link(cur_q):=new_penalty(kinsoku_penalty(kp));
+      subtype(link(cur_q)):=kinsoku_pena; link(link(cur_q)):=main_p;
+      info(main_p):=out_param_token+@"FFFE;
+      end;
+    end
+@z
+
+@x
   cx:KANJI_code; {temporary register for KANJI character}
   ax:ASCII_code; {temporary register for ASCII character}
 @y
@@ -2542,6 +2569,18 @@ begin if is_char_node(link(p)) then
           info(main_p):=KANJI(cx)+kcat_code(kcatcodekey(KANJI(cx)))*max_cjk_val;
         ins_kp:=false;
         goto again_2
+        end
+      else if (info(main_p)=out_param_token+@"FFFE) then begin
+        KANJI(cx):=info(cur_q) mod max_cjk_val;
+        if (UVScombinecode(cx,cur_chr)>0) then begin
+          cx:=UVScombinecode(cx,cur_chr);
+          if (kcat_code(kcatcodekey(KANJI(cx)))=kanji)and(cx>=max_cjk_val) then
+            info(cur_q):=KANJI(cx)+kanji_ivs*max_cjk_val
+          else
+            info(cur_q):=KANJI(cx)+kcat_code(kcatcodekey(KANJI(cx)))*max_cjk_val;
+          ins_kp:=false;
+          goto again_2
+          end;
         end
       end;
     if not disp_called then
