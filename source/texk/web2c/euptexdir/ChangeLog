@@ -1,3 +1,54 @@
+2025-02-17  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech: Adjust protected_token.
+	Thanks to Kazuki Maeda and Yukimasa Morimi.
+	https://github.com/texjporg/tex-jp-build/issues/176
+
+2025-02-09  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* suppresserrors.ch: Format \ignoreprimitiveerror printing
+	as in pdfTeX and XeTeX.
+	* kinsoku_table.log, kinsoku_table.tex: No error after
+	increasing inhibit_xsp/kinsoku tables 256 -> 1024.
+
+2025-02-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* euptex-{ofm,prntknj}.test, tests/eup-ofm.{tex,log},
+	tests/pknj-{e,s,u}.log: Update tests.
+
+2025-02-02  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* suppresserrors.ch: Add \ignoreprimitiveerror
+	as in pdfTeX and XeTeX.
+	* eptex_version.h, eptex.ech:
+	Bump version to 250202.
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* am/euptex.am (euptex-pool.c): exit 1 if makecpool failed.
+
+2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upkcat.test: Update tests.
+	* euptex-widow.test, tests/eup-jchwidow.log,
+	am/euptex.am: Add new tests for widow penalty originally
+	written by Kitagawa-san.
+	https://github.com/texjporg/tex-jp-build/issues/103
+	* COPYRIGHT: copyright year.
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech, etex.ch{0,1}, fam256,ch,
+	pdfutils.ch, char-warnings-euptex.ch:
+	Support Latin Unicode and 16bit OFM Level-0.
+	Implement new kcatcode (latin_ucs(14)).
+	* euptex-ofm.test, tests/eup-prim.{tex,log},
+	tests/eup-ofm.{tex,log}, am/euptex.am:
+	Add and update tests.
+	* eptex_version.h, eptex.ech:
+	Bump version to 241020.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
 2024-10-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* euptex-prim.test, tests/eup-prim.{tex,log},

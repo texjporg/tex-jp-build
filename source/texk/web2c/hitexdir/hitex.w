@@ -1813,6 +1813,13 @@ message may be printed.
 @^system dependencies@>
 
 @<Error handling...@>=
+static void print_ignored_err(char *s)
+{@+if (interaction==error_stop_mode) wake_up_terminal;
+  if (filelineerrorstylep) print_file_line(); /* \TeX\ Live */
+  else  print_nl("");
+  print("ignored error: ");print(s);
+}
+
 static void print_err(char *s)
 {@+if (interaction==error_stop_mode) wake_up_terminal;
   if (filelineerrorstylep) print_file_line(); /* \TeX\ Live */
@@ -5192,7 +5199,8 @@ that will be defined later.
 @d saving_vdiscards_code (etex_int_base+5) /*save items discarded from vlists*/
 @d saving_hyph_codes_code (etex_int_base+6) /*save hyphenation codes for languages*/
 @d expand_depth_code (etex_int_base+7) /*maximum depth for expansion---\eTeX*/
-@d eTeX_state_code (etex_int_base+8) /*\eTeX\ state variables*/
+@d ignore_primitive_error_code (etex_int_base+8) /*ignore some primitive/engine errors*/
+@d eTeX_state_code (etex_int_base+9) /*\eTeX\ state variables*/
 @d etex_int_pars (eTeX_state_code+eTeX_states) /*total number of \eTeX's integer parameters*/
 @#
 @d int_pars etex_int_pars /*total number of integer parameters*/
@@ -5268,6 +5276,8 @@ that will be defined later.
 @d saving_vdiscards int_par(saving_vdiscards_code)
 @d saving_hyph_codes int_par(saving_hyph_codes_code)
 @d expand_depth int_par(expand_depth_code)
+@d ignore_primitive_error int_par(ignore_primitive_error_code)
+@d ignore_infinite_glue_shrinkage_bit 1
 
 @<Assign the values |depth_threshold:=show_box_depth|...@>=
 depth_threshold=show_box_depth;
@@ -19777,13 +19787,18 @@ else{@+q=glue_ptr(p);
   active_height[6]=active_height[6]+shrink(q);
   if ((shrink_order(q)!=normal)&&(shrink(q)!=0))
     {@+@t@>@;@/
-    print_err("Infinite glue shrinkage found in box being split");@/
+    if (ignore_primitive_error & ignore_infinite_glue_shrinkage_bit)
+      print_ignored_err("Infinite glue shrinkage found in box being split");@/
+    else{@+
+      print_err("Infinite glue shrinkage found in box being split");@/
 @.Infinite glue shrinkage...@>
     help4("The box you are \\vsplitting contains some infinitely",@/
       "shrinkable glue, e.g., `\\vss' or `\\vskip 0pt minus 1fil'.",@/
       "Such glue doesn't belong there; but you can safely proceed,",@/
       "since the offensive shrinkability has been made finite.");
-    error();r=new_spec(q);shrink_order(r)=normal;delete_glue_ref(q);
+      error();
+    }
+    r=new_spec(q);shrink_order(r)=normal;delete_glue_ref(q);
     glue_ptr(p)=r;q=r;
     }
   }
@@ -26844,6 +26859,8 @@ primitive("savingvdiscards", assign_int, int_base+saving_vdiscards_code);@/
 @!@:saving\_vdiscards\_}{\.{\\savingvdiscards} primitive@>
 primitive("savinghyphcodes", assign_int, int_base+saving_hyph_codes_code);@/
 @!@:saving\_hyph\_codes\_}{\.{\\savinghyphcodes} primitive@>
+primitive("ignoreprimitiveerror", assign_int, int_base+ignore_primitive_error_code);@/
+@!@:ignore\_primitive\_error\_}{\.{\\ignoreprimitiveerror} primitive@>
 
 @ @d every_eof equiv(every_eof_loc)
 
@@ -26858,6 +26875,7 @@ case tracing_scan_tokens_code: print_esc("tracingscantokens");@+break;
 case tracing_nesting_code: print_esc("tracingnesting");@+break;
 case saving_vdiscards_code: print_esc("savingvdiscards");@+break;
 case saving_hyph_codes_code: print_esc("savinghyphcodes");@+break;
+case ignore_primitive_error_code: print_esc("ignoreprimitiveerror");@+break;
 
 @ In order to handle \.{\\everyeof} we need an array |eof_seen| of
 boolean variables.
@@ -33978,8 +33996,8 @@ processing of penalty nodes follows the same pattern we have just seen.
    case penalty_node:
      { int n,i;
        i = penalty(p);
-       if (i>10000) i=10000;
-       else if (i<-10000) i=-10000;
+       if (i>20000) i=20000;
+       else if (i<-20000) i=-20000;
        n=hget_int_no(i);
        if (n<0) tag=hput_int(i);
        else  { HPUT8(n); tag=TAG(penalty_kind,0);}
@@ -35152,7 +35170,9 @@ static int argument_is(struct option *opt, char * s)
 if (ARGUMENT_IS("help")) usage_help();
 else if (ARGUMENT_IS("version")){@+
        printf(banner@, "\n"@/
+#ifdef HINT_VERSION_STRING
               "HINT version "@,HINT_VERSION_STRING@,"\n"@/
+#endif
               "Prote version "@, Prote_version_string@, "\n");
        exit(0);@+
 }

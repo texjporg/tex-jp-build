@@ -1,3 +1,82 @@
+2025-02-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch: Check code range of ^^^^xyzw.
+	Thanks to Takayuki YATO.
+
+2025-02-15  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch: Increase size of auto_xsp_code().
+	Set default catcode of 16bit latin character
+	to other_char(12).
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2025-02-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch, uptex-m.ch:
+	Forgot to increase size of eqtb[] 256 -> 1024, when
+	inhibit_xsp/kinsoku tables were increased 256 -> 1024.
+	(Commit 2022-12-12 r65246-65248 was incomplete, and the
+	fix on commit 2024-09-22 r72333 was incorrect).
+
+2025-02-08  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch: Enable ^^^^xyzw format only when
+	internal encoding is upTeX.
+
+2025-02-07  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch: Enable catcode mac_param(6) for
+	16bit latin character.
+	* tests/catcd.tex, tests/up-cat.log: Update tests.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2025-02-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch: Improve treatment for catcode of
+	16bit latin character.
+	* uptex-cat.test, tests/catcd.tex, tests/up-cat.log,
+	am/uptex.am: Add test for catcode of 16bit latin character.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am (uptex-pool.c): exit 1 if makecpool failed.
+
+2025-01-21  Vincenzo Mantova <vlmantova@gmail.com>
+
+	* configure.ac (bin_links) [UPWEB]: make up...->p... links conditional.
+	https://tug.org/pipermail/tlbuild/2024q2/005555.html
+
+2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* kanji.c, uptex-m.ch:
+	Accept extended upTeX internal encoding also in internal
+	encoding EUC/SJIS (pTeX-compatible mode).
+	Set default kcatcode for japanese-otf-uptex macros
+	to 16 (kanji).
+	* upkcat.test, tests/kcat.tex, tests/upkcat{,-{e,s}}.txt:
+	Update tests.
+	* uptex-widow.test, tests/jchwidow.tex, tests/up-jchwidow.log,
+	am/uptex.am: Add new tests for widow penalty originally
+	written by Kitagawa-san.
+	https://github.com/texjporg/tex-jp-build/issues/103
+	* COPYRIGHT, COPYRIGHT.ja: copyright year.
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, uptex.defines, kanji.{c,h}:
+	Support Latin Unicode and 16bit OFM Level-0.
+	Implement new kcatcode (latin_ucs(14)).
+	* updvitype.ch: Support 16bit OFM Level-0.
+	* uptex-{ofm,lmr,noto}.test, tests/lmr{1,2}.tex,
+	tests/noto1.tex, tests/up-ofm.tex, tests/up-prim.tex,
+	tests/up-lmr{1,2}.log, tests/up-noto1.log,
+	tests/up-ofm.log, tests/up-ofma.typ, tests/up-prim.log,
+	am/uptex.am: Update tests.
+	* uptex-m.ch, upbibtex.ch, uptex_version.h:
+	upTeX version u2.00.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
 2024-10-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* uptex-prim.test, tests/up-prim.{tex,log},

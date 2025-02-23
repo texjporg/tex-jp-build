@@ -58,8 +58,8 @@ class WebReader:
             sys.exit(1)
 
     def next_line(self):
-        """Returns the triple of current part, section and line numbers, as
-        well as the next line. Updates part and section numbers.
+        """Returns the triple of current part, section and line numbers,
+        as well as the next line. Updates part and section numbers.
         """
         if self._pos >= len(self._web_lines):
             return None
@@ -139,8 +139,8 @@ class ChangeReader:
 
     def find_match_in_web(self, web_reader):
         """Find the match for the current change chunk in the WEB file.
-        Returns the part, section, and line number of the first match line in
-        the WEB file.
+        Returns the part, section, and line number of the first match line
+        in the WEB file.
         """
         while True:
             try:
@@ -171,18 +171,21 @@ class ChangeReader:
             new_line = self._lines[self._chunk_start]
 
             new_line = re.sub(
-                    "\\[\\d+\\.\\d+\\]", f"[{part}.{section}]", new_line, 1)
+                    "\\[\\d+\\.\\d+\\]", f"[{part}.{section}]",
+                    new_line, count=1)
             new_line = re.sub(
-                    "^@x \\[\\d+\\]", f"@x [{section}]", new_line, 1)
+                    "^@x \\[\\d+\\]", f"@x [{section}]",
+                    new_line, count=1)
             new_line = re.sub(
-                    "l\\.\\d+", f"l.{line_number}", new_line, 1)
+                    "l\\.\\d+", f"l.{line_number}",
+                    new_line, count=1)
 
             # Force '[part.section] l.line' tag after '@x'; useful for untagged
             # change files, e.g., CWEB's '*-w2c.ch' monsters.
             if opt_handler.init_b:
                 new_line = re.sub(
                         "^@x", f"@x [{part}.{section}] l.{line_number}",
-                        new_line, 1)
+                        new_line, count=1)
 
             ch_line = self._lines[self._chunk_start]
             if new_line[:10] != ch_line[:10]:

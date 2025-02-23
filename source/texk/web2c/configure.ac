@@ -1,7 +1,7 @@
 dnl $Id$
 dnl Process this file with Autoconf to produce a configure script for Web2c.
 dnl
-dnl   Copyright 2015-2024 Karl Berry <tex-live@tug.org>
+dnl   Copyright 2015-2025 Karl Berry <tex-live@tug.org>
 dnl   Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 dnl
 dnl   This file is free software; the copyright holder
@@ -156,12 +156,6 @@ AM_CONDITIONAL([USE_DLOPEN], [test "x$ac_cv_header_dlfcn_h" = xyes])
 AC_SUBST([lua_socketlibs])
 AC_SUBST([ipc_socketlibs])
 
-KPSE_CHECK_FRAMEWORK([ApplicationServices], [CTFontRef font])
-KPSE_FONTCONFIG_FLAGS
-AS_IF([test "x$kpse_cv_have_ApplicationServices:$kpse_cv_have_fontconfig" = xno:no],
-      [WEB2C_DISABLE([xetex], [neither ApplicationServices framework nor fontconfig library])])
-AM_CONDITIONAL([XETEX_MACOSX], [test "x$kpse_cv_have_ApplicationServices" = xyes])
-
 dnl Generate *TEX and ALEPH conditionals.
 m4_foreach([Kpse_Prog], [kpse_tex_progs],
            [m4_ifset([Kpse_Prog],
@@ -207,7 +201,7 @@ if test "x$with_x" = xyes; then
   fi
   test "x$with_mf_x_toolkit" = xyes && x_tool_libs="-lXt"
   AC_DEFINE([X11WIN], 1, [Define to include X11 window in Metafont.])
-fi
+fi # have X
 AM_CONDITIONAL([MFXT], [test "x$with_mf_x_toolkit" = xyes])
 AC_SUBST([x_ext_lib])
 AC_SUBST([x_tool_libs])
@@ -260,7 +254,10 @@ AC_C_BIGENDIAN
 dnl FIXME: obsolete
 AC_TYPE_SIGNAL
 
+# kpse_kpathsea_flags needs to pull in pkg-config, in case of a system
+# kpathsea being used. So nothing above should use pkg-config.
 KPSE_KPATHSEA_FLAGS
+
 KPSE_PTEXENC_FLAGS
 KPSE_PPLIB_FLAGS
 KPSE_ZLIB_FLAGS
@@ -279,9 +276,10 @@ KPSE_XPDF_FLAGS
 KPSE_ZZIPLIB_FLAGS
 KPSE_TECKIT_FLAGS
 
-# LuaTeX and XeTeX need harfbuzz.
+# XeTeX and lua[jit]hbtex need harfbuzz, but not regular luatex[53].
 if test "x$enable_xetex" = xyes \
-   || test "x$enable_luatex" = xyes || test "x$enable_luatex53" = xyes; then
+   || test "x$enable_luahbtex" = xyes \
+   || test "x$enable_luajithbtex" = xyes; then
   KPSE_HARFBUZZ_FLAGS
 fi # end xetex/luatex for harfbuzz
 
@@ -289,7 +287,19 @@ fi # end xetex/luatex for harfbuzz
 if test "x$enable_xetex" = xyes; then
   KPSE_ICU_FLAGS
   KPSE_GRAPHITE2_FLAGS
-fi # end xetex for icu/graphite
+
+  # XeTeX also needs fontconfig or the Mac ApplicationServices.
+  KPSE_CHECK_FRAMEWORK([ApplicationServices], [CTFontRef font])
+  KPSE_FONTCONFIG_FLAGS
+  AS_IF([test "x$kpse_cv_have_ApplicationServices:$kpse_cv_have_fontconfig" = xno:no],
+        [WEB2C_DISABLE([xetex],
+              [neither ApplicationServices framework nor fontconfig library])])
+
+fi # end xetex for icu/graphite and fontconfig/mac font lookups.
+
+# Are we building XeTeX on Mac? Automake conditional required regardless.
+AM_CONDITIONAL([XETEX_MACOSX],
+               [test "x$kpse_cv_have_ApplicationServices" = xyes])
 
 # Check size of off_t (using <kpathsea/config.h>)
 KPSE_ADD_FLAGS([kpathsea])

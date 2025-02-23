@@ -1,3 +1,28 @@
+2025-02-12  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (shell_escape_commands): doc link to
+	https://tug.org/texinfohtml/web2c.html#Output-file-location.
+
+2025-02-08  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (TEXMFVAR, TEXMFCONFIG, doc): 2025.
+
+2025-01-25  Karl Berry  <karl@freefriends.org>
+
+	* version.ac (kpse_dev): no more /dev.
+	* NEWS: copyright 2023.
+
+2025-01-15  Karl Berry  <karl@freefriends.org>
+
+	* kpsewhich.c (main): output blank line for search files that are
+	not found, if more than one search file is specified.
+	Suggestion from Norbert and Deyan, thread starting at
+	https://tug.org/pipermail/texhax/2024-July/026506.html
+	(USAGE): mention this.
+	* doc/kpathsea.texi (Invoking kpsewhich): mention this,
+	and the exit status.
+	(kpsewhich examples): new node.
+
 2024-11-06  Karl Berry  <karl@freefriends.org>
 
 	* tex-file.c (kpathsea_name_ok): don't allow writing to the
