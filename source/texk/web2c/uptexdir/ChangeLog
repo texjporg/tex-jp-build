@@ -1,31 +1,3 @@
-2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
-
-	* kanji.c, uptex-m.ch:
-	Accept extended upTeX internal encoding also in internal
-	encoding EUC/SJIS (pTeX-compatible mode).
-	* upkcat.test, tests/kcat.tex, tests/upkcat{,-{e,s}}.txt:
-	Update tests.
-	* uptex-widow.test, tests/jchwidow.tex, tests/up-jchwidow.log,
-	am/uptex.am: Add new tests for widow penalty originally
-	written by Kitagawa-san.
-	https://github.com/texjporg/tex-jp-build/issues/103
-	* COPYRIGHT, COPYRIGHT.ja: copyright year.
-
-2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
-
-	* uptex-m.ch, uptex.defines, kanji.{c,h}:
-	Support Latin Unicode and 16bit OFM Level-0.
-	Implement new kcatcode (latin_ucs(14)).
-	* updvitype.ch: Support 16bit OFM Level-0.
-	* uptex-{ofm,lmr,noto}.test, tests/lmr{1,2}.tex,
-	tests/noto1.tex, tests/up-ofm.tex, tests/up-prim.tex,
-	tests/up-lmr{1,2}.log, tests/up-noto1.log,
-	tests/up-ofm.log, tests/up-ofma.typ, tests/up-prim.log,
-	am/uptex.am: Update tests.
-	* uptex-m.ch, upbibtex.ch, uptex_version.h:
-	upTeX version u2.00.
-	https://github.com/texjporg/tex-jp-build/issues/170
-
 2024-10-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* uptex-prim.test, tests/up-prim.{tex,log},

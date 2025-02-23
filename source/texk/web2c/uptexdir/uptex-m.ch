@@ -49,7 +49,6 @@
 % (2022-12-09) HK   Hironori Kitagawa fixed a bug in \char, \kchar.
 % (2023-09-16) TTK  upTeX u1.30
 % (2024-09-30) TTK  upTeX u1.35
-% (2025-01-02) TTK  Accept upTeX internal encoding also in internal encoding EUC/SJIS.
 
 @x
 \def\pTeX{p\kern-.15em\TeX}
@@ -217,6 +216,7 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d kcat_code_base=cat_code_base+256
   {table of 256 command codes for the wchar's catcodes }
 @d auto_xsp_code_base=kcat_code_base+256 {table of 256 auto spacer flag}
+@d inhibit_xsp_code_base=auto_xsp_code_base+256
 @y
 @d enable_cjk_token_code=auto_xspacing_code+1
 @d cat_code_base=enable_cjk_token_code+1
@@ -224,6 +224,7 @@ else if (kcode_pos=1)or((kcode_pos>=@'11)and(kcode_pos<=@'12))
 @d kcat_code_base=cat_code_base+256
   {table of 512 command codes for the wchar's catcodes }
 @d auto_xsp_code_base=kcat_code_base+512 {table of 256 auto spacer flag}
+@d inhibit_xsp_code_base=auto_xsp_code_base+256
 @z
 
 @x
@@ -239,7 +240,6 @@ for k:=0 to 255 do
   begin cat_code(k):=other_char; kcat_code(k):=other_kchar;
   math_code(k):=hi(k); sf_code(k):=1000;
   auto_xsp_code(k):=0;
-  inhibit_xsp_type(k):=0; kinsoku_type(k):=0;
   end;
 @y
 eqtb[auto_xspacing_code]:=eqtb[cat_code_base];
@@ -248,7 +248,6 @@ for k:=0 to 255 do
   begin cat_code(k):=other_char;
   math_code(k):=hi(k); sf_code(k):=1000;
   auto_xsp_code(k):=0;
-  inhibit_xsp_type(k):=0; kinsoku_type(k):=0;
   end;
 for k:=0 to 511 do
   begin kcat_code(k):=other_kchar;
