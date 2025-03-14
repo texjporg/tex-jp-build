@@ -2556,7 +2556,7 @@ begin if is_char_node(link(p)) then
             info(cur_q):=KANJI(cx)+kcat_code(kcatcodekey(KANJI(cx)))*max_cjk_val;
           ins_kp:=false;
           goto again_2
-          end;
+          end
         end
       end;
     if not disp_called then
