@@ -531,6 +531,7 @@ shell_cmd_is_allowed (const char *cmd, char **safecmd, char **cmdname)
       *d++ = QUOTE;
     }
     *d = '\0';
+#if 0
 #ifdef WIN32
     {
       char *p, *q, *r;
@@ -568,6 +569,7 @@ shell_cmd_is_allowed (const char *cmd, char **safecmd, char **cmdname)
         }
       }
     }
+#endif
 #endif
   }
 
@@ -3190,7 +3192,7 @@ gettexstring (strnumber s)
     if (c >= 0xD800 && c <= 0xDBFF) {
       unsigned lo = strpool[++i + strstart[s - 65536L]];
       if (lo >= 0xDC00 && lo <= 0xDFFF)
-        c = (c - 0xD800) * 0x0400 + lo - 0xDC00;
+        c = 0x10000 + (c - 0xD800) * 0x0400 + lo - 0xDC00;
       else
         c = 0xFFFD;
     }
