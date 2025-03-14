@@ -1309,6 +1309,21 @@ begin if is_char_node(link(p)) then
         ins_kp:=false;
         goto again_2
         end
+      else if ((info(main_p) div max_cjk_val)=0 and (cur_q>0)) then begin
+        KANJI(cx):=info(cur_q) mod max_cjk_val;
+        kp:=get_kinsoku_pos(cx,cur_pos);
+        if (UVScombinecode(cx,cur_chr)>0 and (kp<>no_entry)
+            and (kinsoku_penalty(kp)<>0)
+            and (kinsoku_type(kp)=pre_break_penalty_code)) then begin
+          cx:=UVScombinecode(cx,cur_chr);
+          if (kcat_code(kcatcodekey(KANJI(cx)))=kanji)and(cx>=max_cjk_val) then
+            info(cur_q):=KANJI(cx)+kanji_ivs*max_cjk_val
+          else
+            info(cur_q):=KANJI(cx)+kcat_code(kcatcodekey(KANJI(cx)))*max_cjk_val;
+          ins_kp:=false;
+          goto again_2
+          end
+        end
       end;
     if not disp_called then
       begin prev_node:=tail; tail_append(get_node(small_node_size));
