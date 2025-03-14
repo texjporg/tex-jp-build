@@ -295,7 +295,8 @@ the replacement text.
     begin if buffer[i]>="a" then chopped_id[s]:=buffer[i]-@'40
 @y
   begin if (buffer[i]<>"_") or (allow_underlines and not strict_mode) then
-    begin if (strict_mode or force_uppercase) and (buffer[i]>="a") then
+    begin if (strict_mode or force_uppercase)
+           and (buffer[i]>="a") and (buffer[i]<="z") then
       chopped_id[s]:=buffer[i]-@'40
     else if (not strict_mode and force_lowercase)
            and (buffer[i]>="A") and (buffer[i]<="Z") then
@@ -313,7 +314,9 @@ else @<Define \(and output a new string of the pool@>;
     begin if c>="a" then c:=c-@'40; {merge lowercase with uppercase}
 @y
   if c<>"_" or (allow_underlines and not strict_mode) then
-    begin if (strict_mode or force_uppercase) and (c>="a") then c:=c-@'40
+    begin if (strict_mode or force_uppercase)
+           and (c>="a") and (c<="z") then
+      c:=c-@'40
     else if (not strict_mode and force_lowercase)
            and (c>="A") and (c<="Z") then
       c:=c+@'40;
@@ -482,9 +485,11 @@ with underlines removed. Extremely long identifiers must be chopped.
 identifier: begin k:=0; j:=byte_start[cur_val]; w:=cur_val mod ww;
   while (k<max_id_length)and(j<byte_start[cur_val+ww]) do
     begin incr(k); out_contrib[k]:=byte_mem[w,j]; incr(j);
-    if force_uppercase and (out_contrib[k]>="a") then
+    if force_uppercase
+          and (out_contrib[k]>="a") and (out_contrib[k]<="z") then
       out_contrib[k]:=out_contrib[k]-@'40
-    else if force_lowercase and (out_contrib[k]<="Z") then
+    else if force_lowercase
+          and (out_contrib[k]>="A") and (out_contrib[k]<="Z") then
       out_contrib[k]:=out_contrib[k]+@'40
     else if not allow_underlines and (out_contrib[k]="_") then decr(k);
     end;
@@ -492,15 +497,10 @@ identifier: begin k:=0; j:=byte_start[cur_val]; w:=cur_val mod ww;
   end;
 @z
 
-@x [11.119] l.2199 - Stretch limits of constants to match what we set for expressions.
-  if n>=@'2000000000 then err_print('! Constant too big')
+@x [11.119] l.2185 - Calculate with decimal limit value INT_MAX/10.
+  if n>=@'1463146314 then err_print('! Constant too big')
 @y
-  if n>=@'10000000000 then err_print('! Constant too big')
-@z
-@x [11.119] l.2208
-  if n>=@"8000000 then err_print('! Constant too big')
-@y
-  if n>=@"40000000 then err_print('! Constant too big')
+  if n>=214748364 then err_print('! Constant too big')
 @z
 
 @x [14.157] l.2862 - Larger numerics.
@@ -519,6 +519,31 @@ equiv[p]:=accumulator+@'10000000000; {name |p| now is defined to equal |accumula
     add_in(equiv[q]-@'100000);
 @y
     add_in(equiv[q]-@'10000000000);
+@z
+
+@x [14.160] l.2915 - Avoid numeric overflow; see also section 119.
+repeat val:=10*val+next_control-"0"; next_control:=get_next;
+@y
+repeat if val>=214748364 then err_print('! Constant too big')
+@.Constant too big@>
+  else val:=10*val+next_control-"0";
+  next_control:=get_next;
+@z
+@x [14.161] l.2920 - Avoid numeric overflow; see also section 119.
+repeat val:=8*val+next_control-"0"; next_control:=get_next;
+@y
+repeat if val>=@'2000000000 then err_print('! Constant too big')
+@.Constant too big@>
+  else val:=8*val+next_control-"0";
+  next_control:=get_next;
+@z
+@x [14.162] l.2926 - Avoid numeric overflow; see also section 119.
+val:=16*val+next_control-"0"; next_control:=get_next;
+@y
+  if val>=@"8000000 then err_print('! Constant too big')
+@.Constant too big@>
+  else val:=16*val+next_control-"0";
+  next_control:=get_next;
 @z
 
 @x [15.165] l.2964 - Add parametric2 macros (macros that use [] to delimit arguments).
@@ -566,6 +591,12 @@ equiv[p]:=accumulator+@'10000000000; {name |p| now is defined to equal |accumula
       begin app_repl("]"); decr(bal);
       end;
     end
+@z
+
+@x [16.173] l.3095 - Reject strings as macro names.
+  if next_control<>identifier then
+@y
+  if (next_control<>identifier) or (buffer[id_first]="""") then
 @z
 
 @x [16.173] l.3107 - Add parametric2 macros (macros that use [] to delimit arguments).
