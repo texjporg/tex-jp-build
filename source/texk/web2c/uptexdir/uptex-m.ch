@@ -1194,7 +1194,7 @@ begin
 @x
 @d non_char==qi(256) {a |halfword| code that can't match a real character}
 @y
-@d non_char==qi(65535) {a code that can't match a real character}
+@d non_char==qi(max_latin_val) {a code that can't match a real character}
 @z
 
 @x
@@ -1807,13 +1807,13 @@ while q>null do
 @x
       begin hu[0]:=256; init_lig:=false;
 @y
-      begin hu[0]:=max_hyph_char; init_lig:=false;
+      begin hu[0]:=non_char; init_lig:=false;
 @z
 
 @x
 found2: s:=ha; j:=0; hu[0]:=256; init_lig:=false; init_list:=null;
 @y
-found2: s:=ha; j:=0; hu[0]:=max_hyph_char; init_lig:=false; init_list:=null;
+found2: s:=ha; j:=0; hu[0]:=non_char; init_lig:=false; init_list:=null;
 @z
 
 @x
@@ -1822,10 +1822,10 @@ we consider $x_j$ to be an implicit left boundary character; in this
 case |j| must be strictly less than~|n|. There is a
 parameter |bchar|, which is either 256 or an implicit right boundary character
 @y
-getting the input $x_j\ldots x_n$ from the |hu| array. If $x_j=|max_hyph_char|$,
+getting the input $x_j\ldots x_n$ from the |hu| array. If $x_j=|non_char|$,
 we consider $x_j$ to be an implicit left boundary character; in this
 case |j| must be strictly less than~|n|. There is a
-parameter |bchar|, which is either |max_hyph_char|
+parameter |bchar|, which is either |non_char|
 or an implicit right boundary character
 @z
 
@@ -1844,7 +1844,7 @@ or an implicit right boundary character
 @x
   begin decr(l); c:=hu[l]; c_loc:=l; hu[l]:=256;
 @y
-  begin decr(l); c:=hu[l]; c_loc:=l; hu[l]:=max_hyph_char;
+  begin decr(l); c:=hu[l]; c_loc:=l; hu[l]:=non_char;
 @z
 
 @x
@@ -1852,13 +1852,25 @@ hyphenation algorithm is quite short. In the following code we set |hc[hn+2]|
 to the impossible value 256, in order to guarantee that |hc[hn+3]| will
 @y
 hyphenation algorithm is quite short. In the following code we set |hc[hn+2]| to
-the impossible value |max_hyph_char|, in order to guarantee that |hc[hn+3]| will
+the impossible value |non_char|, in order to guarantee that |hc[hn+3]| will
 @z
 
 @x
 hc[0]:=0; hc[hn+1]:=0; hc[hn+2]:=256; {insert delimiters}
 @y
-hc[0]:=0; hc[hn+1]:=0; hc[hn+2]:=max_hyph_char; {insert delimiters}
+hc[0]:=0; hc[hn+1]:=0; hc[hn+2]:=non_char; {insert delimiters}
+@z
+
+@x
+@t\hskip10pt@>@!trie_min:array[ASCII_code] of trie_pointer;
+@y
+@t\hskip10pt@>@!trie_min:array[0..max_latin_val] of trie_pointer;
+@z
+
+@x
+for p:=0 to 255 do trie_min[p]:=p+1;
+@y
+for p:=0 to max_latin_val-1 do trie_min[p]:=p+1;
 @z
 
 @x first_fit
@@ -1896,6 +1908,14 @@ if trie_max<h+max_hyph_char then
   until trie_max=h+256;
 @y
   until trie_max=h+max_hyph_char;
+@z
+
+@x
+if l<256 then
+  begin if z<256 then ll:=z @+else ll:=256;
+@y
+if l<max_hyph_char then
+  begin if z<max_hyph_char then ll:=z @+else ll:=max_hyph_char;
 @z
 
 @x
