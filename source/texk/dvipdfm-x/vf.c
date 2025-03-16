@@ -153,6 +153,10 @@ static void read_a_char_def(FILE *vf_file, int thisfont, uint32_t pkt_len,
   if (idx >= vf_fonts[thisfont].num_chars)
     resize_one_vf_font (vf_fonts+thisfont, idx+1);
   if (ch >= CHAR_INDEX_MIN) {
+    if (idx > CHAR_INDEX_MIN && (vf_fonts[thisfont].index_to_char)[idx-1] >= ch) {
+      fprintf (stderr, "Unexpected character code: %x, index: %x\n", ch, idx);
+      ERROR ("Unexpected character code in vf file\n");
+    }
     (vf_fonts[thisfont].index_to_char)[idx] = ch;
     vf_fonts[thisfont].max_index++;
   }
