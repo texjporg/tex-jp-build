@@ -1747,7 +1747,7 @@ i:=char_info(f)(cx); hd:=height_depth(i);
 @!max_hyph_char:integer;
 
 @ @<Set initial values of key variables@>=
-max_hyph_char:=max_latin_val-1;
+max_hyph_char:=255;
 @z
 
 @x
