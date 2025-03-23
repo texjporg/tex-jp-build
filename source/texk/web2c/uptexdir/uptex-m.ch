@@ -1714,6 +1714,14 @@ i:=char_info(f)(cx); hd:=height_depth(i);
 @z
 
 @x
+ligature_node: begin f:=font(lig_char(cur_p));
+  act_width:=act_width+char_width(f)(char_info(f)(character(lig_char(cur_p))));
+@y
+ligature_node: begin f:=font(lig_char(cur_p));
+  act_width:=act_width+char_width(f)(char_info(f)(ptencucsto8bitcode(font_enc[f],character(lig_char(cur_p)))));
+@z
+
+@x
   repeat f:=post_f; cc:=character(cur_p);
   act_width:=act_width+char_width(f)(orig_char_info(f)(cc));
 @y
@@ -1827,6 +1835,12 @@ we consider $x_j$ to be an implicit left boundary character; in this
 case |j| must be strictly less than~|n|. There is a
 parameter |bchar|, which is either |non_char|
 or an implicit right boundary character
+@z
+
+@x
+else begin q:=char_info(hf)(cur_l);
+@y
+else begin q:=char_info(hf)(ptencucsto8bitcode(font_enc[hf],cur_l));
 @z
 
 @x
