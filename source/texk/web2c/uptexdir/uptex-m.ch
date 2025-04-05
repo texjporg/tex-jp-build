@@ -1755,7 +1755,7 @@ ligature_node: begin f:=font(lig_char(cur_p));
 @!max_hyph_char:integer;
 
 @ @<Set initial values of key variables@>=
-max_hyph_char:=256;
+max_hyph_char:=max_latin_val-1;
 @z
 
 @x
@@ -1788,7 +1788,7 @@ loop@+  begin if is_char_node(s) then
     begin if font(s)<>hf then goto done3;
     hyf_bchar:=character(s); c:=qo(hyf_bchar);
     if lc_code(c)=0 then goto done3;
-    if lc_code(c)>max_hyph_char then max_hyph_char:=lc_code(c);
+    if lc_code(c)>max_hyph_char then goto done3;
     if hn=63 then goto done3;
     hb:=s; incr(hn); hu[hn]:=c; hc[hn]:=lc_code(c); hyf_bchar:=non_char;
 @z
