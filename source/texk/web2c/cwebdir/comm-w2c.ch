@@ -67,7 +67,7 @@ sometimes use \.{CWEB} to refer to any of the three component
 @z
 
 @x [1.18] l.80
-boolean program; /* \.{CWEAVE} or \.{CTANGLE}? */
+bool program; /* \.{CWEAVE} or \.{CTANGLE}? */
 @y
 cweb program; /* \.{CTANGLE} or \.{CWEAVE} or \.{CTWILL}? */
 @z
