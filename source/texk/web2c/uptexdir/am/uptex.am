@@ -236,6 +236,8 @@ endif UPWEB
 ## Test data and results
 ##
 ## uptexdir/nissya.test
+EXTRA_DIST += uptexdir/tests/nissya.bst uptexdir/tests/sample.bib \
+	uptexdir/tests/nissya_bib.aux uptexdir/tests/nissya_bib.bbl
 DISTCLEANFILES += uptests/nissya_bib.*
 ## uptexdir/upbibtex.test
 EXTRA_DIST += tests/enc-u.bbl tests/enc-eu.bbl tests/enc-su.bbl tests/enc-uu.bbl
@@ -244,6 +246,10 @@ DISTCLEANFILES += uptests/xexampl.aux uptests/xexampl.bbl uptests/xexampl.blg \
 ## uptexdir/upbibtex-mem.test
 DISTCLEANFILES += uptests/memtest.bib uptests/memtest?.*
 ## uptexdir/updvitype.test
+EXTRA_DIST += uptexdir/tests/ptex3.tex uptexdir/tests/ptex3.dvi \
+	uptexdir/tests/ptex4.tex uptexdir/tests/ptex4.dvi \
+	uptexdir/tests/ptex3a-jis.typ uptexdir/tests/ptex3a-utf8.typ \
+	uptexdir/tests/ptex4a-jis.typ uptexdir/tests/ptex4a-utf8.typ
 EXTRA_DIST += uptexdir/tests/uptex3.tex uptexdir/tests/uptex3.dvi \
 	uptexdir/tests/uptex4.tex uptexdir/tests/uptex4.dvi \
 	uptexdir/tests/uptex5.tex uptexdir/tests/uptex5.dvi \
@@ -255,8 +261,13 @@ DISTCLEANFILES += uptests/xcmr10.tfm
 ## uptexdir/uptftopl.test
 DISTCLEANFILES += uptests/xcmr10.pl
 ## uptexdir/sample.test
+EXTRA_DIST += uptexdir/tests/goth10.tfm uptexdir/tests/sample.dvi uptexdir/tests/samplea.typ
 DISTCLEANFILES += uptests/xsample*.typ
 ## uptexdir/yokotate.test
+EXTRA_DIST += uptexdir/tests/min10.pl uptexdir/tests/min10.tfm
+EXTRA_DIST += uptexdir/tests/tmin10.pl uptexdir/tests/tmin10.tfm
+EXTRA_DIST += uptexdir/tests/chcode.pl uptexdir/tests/chcode-jis.pl uptexdir/tests/chcode.tfm \
+	ptexdir/tests/chcode-utf8.pl uptexdir/tests/chcode-euc.pl uptexdir/tests/chcode-sjis.pl
 EXTRA_DIST += uptexdir/tests/umin10.pl uptexdir/tests/umin10.tfm
 EXTRA_DIST += uptexdir/tests/utmin10.pl uptexdir/tests/utmin10.tfm
 DISTCLEANFILES += uptests/x*min10.* uptests/xchcode*.*
@@ -274,6 +285,7 @@ DISTCLEANFILES += uptests/ygkhuge*.*
 EXTRA_DIST += uptexdir/tests/gk256g.tfm uptexdir/tests/gk256k.tfm
 DISTCLEANFILES += uptests/ygk256*.*
 ## uptexdir/skipjfmp.test
+EXTRA_DIST += uptexdir/tests/skipjfmp.pl uptexdir/tests/skipjfmp.tfm uptexdir/tests/skipjfmp.tex
 DISTCLEANFILES += uptests/xskipjfmp.*
 ## uptexdir/uptriptest
 EXTRA_DIST += uptexdir/uptrip/uptrip.diffs uptexdir/uptrip/texmf.cnf
