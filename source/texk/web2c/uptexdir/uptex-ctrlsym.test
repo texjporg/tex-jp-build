@@ -1,10 +1,10 @@
 #! /bin/sh -vx
-# Copyright 2024 Japanese TeX Development Community <issue@texjp.org>
+# Copyright 2024-2025 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
 BinDir=${BinDir:-.}
 ExeExt=${ExeExt:-}
-_ptex=$BinDir/ptex$ExeExt
+_uptex=$BinDir/uptex$ExeExt
 _updvitype=$BinDir/updvitype$ExeExt
 
 LC_ALL=C; export LC_ALL;  LANGUAGE=C; export LANGUAGE
@@ -14,64 +14,82 @@ TEXINPUTS=".;$srcdir/tests"; export TEXINPUTS
 TEXFONTS=".;$srcdir//tests"; export TEXFONTS
 TEXFORMATS=.; export TEXFORMATS
 
-rm -f p-ctrlsym.tex p-endline*.* p-jctrlsym*.* p-chartoken.* p-lineend.*
+rm -f up-ctrlsym.tex up-endline*.* up-jctrlsym*.* up-chartoken.* up-lineend.*
 
-if test ! -f ./p-basic.tex; then
-  cp $srcdir/tests/dump-basic.tex ./p-basic.tex
+if test ! -f ./up-basic.tex; then
+  cp $srcdir/tests/dump-basic.tex ./up-basic.tex
 fi
-if test ! -f ./p-basic-euc.fmt; then
-  $_ptex -ini -kanji-internal=euc   -jobname=p-basic-euc  p-basic || exit 2
+if test ! -f ./up-basic-euc.fmt; then
+  $_uptex -ini -kanji-internal=euc   -jobname=up-basic-euc  up-basic || exit 2
+fi
+if test ! -f ./up-basic.fmt; then
+  $_uptex -ini -kanji-internal=uptex -jobname=up-basic      up-basic || exit 3
 fi
 
 # ctrlsym.tex
-$LN_S $srcdir/ptexdir/tests/ctrlsym.tex ./p-ctrlsym.tex
-$_ptex -fmt=p-basic-euc p-ctrlsym || exit 2
+$LN_S $srcdir/uptexdir/tests/ctrlsym.tex ./up-ctrlsym.tex
+$_uptex -fmt=up-basic-euc -kanji-internal=euc -jobname=up-ctrlsym-e up-ctrlsym || exit 10
+$_uptex -fmt=up-basic                         -jobname=up-ctrlsym-u up-ctrlsym || exit 11
 
-sed 1d p-ctrlsym.log >p-ctrlsym.out
+sed 1d up-ctrlsym-e.log >up-ctrlsym-e.out
+sed 1d up-ctrlsym-u.log >up-ctrlsym-u.out
 
-diff $srcdir/ptexdir/tests/ctrlsym.log p-ctrlsym.out || exit 3
+diff $srcdir/uptexdir/tests/ctrlsym-e.log up-ctrlsym-e.out || exit 12
+diff $srcdir/uptexdir/tests/ctrlsym-u.log up-ctrlsym-u.out || exit 13
 
 
 # endlinchar.tex
-$LN_S $srcdir/ptexdir/tests/endlinechar.tex ./p-endline.tex
-$_ptex -fmt=p-basic-euc -interaction=batchmode p-endline.tex || :
+$LN_S $srcdir/uptexdir/tests/endlinechar.tex ./up-endline.tex
+$_uptex -fmt=up-basic -interaction=batchmode up-endline.tex || :
 
-sed 1d p-endline.log >p-endline.out
+sed 1d up-endline.log >up-endline.out
 
-diff $srcdir/ptexdir/tests/endline.log p-endline.out || exit 4
+diff $srcdir/uptexdir/tests/endline.log up-endline.out || exit 20
 
-$_updvitype ./p-endline.dvi >ptests/xp-endline.typ
-sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" ptests/xp-endline.typ >ptests/xp-endlinea.typ
-diff $srcdir/ptexdir/tests/p-endlinea.typ ptests/xp-endlinea.typ || exit 5
+if test -f $_updvitype; then
+  $_updvitype ./up-endline.dvi >uptests/xup-endline.typ
+  sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" uptests/xup-endline.typ >uptests/xup-endlinea.typ
+  diff $srcdir/uptexdir/tests/up-endlinea.typ uptests/xup-endlinea.typ || exit 21
+fi
 
 
 # control-symbol.tex
-$LN_S $srcdir/ptexdir/tests/control-symbol.tex ./p-jctrlsym.tex
-$_ptex -fmt=p-basic-euc -interaction=batchmode p-jctrlsym.tex || :
+$LN_S $srcdir/uptexdir/tests/control-symbol.tex ./up-jctrlsym.tex
+$_uptex -fmt=up-basic-euc -kanji-internal=euc -jobname=up-jctrlsym-e -interaction=batchmode up-jctrlsym.tex || :
+$_uptex -fmt=up-basic                         -jobname=up-jctrlsym-u -interaction=batchmode up-jctrlsym.tex || :
 
-sed 1d p-jctrlsym.log >p-jctrlsym.out
+sed 1d up-jctrlsym-e.log >up-jctrlsym-e.out
+sed 1d up-jctrlsym-u.log >up-jctrlsym-u.out
 
-diff $srcdir/ptexdir/tests/jctrlsym.log p-jctrlsym.out || exit 6
+diff $srcdir/uptexdir/tests/jctrlsym-e.log up-jctrlsym-e.out || exit 30
+diff $srcdir/uptexdir/tests/jctrlsym-u.log up-jctrlsym-u.out || exit 31
 
-$_updvitype ./p-jctrlsym.dvi >ptests/xp-jctrlsym.typ
-sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" ptests/xp-jctrlsym.typ >ptests/xp-jctrlsyma.typ
-diff $srcdir/ptexdir/tests/p-jctrlsyma.typ ptests/xp-jctrlsyma.typ || exit 7
+if test -f $_updvitype; then
+  $_updvitype ./up-jctrlsym-e.dvi >uptests/xup-jctrlsym-e.typ
+  $_updvitype ./up-jctrlsym-u.dvi >uptests/xup-jctrlsym-u.typ
+  sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" uptests/xup-jctrlsym-e.typ >uptests/xup-jctrlsyma-e.typ
+  sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" uptests/xup-jctrlsym-u.typ >uptests/xup-jctrlsyma-u.typ
+  diff $srcdir/uptexdir/tests/up-jctrlsyma-e.typ uptests/xup-jctrlsyma-e.typ || exit 32
+  diff $srcdir/uptexdir/tests/up-jctrlsyma-u.typ uptests/xup-jctrlsyma-u.typ || exit 32
+fi
 
 
 # let_char_token.tex
-$LN_S $srcdir/ptexdir/tests/let_char_token.tex ./p-chartoken.tex
-$_ptex -fmt=p-basic-euc -interaction=batchmode p-chartoken.tex || :
+$LN_S $srcdir/uptexdir/tests/let_char_token.tex ./up-chartoken.tex
+$_uptex -fmt=up-basic-euc -kanji-internal=euc -interaction=batchmode up-chartoken.tex || :
 
-sed 1d p-chartoken.log >p-chartoken.out
+sed 1d up-chartoken.log >up-chartoken.out
 
-diff $srcdir/ptexdir/tests/chartoken.log p-chartoken.out || exit 8
+diff $srcdir/uptexdir/tests/chartoken.log up-chartoken.out || exit 40
 
 
 # ptexlineendmode.tex
-$LN_S $srcdir/ptexdir/tests/ptexlineendmode.tex ./p-lineend.tex
-$_ptex -fmt=p-basic-euc -kanji=utf8 -interaction=batchmode p-lineend.tex || :
+$LN_S $srcdir/uptexdir/tests/ptexlineendmode.tex ./up-lineend.tex
+$_uptex -fmt=up-basic-euc -kanji-internal=euc -interaction=batchmode up-lineend.tex || :
 
-$_updvitype -kanji=utf8 ./p-lineend.dvi >ptests/xp-lineend.typ
-sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" ptests/xp-lineend.typ >ptests/xp-lineenda.typ
-diff $srcdir/ptexdir/tests/p-lineenda.typ ptests/xp-lineenda.typ || exit 9
+if test -f $_updvitype; then
+  $_updvitype -kanji=utf8 ./up-lineend.dvi >uptests/xup-lineend.typ
+  sed "1d;s/TeX output 20[23].\...\...:.*'/TeX output 20XX.XX.XX'/" uptests/xup-lineend.typ >uptests/xup-lineenda.typ
+  diff $srcdir/uptexdir/tests/up-lineenda.typ uptests/xup-lineenda.typ || exit 50
+fi
 

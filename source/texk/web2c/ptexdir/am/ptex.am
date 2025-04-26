@@ -151,6 +151,8 @@ DISTCLEANFILES += ptests/xcmr10.pl
 ## ptexdir/ptriptest
 EXTRA_DIST += ptexdir/ptrip/ptrip.diffs ptexdir/ptrip/texmf.cnf
 DISTCLEANFILES += ptrip.diffs
+## ptexdir/pver.test
+EXTRA_DIST += ptexdir/tests/pver1.tex ptexdir/tests/pver2.tex
 
 ## ptex-ctrlsym.test
 EXTRA_DIST += ptexdir/tests/ctrlsym.tex ptexdir/tests/ctrlsym.log \
@@ -171,7 +173,8 @@ EXTRA_DIST += ptexdir/tests/ucs.tex ptexdir/tests/ucs-s.log \
 	ptexdir/tests/ucs-e.log
 DISTCLEANFILES += p-ucs*.*
 ## ptexdir/ptex-widow.test
-EXTRA_DIST += ptexdir/tests/p-jchwidow.log
+EXTRA_DIST += ptexdir/tests/p-jchwidow-e.log \
+	ptexdir/tests/p-jchwidow-s.log
 DISTCLEANFILES += p-jchwidow*.*
 
 ptrip.diffs: ptex$(EXEEXT) dvitype$(EXEEXT) pltotf$(EXEEXT) tftopl$(EXEEXT)

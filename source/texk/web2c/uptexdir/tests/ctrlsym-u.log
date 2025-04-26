@@ -2,10 +2,16 @@
  %&-line parsing enabled.
 **up-ctrlsym
 (./up-ctrlsym.tex 
-A: 49379
+A: 38634
 
 \雪 ->snow
-B: 49379. 雪\雪snow
+B: 38634. 雪\雪snow
 macro:->snow.
+
+C: 127820
+
+\🍌->banana
+D: 127820. 🍌\🍌 banana
+macro:->banana.
  )
 No pages of output.
