@@ -1,6 +1,6 @@
 #! /bin/sh -vx
 #
-# Copyright 2022-2023 Japanese TeX Development Community <issue@texjp.org>
+# Copyright 2022-2025 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
 engine=uptex
