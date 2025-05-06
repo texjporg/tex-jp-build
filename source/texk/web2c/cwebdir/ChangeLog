@@ -1,7 +1,15 @@
+2025-04-30  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.ch,
+	* po/de/web2c-help.po,
+	* po/web2c-help.pot: Restore default behavior of generic CWEB.
+
 2025-04-18  Andreas Scherer  <https://ascherer.github.io>
 
 	* comm-w2c.h,
-	* common.h: Amend special characters.
+	* common.c,
+	* common.h,
+	* ctangle.c: Amend special characters.
 
 2025-04-17  Andreas Scherer  <https://ascherer.github.io>
 
