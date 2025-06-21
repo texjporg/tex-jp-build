@@ -2248,10 +2248,12 @@ kchar_num: begin scan_char_num; cur_chr:=cur_val; cur_cmd:=kchar_given;
 @z
 
 @x
-  math_type(p):=math_jchar; fam(p):=cur_jfam; character(p):=qi(0);
+  math_type(p):=math_jchar; character(p):=qi(0);
+  if jfam_in_range then fam(p):=cur_jfam else fam(p):=0;
   math_kcode(p-1):=KANJI(cx);
 @y
-  math_type(p):=math_jchar; fam(p):=cur_jfam; character(p):=qi(0);
+  math_type(p):=math_jchar; character(p):=qi(0);
+  if jfam_in_range then fam(p):=cur_jfam else fam(p):=0;
   if (kcat_code(kcatcodekey(cx))=kanji)and(cx>=max_cjk_val) then
     math_kcode(p-1):=KANJI(cx) + kanji_ivs*max_cjk_val
   else

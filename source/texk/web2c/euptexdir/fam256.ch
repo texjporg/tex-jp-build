@@ -934,8 +934,10 @@ codes |global_box_flag| through |ship_out_flag-1| represent
 %-----------------------------------------------
 @x
 @d fam_in_range==((cur_fam>=0)and(cur_fam<16))
+@d jfam_in_range==((cur_jfam>=0)and(cur_jfam<16))
 @y
 @d fam_in_range==((cur_fam>=0)and(cur_fam<script_size))
+@d jfam_in_range==((cur_jfam>=0)and(cur_jfam<script_size))
 @z
 %-----------------------------------------------
 @x
@@ -1162,6 +1164,16 @@ omath_given: begin print_esc("omathchar"); print_hex(chr_code);
     end;
   omath_char_def_code: begin scan_omega_fifteen_bit_int;
     define(p,omath_given,cur_val);
+@z
+%-----------------------------------------------
+@x
+assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
+  if (p=int_base+cur_fam_code)or(p=int_base+cur_jfam_code) then
+    begin if (cur_val>=0)and(cur_val<16) then
+@y
+assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
+  if (p=int_base+cur_fam_code)or(p=int_base+cur_jfam_code) then
+    begin if (cur_val>=0)and(cur_val<script_size) then
 @z
 %-----------------------------------------------
 @x

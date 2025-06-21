@@ -6264,6 +6264,13 @@ mmode+left_brace: begin tail_append(new_noad);
   end;
 @z
 
+@x
+@d fam_in_range==((cur_fam>=0)and(cur_fam<16))
+@y
+@d fam_in_range==((cur_fam>=0)and(cur_fam<16))
+@d jfam_in_range==((cur_jfam>=0)and(cur_jfam<16))
+@z
+
 @x [48.1151] l.22555 - pTeX: scan_math: use Kanji in math_mode
 procedure scan_math(@!p:pointer);
 label restart,reswitch,exit;
@@ -6317,7 +6324,8 @@ else  begin
     begin math_type(p):=sub_mlist; info(p):=new_noad;
     p:=nucleus(info(p)); q:=kcode_noad_nucleus(p);
     end;
-  math_type(p):=math_jchar; fam(p):=cur_jfam; character(p):=qi(0);
+  math_type(p):=math_jchar; character(p):=qi(0);
+  if jfam_in_range then fam(p):=cur_jfam else fam(p):=0;
   math_kcode(p-1):=KANJI(cx);
   if font_dir[fam_fnt(fam(p)+cur_size)]=dir_default then
     begin print_err("Not two-byte family");
@@ -6537,9 +6545,12 @@ assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
   end;
 @y
 assign_int: begin p:=cur_chr; scan_optional_equals; scan_int;
-  if p=int_base+cur_fam_code then
-    begin if font_dir[fam_fnt(cur_val)]<>dir_default then
-      word_define(int_base+cur_jfam_code,cur_val)
+  if (p=int_base+cur_fam_code)or(p=int_base+cur_jfam_code) then
+    begin if (cur_val>=0)and(cur_val<16) then
+      begin if font_dir[fam_fnt(cur_val)]<>dir_default then
+        word_define(int_base+cur_jfam_code,cur_val)
+      else word_define(int_base+cur_fam_code,cur_val);
+      end
     else word_define(p,cur_val);
     end
   else word_define(p,cur_val);
@@ -7936,7 +7947,8 @@ procedure set_math_kchar(@!c:integer);
 var p:pointer; {the new noad}
 begin p:=new_noad; math_type(nucleus(p)):=math_jchar;
 character(nucleus(p)):=qi(0);
-math_kcode(p):=c; fam(nucleus(p)):=cur_jfam;
+math_kcode(p):=c;
+if jfam_in_range then fam(nucleus(p)):=cur_jfam else fam(nucleus(p)):=0;
 if font_dir[fam_fnt(fam(nucleus(p))+cur_size)]=dir_default then
   begin print_err("Not two-byte family");
   help1("IGNORE.");@/
