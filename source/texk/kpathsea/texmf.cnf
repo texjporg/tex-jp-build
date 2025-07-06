@@ -4,8 +4,8 @@
 % If you modify this original file, YOUR CHANGES WILL BE LOST when it is
 % updated.  Instead, put your changes -- and only your changes, not an
 % entire copy! -- in ../../texmf.cnf.  That is, if this file is
-% installed in /some/path/to/texlive/2024/texmf-dist/web2c/texmf.cnf,
-% put your custom settings in /some/path/to/texlive/2024/texmf.cnf.
+% installed in /some/path/to/texlive/2025/texmf-dist/web2c/texmf.cnf,
+% put your custom settings in /some/path/to/texlive/2025/texmf.cnf.
 % (Below, we use YYYY in place of the specific year.)
 % 
 % What follows is a super-summary of what this .cnf file can
@@ -87,10 +87,10 @@ TEXMFSYSCONFIG = $TEXMFROOT/texmf-config
 TEXMFHOME = ~/texmf
 
 % TEXMFVAR, where texconfig/updmap/fmtutil store cached runtime data.
-TEXMFVAR = ~/.texlive2024/texmf-var
+TEXMFVAR = ~/.texlive2025/texmf-var
 
 % TEXMFCONFIG, where texconfig/updmap/fmtutil store configuration data.
-TEXMFCONFIG = ~/.texlive2024/texmf-config
+TEXMFCONFIG = ~/.texlive2025/texmf-config
 
 % This is the value manipulated by tlmgr's auxtrees subcommand in the
 % root texmf.cnf. Kpathsea warns about a literally empty string for a
@@ -642,10 +642,14 @@ shell_escape = p
 % 
 % The programs listed here are as safe as any we know: they either do
 % not write any output files, respect openout_any, or have hard-coded
-% restrictions similar to or higher than openout_any=p.  They also have
-% no features to invoke arbitrary other programs, and no known
-% exploitable bugs.  All to the best of our knowledge.  They also have
-% practical use for being called from TeX.
+% restrictions similar to or higher than openout_any=p.  The output file
+% location is determined according to
+% https://tug.org/texinfohtml/web2c.html#Output-file-location.
+% 
+% They also have no features to invoke arbitrary other programs, and no
+% known exploitable bugs, to the best of our knowledge.
+% 
+% Finally, they also have practical use for being called from TeX.
 % 
 shell_escape_commands = \
 bibtex,bibtex8,\
@@ -653,6 +657,7 @@ extractbb,\
 gregorio,\
 kpsewhich,\
 l3sys-query,\
+latexminted,\
 makeindex,\
 memoize-extract.pl,\
 memoize-extract.py,\
@@ -660,7 +665,7 @@ repstopdf,\
 r-mpost,\
 texosquery-jre8,\
 
-% we'd like to allow:
+% other programs considered:
 % dvips - but external commands can be executed, need at least -R1.
 % epspdf, ps2pdf, pstopdf - need to respect openout_any,
 %   and gs -dSAFER must be used and check for shell injection with filenames.
@@ -738,21 +743,21 @@ log_openout.initex = f
 file_line_error_style = f
 
 % Enable the mktex... scripts by default?  These must be set to 0 or 1.
-% Particular programs can and do override these settings, for example
-% dvips's -M option.  Your first chance to specify whether the scripts
-% are invoked by default is at configure time.
+% The values shown here are the compile-time defaults for original TeX Live;
+% they can be overridden at compile time with configure options,
+% or at runtime with environment variables or program options.
 %
 % These values are ignored if the script names are changed; e.g., if you
 % set DVIPSMAKEPK to `foo', what counts is the value of the environment
 % variable/config value `FOO', not the `MKTEXPK' value.
 %
 %MKTEXTEX = 0
-%MKTEXPK = 0
-%MKTEXMF = 0
-%MKTEXTFM = 0
-%MKTEXFMT = 0
-%MKOCP = 0
-%MKOFM = 0
+%MKTEXPK = 1
+%MKTEXMF = 1
+%MKTEXTFM = 1
+%MKTEXFMT = 1
+%MKOCP = 1
+%MKOFM = 1
 
 % Used by makempx to run TeX.  We use "etex" because MetaPost is
 % expecting DVI, and not "tex" because we want first line parsing.
@@ -942,7 +947,7 @@ guess_input_kanji_encoding.mendex = 1
 % in a texmf.cnf prefered, for example $TEXMFLOCAL/web2c/texmf.cnf.
 command_line_encoding = utf-8
 
-% From TeX Live 2024, the engine for ptex, eptex, platex, and
+% As of TeX Live 2024, the engine for ptex, eptex, platex, and
 % platex-dev is euptex. Therefore the function should be switched off
 % for ptex, eptex, platex and platex-dev.
 command_line_encoding.ptex = none

@@ -32,6 +32,11 @@ then
        apt-get update -q -y
        apt-get install -y --no-install-recommends bash gcc g++ make perl libfontconfig-dev libx11-dev libxmu-dev libxaw7-dev build-essential
        ;;
+     almalinux)
+       yum update -y
+       yum install -y gcc-toolset-11 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
+       . /opt/rh/gcc-toolset-11/enable
+       ;;
      centos)
        yum update -y
        yum install -y centos-release-scl
@@ -51,7 +56,9 @@ then
      solaris)
        # pkg install pkg://solaris/developer/gcc-5
        # maybe only the following is enough, and fortran and gobjc needs not be installed?
-       pkg install pkg://solaris/developer/gcc/gcc-c++-5
+       # pkg install pkg://solaris/developer/gcc/gcc-c++-5
+       /opt/csw/bin/pkgutil -U
+       /opt/csw/bin/pkgutil -y -i autoconf automake gcc5core libtool
        ;;
      *)
        echo "Unsupported build system: $buildsys" >&2
@@ -89,11 +96,13 @@ BUILDARGS=""
 
 # special cases
 case "$arch" in
-  armhf-linux)
+  armhf-linux) # debian:buster
     TL_MAKE_FLAGS="-j 1"
+    export CXXFLAGS='-std=c++17'
     ;;
-  aarch64-linux)
+  aarch64-linux) # debian:buster
     BUILDARGS="--enable-arm-neon=on"
+    export CXXFLAGS='-std=c++17'
     ;;
   *-solaris)
     export PATH=/opt/csw/bin:$PATH
@@ -112,7 +121,10 @@ case "$arch" in
     export CC=gcc 
     export CXX=g++
     export CFLAGS=-D_NETBSD_SOURCE
-    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++11'
+    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++17'
+    ;;
+  x86_64-linux|i386-linux|x86_64-linuxmusl)
+    export CXXFLAGS='-std=c++17'
     ;;
 esac
 export TL_MAKE_FLAGS

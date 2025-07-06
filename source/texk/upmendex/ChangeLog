@@ -1,3 +1,101 @@
+2025-06-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fwrite.c: Better treatment of Ŋ,ŋ in Finnish.
+	Better treatment of Þ,þ in Danish, Norwegian, Swedish and Finnish.
+	Better treatment of Ę,ę in Norwegian and Swedish.
+	Better treatment of Ð,ð,Đ,đ in Danish, Norwegian, Finnish, Swedish
+	and Icelandic.
+	Better treatment of Ü,ü,Ű,ű in Danish, Norwegian, Swedish and Finnish.
+	Better treatment of Ö,ö,Ø,ø,Ő,ő,Ô,ô,Œ,œ,Æ,æ,Ä,ä in Swedish.
+
+2025-06-01  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* fwrite.c: Support digraph AA and
+	better treatment of Ø,ø,Ö,ö,Æ,æ,Ä,ä in Danish and Norwegian.
+	Better treatment of Ø,ø,Ö,ö,Æ,æ,Ä,ä in Icelandic.
+	Better treatment of Ö,ö,Ø,ø,Ő,ő,Õ,õ,Ü,ü,Ű,ű,Œ,œ,Æ,æ,Ä,ä in Finnish.
+
+2025-05-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.20  Stable version.
+	* configure.ac: Bump version.
+	* main.c, sort.c, convert.c, fwrite.c, styfile.c,
+	kana.h, {,ex}var.h, mendex.h:
+	Support Brahmic (Bengali, Gurmukhi, Gujarati, Kannada,
+	Lao, Malayalam, Oriya, Sinhala, Tamil and Telugu)
+	scripts (experimental).
+	Add options "script_head" in style file.
+	https://github.com/t-tk/upmendex-package/issues/14
+	* styfile.c:
+	Remove deprecated keyword "tumunja" from style file.
+	* fwrite.c:
+	Enhance treatment of S,T comma below in Romanian.
+	Support V-W ordering in Finnish traditional collation.
+	* sort.c:
+	Prepare to support CJK Unified Ideographs Extension J in Unicode 17.0.
+	It will work with future version of ICU.
+	Treat U+3192..3195, U+3280..3289, U+A830..A835 as "other number".
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* convert.c, kp.{c,h}, styfile.c:
+	Use kpse_find_file to find style files.
+	Thanks to Yukimasa Morimi.
+	* tests/upmendex.test: Add tests.
+	https://github.com/texjporg/tex-jp-build/issues/175
+
+2025-02-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.11  Stable version.
+	* configure.ac: Bump version.
+	* fread.c: Improve compatibility with makeindex.
+	* styfile.c: Fix escaping of string parameters.
+	Thanks to Yukimasa Morimi.
+	https://github.com/texjporg/tex-jp-build/issues/173
+	* tests/upmendex.test, tests/head1.ist,
+	tests/tort{,W}.idx, tests/ok-tort{,2}.ind:
+	Add tests for encap escape & heading_{pre,post}fix.
+	* Makefile.am: Adjust.
+
+2025-01-25  Karl Berry  <karl@freefriends.org>
+
+	* COPYRIGHT,
+	* main.c: 2025.
+
+2024-11-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.10  Stable version.
+	* configure.ac: Bump version.
+	* {mendex,var,exvar}.h, fread.c, fwrite.c, sort.c, styfile.c:
+	Support for indices with four sublevels,
+	conventionally two sublevels.
+	Thanks to pull request by Sergei Golovan.
+	https://github.com/t-tk/upmendex-package/pull/9
+	* fread.c: Improve error message when reading index entries.
+	https://github.com/t-tk/upmendex-package/issues/13
+	* sort.c: Extend RULEBUFSIZE to adjust ICU 76.1.
+	Revise to avoid compiler warnings.
+	* convert.c: Tweak comment.
+	* tests/{upmendex,pprec,icu}.test: Split test scripts.
+	* tests/nest.test, tests/nested{,3}.{ist,idx,ind},
+	tests/toodeep.idx: Add new tests for nested depth.
+	* tests/upmendex.test, tests/tort{,W}.idx, tests/ok-tort.ind:
+	Add new tests for error/warning.
+	* Makefile.am: Adjust.
+
+2024-07-06  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* version 1.09  Stable version.
+	* configure.ac: Bump version.
+	* fwrite.c:
+	Improve heading of Ö,ö,Ő,ő,Ü,ü,Ű,ű in Hungarian.
+	Thanks to @hair-splitter for the report.
+	https://github.com/t-tk/upmendex-package/issues/10
+
 2024-03-10  Karl Berry  <karl@tug.org>
 
 	* TL'24 release.

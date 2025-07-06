@@ -21,10 +21,13 @@ Section 1.
 @y
 \ifx\undefined\pdfpagewidth
 \else
-  \pdfpagewidth=\pagewd \advance\pdfpagewidth by 2cm
-  \pdfpageheight=\pageht \advance\pdfpageheight by 5cm
+  \pdfpagewidth=\pagewidth \advance\pdfpagewidth by 2cm
+  \pdfpageheight=\pageheight \advance\pdfpageheight by 5cm
   \ifpdflua \pdfhorigin=1cm \pdfvorigin=1cm
   \else \global\hoffset=-1.54cm \global\voffset=-1.54cm \fi
+  \def\startpdf{\def\pagemode{/PageMode /UseOutlines}
+    \ifpdflua\pdfcatalog{\pagemode}
+    \else\special{pdf: docview << \pagemode >>}\fi}
 \fi
 
 @** Introduction.
@@ -37,6 +40,7 @@ additional material specific to \.{CTWILL}. % FIXME
 Until then, \.{CWEAVE}'s sequence of sections will be preserved.
 
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
+modified. The version number parallels the corresponding version of \.{CWEAVE}.
 @y
 A kind of ``user manual'' for \.{CTWILL} can be found in section~%
 \X287:Mogrify {\tentex CWEAVE} into {\tentex CTWILL}\X~and beyond,
@@ -58,6 +62,7 @@ faithful overall rendering of {\itt CTWILL}'s code, though. \hfill
 ---Enjoy!\par}
 \bigskip
 The ``banner line'' defined here should be changed whenever \.{CTWILL} is
+modified. The version number parallels the corresponding version of \.{CWEAVE}.
 @-banner@>
 @$banner {CTWILL}1 =\.{"This\ is\ CTWILL"}@>
 
@@ -81,12 +86,6 @@ Section 2.
 @z
 
 Section 5.
-
-@x
-For backward compatibility with pre-{\mc ANSI} compilers, we replace the
-@y
-And we replace the
-@z
 
 @x
 @d _(s) gettext(s)
@@ -258,6 +257,14 @@ Section 25.
 @-p@>
 @-no_xref@>
 @$no_xref {CTWILL}25 =$\R\\{make\_xrefs}$@>
+@z
+
+Section 27.
+
+@x
+        while (q->num>section_xref_switch) {r=q; q=q->xlink;}
+@y
+        while (q->num>section_xref_switch) {@+r=q; q=q->xlink;@+}
 @z
 
 Section 36.
@@ -512,6 +519,18 @@ Section 80.
 @y
 @ Finally, when the \TEX/ and definition parts have been treated, we have
 \hfil\break|next_control>=begin_C|.
+@z
+
+Section 82.
+
+@x
+  if (p) {
+@y
+  @+ if (!p) return;
+@z
+@x
+  }
+@y
 @z
 
 Section 86.
@@ -1309,9 +1328,21 @@ scrap_pointer p)
 Section 141.
 
 @x
+  xref_pointer q=(xref_pointer)p->xref; /* pointer to cross-reference being examined */
+@y
+  @+ xref_pointer q=(xref_pointer)p->xref; /* pointer to cross-reference being examined */
+@z
+@x
   while (q != xmem) {
 @y
   while (q != xmem) { @+
+@z
+@x
+    else if (m==n+def_flag) {
+        q->num=m; return;
+@y
+    else if (m==n+def_flag) { @+
+        q->num=m; return; @+
 @z
 
 Section 143.
@@ -1411,6 +1442,31 @@ Section 197.
 @y
 @r @ Now here's the |reduce| procedure used in our code for productions,
 @z
+@x
+  scrap_pointer i; /* pointer into scrap memory */
+@y
+  @+ scrap_pointer i; /* pointer into scrap memory */
+@z
+@x
+  pp--; /* we next say |pp++| */
+@y
+@z
+
+Section 198.
+
+@x
+  switch (k) {
+@y
+  @+ switch (k) {
+@z
+
+Section 199.
+
+@x
+static int tracing=off; /* can be used to show parsing details */
+@y
+@+ static int tracing=off; /* used to show parsing details */
+@z
 
 Section 200.
 
@@ -1421,6 +1477,12 @@ Section 200.
 @-n@>
 @%
 @$n {CTWILL}197 \&{short}@>
+@z
+@x
+}
+@y
+}
+pp--; /* we next say |pp++| */
 @z
 
 Section 202.
@@ -1589,9 +1651,12 @@ Section 212--213.
 Section 215.
 
 @x
-@<Append a string or...@>={@+ int count=-1; /* characters remaining before string break */
+  if (count==0) { /* insert a discretionary break in a long string */
+     app_str(@q(@>@q{@>"}\\)\\.{"@q}@>); count=20;
 @y
-@<Append a string or...@>={int count=-1; /* characters remaining before string break */
+  if (count==0) {
+     count=20; @/ /* insert a discretionary break in a long string */
+     app_str(@q(@>@q{@>"}\\)\\.{"@q}@>);
 @z
 
 Section 220.
@@ -1815,26 +1880,42 @@ Section 245.
 @-phase_two@>
 @z
 
+Section 246.
+
+@x
+@d save_position() save_line=out_line; save_place=out_ptr
+@y
+@d usage_sentinel (struct perm_meaning *)1
+@-usage_sentinel@>
+@$usage_sentinel {CTWILL}247 =(\&{struct} \&{perm\_meaning} ${}{*}{}$) \T{1}@>
+@d save_position() save_line=out_line; save_place=out_ptr
+@z
+
 Section 247.
 
 @x
 @ @d usage_sentinel (struct perm_meaning *)1
-@<Translate the current section@>= {
+@<Translate the \9{c}current section@>= {
 @y
-@ @d usage_sentinel (struct perm_meaning *)1
-@-usage_sentinel@>
-@$usage_sentinel {CTWILL}247 =(\&{struct} \&{perm\_meaning} ${}{*}{}$) \T{1}@>
-@<Translate the current section@>=@+ {
+@ @<Translate the \9{c}current section@>= @+ {
+@z
+
+Section 249.
+
+@x
+    case section_name: loc-=2; next_control=get_next(); /* reprocess */
+@y
+    case section_name: @/ loc-=2; @/ next_control=get_next(); /* reprocess */
 @z
 
 Section 251.
 
 @x
 finish_C( /* finishes a definition or a \CEE/ part */
-  boolean visible) /* |true| if we should produce \TeX\ output */
+  bool visible) /* |true| if we should produce \TeX\ output */
 @y
 finish_C( /* finishes a definition or a \CEE/ part */
-  boolean visible) /* |true| if we should produce \TeX\ output */
+  bool visible) /* |true| if we should produce \TeX\ output */
 @-finish_C@>
 @$finish_C {CTWILL}251 \&{static} \&{void} (\,)@>
 @z
@@ -1842,18 +1923,18 @@ finish_C( /* finishes a definition or a \CEE/ part */
 Section 252.
 
 @x
-@ @<Predecl...@>=@+static void finish_C(boolean);
+@ @<Predecl...@>=@+static void finish_C(bool);
 @y
-@ @<Predecl...@>=@+static void finish_C(boolean);
+@ @<Predecl...@>=@+static void finish_C(bool);
 @-finish_C@>
 @z
 
 Section 254.
 
 @x
-@ @<Start a format...@>= {
+@ @<Start \9{a}a format...@>= {
 @y
-@r @ @<Start a format...@>= {
+@r @ @<Start \9{a}a format...@>= {
 @z
 
 Section 255.
@@ -2142,9 +2223,9 @@ static struct perm_meaning {
 Section 300.
 
 @x
-@ @<Predec...@>=@+static boolean app_supp(text_pointer);
+@ @<Predec...@>=@+static bool app_supp(text_pointer);
 @y
-@ @<Predec...@>=@+static boolean app_supp(text_pointer);
+@ @<Predec...@>=@+static bool app_supp(text_pointer);
 @-app_supp@>
 @z
 

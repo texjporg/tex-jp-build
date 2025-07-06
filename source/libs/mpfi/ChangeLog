@@ -1,3 +1,15 @@
+2025-01-21  Vincenzo Mantova <vlmantova@gmail.com>
+
+	* ac/withenable.ac (KPSE_WITH_LIB): dependencies are
+	[mpfr gmp], no third option. (KPSE_WITH_LIB fails to check.)
+	https://tug.org/pipermail/tlbuild/2024q2/005555.html
+
+2024-12-10  Florian Schmaus  <flo@geekplace.eu>
+
+	* configure.ac: remove MPFI_CONFIGS, not defined anywhere.
+	https://bugs.gentoo.org/945908
+	https://github.com/TeX-Live/texlive-source/pull/74
+
 2024-02-01  Luigi Scarso  <luigi.scarso@gmail.com>
 
 	* import mpfi-1.5.4, first integration into TL/mpost.

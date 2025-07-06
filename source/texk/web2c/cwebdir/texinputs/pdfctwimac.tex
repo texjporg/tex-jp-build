@@ -1,11 +1,11 @@
 % standard macros for CWEB listings (in addition to plain.tex)
-% Version 4.11 --- October 2023
+% Version 4.12 --- August 2024
 % modified for pages produced by CTWILL
 % further modified for page size of the MMIXware book
 % modified for PDF output with 'tex "\let\pdf+' or '{lua|pdf|xe}tex'
 % This file is not copyrighted and can be used freely.
 \ifx\renewenvironment\undefined\else\endinput\fi % LaTeX will use other macros
-\xdef\fmtversion{\fmtversion+CTWILL4.11+LNCS+PDF}
+\xdef\fmtversion{\fmtversion+CTWILL4.12+LNCS+PDF}
 
 \let\:=\. % preserve a way to get the dot accent
  % (all other accents will still work as usual)
@@ -26,15 +26,6 @@
 
 \font\ninerm=cmr9
 \let\mc=\ninerm % medium caps
-\def\CEE/{{\mc C\spacefactor1000}}
-\def\UNIX/{{\mc U\kern-.05emNIX\spacefactor1000}}
-\def\TEX/{\TeX}
-\def\CPLUSPLUS/{{\mc C\PP\spacefactor1000}}
-\def\Cee{\CEE/} % for backward compatibility
-\def\Cpp{\CPLUSPLUS/} % for backward compatibility
-\def\9#1{}
- % with this definition of \9 you can say @:sort key}{TeX code@>
- % to alphabetize an index entry by the sort key but format with the TeX code
 \font\eightrm=cmr8
 \font\sixrm=cmr6
 \font\ninei=cmmi9
@@ -146,6 +137,16 @@
 \font\titlefont=cmr7 scaled\magstep4 % title on the contents page
 \font\ttitlefont=cmtt10 scaled\magstep2 % typewriter type in title
 
+\def\CEE/{{\mc C\spacefactor1000}}
+\def\UNIX/{{\mc U\kern-.05emNIX\spacefactor1000}}
+\def\TEX/{\TeX}
+\def\CPLUSPLUS/{{\mc C\PP\spacefactor1000}}
+\def\Cee{\CEE/} % for backward compatibility
+\def\Cpp{\CPLUSPLUS/} % for backward compatibility
+\def\9#1{}
+ % with this definition of \9 you can say @:sort key}{TeX code@>
+ % to alphabetize an index entry by the sort key but format with the TeX code
+
 \def\\#1{\leavevmode\hbox{\it#1\/\kern.05em}} % italic type for identifiers
 \def\|#1{\leavevmode\hbox{$#1$}} % one-letter identifiers look better this way
 \def\&#1{\leavevmode\hbox{\bf
@@ -228,11 +229,9 @@
   \Y\noindent{\hangindent2\em\baselineskip10pt%
     \eightrm#1~\ifacro{\pdfnote#2.}\else#2\fi.\par}}
 
-\newtoks\toksA \newtoks\toksB \newtoks\toksC \newtoks\toksD
-\newtoks\toksE \newtoks\toksF \newtoks\usersanitizer
+\newtoks\toksA \newtoks\toksE
 \newcount\countA \countA=0 \newcount\countB \countB=0
-\newcount\countC \countC=0 \newcount\countD \countD=0
-\newif\iftokprocessed \newif\ifTnum \newif\ifinstr
+\newcount\countNOS \countNOS=0
 {\def\\{\global\let\spacechar= }\\ }
 
 % Here we decide the output format, depending on the TeX engine in use:
@@ -253,7 +252,7 @@
   \def\Black{\pdfliteral{0 g 0 G}} % use rgb colors for direct PDF output too
   \def\Blue{\pdfliteral{\pdflinkcolor\space rg \pdflinkcolor\space RG}}
 \fi
-\ifacrohint \input cwebacromac \fi % load hypertext macros
+\input cwebacromac % load hypertext macros
 
 \def\lapstar{\rlap{*}}
 \def\stsec{\tenpoint\rightskip=0pt % get out of C mode (cf. \B)
@@ -297,17 +296,17 @@
   {\xdef\secstar{#1}\let\*=\empty\xdef\secno{#1}}% remove \* from section name
   \vskip\intersecskip\startsection\ignorespaces}
 \outer\def\N{\ifvoid\partialpage\lefttrue
-  \else\ifdim\ht\partialpage<\pageht \leftfalse\else\lefttrue\fi\fi\NNN}
+  \else\ifdim\ht\partialpage<\pageheight \leftfalse\else\lefttrue\fi\fi\NNN}
 \outer\def\NN{\ifvoid\partialpage\leftfalse
-  \else\ifdim\ht\partialpage<\pageht \lefttrue\else\leftfalse\fi\fi\NNN}
+  \else\ifdim\ht\partialpage<\pageheight \lefttrue\else\leftfalse\fi\fi\NNN}
 \outer\def\NNN#1#2#3.{% beginning of starred section
-  \ifacro{\toksF={}\makeoutlinetoks#3\outlinedone\outlinedone}\fi
+  \ifacro{\makeoutlinetoks#3\outlinedone}\fi
   \gdepth=#1\gtitle={#3}\def\secno{#2}\xdef\secstar{#2}
   \ifleft \flushout
     \gdef\rlhead{\let\i=I\uppercase{\ignorespaces#3}} % running left headline
     \global\let\rrhead=\rlhead % running right headline
   \else\global\setbox\partialpage=\vbox{
-          \vbox to\pageht{\unvbox\partialpage\vfill}\break}
+          \vbox to\pageheight{\unvbox\partialpage\vfill}\break}
       \gdef\rrhead{\let\i=I\uppercase{\ignorespaces#3}}
   \fi
   \message{*\secno} % progress report
@@ -334,7 +333,7 @@
 \def\T#1{\leavevmode % octal, hex or decimal constant
   \hbox{$\def\?{\kern.2em}%$%
     \let\ \, % C++ digit separator becomes a little white space
-    \def\$##1{\egroup_{\rm##1}\bgroup}% suffix to constant
+    \def\$##1{\egroup_{\rm##1}\bgroup}%$% suffix to constant
     \def\_{\cdot 10^{\aftergroup}}% power of ten (via dirty trick)
     \let\~=\oct \let\^=\hex \let\\=\bin {#1}$}}%$%
 \def\U{\note{This code is used in section}} % xref for use of a section
@@ -368,12 +367,12 @@
 % \count and \toks registers 200--219 are also used to keep track of refs
 \catcode`\@=11
 \newcount\@n \newcount\@m \newcount\@p
-\newdimen\pageht \pageht=19cm
-\newdimen\pagewd \pagewd=13cm
-\newdimen\colwd \colwd=\pagewd
+\newdimen\pageheight \pageheight=19cm
+\newdimen\pagewidth \pagewidth=13cm
+\newdimen\colwd \colwd=\pagewidth
  \advance\colwd by -2pc \divide\colwd by 3 % for three columns
-\newdimen\fullpageht \fullpageht=\pageht \advance\fullpageht by 4pc
-\newdimen\pagethresh \pagethresh=2\pageht
+\newdimen\fullpageheight \fullpageheight=\pageheight \advance\fullpageheight by 4pc
+\newdimen\pagethresh \pagethresh=2\pageheight
 \newdimen\nsize \newdimen\msize
 \newskip\intersecskip \intersecskip=8pt plus 2pt minus 3pt
 \newbox\partialpage
@@ -384,7 +383,7 @@
 \newif\iftitle \newif\ifleft
 
 \def\flushout{\ifvoid\partialpage\else
-    \setbox0=\vsplit\partialpage to \pageht
+    \setbox0=\vsplit\partialpage to \pageheight
     \shipout\vbox{
       \vbox to 3pc{\leftheadline\vfill}
       \nointerlineskip\box0}
@@ -398,7 +397,7 @@
       \hyphenpenalty 10000 \exhyphenpenalty 10000
       \noindent\vbox to1pt{}\par % 1pt = \topskip - \ninept
       \readin}
-    \shipout\vbox to\fullpageht{
+    \shipout\vbox to\fullpageheight{
       \vbox to 3pc{\rightheadline\vfill}
       \unvbox\partialpage
       \vfill
@@ -417,10 +416,10 @@
     \@n=199 \loop \ifnum\@n<222 \toks\@n={} \count\@n=0 \advance\@n 1 \repeat
     \nrefs=0
     \baseno=\secno}}
-\def\leftheadline{\hbox to\pagewd{\vbox to10pt{}%
+\def\leftheadline{\hbox to\pagewidth{\vbox to10pt{}%
   \iftitle\global\titlefalse\else\ninerm\title:\enspace \eightsl\rlhead\fi
   \hfil\eightrm\folio}}
-\def\rightheadline{\hbox to\pagewd{\vbox to10pt{}%
+\def\rightheadline{\hbox to\pagewidth{\vbox to10pt{}%
   \eightrm\folio\hfil\ninerm\title:\enspace \eightsl\rrhead\/}}
 
 \def\mini{\begingroup \obeylines \globaldefs=1 \newrefs=\bgroup}
@@ -502,28 +501,25 @@
 \def\donewithpage#1 {\let\readin=\relax}
 \catcode`\@=12
 
-\hsize=\pagewd \vsize=\maxdimen \output={\twillout}
+\hsize=\pagewidth \vsize=\maxdimen \output={\twillout}
 
 %\let\page=\pagebody \raggedbottom
-% \def\page{\box255 }\normalbottom % faster, but loses plain TeX footnotes
-%\def\normaloutput#1#2#3{\ifodd\pageno\hoffset=\pageshift\fi
- %\shipout\vbox{
-  %\vbox to\fullpageht{
-  %\iftitle\global\titlefalse
-  %\else\hbox to\pagewd{\vbox to10pt{}\ifodd\pageno #3\else#2\fi}\fi
-  %\vfill#1}} % parameter #1 is the page itself
-  %\global\advance\pageno by1}
+\def\page{\box255 }\normalbottom % faster, but loses plain TeX footnotes
+\def\normaloutput#1#2#3{\shipout\vbox{\vbox to\fullpageheight{%
+  \iftitle\global\titlefalse
+  \else\hbox to\pagewidth{\vbox to10pt{}%
+    \ifodd\pageno\vbox to3pc{#3\vfill}\else\vbox to3pc{#2\vfill}\fi}\fi
+  #1\vfill}} % parameter #1 is the page itself
+  \global\advance\pageno by1}
 %\def\topofcontents{\centerline{\titlefont\title}\vskip.7in
   %\vfill} % this material will start the table of contents page
-%\def\startpdf{\ifpdf \ifpdflua\pdfcatalog{/PageMode /UseOutlines}
-  %\else {\special{pdf: docview << /PageMode /UseOutlines >>}}\fi\fi}
 %\def\botofcontents{\vfill
   %\centerline{\covernote}} % this material will end the table of contents page
 %\def\covernote{}
 \def\contentspagenumber{0} % default page number for table of contents
 %\newdimen\pageshift \pageshift=\hoffset
    %% shift righthand pages wrt lefthand ones (changed in version 3.70)
-%\def\setpage{\hsize\pagewd\vsize\pageht} % use after changing page size
+\def\setpage{\hsize\pagewidth\vsize\pageheight} % use after changing page size
 \def\contentsfile{\jobname.toc} % file that gets table of contents info
 \def\readcontents{\input \contentsfile}
 \def\readsections{\input \jobname.scn}
@@ -539,28 +535,34 @@
     \immediate\write\cont{\catcode `\noexpand\@=12\relax} % \makeatother
     \immediate\closeout\cont % the contents information has been fully gathered
   \fi}
-\def\fin{\ifacro \message{Section names:}
-  \def\U##1.{} \def\Us##1.{} \def\Q##1.{} \def\Qs##1.{} \let\I=\relax \let\*=*
-  \newrefs={} \output={\shipout\box255}
+\def\fin{\ifacro \message{Section names:} \let\Xpdf\X
+  \def\note##1##2.{\quad{\eightrm##1~{\sevenrm\pdfnote##2.}.}}
+  \def\Q{\note{Cited in section}} % crossref for mention of a section
+  \def\Qs{\note{Cited in sections}} % crossref for mentions of a section
+  \def\U{\note{Used in section}} % crossref for use of a section
+  \def\Us{\note{Used in sections}} % crossref for uses of a section
+  \def\I{\par\hangindent 2em\noindent}\let\*=*
+  \def\rlhead{NAMES OF THE SECTIONS} % running left headline
+  \let\rrhead=\rlhead % running right headline
+  \output={\normaloutput\page\rightheadline\leftheadline}
+  \setpage \startpdf
   \def\outsecname{Names of the sections}
   \ifpdflua \makebookmarks \countsections
     \pdfdest name {NOS} fith
-    \pdfoutline goto name {NOS} count -\the\countD {\outsecname}
-    \def\X##1:##2\X{\firstsecno##1.%
-      {\toksF={}\makeoutlinetoks##2\outlinedone\outlinedone}%
-      \pdfoutline goto num \the\toksA \expandafter{\the\toksE}}
+    \pdfoutline goto name {NOS} count -\the\countNOS {\outsecname}
   \else \special{pdf: outline -1 << /Title (\outsecname)
-      /Dest [ @thispage /FitH @ypos ] >>}
-    \def\X##1:##2\X{\firstsecno##1.%
-      {\toksF={}\makeoutlinetoks##2\outlinedone\outlinedone}%
-      \special{pdf: outline 0 << /Title (\the\toksE)
-        /A << /S /GoTo /D (\romannumeral\the\toksA) >> >>}}
-  \fi \readsections \fi}
+      /Dest [ @thispage /FitH @ypos ] >>}\fi
+  \def\X##1:##2\X{\Xpdf##1:##2\X \firstsecno##1.%
+    {\makeoutlinetoks##2\outlinedone}%
+    \ifpdflua \pdfoutline goto num \the\toksA \expandafter{\the\toksE}
+    \else \special{pdf: outline 0 << /Title (\the\toksE)
+        /A << /S /GoTo /D (\romannumeral\the\toksA) >> >>}\fi}
+  \readsections \fi}
 \def\makebookmarks{\let\ZZ=\writebookmarkline \readcontents\relax}
 \def\countsections{\message{Number of named sections:}
-  {\def\I{\global\advance\countD by 1}\def\X##1\X{\relax}
+  {\def\I{\global\advance\countNOS by 1}\def\X##1\X{\relax}
   \def\Q##1.{\relax}\def\Qs##1.{\relax}\def\U##1.{\relax}\def\Us##1.{\relax}
-  \readsections\relax}\message{\the\countD}}
+  \readsections\relax}\message{\the\countNOS}}
 \def\writebookmarkline#1#2#3#4#5{{%
   \let\(=\let \let\)=\let \let\[=\let \let\]=\let \let\/=\let
   \pdfoutline goto num #3 count -\expnumber{chunk#2.#3} {#5}}}
@@ -569,11 +571,11 @@
 % \ifodd\pageno\else\titletrue\null\vfill\eject\fi % for duplex printers
   %\rightskip 0pt \hyphenpenalty 50 \tolerance 200
   %\setpage \output={\normaloutput\page\lheader\rheader}
-  %\titletrue % prepare to output the table of contents
+  %\ifpdf\startpdf\fi \titletrue % prepare to output the table of contents
   %\pageno=\contentspagenumber
   %\def\grouptitle{TABLE OF CONTENTS}
   %\message{Table of contents:}
-  %\topofcontents \startpdf
+  %\topofcontents
   %\line{\hfil Section\hbox to3em{\hss Page}}
   %\let\ZZ=\contentsline
   %\readcontents\relax % read the contents info
@@ -581,7 +583,7 @@
 %\def\contentsline#1#2#3#4#5{\ifnum#2=0 \smallbreak\fi
     %\line{\consetup{#2}#1
       %\rm\leaders\hbox to .5em{.\hfil}\hfil
-      %\ \ifacro\pdflink{#3}{\romannumeral#3}\else#3\fi\hbox to3em{\hss#4}}}
+      %\ \ifacro\pdflink{#3}\else#3\fi\hbox to3em{\hss#4}}}
 %\def\consetup#1{\ifcase#1 \bf % depth -1 (@**)
   %\or % depth 0 (@*)
   %\or \hskip2em % depth 1 (@*1)

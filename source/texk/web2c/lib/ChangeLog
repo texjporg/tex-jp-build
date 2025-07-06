@@ -1,3 +1,30 @@
+2025-04-26  Yukimasa Morimi  <h20y6m@yahoo.co.jp>
+
+	* openclose.c: Convert recorder filename to UTF-8.
+	https://github.com/texjporg/tex-jp-build/issues/45
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-03-07  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* texmfmp.c (gettexstring) [XETEX]: correct non-BMP characters in
+	filenames with synctex.
+
+2025-02-28  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* texmfmp.c: Remove problematic lines for windows (windows only)
+
+2025-02-04  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* texmfmp.c: Avoid segmentation fault.
+	https://github.com/texjporg/tex-jp-build/issues/174
+
+2025-01-01  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* printversion.c: Update copyright year.
+
 2024-04-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* Makefile.am: Remove eptex.

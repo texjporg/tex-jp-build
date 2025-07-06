@@ -68,7 +68,7 @@ int dicread(const char *filename)
 	FILE *fp;
 
 	if (filename!=NULL) {
-		filename = KP_find_file(&kp_dict,filename);
+		filename = KP_find_dict_file(filename);
 		if(kpse_in_name_ok(filename))
 			fp=fopen(filename,"rb");
 		else
@@ -95,7 +95,7 @@ int dicread(const char *filename)
 ENV:
 	envfile=kpse_var_value("INDEXDEFAULTDICTIONARY");
 	if ((envfile!=NULL)&&(strlen(envfile)!=0)) {
-		envfile = KP_find_file(&kp_dict,envfile);
+		envfile = KP_find_dict_file(envfile);
 		if(kpse_in_name_ok(envfile))
 			fp=fopen(envfile,"rb");
 		else
@@ -193,7 +193,7 @@ static int dcomp(const void *bf1, const void *bf2)
 	return 0;
 }
 
-/*   convert to capital-hiragana character   */
+/*   convert to YOMI (reading) or strings of phonograms   */
 int convert(UChar *buff1, UChar *buff2)
 {
 	int i=0,j=0,k;
@@ -234,7 +234,8 @@ int convert(UChar *buff1, UChar *buff2)
 			else if (is_latin(buff3)||is_cyrillic(buff3)||is_greek(buff3)
 				 ||is_jpn_kana(buff3)||is_kor_hngl(buff3)||is_zhuyin(buff3)
 				 ||is_numeric(buff3)==1||is_type_symbol(buff3)==1
-				 ||is_devanagari(buff3)||is_thai(buff3)||is_arabic(buff3)||is_hebrew(buff3)
+				 ||is_brahmic(buff3)||is_thai(buff3)||is_lao(buff3)
+				 ||is_arabic(buff3)||is_hebrew(buff3)
 					||is_type_mark_or_punct(buff3)) {
 				buff2[j]=buff3[0];
 				if (wclen==2) buff2[j+1]=buff3[1];

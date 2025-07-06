@@ -740,7 +740,7 @@ if cur_cs<>undefined_primitive then begin
   if t>max_command then begin
     cur_cmd := t;
     cur_chr := prim_equiv(cur_cs);
-    cur_tok := (cur_cmd*@'400)+cur_chr;
+    cur_tok := (cur_cmd*max_char_val)+cur_chr;
     cur_cs  := 0;
     goto reswitch;
     end
@@ -879,14 +879,20 @@ function str_toks(@!b:pool_pointer):pointer;
 function str_toks_cat(@!b:pool_pointer;@!cat:small_number):pointer;
 @z
 
-@x \Ucharcat: str_toks_cat
-  else if t=" " then t:=space_token
-  else t:=other_token+t;
+@x
+    if (cc=not_cjk) then cc:=other_kchar;
 @y
-  else if (t=" ")and(cat=0) then t:=space_token
-  else if (cat=0)or(cat>=kanji) then t:=other_token+t
-  else if cat=active_char then t:= cs_token_flag + active_base + t
-  else t:=left_brace_token*cat+t;
+    if (cat>=kanji)and(cat<=modifier) then cc:=cat else if (cc=not_cjk) then cc:=other_kchar;
+@z
+
+@x \Ucharcat: str_toks_cat
+    if t=" " then t:=space_token
+    else t:=other_token+t;
+@y
+    if (t=" ")and(cat=0) then t:=space_token
+    else if (cat=0)or((cat>=kanji)and(cat<=modifier)) then t:=other_token+t
+    else if cat=active_char then t:= cs_token_flag + active_base + t
+    else t:=left_brace_token*cat+t;
 @z
 
 @x \Ucharcat: str_toks_cat
@@ -962,7 +968,7 @@ we have to create a temporary string that is destroyed immediately after.
 
 @ Not all catcode values are allowed by \.{\\Ucharcat}:
 @d illegal_Ucharcat_ascii_catcode(#)==(#<left_brace)or(#>active_char)or(#=out_param)or(#=ignore)
-@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>other_kchar)
+@d illegal_Ucharcat_wchar_catcode(#)==(#<kanji)or(#>modifier)
 
 @p procedure conv_toks;
 @z
@@ -973,7 +979,7 @@ we have to create a temporary string that is destroyed immediately after.
 @!save_scanner_status:small_number; {|scanner_status| upon entry}
 @!save_def_ref: pointer; {|def_ref| upon entry, important if inside `\.{\\message}'}
 @!save_warning_index: pointer;
-@!bool: boolean; {temp boolean}
+@!booltemp: boolean; {temp boolean}
 @!u: str_number; {saved current string string}
 @!s: str_number; {first temp string}
 @!i: integer;
@@ -1079,9 +1085,9 @@ pdf_mdfive_sum_code:
     save_warning_index := warning_index;
     save_def_ref := def_ref;
     save_cur_string;
-    bool := scan_keyword("file");
+    booltemp := scan_keyword("file");
     scan_pdf_ext_toks;
-    if bool then s := tokens_to_string(def_ref)
+    if booltemp then s := tokens_to_string(def_ref)
     else begin
       isprint_utf8:=true; s := tokens_to_string(def_ref); isprint_utf8:=false;
     end;
@@ -1090,7 +1096,7 @@ pdf_mdfive_sum_code:
     warning_index := save_warning_index;
     scanner_status := save_scanner_status;
     b := pool_ptr;
-    getmd5sum(s, bool);
+    getmd5sum(s, booltemp);
     link(garbage) := str_toks(b);
     flush_str(s);
     ins_list(link(temp_head));
@@ -1148,19 +1154,41 @@ pdf_file_dump_code:
   end;
 uniform_deviate_code:     scan_int;
 normal_deviate_code:      do_nothing;
-Uchar_convert_code:       scan_char_num;
+Uchar_convert_code: begin scan_char_num;
+    if not check_echar_range(cur_val) then
+      if kcat_code(kcatcodekey(cur_val))=not_cjk then cat:=other_kchar;
+    end;
 Ucharcat_convert_code:
   begin
-    scan_ascii_num;
+    scan_char_num;
     i:=cur_val;
     scan_int;
-    if illegal_Ucharcat_ascii_catcode(cur_val) then
-      begin print_err("Invalid code ("); print_int(cur_val);
+    if i<=@"7F then { no |wchar_token| }
+      begin if illegal_Ucharcat_ascii_catcode(cur_val) then
+        begin print_err("Invalid code ("); print_int(cur_val);
 @.Invalid code@>
-      print("), should be in the ranges 1..4, 6..8, 10..13");
-      help1("I'm going to use 12 instead of that illegal code value.");@/
-      error; cat:=12;
-    end else cat:=cur_val;
+        print("), should be in the ranges 1..4, 6..8, 10..13");
+        help1("I'm going to use 12 instead of that illegal code value.");@/
+        error; cat:=12;
+      end else cat:=cur_val;
+    end else if check_echar_range(i) then
+      begin if (illegal_Ucharcat_ascii_catcode(cur_val))
+        and (illegal_Ucharcat_wchar_catcode(cur_val)) then
+        begin print_err("Invalid code ("); print_int(cur_val);
+@.Invalid code@>
+        print("), should be in the ranges 1..4, 6..8, 10..13, 16..20");
+        help1("I'm going to use 12 instead of that illegal code value.");@/
+        error; cat:=12;
+      end else cat:=cur_val;
+    end else { |wchar_token| only }
+      begin if illegal_Ucharcat_wchar_catcode(cur_val) then
+        begin print_err("Invalid code ("); print_int(cur_val);
+@.Invalid code@>
+        print("), should be in the ranges 16..20");
+        help1("I'm going to use 18 instead of that illegal code value.");@/
+        error; cat:=other_kchar;
+      end else cat:=cur_val;
+      end;
     cur_val:=i;
     end;
 @z
@@ -1173,9 +1201,9 @@ pdf_strcmp_code: print_int(cur_val);
 uniform_deviate_code:     print_int(unif_rand(cur_val));
 normal_deviate_code:      print_int(norm_rand);
 Uchar_convert_code:
-if is_char_ascii(cur_val) then print_char(cur_val) else print_kanji(cur_val);
+if check_echar_range(cur_val)>1 then print_char(cur_val) else print_kanji(cur_val);
 Ucharcat_convert_code:
-if cat<kanji then print_char(cur_val) else print_kanji(cur_val);
+if (cat<kanji)and(check_echar_range(cur_val)>1) then print_char(cur_val) else print_kanji(cur_val);
 @z
 
 @x e-pTeX: if primitives - leave room for \ifincsname
@@ -1856,28 +1884,17 @@ if_font_char_code:begin scan_font_ident; n:=cur_val;
 
 @x
 procedure print_kanji(@!s:KANJI_code); {prints a single character}
-begin
-if s>@"FF then
-  begin print_char(@"100+Hi(s)); print_char(@"100+Lo(s));
-  end else print_char(s);
-end;
 @y
-procedure print_kanji(@!s:integer); {prints a single character}
-begin
-if s>@"FF then begin
-  if isprint_utf8 then begin
-    s:=UCStoUTF8(toUCS(s));
-    if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
-    if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
-    if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
-                        print_char(@"100+BYTE4(s));
-  end
-  else begin print_char(@"100+Hi(s)); print_char(@"100+Lo(s)); end;
-end
-else print_char(s);
-end;
+procedure print_kanji(@!s:KANJI_code); {prints a single character}
+@z
 
-
+@x
+else begin
+  s:=toBUFF(s mod max_cjk_val);
+@y
+else begin
+  if isprint_utf8 then s:=UCStoUTF8(toUCS(s mod max_cjk_val))
+  else s:=toBUFF(s mod max_cjk_val);
 @z
 
 @x

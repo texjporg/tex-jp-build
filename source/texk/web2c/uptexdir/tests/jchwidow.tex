@@ -1,0 +1,131 @@
+%#!euptex
+\font\cmr=cmr10\cmr
+\ifx\kanjiskip\undefined\else
+  \ifnum\jis"2121="3000
+    \jfont\jpy=umin10 at 10pt\jpy
+  \else
+    \jfont\jpy=min10 at 10pt\jpy
+  \fi
+\fi
+
+\def\TEST#1{{\setbox0=\vbox{\noindent
+  ああああああ%
+  \ifx\scantokens\undefined\else\scantokens\fi
+  {#1}}\showboxbreadth10000\showboxdepth10000\tracingonline1\showbox0}}
+
+\message{TEST}
+
+\chardef\CR=`す
+\TEST{す{\kcatcode`す=18 す}「。}
+\TEST{\CR。}
+\ifx\Ucharcat\undefined\else
+\TEST{\Ucharcat`す 16。}
+\TEST{\Ucharcat`す 17。}
+\TEST{\Ucharcat`す 18。}
+\TEST{\Ucharcat`す 19。}
+\fi
+
+\TEST{す。}
+\TEST{す\char\kuten"0103}
+\ifx\kchar\undefined\else
+\TEST{す\kchar\kuten"0103}
+\fi
+
+\TEST{\char\kuten"0419。}
+\TEST{\char\kuten"0419\char\kuten"0103}
+\ifx\kchar\undefined\else
+\TEST{\char\kuten"0419\kchar\kuten"0103}
+
+\kchardef\KR=`す
+\TEST{\KR。}
+\TEST{\kchar\kuten"0419。}
+\TEST{\kchar\kuten"0419\char\kuten"0103}
+\TEST{\kchar\kuten"0419\kchar\kuten"0103}
+\fi
+
+{\kcatcode"E0EA=15%  0xE0EA:: UTF-16:PUA(U+E0EA), EUC-JP:琲(U+7432), Shift_JIS:瑕(U+7455)
+\ifx\kchar\undefined\else
+  \message{KCHAR"E0EA, kcatcode=15}
+  \def\S{\kchar"E0EA}
+  \TEST{い\kchar"E0EA。}
+  \TEST{\kchar"E0EA。}
+  \TEST{\relax\kchar"E0EA。}
+  \TEST{\vrule\kchar"E0EA。}
+  \TEST{b\kchar"E0EA。}
+  \TEST{い\S。}
+\fi
+
+  \message{CHAR"E0EA, kcatcode=15}
+  \def\S{\char"E0EA}
+  \TEST{い\char"E0EA。}
+  \TEST{\char"E0EA。}
+  \TEST{\relax\char"E0EA。}
+  \TEST{\vrule\char"E0EA。}
+  \TEST{b\char"E0EA。}
+  \TEST{い\S。}
+
+\ifx\kchardef\undefined\else
+  \message{KCHARDEF"E0EA, kcatcode=15}
+  \kchardef\KA="E0EA
+  \TEST{い\KA 。}
+  \TEST{\KA 。}
+  \TEST{\relax\KA 。}
+  \TEST{\vrule\KA 。}
+  \TEST{b\KA 。}
+  \TEST{い\S。}
+\fi
+
+  \message{CHARDEF"E0EA, kcatcode=15}
+  \chardef\CA="E0EA
+  \TEST{い\CA 。}
+  \TEST{\CA 。}
+  \TEST{\relax\CA 。}
+  \TEST{\vrule\CA 。}
+  \TEST{b\CA 。}
+}
+
+%% prebreakpenalty, postbreakpenalty
+\ifx\kchar\undefined\else\ifnum\jis"2121="3000
+
+\showboxbreadth10000
+\showboxdepth10000
+
+% default
+\setbox0\hbox{さㇷ゚サしか゚シすあ゙スせ𛂦゙セそ𛂱゚ソたっタ}
+\showbox0
+
+% prebreakpenalty
+\prebreakpenalty`ㇷ=41
+\prebreakpenalty`か=42
+\prebreakpenalty`あ=43
+\prebreakpenalty`𛂦=44
+\prebreakpenalty`𛂱=45
+\prebreakpenalty`っ=46
+\setbox1\hbox{たㇷ゚タちか゚チつあ゙ツて𛂦゙テと𛂱゚トなっナ}
+\showbox1
+
+% postbreakpenalty
+\postbreakpenalty`ㇷ=51
+\postbreakpenalty`か=52
+\postbreakpenalty`あ=53
+\postbreakpenalty`𛂦=54
+\postbreakpenalty`𛂱=55
+\postbreakpenalty`っ=56
+\setbox2\hbox{なㇷ゚ナにか゚ニぬあ゙ヌね𛂦゙ネの𛂱゚ノはっハ}
+\showbox2
+
+% reset
+\prebreakpenalty`ㇷ=0
+\postbreakpenalty`か=0
+\prebreakpenalty`あ=0
+\postbreakpenalty`𛂦=0
+\prebreakpenalty`𛂱=0
+\postbreakpenalty`っ=0
+\setbox3\hbox{はㇷ゚ハひか゚ヒふあ゙フへ𛂦゙ヘほ𛂱゚ホまっマ}
+\showbox3
+
+\fi
+\fi
+
+\bye
+

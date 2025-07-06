@@ -1,5 +1,5 @@
 /* 
- Copyright (c) 2008-2017 jerome DOT laurens AT u-bourgogne DOT fr
+ Copyright (c) 2008-2024 jerome DOT laurens AT u-bourgogne DOT fr
  
  This file is part of the SyncTeX package.
  
@@ -968,10 +968,11 @@ void synctexterminate(boolean log_opened)
                         if (SYNCTEX_interaction>0) {
 #ifdef W32UPTEXSYNCTEX
                         {
-                        char *stmp = chgto_oem(tmp);
+                        int savecp = GetConsoleOutputCP();
+                        SetConsoleOutputCP(file_system_codepage);
                         printf((synctex_ctxt.flags.quoted ? "\nSyncTeX written on \"%s\"\n" : "\nSyncTeX written on %s.\n"),
-                               stmp);
-                        free(stmp);
+                               tmp);
+                        SetConsoleOutputCP(savecp);
                         }
 #else
 #ifndef SYNCTEX_PRE_NL
@@ -2060,14 +2061,14 @@ static inline void synctex_record_node_kern(halfword p)
 #   endif
     if (SYNCTEX_SHOULD_COMPRESS_V) {
         len = SYNCTEX_fprintf(SYNCTEX_FILE, "k%i,%i:%i,=:%i\n",
-                              SYNCTEX_TAG_MODEL(p,glue),
-                              SYNCTEX_LINE_MODEL(p,glue),
+                              SYNCTEX_TAG_MODEL(p,kern),
+                              SYNCTEX_LINE_MODEL(p,kern),
                               SYNCTEX_CTXT_CURH UNIT,
                               SYNCTEX_WIDTH(p) UNIT);
     } else {
         len = SYNCTEX_fprintf(SYNCTEX_FILE, "k%i,%i:%i,%i:%i\n",
-                              SYNCTEX_TAG_MODEL(p,glue),
-                              SYNCTEX_LINE_MODEL(p,glue),
+                              SYNCTEX_TAG_MODEL(p,kern),
+                              SYNCTEX_LINE_MODEL(p,kern),
                               SYNCTEX_CTXT_CURH UNIT,
                               SYNCTEX_CTXT_CURV UNIT,
                               SYNCTEX_WIDTH(p) UNIT);

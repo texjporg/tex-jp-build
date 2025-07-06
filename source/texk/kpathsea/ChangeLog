@@ -1,3 +1,88 @@
+2025-05-04  Karl Berry  <karl@freefriends.org>
+
+	* expand.c (kpathsea_expand_kpse_dot): doc fix.
+
+2025-04-18  Karl Berry  <karl@freefriends.org>
+
+	* c-ctype.h (kpse_isascii): new macro, since isascii() can
+	apparently longer be used portably, thanks to POSIX and gcc 15.
+	(ISALNUM, ..., ISBLANK): use it. Discussion:
+	https://tug.org/pipermail/tlbuild/2025q2/005743.html
+
+2025-04-08  Karl Berry  <karl@freefriends.org>
+
+	* c-memstr.h (strtok, strstr): remove () fallback declarations,
+	since C23 considers that the same as (void). Apparently
+	HAVE_STRING_H was not defined, either.
+	Report from Hilmar, 3 Apr 2025 23:54:54.
+
+2025-03-08  Karl Berry  <karl@tug.org>
+
+	* version.ac: 6.4.2/dev.
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-12  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (shell_escape_commands): doc link to
+	https://tug.org/texinfohtml/web2c.html#Output-file-location.
+
+2025-02-08  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (TEXMFVAR, TEXMFCONFIG, doc): 2025.
+
+2025-01-25  Karl Berry  <karl@freefriends.org>
+
+	* version.ac (kpse_dev): no more /dev.
+	* NEWS: copyright 2023.
+
+2025-01-15  Karl Berry  <karl@freefriends.org>
+
+	* kpsewhich.c (main): output blank line for search files that are
+	not found, if more than one search file is specified.
+	Suggestion from Norbert and Deyan, thread starting at
+	https://tug.org/pipermail/texhax/2024-July/026506.html
+	(USAGE): mention this.
+	* doc/kpathsea.texi (Invoking kpsewhich): mention this,
+	and the exit status.
+	(kpsewhich examples): new node.
+
+2024-11-06  Karl Berry  <karl@freefriends.org>
+
+	* tex-file.c (kpathsea_name_ok): don't allow writing to the
+	filename ".tex". LaTeX 2024-11-01 changes their build process so
+	their .tex file is not created from TeX. Although maybe not
+	technically a security problem, it feels better not to allow it.
+	Report from Nicola Talbot, tlsecurity May 24 13:48:16 CEST 2024.
+	* NEWS: mention this.
+	* doc/kpathsea.texi (Safe filenames): remove doc of special case.
+
+2024-09-25  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (shell_escape_commands): add latexminted for minted 3.0,
+	after various reviews via tlsecurity, etc.
+
+2024-08-19  Karl Berry  <karl@freefriends.org>
+
+	* tex-file.c (kpathsea_name_ok) <not_ok>: avoid spurious double space
+	in message.
+
+2024-07-01  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (shell_escape_commands): restore extractbb,
+	now as a wrapper script that protects against the exploit.
+
+2024-06-29  Karl Berry  <karl@tug.org>
+
+	* texmf.cnf (shell_escape_commands): remove extractbb.
+
+2024-06-04  Karl Berry  <karl@freefriends.org>
+
+	* texmf.cnf (MKTEXPK, etc.): adjust values shown to the
+	compile-time defaults, as given in kpathsea/ac/mktex.ac.
+
 2024-03-17  Karl Berry  <karl@tug.org>
 
 	* texmf.cnf (shell_escape_commands): add l3sys-query

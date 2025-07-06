@@ -74,6 +74,8 @@
 % (2022-10-24) HY  pTeX p4.1.0 Add new syntax \font [in jis/ucs].
 %                  New primitives: \tojis, \ptextracingfonts and \ptexfontname.
 % (2023-09-17) HY  pTeX p4.1.1 Support more than 256 different glue/kern.
+% (2024-09-22) HK  pTeX p4.1.2 Enable to get character codes
+%                  from control symbols by using backquote.
 
 @x
 % Here is TeX material that gets inserted after \input webmac
@@ -88,8 +90,8 @@
 @y
 @d pTeX_version=4
 @d pTeX_minor_version=1
-@d pTeX_revision==".1"
-@d pTeX_version_string=='-p4.1.1' {current \pTeX\ version}
+@d pTeX_revision==".2"
+@d pTeX_version_string=='-p4.1.2' {current \pTeX\ version}
 @#
 @d pTeX_banner=='This is pTeX, Version 3.141592653',pTeX_version_string
 @d pTeX_banner_k==pTeX_banner
@@ -1502,8 +1504,8 @@ primitive("ptextracingfonts",assign_int,int_base+ptex_tracing_fonts_code);@/
 @d dimen_pars=23 {total number of dimension parameters}
 @d scaled_base=dimen_base+dimen_pars
   {table of 256 user-defined \.{\\dimen} registers}
-@d kinsoku_penalty_base=scaled_base+256 {table of 256 kinsoku registers}
-@d eqtb_size=kinsoku_penalty_base+255 {largest subscript of |eqtb|}
+@d kinsoku_penalty_base=scaled_base+256 {table of 1024 kinsoku registers}
+@d eqtb_size=kinsoku_penalty_base+1023 {largest subscript of |eqtb|}
 @z
 
 @x l.5498 - pTeX: kinsoku, t_baseline_shift, y_baseline_shift
@@ -1523,6 +1525,9 @@ primitive("ptextracingfonts",assign_int,int_base+ptex_tracing_fonts_code);@/
 @d v_offset==dimen_par(v_offset_code)
 @d t_baseline_shift==dimen_par(t_baseline_shift_code)
 @d y_baseline_shift==dimen_par(y_baseline_shift_code)
+@#
+@d enc_jis=1
+@d enc_ucs=2
 @z
 
 @x l.5542 - pTeX:
@@ -1660,8 +1665,8 @@ procedure print_font_dir_and_enc(f:internal_font_number);
 begin
   if font_dir[f]=dir_tate then print("/TATE")
   else if font_dir[f]=dir_yoko then print("/YOKO");
-  if font_enc[f]=2 then print("+Unicode")
-  else if font_enc[f]=1 then print("+JIS");
+  if font_enc[f]=enc_ucs then print("+Unicode")
+  else if font_enc[f]=enc_jis then print("+JIS");
 end;
 @z
 
@@ -2582,14 +2587,15 @@ if cur_tok<cs_token_flag then
   end
 else if cur_tok<cs_token_flag+single_base then
   cur_val:=cur_tok-cs_token_flag-active_base
-else
-  { the token is a CS;
-    * if |kanji|<=|cur_cmd|<=|max_char_code|, then CS is let-equal to |wchar_token|
-    * if |max_char_code|<|cur_cmd|, then CS is a multibyte CS
-      => both case should raise "Improper ..." error
-    * otherwise it should be a single-character CS with |cur_val|<=255 }
-  begin if not (cur_cmd<kanji) then cur_cmd:=invalid_char;
-  cur_val:=cur_tok-cs_token_flag-single_base;
+else if cur_tok<cs_token_flag+null_cs then
+  cur_val:=cur_tok-cs_token_flag-single_base
+else { check the cs is a single Japanese character }
+  begin m:=text(cur_tok-cs_token_flag);
+    if str_start[m+1]-str_start[m]
+       = multistrlenshort(str_pool, str_start[m+1], str_start[m])
+       then
+      cur_val:=fromBUFFshort(str_pool, str_start[m+1], str_start[m])
+    else begin cur_cmd:=invalid_char; cur_val:=256; end;
   end;
 if (cur_val>255)and(cur_cmd<kanji) then
   begin print_err("Improper alphabetic or KANJI constant");
@@ -3323,9 +3329,9 @@ if jfm_flag<>dir_default then
   for k:=ctype_base[f] to ctype_base[f]+nt-1 do
     begin
     fget; read_twentyfourx(cx);
-    if jfm_enc=2 then {Unicode TFM}
+    if jfm_enc=enc_ucs then {Unicode TFM}
       font_info[k].hh.rh:=toDVI(fromUCS(cx))
-    else if jfm_enc=1 then {JIS-encoded TFM}
+    else if jfm_enc=enc_jis then {JIS-encoded TFM}
       font_info[k].hh.rh:=toDVI(fromJIS(cx))
     else
       font_info[k].hh.rh:=tokanji(cx); {|kchar_code|}
@@ -3583,9 +3589,9 @@ continue:
       end;
     p:=link(p);
     jc:=KANJI(info(p));
-    if font_enc[f]=2 then {Unicode TFM}
+    if font_enc[f]=enc_ucs then {Unicode TFM}
       jc:=toUCS(jc)
-    else if font_enc[f]=1 then {JIS-encoded TFM}
+    else if font_enc[f]=enc_jis then {JIS-encoded TFM}
       begin if toJIS(jc)=0 then char_warning_jis(f,jc);
       jc:=toJIS(jc); end
     else
@@ -7074,8 +7080,8 @@ exit:end;
 @ @<Scan the font encoding specification@>=
 begin jfm_enc:=0;
 if scan_keyword_noexpand("in") then
-  if scan_keyword_noexpand("jis") then jfm_enc:=1
-  else if scan_keyword_noexpand("ucs") then jfm_enc:=2
+  if scan_keyword_noexpand("jis") then jfm_enc:=enc_jis
+  else if scan_keyword_noexpand("ucs") then jfm_enc:=enc_ucs
   else begin
     print_err("Unknown TFM encoding");
 @.Unknown TFM encoding@>

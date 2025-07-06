@@ -1,3 +1,43 @@
+2025-04-28  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* Fixed --help to be consistent with the manual
+
+2025-03-11  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* Fixed mp_hard_times (H.Hagen)
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2024-11-12  Ulrich Mueller  <ulm@gentoo.org>
+
+	* am/libmplib.am (libmplibextramath_a_OBJECTS,
+	libmplibbackends_a_OBJECTS): add mplib.h dependency to fix parallel
+	make failure.
+	https://tug.org/pipermail/tex-live/2024-November/050909.html
+	https://bugs.gentoo.org/837875
+
+2024-10-08   Luigi Scarso <luigi.scarso@gmail.com>
+	* Fixed a typo in the svg backend that was confusing the draw attributes --
+	see metapost ml  Missing stroke-linejoin attribute in SVG output for filldraw command
+	(thanks to joshua@kraemer.link).
+
+2024-05-19   Luigi Scarso <luigi.scarso@gmail.com>
+        * Sync with https://github.com/ascherer/mplibdir commit c21f82c1990d1cdb86f51a00b5c81d0088e12454.
+
+2024-05-18   Luigi Scarso <luigi.scarso@gmail.com>
+        * Several patches for CWEB from Andreas Scherer
+
+2024-05-01   Luigi Scarso <luigi.scarso@gmail.com>
+        * Fixed Update |arc| and |t_tot| after |do_arc_test| has just returned |t| 
+          in mp_get_arc_time
+
+2024-03-18  Luigi Scarso <luigi.scarso@gmail.com>
+	* Fixed a bug in n_arg for double and binary mode, 
+          where -0.0 was  different form 0.0. 
+          Work in progress for the  interval mode.
+
 2024-02-16  Luigi Scarso <luigi.scarso@gmail.com>
 	*  Updated manual. MetaPost 2.1
 

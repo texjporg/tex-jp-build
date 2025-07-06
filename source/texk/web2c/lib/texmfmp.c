@@ -531,6 +531,7 @@ shell_cmd_is_allowed (const char *cmd, char **safecmd, char **cmdname)
       *d++ = QUOTE;
     }
     *d = '\0';
+#if 0
 #ifdef WIN32
     {
       char *p, *q, *r;
@@ -568,6 +569,7 @@ shell_cmd_is_allowed (const char *cmd, char **safecmd, char **cmdname)
         }
       }
     }
+#endif
 #endif
   }
 
@@ -1019,7 +1021,8 @@ maininit (int ac, string *av)
         string new_arg;
         is_terminalUTF8(); /* To call get_terminal_enc(). return value is not used */
         new_arg = ptenc_from_utf8_string_to_internal_enc(argv[1]);
-        dump_name = argv[1] + 1; argv[1] = new_arg;
+        dump_name = argv[1] + 1;
+        if (new_arg) argv[1] = new_arg;
 #else
         dump_name = argv[1] + 1;
 #endif
@@ -1107,6 +1110,9 @@ maininit (int ac, string *av)
 #else /* !Aleph */
   kpse_set_program_enabled (kpse_tfm_format, MAKE_TEX_TFM_BY_DEFAULT,
                             kpse_src_compile);
+#if (IS_upTeX)
+  kpse_set_program_enabled (kpse_ofm_format, false, kpse_src_compile);
+#endif
 #endif /* !Aleph */
   kpse_set_program_enabled (kpse_tex_format, MAKE_TEX_TEX_BY_DEFAULT,
                             kpse_src_compile);
@@ -3186,7 +3192,7 @@ gettexstring (strnumber s)
     if (c >= 0xD800 && c <= 0xDBFF) {
       unsigned lo = strpool[++i + strstart[s - 65536L]];
       if (lo >= 0xDC00 && lo <= 0xDFFF)
-        c = (c - 0xD800) * 0x0400 + lo - 0xDC00;
+        c = 0x10000 + (c - 0xD800) * 0x0400 + lo - 0xDC00;
       else
         c = 0xFFFD;
     }

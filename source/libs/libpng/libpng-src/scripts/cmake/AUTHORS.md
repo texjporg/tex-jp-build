@@ -20,6 +20,8 @@ Author List
  * Cosmin Truta
  * Dan Rosser
  * David Callu
+ * Eric Riff
+ * Erik Scholz
  * Gianfranco Costamagna
  * Gleb Mazovetskiy
  * Glenn Randers-Pehrson
@@ -27,6 +29,7 @@ Author List
  * Jeremy Maitin-Shepard
  * John Bowler
  * Jon Creighton
+ * Joost Nieuwenhuijse
  * Kyle Bentley
  * Martin Storsjö
  * Owen Rudge

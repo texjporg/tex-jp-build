@@ -1,7 +1,7 @@
 dnl $Id$
 dnl Process this file with Autoconf to produce a configure script for Web2c.
 dnl
-dnl   Copyright 2015-2024 Karl Berry <tex-live@tug.org>
+dnl   Copyright 2015-2025 Karl Berry <tex-live@tug.org>
 dnl   Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 dnl
 dnl   This file is free software; the copyright holder
@@ -34,14 +34,15 @@ WEB2CVERSION=tex_live_version()
 AC_SUBST([WEB2CVERSION])
 
 # LuaTeX requires system extensions for socket support.
-# Must be at the very beginning.
+# Must be at the very beginning or warnings about compiler tests.
 # SyncTeX and plenty of others unconditionally define GNU_SOURCE,
-# so it probably wouldn't hurt to always use system extensions,
-# but maybe it is cleaner not to, in the case of cut-down sources.
-if test "x$enable_luatex" = xyes; then
-  AC_MSG_NOTICE([using system extensions, since LuaTeX is enabled])
-  AC_USE_SYSTEM_EXTENSIONS
-fi
+# so it's probably more consistent to always use it.
+
+# Also, we can't easily make it conditional on LuaTeX only because then
+# OBJEXT ends up defined as the empty string (error: no way to make
+# "basechsuffix."), which seems odd, but whatever.
+AC_MSG_NOTICE([using system extensions])
+AC_USE_SYSTEM_EXTENSIONS
 
 KPSE_COMMON([web2c programs])
 
@@ -115,6 +116,9 @@ kpse_save_LIBS=$LIBS
 KPSE_LUA53_DEFINES
 KPSE_LUA52_DEFINES
 KPSE_LUAJIT_DEFINES
+KPSE_LARGEFILE([LUA53_DEFINES], [_LARGEFILE64_SOURCE])
+KPSE_LARGEFILE([LUA52_DEFINES], [_LARGEFILE64_SOURCE])
+KPSE_LARGEFILE([LUAJIT_DEFINES], [_LARGEFILE64_SOURCE])
 LIBS=$kpse_save_LIBS
 if test "x$kpse_cv_have_win32" = xno; then
   AC_SEARCH_LIBS([gethostbyname], [nsl])
@@ -151,12 +155,6 @@ fi
 AM_CONDITIONAL([USE_DLOPEN], [test "x$ac_cv_header_dlfcn_h" = xyes])
 AC_SUBST([lua_socketlibs])
 AC_SUBST([ipc_socketlibs])
-
-KPSE_CHECK_FRAMEWORK([ApplicationServices], [CTFontRef font])
-KPSE_FONTCONFIG_FLAGS
-AS_IF([test "x$kpse_cv_have_ApplicationServices:$kpse_cv_have_fontconfig" = xno:no],
-      [WEB2C_DISABLE([xetex], [neither ApplicationServices framework nor fontconfig library])])
-AM_CONDITIONAL([XETEX_MACOSX], [test "x$kpse_cv_have_ApplicationServices" = xyes])
 
 dnl Generate *TEX and ALEPH conditionals.
 m4_foreach([Kpse_Prog], [kpse_tex_progs],
@@ -203,7 +201,7 @@ if test "x$with_x" = xyes; then
   fi
   test "x$with_mf_x_toolkit" = xyes && x_tool_libs="-lXt"
   AC_DEFINE([X11WIN], 1, [Define to include X11 window in Metafont.])
-fi
+fi # have X
 AM_CONDITIONAL([MFXT], [test "x$with_mf_x_toolkit" = xyes])
 AC_SUBST([x_ext_lib])
 AC_SUBST([x_tool_libs])
@@ -256,7 +254,10 @@ AC_C_BIGENDIAN
 dnl FIXME: obsolete
 AC_TYPE_SIGNAL
 
+# kpse_kpathsea_flags needs to pull in pkg-config, in case of a system
+# kpathsea being used. So nothing above should use pkg-config.
 KPSE_KPATHSEA_FLAGS
+
 KPSE_PTEXENC_FLAGS
 KPSE_PPLIB_FLAGS
 KPSE_ZLIB_FLAGS
@@ -275,9 +276,10 @@ KPSE_XPDF_FLAGS
 KPSE_ZZIPLIB_FLAGS
 KPSE_TECKIT_FLAGS
 
-# LuaTeX and XeTeX need harfbuzz.
+# XeTeX and lua[jit]hbtex need harfbuzz, but not regular luatex[53].
 if test "x$enable_xetex" = xyes \
-   || test "x$enable_luatex" = xyes || test "x$enable_luatex53" = xyes; then
+   || test "x$enable_luahbtex" = xyes \
+   || test "x$enable_luajithbtex" = xyes; then
   KPSE_HARFBUZZ_FLAGS
 fi # end xetex/luatex for harfbuzz
 
@@ -285,7 +287,19 @@ fi # end xetex/luatex for harfbuzz
 if test "x$enable_xetex" = xyes; then
   KPSE_ICU_FLAGS
   KPSE_GRAPHITE2_FLAGS
-fi # end xetex for icu/graphite
+
+  # XeTeX also needs fontconfig or the Mac ApplicationServices.
+  KPSE_CHECK_FRAMEWORK([ApplicationServices], [CTFontRef font])
+  KPSE_FONTCONFIG_FLAGS
+  AS_IF([test "x$kpse_cv_have_ApplicationServices:$kpse_cv_have_fontconfig" = xno:no],
+        [WEB2C_DISABLE([xetex],
+              [neither ApplicationServices framework nor fontconfig library])])
+
+fi # end xetex for icu/graphite and fontconfig/mac font lookups.
+
+# Are we building XeTeX on Mac? Automake conditional required regardless.
+AM_CONDITIONAL([XETEX_MACOSX],
+               [test "x$kpse_cv_have_ApplicationServices" = xyes])
 
 # Check size of off_t (using <kpathsea/config.h>)
 KPSE_ADD_FLAGS([kpathsea])

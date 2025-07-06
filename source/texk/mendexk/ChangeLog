@@ -1,3 +1,54 @@
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/mendex.test: Add tests.
+
+2025-02-18  Yukimasa Morimi  <h20y6m@yahoo.co.jp>
+
+	* convert.c, kp.{c,h}, styfile.c:
+	Use kpse_find_file to find style files.
+	https://github.com/texjporg/tex-jp-build/issues/175
+
+2025-02-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* Makefile.am: Adjust.
+
+2025-02-09  Yukimasa Morimi  <h20y6m@yahoo.co.jp>
+
+	* configure.ac, version.h:
+	Version 3.8 [09-Feb-2025].
+	* fread.c: Improved compatibility with makeindex.
+	* styfile.c: Fix escaping of string parameters.
+	https://github.com/texjporg/tex-jp-build/issues/173
+	* tests/mendex.test, tests/head1.ist,
+	tests/tort{,W}.idx, tests/ok-tort{,2}.ind:
+	Add tests for encap escape & heading_{pre,post}fix
+	from TANAKA Takuji.
+
+2025-01-25  Karl Berry  <karl@freefriends.org>
+
+	* COPYRIGHT,
+	* main.c: 2025.
+
+2024-11-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* configure.ac, version.h:
+	Version 3.7 [09-Nov-2024].
+	* fwrite.c: Better treatment of "item_12"
+	for compatibility with makeindex.
+	https://github.com/t-tk/upmendex-package/pull/9
+	* fread.c: Improve error message when reading index entries.
+	https://github.com/t-tk/upmendex-package/issues/13
+	* tests/{mendex,pprec,encode}.test: Split test scripts.
+	* tests/nest.test, tests/nested3.{ist,idx,ind},
+	tests/toodeep.idx: Add new tests for nested depth.
+	* tests/mendex.test, tests/tort{,W}.idx, tests/ok-tort.ind:
+	Add new tests for error/warning.
+	* Makefile.am: Adjust.
+
 2024-03-10  Karl Berry  <karl@tug.org>
 
 	* TL'24 release.

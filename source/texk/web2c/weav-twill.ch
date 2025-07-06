@@ -51,9 +51,11 @@ Limbo.
 \def\title{TWILL for \TeX~Live}
 @z
 
-@x 48c24
+@x 47c23
+  \def\rheader{\mainfont Appendix D\hfil \contentspagenumber}
   \centerline{\titlefont The {\ttitlefont WEAVE} processor}
 @y
+  \def\rheader{\mainfont Appendix D${}'$\hfil \contentspagenumber}
   \centerline{\titlefont The {\ttitlefont TWILL} processor}
 @z
 
@@ -249,6 +251,22 @@ Section 71.
 @y
 @z
 
+Section 75.
+
+@x 1323
+@<Move |buffer| and |limit| to |change_buffer| and |change_limit|@>;
+@y
+@<Move \(|buffer| and |limit| to |change_buffer| and |change_limit|@>;
+@z
+
+Section 78.
+
+@x 1357
+@ @<Move |buffer| and |limit| to |change_buffer| and |change_limit|@>=
+@y
+@ @<Move \(|buffer| and |limit| to |change_buffer| and |change_limit|@>=
+@z
+
 Section 79.
 
 @x 1371,1383d1401
@@ -275,6 +293,12 @@ if not changed_module[module_count] then
   if not change_pending then changed_module[module_count]:=true;
   end;
 @y
+@z
+
+@x 1405
+  @<Move |buffer| and |limit|...@>;
+@y
+  @<Move \(|buffer| and |limit|...@>;
 @z
 
 Section 82.

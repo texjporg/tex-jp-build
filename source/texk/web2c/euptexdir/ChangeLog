@@ -1,3 +1,155 @@
+2025-06-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/printkanji.tex, tests/pknj-[esu].log:
+	Update tests.
+
+2025-05-06  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* pdfutils.ch: Rename bool variable to booltemp, for C23.
+	https://github.com/texjporg/tex-jp-build/issues/178
+
+2025-04-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eupver.test, euptex-{ctrlsym,widow}.test,
+	tests/control-symbol.tex, tests/ctrlsym.tex,
+	tests/ctrlsym-{e,s}.log, tests/jctrlsym-{e,u}.log,
+	tests/eup-jctrlsyma-{e,u}.typ,
+	tests/eup-jchwidow{,-{e,s}}.log, am/euptex.am:
+	Clean up tests to prepare to remove ptexdir.
+	https://github.com/texjporg/tex-jp-build/issues/32
+	* wcfname0.test: Add tests for recorder filename.
+	https://github.com/texjporg/tex-jp-build/issues/45
+
+2025-04-05  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* e{,u}ptrip/eptrip.tex, tests/eup-jchwidow.log,
+	tests/printkanji.tex, tests/pknj-{e,s,u}.log:
+	Update tests.
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-17  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech: Adjust protected_token.
+	Thanks to Kazuki Maeda and Yukimasa Morimi.
+	https://github.com/texjporg/tex-jp-build/issues/176
+
+2025-02-09  Hironobu Yamashita  <h.y.acetaminophen@gmail.com>
+
+	* suppresserrors.ch: Format \ignoreprimitiveerror printing
+	as in pdfTeX and XeTeX.
+	* kinsoku_table.log, kinsoku_table.tex: No error after
+	increasing inhibit_xsp/kinsoku tables 256 -> 1024.
+
+2025-02-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* euptex-{ofm,prntknj}.test, tests/eup-ofm.{tex,log},
+	tests/pknj-{e,s,u}.log: Update tests.
+
+2025-02-02  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* suppresserrors.ch: Add \ignoreprimitiveerror
+	as in pdfTeX and XeTeX.
+	* eptex_version.h, eptex.ech:
+	Bump version to 250202.
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* am/euptex.am (euptex-pool.c): exit 1 if makecpool failed.
+
+2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* upkcat.test: Update tests.
+	* euptex-widow.test, tests/eup-jchwidow.log,
+	am/euptex.am: Add new tests for widow penalty originally
+	written by Kitagawa-san.
+	https://github.com/texjporg/tex-jp-build/issues/103
+	* COPYRIGHT: copyright year.
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech, etex.ch{0,1}, fam256,ch,
+	pdfutils.ch, char-warnings-euptex.ch:
+	Support Latin Unicode and 16bit OFM Level-0.
+	Implement new kcatcode (latin_ucs(14)).
+	* euptex-ofm.test, tests/eup-prim.{tex,log},
+	tests/eup-ofm.{tex,log}, am/euptex.am:
+	Add and update tests.
+	* eptex_version.h, eptex.ech:
+	Bump version to 241020.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2024-10-12  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* euptex-prim.test, tests/eup-prim.{tex,log},
+	am/euptex.am: Add a test.
+	* eptex_version.h, eptex.ech:
+	Bump version to 240930.
+
+2024-09-30  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech: kcatcode (latin_ucs(14)) is removed
+	since it will be supported in upTeX-2.00.
+
+2024-09-28  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* euptex-{ctrlsym,kinsoku,prntknj}.test:
+	Skip tests with updvitype if updvitype are not built.
+
+2024-09-21  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech, pdfutils.ch:
+	Better support for kcatcode=20 (modifier).
+	* euptex-{ctrlsym,kinsoku,prntknj,ucs}.test,
+	tests/{control-symbol,ctrlsym.tex,endlinechar,free_{ixsp,pena},
+	inhibitglue,kinsoku_{search,table},postpena,printkanji,ucs}.tex,
+	tests/eup-{endline,inhibitglue,jctrlsym,pknj-{e,s,u}}a.typ,
+	tests/{endline,free_{ixsp,pena},jctrlsym,kinsoku_{search,table},
+	pknj-{e,s,u},postpena,ucs-{e,s,u}}.log:
+	Add regression tests by using Kitagawa-san's and
+	Yamashita-san's sample files.
+	* tests/{free_{ixsp,pena},inhibitglue,kinsoku_{search,table},
+	postpena}.tex: Move from ../ptexdir/tests .
+	* am/euptex.am: Adjust.
+
+2024-06-04  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* unbalanced-braces-eptex.ch, suppresserrors.ch: sync with the upstream
+
+2024-06-03  Karl Berry  <karl@freefriends.org>
+
+	* suppresserrors.ch (check_outer_validity): comment out hunk
+	for this procedure adding a check for "suppress_outer_error=0", to
+	avoid conflict with new change in tex.ch at the same place.
+
+2024-05-18  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* euptex-ctrlsym.test, tests/ctrlsym.{tex,log},
+	am/euptex.am: Add tests for getting character codes
+	from control symbols by using backquote "`".
+	https://github.com/texjporg/tex-jp-build/issues/167
+
+2024-05-01  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* pdfutils.ch: Revert some patches.
+
+2024-04-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech, pdfutils.ch, euptex.defines:
+	Support new encoding of upTeX for combining characters
+	with multiple codepoints.
+	https://github.com/texjporg/tex-jp-build/issues/46
+	* COPYRIGHT: copyright year.
+
+2024-04-24  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* eptex.ech, etex.ch1, euptex.ch{0,1},
+	pdfstrcmp-eup-{pre,post}.ch, pdfutils.ch, am/euptex.am:
+	Clean up building environment.
+	https://github.com/texjporg/tex-jp-build/issues/32
+
 2024-04-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* epTeX_doc/{{README,Changes}.txt,ChangeLog,eptex-base.ch},

@@ -1,3 +1,315 @@
+2025-05-05  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (26.449): avoid spurious additional errors
+	from \mkern <non-mu-dimen-or-skip>. Fix from David Fuchs.
+	Report from Tyge Tiessen,
+        https://tug.org/pipermail/tex-k/2025-January/004150.html
+        https://tug.org/texmfbug/newbug.html#B182muerror
+	* tests/invalidmu.tex: test file.
+
+2025-04-30  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebboot.cin,
+	* help.h: Restore 'verbose' diagnostics in CWEB.
+
+2025-04-18  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Amend special characters.
+
+2025-04-17  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Make proper use of 'ishigh' macro.
+
+2025-04-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Replace type 'boolean' with 'bool.
+
+2025-04-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Revert bool change for C23.
+
+2025-03-31  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Discard trailing whitespace in macros.
+
+2025-03-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* weave.ch: Prevent get_line() when parsing module name.
+	Report and patch from Benjamin Gray
+	(https://tug.org/pipermail/tex-k/2025-March/004166.html).
+
+2025-03-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* weave.ch: Parse and reject verbatim in TeX part.
+	Report and patch from Benjamin Gray
+	(https://tug.org/pipermail/tex-k/2025-March/004169.html).
+
+2025-03-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangle.ch,
+	* tangleboot.pin: Prevent integer overflow in scan_numeric().
+	Report and initial patch from Benjamin Gray
+	(https://tug.org/pipermail/tex-k/2025-March/004165.html).
+
+2025-03-10  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangle.ch,
+	* tangleboot.pin: Reject strings as macro names.
+	Report and initial patch from Benjamin Gray
+	(https://tug.org/pipermail/tex-k/2025-March/004163.html).
+
+2025-03-10  Andreas Scherer  <https://ascherer.github.io>
+
+	* tangle.ch,
+	* tangleboot.pin: Change case for letters only.
+	Report and initial patch from Benjamin Gray
+	(https://tug.org/pipermail/tex-k/2025-March/004161.html).
+
+2025-02-01  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (24.336): comment out this patch for interactive deletion
+	of \outer tokens, since it has the undesirable side effect of
+	deleting through eof.
+	* tests/outerdel.tex,
+	* tests/outerdelsub.tex: test files and info.
+
+	* tex.ch (save_arith_error): declare in Glob...
+	(30.568): save and restore arith_error around the new
+	check for font scaling to >= 2048pt.
+
+2025-01-29  Andreas Scherer  <https://ascherer.github.io>
+
+	* bibtex.ch,
+	* dvicopy.ch,
+	* dvitype.ch,
+	* gftodvi.ch,
+	* gftopk.ch,
+	* gftype.ch,
+	* mft.ch,
+	* patgen.ch,
+	* pktogf.ch,
+	* pktype.ch,
+	* pltotf.ch,
+	* pooltype.ch,
+	* tftopl.ch,
+	* vftovp.ch,
+	* vptovf.ch: Fill a few gaps in the '@x' lines.
+
+2025-01-28  Karl Berry  <karl@freefriends.org>
+
+	* dvitype.ch: run tests/fix-changefile-lines.py to get chapter and
+	line numbers, and update module numbers.
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (30.568, 49.1260): avoid scaling fonts to 2048pt or more.
+	Reports from
+	Igor Liferenko (https://tug.org/pipermail/tex-k/2021-June/003604.html)
+	Tyge Tiessen (https://tug.org/pipermail/tex-k/2022-January/003752.html)
+	and patch from Tyge.
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* am/texmf.am (tex-pool.c, mf-pool.c): exit 1 if makecpool failed.
+	(tex-final.ch, mf-final.ch): remove $@ and exit 1 if tie failed.
+
+2025-01-24  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (KPSE_CHECK_FRAMEWORK, KPSE_FONTCONFIG_FLAGS)
+	[enable_xetex]: move these checks to below KPSE_KPATHSEA_FLAGS,
+	so that --with-system-kpathsea --without-xetex build will not
+	result in pkg-config not being checked for.
+	Report from balducci@units.it,
+	https://tug.org/pipermail/tex-k/2025-January/004147.html
+
+2025-01-21  Vincenzo Mantova <vlmantova@gmail.com>
+
+	* configure.ac (KPSE_HARFBUZZ_FLAGS): needed for lua[jit]hbtex,
+	not luatex[53].
+	(KPSE_CHECK_FRAMEWORK, KPSE_FONTCONFIG_FLAGS) [enable_xetex]:
+	make these checks conditional.
+	https://tug.org/pipermail/tlbuild/2024q2/005555.html
+
+2025-01-19  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (LIBS): 
+
+2025-01-01  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.12.1 release.
+
+2024-12-01  Luigi Scarso  <luigi.scarso@gmail.com>
+
+	* doc/luatex: development LuaTeX Reference Manual, kept in sync with
+	the current version of LuaTeX.
+
+2024-12-01  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (error): do @<Put help message on the transcript file@>
+	before exiting if halt_on_error_p, to be closer to behavior of TeX
+	without -halt-on-error. Suggestion from jfbu:
+	https://tug.org/pipermail/tex-live/2024-July/050741.html
+
+2024-11-24  David Fuchs  <drfuchs@yahoo.com>
+
+	* tex.ch (Initialize the input routines): also initialize
+	buffer[0]:=0 for uninitialized virtex read, in the
+	cases of printing garbage fixed by Kitagawa-san on 2021-07-19.
+
+2024-11-13  Karl Berry  <karl@freefriends.org>
+
+	* mf.ch (Calculate integers $\alpha$...): comment out erroneous
+	change that "simplified" the assignment of alpha, resulting in a
+	few pen polygons being affected, but don't know if any extant
+	fonts are impacted. Report from Tim Stadelman,
+	https://tug.org/pipermail/tex-k/2021-August/003648.html.
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* lib/texmfmp.c (maininit): Support ofm in {,e}upTeX.
+	https://github.com/texjporg/tex-jp-build/issues/170
+	* tests/eu3-lmr10.{ofm,ovf,ovp}, tests/eu3-lmr10_eu3.ovf,
+	tests/eu3-lmr10_ucs.{ofm,ovp}, tests/lm-{ec,texnansi}.enc,
+	tests/lmr10.pfb, tests/texnansi-lmr10.tfm,
+	tests/uctt10x.{opl,ofm,ovp,ovf}, am/web.am:
+	Add for tests of upTeX and OFM.
+
+2024-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/ec-lmr10.tfm, tests/dump-basic.tex:
+	Add for tests of pTeX family
+
+2024-09-07  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (texprof.am): include.
+	* ac/web2c.ac (kpse_tex_progs) <texprof>: new entry in table.
+
+2024-09-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch,
+	* weave.ch: Sort section names in TWILL.
+
+2024-09-02  Andreas Scherer  <https://ascherer.github.io>
+
+	* bibtex.ch,
+	* dvitype.ch,
+	* gftodvi.ch,
+	* gftopk.ch,
+	* gftype.ch,
+	* mft.ch,
+	* pktype.ch,
+	* pltotf.ch,
+	* pooltype.ch,
+	* tangle.ch,
+	* tftopl.ch,
+	* vftovp.ch,
+	* vptovf.ch,
+	* weave.ch: Flip two section names in the index.
+	* dvicopy.ch,
+	* dvicopy.web,
+	* patgen.ch,
+	* patgen.web,
+	* pktogf.ch,
+	* pktogf.web: Fix sorting order in 'other' WEB codees.
+
+2024-08-31  Andreas Scherer  <https://ascherer.github.io>
+
+	* vftovp.ch: Fix sorting order of new named sections.
+
+2024-08-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* gftopk.ch,
+	* gftype.ch,
+	* pktogf.ch,
+	* pktype.ch: Fix a few spaces.
+
+2024-08-21  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch: Prime the title page.
+
+2024-08-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* showstream.ch: Restore section numbering as far as possible.
+
+2024-08-12  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.12 release.
+
+2024-07-14  Andreas Scherer  <https://ascherer.github.io>
+
+	* mft.ch: Preserve Metafont logo on title page.
+
+2024-06-28  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebdir/ctwill-w2c.ch,
+	* tests/fix-changefile-lines.py,
+	* tex.ch: Simpler check for 'change section'.
+
+2024-06-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* bibtex.ch: Update a few tags.
+
+2024-06-15  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* dvicopy.ch: Output '@x' with optional information.
+
+2024-06-05  Andreas Scherer  <https://ascherer.github.io>
+
+	* tests/fix-changefile-lines.py,
+	* tangle.ch,
+	* weave.ch: Correctly count section start markers.
+	* mf.ch,
+	* tex.ch: Recount parts and sections.
+
+2024-06-03  David Fuchs  <drfuchs@yahoo.com>
+
+	* tex.ch (check_outer_validity): don't check unless OK_to_interrupt,
+	to avoid getting into an erroneous state if an \outer token
+	is deleted interactively.
+	Report from Tyge Tiessen:
+	https://tug.org/pipermail/tex-k/2024-March/004021.html
+	DEK bug entry: https://tug.org/texmfbug/newbug.html#B142outer
+
+2024-06-03  Karl Berry  <karl@freefriends.org>
+
+	* tests/fix-changefile-lines.py: new script from Tyge Tiessen
+	to update the chapter/section/line numbers in a .ch file,
+	following my request:
+	https://tug.org/pipermail/tex-k/2024-June/004064.html
+	* tex.ch,
+	* mf.ch: update with the script.
+	
+	* unbalanced-braces.ch: tweak text.
+
+2024-04-28  Luigi Scarso  <luigi.scarso@gmail.com>
+
+	* configure.ac (LUA53_DEFINES, LUA52_DEFINES, LUAJIT_DEFINES): 
+	define _LARGEFILE_SOURCE to help avoid off64_t errors. Specifically:
+
+In file included from /home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/types.h:25,
+                 from /home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/zzip.h:17,
+                 from ../../../texk/web2c/luatexdir/luazip/src/luazip.c:13:
+/home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/conf.h:50:23: error: unknown type name 'off64_t'
+ #define _zzip_off64_t off64_t
+                       ^~~~~~~
+/home/texlive/karl/Build/source/Work/libs/zziplib/include/zzip/types.h:35:15: note: in expansion of macro '_zzip_off64_t'
+ typedef       _zzip_off64_t     zzip_off64_t;
+               ^~~~~~~~~~~~~
+make[5]: *** [Makefile:10380: luatexdir/luazip/src/libluajitmisc_a-luazip.o] Error 1
+
+2024-04-21  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (AC_USE_SYSTEM_EXTENSIONS): make it unconditional,
+        since otherwise we get:
+make[5]: *** No rule to make target 'basechsuffix.', needed by 'lib.a'.  Stop.
+
 2024-04-18  Karl Berry  <karl@freefriends.org>
 
 	* configure.ac (AC_USE_SYSTEM_EXTENSIONS) [enable_luatex]: call this.

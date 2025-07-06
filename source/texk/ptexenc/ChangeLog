@@ -1,3 +1,53 @@
+2025-04-05  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tex8benc.h: Update conversion tables between
+	T2A/T2B/T2C encoding and Unicode.
+
+2025-03-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tex8benc.h: Update conversion tables between
+	T1/LGR encoding and Unicode.
+
+2025-03-08  Karl Berry  <karl@tug.org>
+
+	* version.ac: 1.5.2/dev.
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-01-25  Karl Berry  <karl@freefriends.org>
+
+	* version.ac: remove /dev, for TL25.
+
+2025-01-21  Vincenzo Mantova <vlmantova@gmail.com>
+
+	* Makefile.am (nobase_include_HEADERS): include ptexenc/unicode-jp.h.
+	https://tug.org/pipermail/tlbuild/2024q2/005555.html
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* unicode.c, ptexenc/unicode.h, tex8benc.h:
+	Add new functions of encoding conversion between
+	TeX 8bit encoding and Unicode to support
+	Unicode for Latin characters in upTeX ver2.00.
+	* version.ac: Bump to 1.5.1/dev.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2024-05-11  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* unicode.c, ptexenc.c:
+	Enable to treat the new internal encoding of upTeX
+	also with pTeX mode (--kanji-internal={euc,sjis}).
+
+2024-04-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* unicode.c, ptexenc/unicode.h:
+	Add new functions UVS_* to support new encoding of upTeX
+	to {,de}compose characters with multiple codepoints.
+	* version.ac: Bump to 1.5.0/dev.
+	https://github.com/texjporg/tex-jp-build/issues/46
+
 2024-03-10  Karl Berry  <karl@tug.org>
 
 	* TL'24 release.

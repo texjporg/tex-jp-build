@@ -1,3 +1,92 @@
+2025-06-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tests/printkanji.tex, tests/pknj-[es].log:
+	Update tests.
+
+2025-04-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-{ctrlsym,prntknj,widow}.test,
+	tests/chcode.{pl,tfm}, tests/chcode-{euc,jis,sjis,utf8}.pl,
+	tests/control-symbol.tex, tests/ctrlsym.tex,
+	tests/p-jchwidow-{e,s}.log,
+	tests/nissya.bst, tests/nissya_bib.{aux,bbl},
+	tests/ptex{3,4}.{dvi,tex}, tests/ptex{3,4}a-{jis,utf8}.typ,
+	tests/sample.{bib,dvi}, tests/samplea.typ,
+	tests/skipjfmp.{pl,tfm,tex},
+	tests/{min10,tmin10}.{pl,tfm}, tests/goth10.tfm,
+	tests/disp_{jfm,unbox}.tex, tests/inhibitglue_extensions.tex,
+	tests/filename_test.sh, am/ptex.am:
+	Clean up tests to prepare to remove ptexdir.
+	https://github.com/texjporg/tex-jp-build/issues/32
+	* wcfname.test: Add tests for recorder filename.
+	https://github.com/texjporg/tex-jp-build/issues/45
+
+2025-04-05  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-prntknj.test, tests/pknj-{e,s}.log: Update tests.
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-09  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch:
+	Forgot to increase size of eqtb[] 256 -> 1024, when
+	inhibit_xsp/kinsoku tables were increased 256 -> 1024.
+	(Commit 2022-12-12 r65246-65248 was incomplete, and the
+	fix on commit 2024-09-22 r72333 was incorrect).
+
+2025-02-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-prntknj.test, tests/pknj-{e,s}.log: Update tests.
+
+2025-01-27  Karl Berry  <karl@freefriends.org>
+
+	* am/ptex.am (ptex-pool.c): exit 1 if makecpool failed.
+
+2025-01-02  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-prntknj.test, tests/pknj-{e,s}.log:
+	Update tests.
+	* ptex-widow.test, tests/p-jchwidow.log,
+	am/ptex.am: Add new tests for widow penalty originally
+	written by Kitagawa-san.
+	https://github.com/texjporg/tex-jp-build/issues/103
+	* COPYRIGHT: copyright year.
+
+2024-09-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-base.ch, ptex_version.h: Version p4.1.2.
+
+2024-09-21  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-base.ch:
+	Fix a bug in initialization of inhibit_xsp/kinsoku tables
+	(Bug introduced on commit 2022-12-12 r65248).
+	* ptex-ctrlsym.test, tests/{ptexlineendmode,ucs}.tex,
+	(chartoken,ucs-{e,s}}.log, p-lineenda.typ:
+	Add more regression tests.
+	* tests/{free_{ixsp,pena},inhibitglue,kinsoku_{search,table},
+	postpena}.tex: Move to ../euptexdir/tests .
+	* am/ptex.am: Adjust.
+
+2024-09-16  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ptex-base.ch: Use constants enc_jis and enc_ucs.
+	* ptex-{ctrlsym,prntknj,ucs}.test,
+	tests/{control-symbol,ctrlsym,endlinechar,printkanji,ucs}.tex,
+	tests/{ctrlsym,endline,jctrlsym,pknj-{e,s},ucs-{e,s}).log,
+	tests/p-{endline,jctrlsym,pknj-{e,s}}a.typ:
+	Add regression tests by using Kitagawa-san's sample files.
+	* am/ptex.am: Adjust.
+
+2024-05-18  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* ptex-base.ch: Enable to get character codes
+	from control symbols by using backquote "`".
+	https://github.com/texjporg/tex-jp-build/issues/167
+
 2024-04-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* ptriptest.test:

@@ -151,7 +151,7 @@ int main(int argc, char **argv)
 
 			default:
 				fprintf(stderr,"upmendex - index processor, %s (%s).\n",VERSION, TL_VERSION);
-				fprintf(stderr," Copyright 2009 ASCII MEDIA WORKS, 2015-2024 TANAKA Takuji\n");
+				fprintf(stderr," Copyright 2009 ASCII MEDIA WORKS, 2015-2025 TANAKA Takuji\n");
 				fprintf(stderr," using ICU version %s\n",icu_version);
 				fprintf(stderr,"usage:\n");
 				fprintf(stderr,"%% upmendex [-ilqrcgf] [-s sty] [-d dic] [-o ind] [-t log] [-p no] [--] [idx0 idx1 ...]\n");
@@ -243,8 +243,18 @@ int main(int argc, char **argv)
 
 /*   init hangul,devanagari,thai *_head table   */
 	u_strcpy(hangul_head,GANADA);
-	u_strcpy(devanagari_head,DVNG_HEAD);
-	u_strcpy(thai_head,THAI_HEAD);
+	u_strcpy(brahmic_head[BR_DEVA],DEVA_HEAD);
+	u_strcpy(brahmic_head[BR_BENG],BENG_HEAD);
+	u_strcpy(brahmic_head[BR_GURU],GURU_HEAD);
+	u_strcpy(brahmic_head[BR_GUJR],GUJR_HEAD);
+	u_strcpy(brahmic_head[BR_ORYA],ORYA_HEAD);
+	u_strcpy(brahmic_head[BR_TAML],TAML_HEAD);
+	u_strcpy(brahmic_head[BR_TELU],TELU_HEAD);
+	u_strcpy(brahmic_head[BR_KNDA],KNDA_HEAD);
+	u_strcpy(brahmic_head[BR_MLYM],MLYM_HEAD);
+	u_strcpy(brahmic_head[BR_SINH],SINH_HEAD);
+	u_strcpy(brahmic_head[BR_THAI],THAI_HEAD);
+	u_strcpy(brahmic_head[BR_LAO ],LAO_HEAD );
 
 	for (k=0;styfile[k]!=NULL;k++) {
 		styread(styfile[k]);

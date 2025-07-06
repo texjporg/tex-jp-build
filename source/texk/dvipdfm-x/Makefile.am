@@ -1,6 +1,7 @@
+## $Id$
 ## Makefile.am for the TeX Live subdirectory texk/dvipdfm-x/
 ##
-## Copyright 2015-2021 Karl Berry <tex-live@tug.org>
+## Copyright 2015-2025 Karl Berry <tex-live@tug.org>
 ## Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 ##
@@ -172,9 +173,9 @@ $(xdvipdfmx_OBJECTS): config.force
 ##
 bin_links = \
 	xdvipdfmx$(EXEEXT):dvipdfm \
-	xdvipdfmx$(EXEEXT):dvipdfmx \
-	xdvipdfmx$(EXEEXT):ebb \
-	xdvipdfmx$(EXEEXT):extractbb
+	xdvipdfmx$(EXEEXT):dvipdfmx
+
+# extractbb is now a separate package, reimplemented in Lua.
 
 if WIN32
 noinst_PROGRAMS = call_xdvipdfmx
@@ -190,8 +191,7 @@ include $(top_srcdir)/../../am/bin_links.am
 dist_man1_MANS = man/dvipdfmx.1 man/dvipdft.1 man/extractbb.1
 man1_links = \
 	dvipdfmx:dvipdfm \
-	dvipdfmx:xdvipdfmx \
-	extractbb:ebb
+	dvipdfmx:xdvipdfmx
 include $(top_srcdir)/../../am/man1_links.am
 
 ## Data
@@ -213,8 +213,6 @@ if WIN32
 # same install happens in web2c/omegafonts.
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/dvipdfm$(EXEEXT)"
 	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/dvipdfmx$(EXEEXT)"
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/ebb$(EXEEXT)"
-	$(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) call_xdvipdfmx$(EXEEXT) "$(DESTDIR)$(bindir)/extractbb$(EXEEXT)"
 endif WIN32
 
 install-data-hook: install-man1-links
@@ -223,8 +221,6 @@ uninstall-hook: uninstall-bin-links uninstall-man1-links
 if WIN32
 	rm -f $(DESTDIR)$(bindir)/dvipdfm$(EXEEXT)
 	rm -f $(DESTDIR)$(bindir)/dvipdfmx$(EXEEXT)
-	rm -f $(DESTDIR)$(bindir)/ebb$(EXEEXT)
-	rm -f $(DESTDIR)$(bindir)/extractbb$(EXEEXT)
 endif WIN32
 
 all-local: config.force
@@ -247,13 +243,20 @@ DISTCLEANFILES = config.force
 ## Tests
 ##
 TESTS = xdvipdfmx.test xdvipdfm-ann.test xdvipdfm-bad.test xdvipdfm-bb.test
-TESTS += xdvipdfm-bkm.test xdvipdfm-psz.test xdvipdfm-ptx.test xdvipdfm-res.test
+TESTS += xdvipdfm-bkm.test xdvipdfm-pdf.test xdvipdfm-psz.test
+TESTS += xdvipdfm-ptx.test xdvipdfm-res.test
 TESTS += xdvipdfm-rev.test xdvipdfm-ttc.test
-TESTS += dvipdfmx-upjf.test dvipdfmx-incl.test
+TESTS += dvipdfmx-upjf.test dvipdfmx-upjf2.test dvipdfmx-upjf3.test dvipdfmx-incl.test
+TESTS += dvipdfmx-lmr0.test dvipdfmx-lmr1.test
+TESTS += dvipdfmx-ttf0.test
 xdvipdfmx.log xdvipdfm-ann.log xdvipdfm-bad.log xdvipdfm-bb.log \
-	xdvipdfm-bkm.log xdvipdfm-psz.log xdvipdfm-ptx.log xdvipdfm-res.log \
+	xdvipdfm-bkm.log xdvipdfm-pdf.log xdvipdfm-psz.log \
+	xdvipdfm-ptx.log xdvipdfm-res.log \
 	xdvipdfm-rev.log xdvipdfm-ttc.log \
-	dvipdfmx-upjf.log dvipdfmx-incl.log: xdvipdfmx$(EXEEXT)
+	dvipdfmx-upjf.log dvipdfmx-upjf2.log dvipdfmx-upjf3.log dvipdfmx-incl.log \
+	dvipdfmx-lmr0.log dvipdfmx-lmr1.log \
+	dvipdfmx-ttf0.log: \
+	xdvipdfmx$(EXEEXT)
 EXTRA_DIST = $(TESTS)
 ## xdvipdfmx.test
 EXTRA_DIST += tests/dvipdfmx.cfg tests/psfonts.map
@@ -278,6 +281,9 @@ DISTCLEANFILES += pic*.*
 ## xdvipdfm-bkm.test
 EXTRA_DIST += tests/bookm.dvi tests/bookm.tex
 DISTCLEANFILES += bookm*.pdf
+## xdvipdfm-pdf.test
+EXTRA_DIST += tests/xdvipdfm-pdf.xdv tests/rpki-ecosystem.drawio.pdf
+DISTCLEANFILES += xdvipdfm-pdf*.pdf
 ## xdvipdfm-psz.test
 EXTRA_DIST += tests/paper.dvi tests/paper.tex
 DISTCLEANFILES += paper*.pdf
@@ -307,9 +313,31 @@ EXTRA_DIST += tests/upjv-r00.opl tests/upjv-r00.ofm
 EXTRA_DIST += tests/upjf1-r.pl tests/upjf1-r.tfm
 EXTRA_DIST += tests/upjf1_full.zvp0 tests/upjf1_full.vf
 EXTRA_DIST += tests/upjf1_omit.zvp0 tests/upjf1_omit.vf
-DISTCLEANFILES += upjf.vf upjv.vf upjf-*.ofm upjv-*.ofm upjf-*.tfm upjf*.pdf
+DISTCLEANFILES += upjf.vf upjv.vf upjf-*.ofm upjv-*.ofm upjf-*.tfm upjf_*.pdf upjf1_*.pdf
+## dvipdfmx-upjf2.test
+EXTRA_DIST += tests/upjf2_full.zvp0 tests/upjf2_full.vf
+EXTRA_DIST += tests/upjv2_full.zvp0 tests/upjv2_full.vf
+EXTRA_DIST += tests/upjf-c.pl tests/upjf-c.tfm
+EXTRA_DIST += tests/upjv-c.pl tests/upjv-c.tfm
+EXTRA_DIST += tests/upjf-hara.map
+DISTCLEANFILES += upjf2_*.pdf
+## dvipdfmx-upjf3.test
+EXTRA_DIST += tests/upjf3_full.zvp0 tests/upjf3_full.vf
+EXTRA_DIST += tests/upjv3_full.zvp0 tests/upjv3_full.vf
+EXTRA_DIST += tests/upjf4_full.zvp0 tests/upjf4_full.vf
+EXTRA_DIST += tests/upjv4_full.zvp0 tests/upjv4_full.vf
+EXTRA_DIST += tests/upjf-hu.tfm tests/upjf-hi.tfm
+EXTRA_DIST += tests/upjv-hu.tfm tests/upjv-hi.tfm
+EXTRA_DIST += tests/upjf-noto.map tests/upjf-ipa.map
+DISTCLEANFILES += upjf3_*.pdf
 ## dvipdfmx-incl.test
 EXTRA_DIST += tests/multi_incl.dvi tests/multi_incl.tex tests/sue-mp.pdf
 DISTCLEANFILES += multi_incl.pdf
+## dvipdfmx-lmr0.test, dvipdfmx-lmr1.test
+EXTRA_DIST += tests/lmr0.tex tests/lmr0-al.dvi tests/lmr0-up.dvi
+DISTCLEANFILES += lmr0-*.pdf
+## dvipdfmx-ttf0.test
+EXTRA_DIST += tests/cprm00.tex tests/cprm00.dvi
+DISTCLEANFILES += cprm*.pdf
 ##
 EXTRA_DIST += tests/fullmap.dvi tests/fullmap.tex

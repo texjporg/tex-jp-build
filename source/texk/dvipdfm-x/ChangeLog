@@ -1,3 +1,166 @@
+2025-04-13  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* dvipdfmx.c: Reinstate an option -o - to send output to
+	standard output. This option has been disabled unintentionally
+	for a long time.
+
+2025-04-10  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac: version 20250410.
+
+2025-04-09  Karl Berry  <karl@freefriends.org>
+
+	* pdfobj.c (pdf_get_object): fix possible seg fault in
+	object stream parsing. Report and patch from Shuqiao Zhang:
+	https://tug.org/pipermail/tex-live/2025-April/051444.html
+
+	* xdvipdfm-pdf.test: new test, for this (pdfobj) and the page
+	Group (pdfgroup) fix from Clerk Ma.
+	* Makefile.am (tests): add it.
+	* tests/xdvipdfm-pdfobj.xdv,
+	* tests/xdvipdfm-pdfgroup.dvi: new test input files.
+	* tests/rpki-ecosystem.drawio.pdf,
+	* tests/xdvipdfm-pdfgroup-0318.pdf: inclusion files for the tests.
+
+2025-03-17  Clerk Ma  <clerkma@gmail.com>
+
+	* epdf.c (pdf_include_page): check for the page Group being NULL
+	before dereferencing it. (r74687)
+
+2025-03-17  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* vf.c: Store combining characters in vitual fonts with indices
+	and save memories to fix issue reported by gbb 60166.
+	https://okumuralab.org/tex/mod/forum/discuss.php?d=3903
+	* configure.ac: version 20250317.
+
+2025-03-14  Max Chernoff  <tex@maxchernoff.ca>
+
+	* pdffont.c: Switch to using only A-Z in the tag since numerical
+	digits are invalid per the PDF spec. Thanks to Yukimasa Morimi,
+	https://tug.org/pipermail/dvipdfmx/2025-March/000370.html
+
+2025-03-13  Max Chernoff  <tex@maxchernoff.ca>
+
+	* dvipdfmx.c, dvipdfmx.h, pdffont.c: Use deterministic font names.
+	Report from Paulo Ney de Souza,
+	https://tug.org/pipermail/dvipdfmx/2025-March/000353.html
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-02-22  Karl Berry  <karl@freefriends.org>
+
+	* dvipdfmx-upjf3.test,
+	* xdvipdfm-bad.test: remove /tmp/dvipdfmx.* files created by these
+	tests. Report from Marc Baudoin,
+	https://tug.org/pipermail/tlbuild/2025q1/005642.html
+	
+	This should be fixed within the dvipdfmx program and these
+	removals changed to tests that the temp files don't exist; see
+	https://tug.org/pipermail/dvipdfmx/2025-February/000351.html
+	
+	En passant, set svn keywords for all *.test file,
+	for consistency.
+
+2025-02-10  Karl Berry  <karl@tug.org>
+
+	* data/dvipdfmx.cfg (V): now generate PDF 1.7 by default.
+	* tests/dvipdfmx.cfg: likewise.
+
+2025-02-05  Clerk Ma  <maqiyuan130324@vip.qq.com>
+
+	* epdf.c: Fix page's opacity.
+
+2025-02-02  Yukimasa Morimi  <h20y6m@yahoo.co.jp>
+
+	* truetype.c: Fixed issues in embedded TrueType fonts (not CIDFont)
+	where incorrect character widths occurred when using 127 or more
+	glyphs, and where the 256th glyph was not displayed when using
+	full 256 glyphs.
+	* dvipdfmx-ttf0.test, cprm00.{dvi,tex}:
+	Add tests for TrueType fonts
+	from TANAKA Takuji <ttk@t-lab.opal.ne.jp>.
+	https://github.com/texjporg/tex-jp-build/issues/172
+	* configure.ac: version 20250202.
+
+2024-11-18  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (bin_links): no longer make symlinks for ebb and
+	extractbb, as extractbb is now a separate package, reimplemented
+	in Lua: https://ctan.org/pkg/extractbb. This is because the
+	previous symlink to dvipdfmx could be exploited using -D.
+	(man1_links): likewise.
+	(install-bin-links, uninstall-bin-links) [WIN32]: likewise.
+
+2024-10-20  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvipdfmx-lmr{0,1}.test, tests/UPJF-UTF16-{H,V},
+	tests/lm.map, tests/psfonts.map,
+	tests/lmr0.tex, tests/lmr0-{al,up}.dvi,
+	upjf_{full,omit}.{cnf,vf}, upjf1_{full,omit}.{vf,zvp0},
+	upjf2_full.{vf,zvp0}, upjv_{full,omit}.vf, Makefile.am:
+	Add tests for upTeX and OFM.
+	https://github.com/texjporg/tex-jp-build/issues/170
+
+2024-10-19  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvipdfmx-upjf{,2,3}.test, tests/upjf.tex,
+	tests/upjf{,-{hara,ipa,noto}}.map, tests/Makefike_upjf:
+	Update tests. Search system texmf for tfm/otf fonts
+	if kpathsearch is installed in the system.
+
+2024-09-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tfm.c: More strict check to interpret OFM FONTDIR
+	as pTeX vertical writing.
+	https://github.com/texjporg/tex-jp-build/issues/170#issuecomment-2295037307
+	https://github.com/texjporg/tex-jp-build/issues/99
+	* configure.ac: version 20240922.
+
+2024-05-18  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvi.c: Remove obsolete comments.
+	* dvipdfmx-upjf3.test, tests/upj{f,v}4_full.{vf,zvp0},
+	tests/upjf-ipa.map, tests/Makefile_upjf, Makefile.am: Add
+	a test for upTeX new encoding. It requires IPA MJ Mincho font.
+	https://github.com/texjporg/tex-jp-build/issues/46
+
+2024-05-11  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* dvi.c: Ensure enc_name "UTF16" prior to encoding conversion
+	from UTF32 to UTF16.
+	* dvipdfmx-upjf3.test, tests/upjf3.{tex,dvi},
+	tests/upj{f,v}-h{u,i}.tfm,
+	tests/upj{f,v}3_full.{vf,zvp0}, tests/upjf-noto.map,
+	tests/Makefile_upjf, Makefile.am: Add a test for
+	upTeX new encoding. It requires Noto Hentaigana fonts.
+	https://github.com/texjporg/tex-jp-build/issues/46
+	* configure.ac: version 20240511.
+
+2024-04-29  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tfm.c: Fix segfaults.
+	* dvipdfmx-upjf2.test, tests/UPJF-UTF16-{H,V},
+	tests/upjf-hara.map: Update tests.
+	https://github.com/texjporg/tex-jp-build/issues/46
+	* configure.ac: version 20240429.
+
+2024-04-27  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* tfm.{c,h}, vf.c: Support upTeX new encoding
+	for combining characters via virtual fonts.
+	* cidtype2.c: Enable to treat Combining Katakana-Hiragana
+	(Semi-)Voiced Sound Mark in cid_to_code().
+	* dvipdfmx-upjf2.test, tests/upjf2.{tex,dvi}, tests/upj{f,v}.pl,
+	tests/upj{f,v}-c.{pl,tfm}, tests/upjf1-r.{pl,tfm},
+	tests/upj{f,v}2_full.{vf,zvp0}, tests/upjf{,-hara}.map,
+	tests/Makefile_upjf, Makefile.am: Add a test for
+	upTeX new encoding. It requires HaranoAji fonts.
+	https://github.com/texjporg/tex-jp-build/issues/46
+	* configure.ac: version 20240427.
+
 2024-04-09  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* dvipdfmx-incl.test, tests/multi_incl.{tex,dvi},

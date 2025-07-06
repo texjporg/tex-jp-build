@@ -1,3 +1,36 @@
+2025-04-30  Karl Berry  <karl@freefriends.org>
+
+	* Build: incorporate original CFLAGS, CXXFLAGS, OBJCXXFLAGS values.
+	https://tug.org/pipermail/tlbuild/2025q2/005771.html
+
+2025-04-29  Karl Berry  <karl@freefriends.org>
+
+	* Build: use TL_CFLAGS, TL_CXXFLAGS, etc., for TL_BUILD_ENV
+	if -g is not given.
+
+2025-03-08  Karl Berry  <karl@tug.org>
+
+	* version.ac: 2026/dev.
+
+2025-03-07  Karl Berry  <karl@tug.org>
+
+	* TL'25 release.
+
+2025-01-12  Karl Berry  <karl@tug.org>
+
+	* Build: also support --debug-more for -g -Og -ggdb3,
+	per Luigi, as described on https://tug.org/texlive/build.html.
+
+2024-07-12  Karl Berry  <karl@freefriends.org>
+
+	* reautoconf with automake 1.17.
+
+2024-04-29  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (distdir): override default dist generation,
+	since we don't try to keep make dist working any more.
+	https://tug.org/pipermail/tlbuild/2024q2/005547.html
+
 2023-12-31  Karl Berry  <karl@freefriends.org>
 
 	* reautoconf: add -f / --force option to pass to autoreconf.

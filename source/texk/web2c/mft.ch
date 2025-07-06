@@ -5,11 +5,20 @@
 % Support for MP included from a changefile by Wlodek Bzyl.
 % This file is in the public domain.
 
-@x [0] l.16 - WEAVE: use logo font to get the S
+@x [0] l.17 - WEAVE: use logo font to get the S
 \font\logo=manfnt % font used for the METAFONT logo
+\def\MF{{\logo META}\-{\logo FONT}}
 @y
-\font\logo=logo10 % font used for the METAFONT logo
-\def\MP{{\logo META}\-{\logo POST}}
+\font\logo=manfnt % font used for the METAFONT logo
+\font\tenlogo=logo10 % font used for the METAPOST logo
+\def\MF{{\logo META}\-{\logo FONT}}
+\def\MP{{\tenlogo META}\-{\tenlogo POST}}
+@z
+
+@x [0] l.26
+\def\title{MFT}
+@y
+\def\title{MFT changes for C and METAPOST}
 @z
 
 @x [0] WEAVE: print changes only.
@@ -17,7 +26,6 @@
 @y
 \pageno=\contentspagenumber \advance\pageno by 1
 \let\maybe=\iffalse
-\def\title{MFT changes for C and METAPOST}
 @z
 
 @x [1]
@@ -46,7 +54,7 @@ Changes for \MP\ by W.~Bzyl in July, 2001.
 % [3] No need for the final label in C.
 % AIX defines `class' in <math.h>, so let's take this opportunity to
 % define that away.
-@x
+@x [3]
 calls the `|jump_out|' procedure, which goes to the label |end_of_MFT|.
 
 @d end_of_MFT = 9999 {go here to wrap it up}
@@ -66,7 +74,7 @@ procedure initialize;
   var @<Local variables for initialization@>@/
   begin @<Set initial values@>@/
 @y
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 procedure initialize;
   var @<Local variables for initialization@>@/
 begin
@@ -82,7 +90,7 @@ begin
 @!max_bytes=60000; {the number of bytes in tokens; must be less than 65536}
 @!max_names=6000; {number of tokens}
 @z
-@x
+@x [8]
 @!buf_size=100; {maximum length of input line}
 @!line_length=80; {lines of \TeX\ output have at most this many characters,
 @y
@@ -94,7 +102,7 @@ begin
 % default type `char' produces signed integers, which are bad array
 % indices in C.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-@x
+@x [13]
 @d text_char == char {the data type of characters in text files}
 @y
 @d text_char == ASCII_code {the data type of characters in text files}
@@ -115,9 +123,7 @@ for i:=@'177 to @'377 do xchr[i]:=chr(i);
 @d print(#)==write(term_out,#) {`|print|' means write on the terminal}
 @z
 
-% [20] Remove term_out.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-@x
+@x [20] Remove term_out.
 @<Globals...@>=
 @!term_out:text_file; {the terminal as an output file}
 @y
@@ -849,8 +855,7 @@ pr1("#")(sharp);@/
 pr4("g")("o")("o")("d")(special_tag);@/
 @z
 
-% The code below follows ideas from the section 646 of `mp.web'.
-@x [75]
+@x [75] The code below follows ideas from the section 646 of `mp.web'.
 two global variables, |cur_type| and |cur_tok|.
 @y
 two global variables, |cur_type| and |cur_tok|.
@@ -884,8 +889,7 @@ char_class[@'11]:=space_class; {tab}
 char_class[@'14]:=space_class; {form feed}
 @z
 
-% When dealing with a TeX material we must copy spaces to output.
-@x [81]
+@x [81] When dealing with a TeX material we must copy spaces to output.
 space_class:if start_of_line then emit(indentation)
   else goto switch;
 @y
@@ -893,8 +897,7 @@ space_class:if start_of_line or scanner_status>normal then emit(indentation)
   else goto switch;
 @z
 
-% Set the default set of macros for \MP.
-@x [88]
+@x [88] Set the default set of macros for \MP.
 so that the first line of the output file will be `\.{\\input mftmac}'.
 @.\\input mftmac@>
 @.mftmac@>
@@ -923,14 +926,14 @@ else write(tex_file,'\input mftmac');
 
 % [112] Print newline at end of run, exit based upon value of history,
 % and remove the end_of_MFT label.
-@x
+@x [112]
 print_ln(banner); {print a ``banner line''}
 @y
 print (banner); {print a ``banner line''}
 print_ln (version_string);
 @z
 
-@x
+@x [112]
 end_of_MFT:{here files should be closed if the operating system requires it}
 @<Print the job |history|@>;
 end.
@@ -981,7 +984,7 @@ used to provide basic formatting.
 
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 5; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

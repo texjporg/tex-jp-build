@@ -9,7 +9,7 @@
 @d banner=='This is DVItype, Version 3.6' {printed when the program starts}
 @y
 @d my_name=='updvitype'
-@d banner=='This is upDVItype, Version 3.6-p221203'
+@d banner=='This is upDVItype, Version 3.6-p240427'
   {printed when the program starts}
 @z
 
@@ -50,6 +50,42 @@ for i:=@'177 to 255 do xchr[i]:=i;
 @d ptex_id_byte=3 {identifies the kind of pTeX \.{DVI} files described here}
 @z
 
+@x
+@!eight_bits=0..255; {unsigned one-byte quantity}
+@y
+@!eight_bits=0..255; {unsigned one-byte quantity}
+@!sixteen_bits=0..65535; {unsigned double-byte quantity}
+@z
+
+@x
+  full_name := kpse_find_tfm (cur_name);
+  if full_name then begin
+    tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+  end else begin
+    tfm_file := nil;
+  end;
+@y
+  full_name := kpse_find_ofm (cur_name);
+  if full_name then begin
+    tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+  end else begin
+    full_name := kpse_find_tfm (cur_name);
+    if full_name then begin
+      tfm_file := fopen (full_name, FOPEN_RBIN_MODE);
+    end else begin
+      tfm_file := nil;
+    end
+  end;
+@z
+
+@x
+@!b0,@!b1,@!b2,@!b3: eight_bits; {four bytes input at once}
+@y
+@!b0,@!b1,@!b2,@!b3: eight_bits; {four bytes input at once}
+@!c0: sixteen_bits;
+@!cur_ofm_lv,@!kk:integer;
+@z
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % JFM and pTeX
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,6 +94,8 @@ for i:=@'177 to 255 do xchr[i]:=i;
 @y
 @!width_ptr:0..max_widths; {the number of known character widths}
 @!fnt_jfm_p:array [0..max_fonts] of boolean;
+@!fnt_ofm_p:array [0..max_fonts] of boolean;
+@!fnt_ofm_lv:array [0..max_fonts] of integer;
 @!jfm_char_code:array [0..max_widths] of integer;
 @!jfm_char_type:array [0..max_widths] of integer;
 @!jfm_char_font:array [0..max_widths] of integer;
@@ -112,30 +150,104 @@ end;
 
 @x [35] JFM by K.A.
 read_tfm_word; lh:=b2*256+b3;
+read_tfm_word; font_bc[nf]:=b0*256+b1; font_ec[nf]:=b2*256+b3;
+if font_ec[nf]<font_bc[nf] then font_bc[nf]:=font_ec[nf]+1;
+if width_ptr+font_ec[nf]-font_bc[nf]+1>max_widths then
+  begin print_ln('---not loaded, DVItype needs larger width table');
+@.DVItype needs larger...@>
+    goto 9998;
+  end;
 @y
+cur_ofm_lv := -1;
 read_tfm_word; lh:=b0*256+b1;
 if (lh = 11) or (lh = 9) then
   begin
     print(' (JFM');
     fnt_jfm_p[nf] := true;
+    fnt_ofm_p[nf] := false;
     if lh = 9 then print(' tate');
     print(')');
     nt:=b2*256+b3;
     read_tfm_word;
   end
+else if (lh = 0) then
+  begin
+    nt:=0;
+    fnt_jfm_p[nf] := false;
+    fnt_ofm_p[nf] := true;
+    cur_ofm_lv := b2*256+b3;
+    fnt_ofm_lv[nf] := cur_ofm_lv;
+    print(' (OFM level');
+    print((fnt_ofm_lv[nf]):1);
+    print(')');
+  end
 else
   begin
     nt:=0;
     fnt_jfm_p[nf] := false;
+    fnt_ofm_p[nf] := false;
   end;
-lh:=b2*256+b3;
+if fnt_ofm_p[nf] then begin
+  read_tfm_word; { lf }
+  read_tfm_word; lh:=((b0*256+b1)*256+b2)*256+b3;
+  read_tfm_word; font_bc[nf]:=((b0*256+b1)*256+b2)*256+b3;
+  read_tfm_word; font_ec[nf]:=((b0*256+b1)*256+b2)*256+b3;
+end else begin
+  lh:=b2*256+b3;
+  read_tfm_word; font_bc[nf]:=b0*256+b1; font_ec[nf]:=b2*256+b3;
+end;
+if font_ec[nf]<font_bc[nf] then font_bc[nf]:=font_ec[nf]+1;
+if width_ptr+font_ec[nf]-font_bc[nf]+1>max_widths then
+  begin print_ln('---not loaded, DVItype needs larger width table');
+@.DVItype needs larger...@>
+    goto 9998;
+  end;
+@z
+
+@x
+read_tfm_word; nw:=b0*256+b1;
+if (nw=0)or(nw>256) then goto 9997;
+@y
+if fnt_ofm_p[nf] then begin
+  read_tfm_word; nw:=((b0*256+b1)*256+b2)*256+b3;
+  if (nw=0)or(nw>65536) then goto 9997;
+  end
+else begin
+  read_tfm_word; nw:=b0*256+b1;
+  if (nw=0)or(nw>256) then goto 9997;
+  end;
+@z
+
+@x
+for k:=1 to 3+lh do
+  begin if eof(tfm_file) then goto 9997;
+  read_tfm_word;
+@y
+if cur_ofm_lv<0 then kk:=3 else kk:=8;
+for k:=1 to kk do
+  begin if eof(tfm_file) then goto 9997;
+  read_tfm_word;
+  end;
+for k:=1 to lh do { header }
+  begin if eof(tfm_file) then goto 9997;
+  read_tfm_word;
 @z
 
 @x [35] JFM by K.A.
+  if k=4 then
+    if b0<128 then tfm_check_sum:=((b0*256+b1)*256+b2)*256+b3
+    else tfm_check_sum:=(((b0-256)*256+b1)*256+b2)*256+b3
+  else if k=5 then
+    if b0<128 then
       tfm_design_size:=round(tfm_conv*(((b0*256+b1)*256+b2)*256+b3))
     else goto 9997;
   end;
 @y
+  if k=1 then
+    if b0<128 then tfm_check_sum:=((b0*256+b1)*256+b2)*256+b3
+    else tfm_check_sum:=(((b0-256)*256+b1)*256+b2)*256+b3
+  else if k=2 then
+    if b0<128 then
       tfm_design_size:=round(tfm_conv*(((b0*256+b1)*256+b2)*256+b3))
     else goto 9997;
   end;
@@ -155,6 +267,28 @@ for k:=1 to nt do
 @z
 
 @x
+@ @<Store character-width indices...@>=
+if wp>0 then for k:=width_ptr to wp-1 do
+  begin read_tfm_word;
+  if b0>nw then goto 9997;
+  width[k]:=b0;
+  end;
+@y
+@ @<Store character-width indices...@>=
+if wp>0 then for k:=width_ptr to wp-1 do
+  begin read_tfm_word;
+  if cur_ofm_lv<0 then
+    c0:=b0
+  else begin
+    c0:=(b0*256)+b1;
+    read_tfm_word;
+    end;
+  if c0>nw then goto 9997;
+  width[k]:=c0;
+  end;
+@z
+
+@x
 @p procedure out_text(c:ASCII_code);
 begin if text_ptr=line_length-2 then flush_text;
 incr(text_ptr); text_buf[text_ptr]:=c;
@@ -167,13 +301,33 @@ if c>=177 then text_buf[text_ptr]:=@'77 else text_buf[text_ptr]:=c;
 end;
 
 @ @p procedure out_kanji(c:integer);
+var @!v,@!n,@!jj: integer;
 begin
-  if text_ptr>=line_length-5 then flush_text;
-  c:=toBUFF(fromDVI(c));
-  if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
-  if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
-  if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
-                            incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
+  if (isinternalUPTEX) then begin
+    c:=fromDVI(c);
+    n:=UVSgetcodepointlength(c);
+    jj:=1;
+    while jj<=n do begin
+      v:=UVSgetcodepointinsequence(c,jj);
+      if (v>0) then begin
+        if text_ptr>=line_length-5 then flush_text;
+        v:=UCStoUTF8(v);
+        if BYTE1(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(v); end;
+        if BYTE2(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(v); end;
+        if BYTE3(v)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(v); end;
+                                  incr(text_ptr); text_buf[text_ptr]:=BYTE4(v);
+        end;
+      incr(jj);
+      end
+    end
+  else begin
+    if text_ptr>=line_length-5 then flush_text;
+    c:=toBUFF(fromDVI(c));
+    if BYTE1(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE1(c); end;
+    if BYTE2(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE2(c); end;
+    if BYTE3(c)<>0 then begin incr(text_ptr); text_buf[text_ptr]:=BYTE3(c); end;
+                              incr(text_ptr); text_buf[text_ptr]:=BYTE4(c);
+    end;
 end;
 
 @ output hexdecimal / octal character code.
@@ -274,6 +428,22 @@ ifdef('HEX_CHAR_CODE')
 endif('HEX_CHAR_CODE')
           print(' type=',cur_jfm_char_type);
           p:=cur_jfm_char_type
+        end
+      else if (fnt_ofm_p[cur_font]=true)and(isinternalUPTEX) then
+        begin
+          out_kanji(p);
+          if o<put1 then
+            begin
+              minor('set',o-set1+1:1,' ',p:1);
+            end
+          else begin
+            minor('put',o-put1+1:1,' ',p:1);
+          end;
+ifdef('HEX_CHAR_CODE')
+          print('(');
+          print_hex_number(p);
+          print(')');
+endif('HEX_CHAR_CODE')
         end
       else begin
         if o<put1 then
@@ -389,6 +559,16 @@ ifdef('HEX_CHAR_CODE')
   print_hex_number(p);
   print(')');
 endif('HEX_CHAR_CODE')
+@z
+
+@x
+@ @<Finish a command that either sets or puts a character...@>=
+if p<0 then p:=255-((-1-p) mod 256)
+else if p>=256 then p:=p mod 256; {width computation for oriental fonts}
+@y
+@ @<Finish a command that either sets or puts a character...@>=
+if p<0 then p:=255-((-1-p) mod 256)
+else if (p>=256)and(not fnt_ofm_p[cur_font]) then p:=p mod 256; {width computation for oriental fonts}
 @z
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

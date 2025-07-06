@@ -13,9 +13,15 @@
 % 03/09/90	`int' is a bad variable name for C.
 % (more recent changes in the ChangeLog)
 
+@x [0]
+\def\(#1){} % this is used to make section names sort themselves better
+@y
+\def\({} % this is used to make section names sort themselves better
+@z
+
 % [0] Let bibtex.tex work with latest webmac (which defines \ET, hence
 % making E active loses).
-@x
+@x [0]
 % Note: WEAVE will typeset an upper-case `E' in a PASCAL identifier a
 % bit strangely so that the `TeX' in the name of this program is typeset
 % correctly; if this becomes a problem remove these three lines to get
@@ -40,7 +46,7 @@
 % side -- and stdout is sometimes implemented as `&_iob[1]' or some
 % such.  An address of an address is invalid. Therefore, we define
 % variables `standardinput' and `standardoutput' in openinout.c.
-@x
+@x [2]
 @d term_out == tty
 @d term_in == tty
 @y
@@ -104,7 +110,7 @@ begin
 initialize;
 print_ln(banner);@/
 @y
-@<Define |parse_arguments|@>
+@<Define \(|parse_arguments|@>
 begin
 standard_input := stdin;
 standard_output := stdout;
@@ -176,7 +182,7 @@ log_pr_ln ('Capacity: max_strings=', max_strings:1,
 
 % [10] Possibly exit with bad status.  It doesn't seem worth it to move
 % the definitions of the |history| values to above this module; hence the 1.
-@x
+@x [10]
 exit_program:
 end.
 @y
@@ -314,7 +320,7 @@ if (glob_str_size > buf_size) then              bad:=100*bad+11;
 @y
 @z
 
-@x [22, 23, 27, 28] Allow any character as input. [22]
+@x [22] Allow any character as input.
 @!ASCII_code=0..127;    {seven-bit numbers}
 @y
 @!ASCII_code=0..255;    {eight-bit numbers}
@@ -360,7 +366,7 @@ for i:=@'200 to @'377 do lex_class[i] := alpha;
 
 % [still 32] Make RET a `white_space' character, so we won't choke on DOS
 % files, which use CR/LF for line endings.
-@x
+@x [32]
 lex_class[tab] := white_space;
 @y
 lex_class[tab] := white_space;
@@ -375,7 +381,7 @@ for i:=0 to @'377 do id_class[i] := legal_id_char;
 
 % [37] file_name_size no longer exists.  See comments in tex.ch for why
 % we change the element type to text_char.
-@x
+@x [37]
 @!name_of_file:packed array[1..file_name_size] of char;
                          {on some systems this is a \&{record} variable}
 @!name_length:0..file_name_size;
@@ -549,7 +555,7 @@ BIB_XRETALLOC ('str_pool', str_pool, ASCII_code, pool_size,
 
 % [58] (start_name) reallocate name_of_file for the new name and
 % terminate with null.
-@x
+@x [58]
 if (length(file_name) > file_name_size) then
     begin
     print ('File=');
@@ -562,7 +568,7 @@ free (name_of_file);
 name_of_file := xmalloc_array (ASCII_code, length (file_name) + 1);
 @z
 
-@x
+@x [58]
 name_length := length(file_name);
 @y
 name_length := length(file_name);
@@ -580,7 +586,7 @@ end;
 % [60] (add_extension) Don't pad name_of_file with blanks, terminate
 % with null. And junk the overflow check, since Web2c can't translate
 % the print statement properly and it can never happen, anyway.
-@x
+@x [60]
 if (name_length + length(ext) > file_name_size) then
     begin
     print ('File=',name_of_file,', extension=');
@@ -589,7 +595,7 @@ if (name_length + length(ext) > file_name_size) then
     end;
 @y
 @z
-@x
+@x [60]
 name_ptr := name_length+1;
 while (name_ptr <= file_name_size) do   {pad with blanks}
     begin
@@ -793,7 +799,7 @@ parse_arguments;
 
 % [106] Don't use a path to find the aux file, and don't add the
 % extension if it's already there.
-@x
+@x [106]
 add_extension (s_aux_extension);        {this also sets |name_length|}
 aux_ptr := 0;                           {initialize the \.{.aux} file stack}
 if (not a_open_in(cur_aux_file)) then
@@ -1054,7 +1060,7 @@ if (last_cite = max_cites) then
 % [141] Don't pad with blanks, terminate with null.
 % Don't use a path to search for subsidiary aux files,
 % but do check the directory of the main .aux file.
-% 
+%
 % This last is useful, for example, when --output-dir is used with TeX and the
 % .aux file has an \@input directive resulting from a LaTeX \include;
 % see bibtex-auxinclude.test. It's necessary because BibTeX itself does
@@ -1065,11 +1071,11 @@ if (last_cite = max_cites) then
 % changing the add_extension function to look for those overrides to the
 % aux file dirname, so that when we call kpse_*_name_ok below, we're
 % calling it on the actual file that will be used.
-% 
+%
 % And we need to call kpse_*_name_ok because bibtex is included in the
 % shell_escape_commands list that can be invoked by TeX in restricted mode.
 %
-@x
+@x [141]
 while (name_ptr <= file_name_size) do   {pad with blanks}
     begin
     name_of_file[name_ptr] := ' ';
@@ -1096,7 +1102,7 @@ log_pr_aux_name;
 % [151] This goto gets turned into a setjmp/longjmp by ./convert --
 % unfortunately, it is a nonlocal goto.  ekrell@ulysses.att.com
 % implemented the conversion.
-@x
+@x [151]
 buf_ptr2 := last;       {to get the first input line}
 loop
     begin
@@ -1118,7 +1124,7 @@ bst_done: a_close (bst_file);
 
 % [160] quote_next_fn and end_of_def are Pascal consts, instead of web macros.
 % max_ent_ints and max_ent_strs are gone, max_fields is no longer const.
-@x
+@x [160]
 @d quote_next_fn = hash_base - 1  {special marker used in defining functions}
 @d end_of_def = hash_max + 1      {another such special marker}
 
@@ -1159,7 +1165,7 @@ bst_done: a_close (bst_file);
 % q], but hidden inside a macro to mask the addressing computation.
 % Although WEB does not have multi-argument macros, webman.tex shows how
 % to get the equivalent effect.
-@x
+@x [161]
 @!entry_ints : array[int_ent_loc] of integer;
 @!num_ent_ints : int_ent_loc;   {the number of distinct |int_entry_var| names}
 @!str_ent_ptr : str_ent_loc;    {general |str_entry_var| location}
@@ -1299,7 +1305,7 @@ while (single_ptr + wiz_def_ptr > wiz_fn_space) do
 @!cite_info : ^str_number; {extra |cite_list| info}
 @z
 
-@x [224] Be silent unless verbose.
+@x [223] Be silent unless verbose.
     print ('Database file #',bib_ptr+1:0,': ');
     print_bib_name;@/
 @y
@@ -1445,7 +1451,7 @@ entry_strs := XTALLOC ((num_ent_strs + 1) * (num_cites + 1) * (ent_str_size + 1)
     x_entry_strs(str_ent_ptr)(0) := end_of_string;
 @z
 
-@x [291] Dynamic lit_stk_size.
+@x [290] Dynamic lit_stk_size.
 @!lit_stack : array[lit_stk_loc] of integer;    {the literal function stack}
 @!lit_stk_type : array[lit_stk_loc] of stk_type; {their corresponding types}
 @y
@@ -1478,7 +1484,7 @@ entry_strs := XTALLOC ((num_ent_strs + 1) * (num_cites + 1) * (ent_str_size + 1)
     end;
 @z
 
-@x [320] Dynamic buf_size.
+@x [322] Dynamic buf_size.
 if (out_buf_length+(p_ptr2-p_ptr1) > buf_size) then
     overflow('output buffer size ',buf_size);
 @y
@@ -1494,7 +1500,7 @@ while (out_buf_length+(p_ptr2-p_ptr1) > buf_size) do
         confusion ('field_info index is out of range');
 @z
 
-@x [330] Macroize entry_strs[][]
+@x [329] Macroize entry_strs[][]
     while (entry_strs[str_ent_ptr][ex_buf_ptr] <> end_of_string) do
                                         {copy characters into the buffer}
         append_ex_buf_char (entry_strs[str_ent_ptr][ex_buf_ptr]);
@@ -1562,7 +1568,7 @@ build_in('width$      ',6,b_width,n_width);
 % import (or someone would have found it before GCC 2 did).  Changing
 % the second `and' to an `or' makes all but the last of multiple authors
 % be omitted in the bbl file, so I simply removed the statement.
-@x
+@x [388]
 while ((ex_buf_xptr < ex_buf_ptr) and
                         (lex_class[ex_buf[ex_buf_ptr]] = white_space) and
                         (lex_class[ex_buf[ex_buf_ptr]] = sep_char)) do
@@ -1591,7 +1597,7 @@ if (pop_lit2 >= cmd_str_ptr) then       {no shifting---merely change pointers}
 % now a constant expression that is not evaluated at the Web level. If
 % this label were ever required, it could be replaced by the constant
 % 9997, which is not used as a statement label in BibTeX.
-@x
+@x [459]
     undefined : trace_pr ('unknown')
 @y
     trace_pr ('unknown')
@@ -1622,7 +1628,7 @@ if (pop_lit2 >= cmd_str_ptr) then       {no shifting---merely change pointers}
 @z
 
 % emacs-page
-@x [468] System-dependent changes.
+@x [467] System-dependent changes.
 This section should be replaced, if necessary, by changes to the program
 that are necessary to make \BibTeX\ work at a particular installation.
 It is usually best to design your change file so that all changes to
@@ -1633,7 +1639,7 @@ itself will get a new section number.
 @y
 @d argument_is (#) == (strcmp (long_options[option_index].name, #) = 0)
 
-@<Define |parse_arguments|@> =
+@<Define \(|parse_arguments|@> =
 procedure parse_arguments;
 const n_options = 4; {Pascal won't count array lengths for us.}
 var @!long_options: array[0..n_options] of getopt_struct;

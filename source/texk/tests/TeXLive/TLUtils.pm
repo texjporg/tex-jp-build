@@ -1,5 +1,5 @@
 # TeXLive::TLUtils.pm - the inevitable utilities for TeX Live.
-# Copyright 2007-2024 Norbert Preining, Reinhard Kotucha
+# Copyright 2007-2025 Norbert Preining, Reinhard Kotucha
 # This file is licensed under the GNU General Public License version 2
 # or any later version.
 
@@ -7,7 +7,7 @@ use strict; use warnings;
 
 package TeXLive::TLUtils;
 
-my $svnrev = '$Revision: 70794 $';
+my $svnrev = '$Revision: 74083 $';
 my $_modulerevision = ($svnrev =~ m/: ([0-9]+) /) ? $1 : "unknown";
 sub module_revision { return $_modulerevision; }
 
@@ -2643,7 +2643,7 @@ sub check_file_and_remove {
 
   if (!$checksum && !$checksize) {
     tlwarn("$fn_name: neither checksum nor checksize " .
-           "available for $xzfile, cannot check integrity"); 
+           "available for $xzfile, cannot check integrity\n"); 
     return;
   }
   
@@ -3665,6 +3665,9 @@ sub _create_config_files {
     tlwarn("Updating $dest, backup copy in $dest.backup\n");
     copy("-f", $dest, "$dest.backup");
   }
+  # ensure destination directory exists.
+  my $destdir = dirname ($dest);
+  -d $destdir || mkdirhier $destdir; # if fails, the next open will die.
   open(OUTFILE,">$dest")
     or die("Cannot open $dest for writing: $!");
 
@@ -3676,77 +3679,106 @@ sub _create_config_files {
   close(OUTFILE) || warn "close(>$dest) failed: $!";
 }
 
+# 
 sub parse_AddHyphen_line {
   my $line = shift;
   my %ret;
   # default values
-  my $default_lefthyphenmin = 2;
-  my $default_righthyphenmin = 3;
-  $ret{"lefthyphenmin"} = $default_lefthyphenmin;
-  $ret{"righthyphenmin"} = $default_righthyphenmin;
+  my $default_lefthyphenmin = -1;
+  my $default_righthyphenmin = -1;
   $ret{"synonyms"} = [];
+  $ret{"databases"} = ["dat", "def", "lua"];
   for my $p (quotewords('\s+', 0, "$line")) {
     my ($a, $b) = split /=/, $p;
     if ($a eq "name") {
       if (!$b) {
-        $ret{"error"} = "AddHyphen line needs name=something";
+        $ret{"error"} = "AddHyphen line needs name=something: $line";
         return %ret;
       }
       $ret{"name"} = $b;
       next;
     }
     if ($a eq "lefthyphenmin") {
-      $ret{"lefthyphenmin"} = ( $b ? $b : $default_lefthyphenmin );
+      if (! defined $b) {
+        $ret{"error"} = "AddHyphen line needs lefthyphenmin=something: $line";
+        return %ret;
+      }
+      $ret{"lefthyphenmin"} = $b;
       next;
     }
     if ($a eq "righthyphenmin") {
-      $ret{"righthyphenmin"} = ( $b ? $b : $default_righthyphenmin );
+      if (! defined $b) {
+        $ret{"error"} = "AddHyphen line needs righthyphenmin=something: $line";
+        return %ret;
+      }
+      $ret{"righthyphenmin"} = $b;
       next;
     }
     if ($a eq "file") {
       if (!$b) {
-        $ret{"error"} = "AddHyphen line needs file=something";
+        $ret{"error"} = "AddHyphen line needs file=something: $line ";
         return %ret;
       }
       $ret{"file"} = $b;
       next;
     }
     if ($a eq "file_patterns") {
-        $ret{"file_patterns"} = $b;
-        next;
+      # many are blank in hyph-utf8, don't check.
+      $ret{"file_patterns"} = $b;
+      next;
     }
     if ($a eq "file_exceptions") {
-        $ret{"file_exceptions"} = $b;
-        next;
+      # many are blank in hyph-utf8, don't check.
+      $ret{"file_exceptions"} = $b;
+      next;
     }
     if ($a eq "luaspecial") {
-        $ret{"luaspecial"} = $b;
-        next;
+      if (!$b) {
+        $ret{"error"} = "AddHyphen line needs luaspecial=something: $line";
+        return %ret;
+      }
+      $ret{"luaspecial"} = $b;
+      next;
     }
     if ($a eq "databases") {
+      if (!$b) {
+        $ret{"error"} = "AddHyphen line needs databases=foo[,bar]: $line";
+        return %ret;
+      }
       @{$ret{"databases"}} = split /,/, $b;
       next;
     }
     if ($a eq "synonyms") {
+      if (!$b) {
+        $ret{"error"} = "AddHyphen line needs synonyms=foo[,bar]: $line";
+        return %ret;
+      }
       @{$ret{"synonyms"}} = split /,/, $b;
       next;
     }
     if ($a eq "comment") {
-        $ret{"comment"} = $b;
-        next;
+      $ret{"comment"} = $b;
+      next;
     }
     # should not be reached at all
-    $ret{"error"} = "Unknown language directive $a";
+    $ret{"error"} = "Unknown AddHyphen directive $a: $line";
     return %ret;
   }
-  # this default value couldn't be set earlier
-  if (not defined($ret{"databases"})) {
-    if (defined $ret{"file_patterns"} or defined $ret{"file_exceptions"}
-        or defined $ret{"luaspecial"}) {
-      @{$ret{"databases"}} = qw(dat def lua);
-    } else {
-      @{$ret{"databases"}} = qw(dat def);
-    }
+  if (! $ret{"name"}) {
+    $ret{"error"} = "AddHyphen is missing name setting: $line";
+    return %ret;    
+  }
+  if ($ret{"lefthyphenmin"} !~ /^[0-9]$/) {
+    $ret{"lefthyphenmin"} = "" if ! $ret{"lefthyphenmin"}; #undef warning
+    $ret{"error"} = "AddHyphen has missing or bad "
+                    . " lefthyphenmin ($ret{lefthyphenmin}): $line";
+    return %ret;    
+  }
+  if ($ret{"righthyphenmin"} !~ /^[0-9]$/) {
+    $ret{"righthyphenmin"} = "" if ! $ret{"righthyphenmin"}; #undef warning
+    $ret{"error"} = "AddHyphen has missing or bad "
+                    . " righthyphenmin ($ret{righthyphenmin}): $line";
+    return %ret;    
   }
   return %ret;
 }
@@ -4865,6 +4897,13 @@ sub tlnet_disabled_packages {
   return @ret;
 }
 
+=item C<< report_tlpdb_differences($rret) >>
+
+Report, using info function, as given in hash reference argument RET,
+with keys removed_packages, added_packages, different_packages.
+
+=cut
+
 sub report_tlpdb_differences {
   my $rret = shift;
   my %ret = %$rret;
@@ -4883,19 +4922,29 @@ sub report_tlpdb_differences {
   }
   if (defined($ret{'different_packages'})) {
     info ("different packages from A to B:\n");
+    my $printed_fmttriggers_msg = 0;
     for my $p (sort keys %{$ret{'different_packages'}}) {
-      info ("  $p\n");
+      info ("  $p:\n");
       for my $k (sort keys %{$ret{'different_packages'}->{$p}}) {
         if ($k eq "revision") {
-          info("    revision differ: $ret{'different_packages'}->{$p}->{$k}\n");
+         info("    revision differ: $ret{'different_packages'}->{$p}->{$k}\n");
         } elsif ($k eq "removed" || $k eq "added") {
-          info("    $k files:\n");
+          info ("    $k files:\n");
           for my $f (sort @{$ret{'different_packages'}->{$p}->{$k}}) {
-            info("      $f\n");
+            info ("      $f\n");
           }
+        } elsif ($k eq "fmttriggers") {
+          # fmttriggers; don't bother making a complete report.
+          # The fmttriggers will differ when the global variables in
+          # 00texlive.autopatterns.tlpsrc change but we forgot to
+          # tlforceincr all the packages that depend on the variables.
+          # Which happens depressingly often.
+          info("    $k differ)\n");
+          info("(if 00texlive.autopatterns change, tlforceincr dependents.)\n")
+            if ! $printed_fmttriggers_msg; # just show once
+          $printed_fmttriggers_msg = 1;
         } else {
-          # e.g., fmttriggers; don't bother making a nice report.
-          info("  unknown differ $k\n");
+          info("    $k differ\n");
         }
       }
     }

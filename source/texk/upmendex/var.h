@@ -18,9 +18,21 @@ char setpage_prefix[STYBUFSIZE]={"\n  \\setcounter{page}{"},setpage_suffix[STYBU
 char group_skip[STYBUFSIZE]={"\n\n  \\indexspace\n"};
 char lethead_prefix[STYBUFSIZE]={""},lethead_suffix[STYBUFSIZE]={""};
 int lethead_flag=0;
-char item_0[STYBUFSIZE]={"\n  \\item "},item_1[STYBUFSIZE]={"\n    \\subitem "},item_2[STYBUFSIZE]={"\n      \\subsubitem "};
-char item_01[STYBUFSIZE]={"\n    \\subitem "},item_x1[STYBUFSIZE]={"\n    \\subitem "},item_12[STYBUFSIZE]={"\n      \\subsubitem "},item_x2[STYBUFSIZE]={"\n      \\subsubitem "};
-char delim_0[STYBUFSIZE]={", "},delim_1[STYBUFSIZE]={", "},delim_2[STYBUFSIZE]={", "},delim_n[STYBUFSIZE]={", "},delim_r[STYBUFSIZE]={"--"},delim_t[STYBUFSIZE]={""};
+char item_0[][STYBUFSIZE] ={{"\n  \\item "},
+                            {"\n    \\subitem "},
+                            {"\n      \\subsubitem "},
+                            {"\n        \\subsubsubitem "},
+                            {"\n          \\subsubsubsubitem "}};
+char item_01[][STYBUFSIZE]={{"\n    \\subitem "},
+                            {"\n      \\subsubitem "},
+                            {"\n        \\subsubsubitem "},
+                            {"\n          \\subsubsubsubitem "}};
+char item_x[][STYBUFSIZE] ={{"\n    \\subitem "},
+                            {"\n      \\subsubitem "},
+                            {"\n        \\subsubsubitem "},
+                            {"\n          \\subsubsubsubitem "}};
+char delim_0[][STYBUFSIZE]={{", "},{", "},{", "},{", "},{", "}};
+char delim_n[STYBUFSIZE]={", "},delim_r[STYBUFSIZE]={"--"},delim_t[STYBUFSIZE]={""};
 char suffix_2p[STYBUFSIZE]={""},suffix_3p[STYBUFSIZE]={""},suffix_mp[STYBUFSIZE]={""};
 char encap_prefix[STYBUFSIZE]={"\\"},encap_infix[STYBUFSIZE]={"{"},encap_suffix[STYBUFSIZE]={"}"};
 int line_max=72;
@@ -33,10 +45,10 @@ char numhead_positive[STYBUFSIZE]={"Numbers"},numhead_negative[STYBUFSIZE]={"num
 int symbol_flag=1;
 int letter_head=1;
 UChar atama[STYBUFSIZE],hangul_head[STYBUFSIZE],hanzi_head[STYBUFSIZE]={L'\0'},kana_head[STYBUFSIZE]={L'\0'};
-UChar devanagari_head[STYBUFSIZE],thai_head[STYBUFSIZE];
+UChar brahmic_head[NUM_BRAHMIC][STYBUFSIZE];
 char page_compositor[STYBUFSIZE]={"-"},page_precedence[STYBUFSIZE]={"rnaRA"};
-char character_order[STYBUFSIZE]={"SNLGCJKHDTah"};
-char script_preamble[11][STYBUFSIZE],script_postamble[11][STYBUFSIZE];
+char character_order[STYBUFSIZE]={"SNLGCJKHDbpgotukmsTlah"};
+char script_preamble[21][STYBUFSIZE],script_postamble[21][STYBUFSIZE];
 char icu_locale[STYBUFSIZE]={"root"},icu_rules[STYBUFSIZE]={""};
 int icu_attributes[UCOL_ATTRIBUTE_COUNT];
 

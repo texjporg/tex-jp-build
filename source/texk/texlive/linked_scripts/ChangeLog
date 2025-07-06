@@ -1,3 +1,32 @@
+2024-12-08  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (linkfile): new variable, scripts-targets.lst.
+	(install-data-hook): create it, en passant, with all link names
+	and target names, including special cases memoize* and
+	listings-ext.sh. scripts.lst has only the link names.
+	* scripts-targets.lst: new file.
+	tldistro threads around 4 Jul 2024 16:27:36 and now.
+
+2024-12-07  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (check-make-vs-files): new target to compare
+	list in Makefile[.am] with files on filesystem.
+	* texlive/extractbb.lua,
+	* texlive/mktexlsr.pl: remove, not listed.
+	tldistro thread around 4 Jul 2024 16:27:36.
+
+2024-11-24  Karl Berry  <karl@tug.org>
+
+	* Makefile.am (texmf_other_scripts): no more texlive/extractbb.lua.
+
+2024-07-04  Karl Berry  <karl@freefriends.org>
+
+	* xput/xput,
+	* xput/xputserver,
+	* xput/,
+	* ctan-o-mat/ctan-o-mat,
+	* texosquery/texosquery: remove leftovers from old pkg installs.
+
 2024-03-19  Karl Berry  <karl@tug.org>
 
 	* Makefile.am (install-data-hook, uninstall-hook): can't use

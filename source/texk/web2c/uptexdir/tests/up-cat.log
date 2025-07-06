@@ -1,0 +1,36 @@
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**up-cat.tex
+(./up-cat.tex
+begin-group character Á; end-group character Â.
+math shift character Ã.
+alignment tab character Ä.
+macro parameter character Å.
+superscript character Æ.
+subscript character Ç.
+the letter È.
+the character É.
+begin-group character ā; end-group character Ă.
+math shift character ă.
+alignment tab character Ą.
+macro parameter character ą.
+superscript character Ć.
+subscript character ć.
+the letter Ĉ.
+the character ĉ.
+begin-group character ḁ; end-group character Ḃ.
+math shift character ḃ.
+alignment tab character Ḅ.
+macro parameter character ḅ.
+superscript character Ḇ.
+subscript character ḇ.
+the letter Ḉ.
+the character ḉ.
+math shift character ü.
+math shift character Č.
+math shift character Ḍ.
+superscript character þ; subscript character ÿ.
+superscript character Ď; subscript character ď.
+superscript character Ḏ; subscript character ḏ.
+[1] )
+Output written on up-cat.dvi (1 page, 440 bytes).
