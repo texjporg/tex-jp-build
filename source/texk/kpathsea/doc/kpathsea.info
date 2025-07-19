@@ -37,7 +37,7 @@ Kpathsea library
 ****************
 
 This manual documents the Kpathsea library for path searching.  It
-corresponds to version 6.4.0, released in January 2025.
+corresponds to version 6.4.2/dev, released in July 2025.
 
 * Menu:
 
@@ -61,8 +61,8 @@ File: kpathsea.info,  Node: Introduction,  Next: unixtex.ftp,  Prev: Top,  Up: T
 1 Introduction
 **************
 
-This manual corresponds to version 6.4.0 of the Kpathsea library,
-released in January 2025.
+This manual corresponds to version 6.4.2/dev of the Kpathsea library,
+released in July 2025.
 
    The library's fundamental purpose is to return a filename from a list
 of directories specified by the user, similar to what shells do when
@@ -846,34 +846,46 @@ and so on, but not ‘/a/b/c’ or ‘/a/1’.
 
    You can include multiple ‘//’ constructs in the path.
 
-   ‘//’ at the beginning of a path is ignored; you didn't really want to
-search every directory on the system, did you?
+   ‘//’ at the beginning of a path is ignored.  Searching every
+directory on the system is not relevant for TeX.
 
-   I should mention one related implementation trick, which I took from
-GNU find.  Matthew Farwell suggested it, and David MacKenzie implemented
-it.
+   We need to discuss one related implementation trick, originally taken
+from GNU find.  Matthew Farwell suggested it, and David MacKenzie
+implemented it.
 
-   The trick is that in every real Unix implementation (as opposed to
-the POSIX specification), a directory which contains no subdirectories
-will have exactly two links (namely, one for ‘.’ and one for ‘..’).
-That is to say, the ‘st_nlink’ field in the ‘stat’ structure will be
-two.  Thus, we don't have to stat everything in the bottom-level (leaf)
+   The trick is that in normal Unix implementations (though not in the
+POSIX specification), a directory which contains no subdirectories will
+have exactly two links (namely, one for ‘.’ and one for ‘..’).  That is
+to say, the ‘st_nlink’ field in the ‘stat’ structure will be two.  Thus,
+we don't have to stat everything in the bottom-level (leaf)
 directories--we can just check ‘st_nlink’, notice it's two, and do no
 more work.
 
-   But if you have a directory that contains a single subdirectory and
-500 regular files, ‘st_nlink’ will be 3, and Kpathsea has to stat every
-one of those 501 entries.  Therein lies slowness.
+   Kpathsea never does this ‘st_nlink=2’ check (or any disk checking)
+for ‘!!’ trees (*note ls-R::).  And the non-‘!!’ trees in a TeX Live
+installation are typically extremely small.  Therefore the ‘st_nlink’
+check is not performed by default at all, as of 2025 (Kpathsea 6.3.4).
+That way, two not-uncommon situations work out: 1) all ‘gvisor’-handled
+filesystems return ‘st_nlink=1’ before some post-2025 release
+(<https://tug.org/pipermail/texhax/2025-July/026772.html>); 2) a
+symbolic link to another directory in such an apparent leaf directory
+will get followed even though ‘st_nlink=2’
+(<https://tex.stackexchange.com/questions/132908>).
 
-   You can disable the trick by undefining ‘ST_NLINK_TRICK’ in
-‘kpathsea/config.h’.  (It is undefined by default except under Unix.)
+   If you have an extremely large non-‘!!’ tree, most likely
+‘TEXMFHOME’, you may find it useful to enable the check: you can do this
+by setting the configuration variable ‘texmf_nlink_for_leaf’ to 1.
+Alternatively, with such a large tree, you may find it even more useful
+to add the tree to ‘TEXMFDBS’ so that only ‘ls-R’ lookups are done
+(again, *note ls-R::).
 
-   Unfortunately, in some cases files in leaf directories are ‘stat’'d:
-if the path specification is, say, ‘$TEXMF/fonts//pk//’, then files in a
-subdirectory ‘.../pk’, even if it is a leaf, are checked.  The reason
-cannot be explained without reference to the implementation, so read
-‘kpathsea/elt-dirs.c’ (search for ‘may descend’) if you are curious.
-And if you find a way to solve the problem, please let me know.
+   Unfortunately, in some cases files in leaf directories are ‘stat’'d
+anyway: if the path specification is, say, ‘$TEXMF/fonts//pk//’, then
+files in a subdirectory ‘.../pk’, even if it is a leaf, are checked.
+The reason cannot be explained without reference to the implementation,
+so read ‘kpathsea/elt-dirs.c’ (search for ‘may descend’) if you are
+curious.  And if you find a way to solve the problem, please let me
+know.
 
    Subdirectory expansion is implemented in the source file
 ‘kpathsea/elt-dirs.c’.
@@ -3041,24 +3053,30 @@ debugging options helpful.  *Note Debugging::.
      such may be the culprit.
 
    • Your files reside in a directory that is only pointed to via a
-     symbolic link, in a leaf directory and is not listed in ‘ls-R’.
+     symbolic link within a leaf directory, and is not listed in ‘ls-R’.
 
-     Unfortunately, Kpathsea's subdirectory searching has an
-     irremediable deficiency: If a directory D being searched for
-     subdirectories contains plain files and symbolic links to other
-     directories, but no true subdirectories, D will be considered a
-     leaf directory, i.e., the symbolic links will not be followed.
-     *Note Subdirectory expansion::.
+     Unfortunately, Kpathsea's subdirectory searching has a problematic
+     deficiency: If a directory D being searched for subdirectories
+     contains symbolic links to other directories (and possibly other
+     plain files or symlinks), but no true subdirectories, by default D
+     will be considered a leaf directory, i.e., the symbolic links will
+     not be followed.  *Note Subdirectory expansion::.
 
      You can work around this problem by creating an empty dummy
      subdirectory in D.  Then D will no longer be a leaf, and the
      symlinks will be followed.
 
+     Another workaround is to set the configuration variable
+     ‘kpse_ignore_nlink_for_leaf’ to 1.  Then Kpathsea will look at all
+     entries in all directories in determining whether they are
+     (symlinks to) subdirectories.  This is not the default because it
+     is considerably expensive to consider the contents of every leaf
+     directory.
+
      The directory immediately followed by the ‘//’ in the path
-     specification, however, is always searched for subdirectories, even
-     if it is a leaf.  Presumably you would not have asked for the
-     directory to be searched for subdirectories if you didn't want it
-     to be.
+     specification is always searched for subdirectories, even if it is
+     a leaf.  Presumably you would not have asked for the directory to
+     be searched for subdirectories if you didn't want it to be.
 
    • If the fonts (or whatever) don't already exist, ‘mktexpk’ (or
      ‘mktexmf’ or ‘mktextfm’) will try to create them.  If these rather
@@ -3544,9 +3562,9 @@ Index
 * dynamic creation of files:             mktex scripts.       (line   6)
 * EC fonts, and dynamic source creation: mktex scripts.       (line   6)
 * elt-dirs.c:                            Subdirectory expansion.
-                                                              (line  41)
+                                                              (line  52)
 * elt-dirs.c <1>:                        Subdirectory expansion.
-                                                              (line  48)
+                                                              (line  60)
 * enabling mktex scripts:                mktex configuration. (line   6)
 * ENCFONTS:                              Supported file formats.
                                                               (line  61)
@@ -3948,8 +3966,6 @@ Index
                                                               (line  30)
 * st_nlink:                              Subdirectory expansion.
                                                               (line  26)
-* ST_NLINK_TRICK:                        Subdirectory expansion.
-                                                              (line  38)
 * stack trace:                           Bug checklist.       (line  58)
 * standalone path searching:             Invoking kpsewhich.  (line   6)
 * standard error and debugging output:   Debugging.           (line  27)
@@ -4163,66 +4179,66 @@ Index
 
 Tag Table:
 Node: Top1479
-Node: Introduction2261
-Node: History4364
-Node: unixtex.ftp8984
-Node: Security10466
-Node: Global font cache and security13179
-Node: TeX directory structure15170
-Node: Path searching19345
-Node: Searching overview20303
-Node: Path sources24210
-Node: Config files25480
-Node: Path expansion30528
-Node: Default expansion31497
-Node: Variable expansion33619
-Node: Tilde expansion35088
-Node: Brace expansion36136
-Node: KPSE_DOT expansion37131
-Node: Subdirectory expansion37656
-Node: Casefolding search40096
-Node: Casefolding rationale40873
-Node: Casefolding examples42231
-Node: Filename database47453
-Node: ls-R48467
-Node: Filename aliases52339
-Node: Database format53581
-Node: Invoking kpsewhich54630
-Node: kpsewhich examples56021
-Node: Path searching options56909
-Node: Specially-recognized files67083
-Node: Auxiliary tasks68558
-Node: Standard options72702
-Node: TeX support73070
-Node: Supported file formats74428
-Node: File lookup83179
-Node: Glyph lookup84984
-Node: Basic glyph lookup86132
-Node: Fontmap87040
-Node: Fallback font89651
-Node: Suppressing warnings90587
-Node: mktex scripts91750
-Node: mktex configuration92993
-Node: mktex script names99086
-Node: mktex script arguments100769
-Node: Programming101684
-Node: Programming overview102327
-Node: Calling sequence105238
-Node: Safe filenames110575
-Ref: openout_any110734
-Node: Program-specific files114543
-Node: Programming with config files115596
-Node: Reporting bugs117243
-Node: Bug checklist117921
-Node: Mailing lists121478
-Node: Debugging122155
-Node: Logging127412
-Node: Common problems129319
-Node: Unable to find files129796
-Node: Slow path searching132252
-Node: Unable to generate fonts133647
-Node: TeX or Metafont failing136183
-Node: Index137385
+Node: Introduction2262
+Node: History4366
+Node: unixtex.ftp8986
+Node: Security10468
+Node: Global font cache and security13181
+Node: TeX directory structure15172
+Node: Path searching19347
+Node: Searching overview20305
+Node: Path sources24212
+Node: Config files25482
+Node: Path expansion30530
+Node: Default expansion31499
+Node: Variable expansion33621
+Node: Tilde expansion35090
+Node: Brace expansion36138
+Node: KPSE_DOT expansion37133
+Node: Subdirectory expansion37658
+Node: Casefolding search40819
+Node: Casefolding rationale41596
+Node: Casefolding examples42954
+Node: Filename database48176
+Node: ls-R49190
+Node: Filename aliases53062
+Node: Database format54304
+Node: Invoking kpsewhich55353
+Node: kpsewhich examples56744
+Node: Path searching options57632
+Node: Specially-recognized files67806
+Node: Auxiliary tasks69281
+Node: Standard options73425
+Node: TeX support73793
+Node: Supported file formats75151
+Node: File lookup83902
+Node: Glyph lookup85707
+Node: Basic glyph lookup86855
+Node: Fontmap87763
+Node: Fallback font90374
+Node: Suppressing warnings91310
+Node: mktex scripts92473
+Node: mktex configuration93716
+Node: mktex script names99809
+Node: mktex script arguments101492
+Node: Programming102407
+Node: Programming overview103050
+Node: Calling sequence105961
+Node: Safe filenames111298
+Ref: openout_any111457
+Node: Program-specific files115266
+Node: Programming with config files116319
+Node: Reporting bugs117966
+Node: Bug checklist118644
+Node: Mailing lists122201
+Node: Debugging122878
+Node: Logging128135
+Node: Common problems130042
+Node: Unable to find files130519
+Node: Slow path searching133362
+Node: Unable to generate fonts134757
+Node: TeX or Metafont failing137293
+Node: Index138495
 
 End Tag Table
 
