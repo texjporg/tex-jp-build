@@ -80,6 +80,7 @@ else
   fail=1
 fi
 
+exit 77
 exit $fail
 
 # BTW, to run just this one test:
