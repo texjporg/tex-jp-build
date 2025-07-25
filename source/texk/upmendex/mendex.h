@@ -120,7 +120,7 @@ void styread(const char *filename);
 void set_icu_attributes(void);
 
 /* fread.c */
-int idxread(char *filename, int start);
+int idxread(char *filename);
 int multibyte_to_widechar(UChar *wcstr, int32_t size, char *mbstr);
 int widechar_to_multibyte(char *mbstr, int32_t size, UChar *wcstr);
 

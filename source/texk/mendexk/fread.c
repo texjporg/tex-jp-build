@@ -13,7 +13,7 @@ static void chkpageattr(struct page *p);
 static void copy_multibyte_char(char *buff1, char *buff2, int *i, int *j);
 
 /*   read idx file   */
-int idxread(char *filename, int start)
+int idxread(char *filename)
 {
 	int i,j,k,l,m,n,cc,indent,wflg,flg=0,bflg=0,nest,esc,quo,eflg=0,pacc,preject;
 	char buff[BUFSIZE],wbuff[BUFSIZE],estr[256],table[BUFSIZE],*tmp1,*tmp2;
@@ -49,7 +49,7 @@ int idxread(char *filename, int start)
 		verb_printf(efp,"Scanning input file %s.",filename);
 	}
 
-	for (i=start,n=1;;i++,n++) {
+	for (i=lines,n=1;;i++,n++) {
 		if (!(i%100))
 			ind=(struct index *)xrealloc(ind,sizeof(struct index)*(i+100));
 LOOP:
