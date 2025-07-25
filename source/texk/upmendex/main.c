@@ -303,10 +303,10 @@ int main(int argc, char **argv)
 	ind=xmalloc(sizeof(struct index));
 
 	for (i=0;i<idxcount-fsti;i++) {
-		ecount+=idxread(idxfile[i],lines);
+		ecount+=idxread(idxfile[i]);
 	}
 	if (fsti==1) {
-		ecount+=idxread(NULL,lines);
+		ecount+=idxread(NULL);
 	}
 	verb_printf(efp,"%d entries accepted, %d rejected.\n",acc,reject);
 
