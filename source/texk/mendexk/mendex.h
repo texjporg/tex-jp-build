@@ -52,7 +52,7 @@ void styread(const char *filename);
 
 /* fread.c */
 char *mfgets(char *buf, int size, FILE *fp);
-int idxread(char *filename, int start);
+int idxread(char *filename);
 
 /* fwrite.c */
 int fprintf2   (FILE *fp, const char *format, ...);
