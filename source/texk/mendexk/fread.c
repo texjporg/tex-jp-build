@@ -77,7 +77,7 @@ LOOP:
 		}
 		indent=wflg=k=nest=esc=quo=0;
 
-/*   analize words   */
+/*   analyze words   */
 
 		for (;;j++,k++) {
 			if (buff[j]=='\n' || buff[j]=='\0') {
