@@ -486,7 +486,7 @@ static void chkpageattr(struct page *p)
 	pclen=strlen(page_compositor);
 	if (pclen<=0) { /* exit(253) when page_compositor is an empty string. */
 		/* Maybe, this check should have been done earlier (e.g. when/after reading a style file). */
-		verb_printf(efp, "\nIllegular page_comositor specification.\n");
+		verb_printf(efp, "\nIllegal page_compositor specification: an empty string is not allowed.\n");
 		exit(253);
 	}
 	for (i=0;i<strlen(p->page);i++) {
