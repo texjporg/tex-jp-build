@@ -521,6 +521,11 @@ static void chkpageattr(struct page *p)
 
 	pplen=strlen(page_precedence);
 	pclen=strlen(page_compositor);
+	if (pclen<=0) { /* exit(253) when page_compositor is an empty string. */
+		/* Maybe, this check should have been done earlier (e.g. when/after reading a style file). */
+		verb_printf(efp, "\nIllegal page_compositor specification: an empty string is not allowed.\n");
+		exit(253);
+	}
 	for (i=0;i<strlen(p->page);i++) {
 		page0=&p->page[i];
 		if (strncmp(page_compositor,page0,pclen)==0) {
@@ -528,10 +533,7 @@ static void chkpageattr(struct page *p)
 			cc++;
 			i+=pclen-1;
 			if (cc>=PAGE_COMPOSIT_DEPTH) {
-				if (pclen>0)
-					verb_printf(efp, "\nToo many fields of page number \"%s\".\n", p->page);
-				else
-					verb_printf(efp, "\nIllegular page_comositor specification.\n");
+				verb_printf(efp, "\nToo many fields of page number \"%s\".\n", p->page);
 				exit(253);
 			}
 		}
