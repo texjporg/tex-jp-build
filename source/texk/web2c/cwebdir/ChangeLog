@@ -1,7 +1,38 @@
+2025-07-27  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile,
+	* comm-{mac,mini,ql,w2c}.ch,
+	* comm-w2c.h,
+	* common.h,
+	* common.w,
+	* ctang-{bs,pc,ql,vms,w2c,w32}.ch,
+	* ctangle.c,
+	* ctangle.w,
+	* ctwill-w2c.ch,
+	* cweav-{bs,pc,ql,vms,w2c,w32}.ch,
+	* cweave.w,
+	* cwebmac.tex,
+	* cwebman-w2c.ch,
+	* cwebman.tex,
+	* po/cweb.pot,
+	* po/de/cweb-tl.po,
+	* po/de/cweb.po,
+	* po/it/cweb.po,
+	* prod-{cweave,twill}.w,
+	* prod.w: CWEB 4.12.2 release.
+
+2025-04-30  Andreas Scherer  <https://ascherer.github.io>
+
+	* comm-w2c.ch,
+	* po/de/web2c-help.po,
+	* po/web2c-help.pot: Restore default behavior of generic CWEB.
+
 2025-04-18  Andreas Scherer  <https://ascherer.github.io>
 
 	* comm-w2c.h,
-	* common.h: Amend special characters.
+	* common.c,
+	* common.h,
+	* ctangle.c: Amend special characters.
 
 2025-04-17  Andreas Scherer  <https://ascherer.github.io>
 

@@ -1,3 +1,23 @@
+2025-07-22  Karl Berry  <karl@freefriends.org>
+
+	* reautoconf: mention that autoconf-only packages need to be
+	explicitly added; would be better to read kpse-pkgs.m4.
+	Also reautoconf tree for kpse-setup.m4 changes.
+
+2025-06-26  Karl Berry  <karl@freefriends.org>
+
+	* automake 1.18.1.
+
+2025-04-30  Karl Berry  <karl@freefriends.org>
+
+	* Build: incorporate original CFLAGS, CXXFLAGS, OBJCXXFLAGS values.
+	https://tug.org/pipermail/tlbuild/2025q2/005771.html
+
+2025-04-29  Karl Berry  <karl@freefriends.org>
+
+	* Build: use TL_CFLAGS, TL_CXXFLAGS, etc., for TL_BUILD_ENV
+	if -g is not given.
+
 2025-03-08  Karl Berry  <karl@tug.org>
 
 	* version.ac: 2026/dev.

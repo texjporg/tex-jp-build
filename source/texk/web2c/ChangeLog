@@ -1,3 +1,40 @@
+2025-07-27  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.12.2 release.
+
+2025-07-21  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (mpost invocation): update option list.
+
+2025-07-19  David Fuchs  <drfuchs@yahoo.com>
+
+	* dvitype.web (scan_bop [99]): verbosely output fnt_def commands
+	that occur after the preamble and before the first bop, or between
+	eop/bop pairs. This replaces the change of 2022-02-24, which fixed
+	the original problem (lack of newline between such fnt_def cmds),
+	but output them tersely.
+	https://tug.org/texmfbug/newbug.html#% https://tug.org/texmfbug/newbug.html#dvitypefontoutput
+
+2025-07-19  David Fuchs  <drfuchs@yahoo.com>
+
+	* dvitype.web (skip_pages [95]): initialize w,x,y,z to protect
+	against use in first_par, which skip_pages can call.
+	https://tug.org/texmfbug/newbug.html#dvitypeinitglobal
+
+2025-05-05  Karl Berry  <karl@freefriends.org>
+
+	* tex.ch (26.449): avoid spurious additional errors
+	from \mkern <non-mu-dimen-or-skip>. Fix from David Fuchs.
+	Report from Tyge Tiessen,
+        https://tug.org/pipermail/tex-k/2025-January/004150.html
+        https://tug.org/texmfbug/newbug.html#B182muerror
+	* tests/invalidmu.tex: test file.
+
+2025-04-30  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebboot.cin,
+	* help.h: Restore 'verbose' diagnostics in CWEB.
+
 2025-04-18  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctangleboot.cin,
@@ -259,13 +296,13 @@
 	* tex.ch (check_outer_validity): don't check unless OK_to_interrupt,
 	to avoid getting into an erroneous state if an \outer token
 	is deleted interactively.
-	Report from Tyge Thiessen:
+	Report from Tyge Tiessen:
 	https://tug.org/pipermail/tex-k/2024-March/004021.html
 	DEK bug entry: https://tug.org/texmfbug/newbug.html#B142outer
 
 2024-06-03  Karl Berry  <karl@freefriends.org>
 
-	* tests/fix-changefile-lines.py: new script from Tyge Thiessen
+	* tests/fix-changefile-lines.py: new script from Tyge Tiessen
 	to update the chapter/section/line numbers in a .ch file,
 	following my request:
 	https://tug.org/pipermail/tex-k/2024-June/004064.html
