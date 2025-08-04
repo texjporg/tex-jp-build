@@ -13,9 +13,6 @@ if !UPTEX
 bin_links += euptex$(EXEEXT):uptex
 endif !UPTEX
 bin_links += euptex$(EXEEXT):eptex
-if !PTEX
-bin_links += euptex$(EXEEXT):ptex
-endif !PTEX
 endif EUPTEX
 EXTRA_PROGRAMS += euptex
 
