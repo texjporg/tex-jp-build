@@ -86,9 +86,8 @@ uptex.ch: tie$(EXEEXT) uptex.web $(uptex_ch_srcs)
 	$(tie_c) uptex.web $(uptex_ch_srcs)
 uptex_ch_srcs = \
 	uptexdir/ptex-base.ch \
-	unbalanced-braces.ch \
 	uptexdir/uptex-m.ch \
-	$(uptex_ch_synctex) \
+	unbalanced-braces.ch \
 	tex-binpool.ch
 
 EXTRA_DIST += $(uptex_web_srcs) $(uptex_ch_srcs) uptexdir/uptex.defines
