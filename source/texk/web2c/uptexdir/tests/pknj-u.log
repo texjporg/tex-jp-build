@@ -214,7 +214,7 @@ snow snow 雪
 
 ifx:TRUE
 [39003]
-Memory usage before: 1274&5528; after: 118&5091; still untouched: 4992421
+Memory usage before: 1XXX&5528; after: 1XX&5091; still untouched: 4992421
  ) 
 Here is how much of TeX's memory you used:
  26 strings out of 49XXXX
