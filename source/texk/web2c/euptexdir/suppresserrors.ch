@@ -10,7 +10,7 @@
 %%
 %% \ignoreprimitiveerror (from pdfTeX and XeTeX)
 %%
-%% This change file should be applied after nbalanced-braces.ch.
+%% This change file should be applied after unbalanced-braces.ch.
 
 @x
 @d print_err(#)==begin if interaction=error_stop_mode then wake_up_terminal;

@@ -87,6 +87,7 @@ uptex.ch: tie$(EXEEXT) uptex.web $(uptex_ch_srcs)
 uptex_ch_srcs = \
 	uptexdir/ptex-base.ch \
 	uptexdir/uptex-m.ch \
+	$(uptex_ch_synctex) \
 	unbalanced-braces.ch \
 	tex-binpool.ch
 
