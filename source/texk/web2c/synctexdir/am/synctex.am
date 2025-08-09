@@ -151,6 +151,47 @@ EXTRA_DIST += \
 	synctexdir/synctex-e-mem.ch1 \
 	synctexdir/synctex-e-rec.ch0
 
+EXTRA_DIST += \
+	synctexdir/synctex-p-mem.ch0 \
+	synctexdir/synctex-p-mem.ch1 \
+	synctexdir/synctex-p-rec.ch0 \
+	synctexdir/synctex-p-rec.ch1
+
+## SyncTeX infrastructure: upTeX
+
+if UPTEX_SYNCTEX
+
+uptex_CPPFLAGS += -I$(srcdir)/synctexdir $(ZLIB_INCLUDES)
+
+uptex_LDADD += $(ZLIB_LIBS)
+uptex_prereq += $(ZLIB_DEPEND)
+
+uptex_ch_synctex = \
+	synctexdir/synctex-def.ch0 \
+	synctexdir/synctex-p-mem.ch0 \
+	synctexdir/synctex-mem.ch0 \
+	synctexdir/synctex-p-mem.ch1 \
+	synctexdir/synctex-p-rec.ch0 \
+	synctexdir/synctex-rec.ch0 \
+	synctexdir/synctex-rec.ch1 \
+	synctexdir/synctex-rec.ch2 \
+	synctexdir/synctex-p-rec.ch1
+
+dist_uptex_SOURCES += \
+	synctexdir/synctex.c \
+	synctexdir/synctex.h \
+	synctexdir/synctex-common.h \
+	synctexdir/synctex-uptex.h
+
+uptex_CPPFLAGS += -D__SyncTeX__ -DSYNCTEX_ENGINE_H=\"synctex-uptex.h\"
+
+endif UPTEX_SYNCTEX
+
+EXTRA_DIST += \
+	synctexdir/synctex-ep-mem.ch0 \
+	synctexdir/synctex-ep-mem.ch1 \
+	synctexdir/synctex-ep-rec.ch0
+
 ## SyncTeX infrastructure: e-upTeX
 
 if EUPTEX_SYNCTEX
