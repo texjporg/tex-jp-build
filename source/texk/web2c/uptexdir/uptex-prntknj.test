@@ -40,8 +40,6 @@ cat >up-pknj-x.filter <<-\_EOF
 	s/strings out of 49[789]...$/strings out of 49XXXX/
 	s/characters out of 6219...$/characters out of 6219XXX/
 	s/97. multiletter/97X multiletter/
-	s/usage before: 1...\&/usage before: 1XXX\&/
-	s/; after: 1..\&/; after: 1XX\&/
 	_EOF
 
 sed -f up-pknj-x.filter up-pknj-s.log >up-pknj-s.out
