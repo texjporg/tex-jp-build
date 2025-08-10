@@ -187,8 +187,7 @@ jobs:
             --enable-debug \
             --enable-tex  --disable-tex-synctex \
             --enable-etex  --enable-etex-synctex \
-            --enable-ptex  --enable-ptex-synctex \
-            --enable-uptex  --enable-uptex-synctex \
+            --enable-uptex  \
             --enable-euptex  --enable-euptex-synctex \
             --enable-mp  --enable-pmp  --enable-upmp \
             --disable-pdftex  --disable-pdftex-synctex \
@@ -231,8 +230,6 @@ jobs:
           export DIFF=diff
           export KPSEWHICH="../kpathsea/kpsewhich"
           export LN_S="ln -s"
-          $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
-          echo ""
           $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
           echo ""
           $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
@@ -268,8 +265,6 @@ jobs:
           ./tex --version || echo "tex"
           echo ""
           ./etex --version || echo "etex"
-          echo ""
-          ./ptex --version || echo "ptex"
           echo ""
           ./uptex --version || echo "uptex"
           echo ""

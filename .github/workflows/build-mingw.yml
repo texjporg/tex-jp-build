@@ -229,8 +229,7 @@ jobs:
             --enable-debug \
             --enable-tex  --disable-tex-synctex \
             --enable-etex  --enable-etex-synctex \
-            --enable-ptex  --enable-ptex-synctex \
-            --enable-uptex  --enable-uptex-synctex \
+            --enable-uptex  \
             --enable-euptex  --enable-euptex-synctex \
             --enable-mp  --enable-pmp  --enable-upmp \
             --disable-pdftex  --disable-pdftex-synctex \
@@ -274,10 +273,6 @@ jobs:
         run: |
           cd ./source/Work/texk/web2c
           ## link without libtool
-          echo -e "###\n### link without libtool  ptex.exe\n###"
-          gcc -Wimplicit -Wreturn-type -g -O2   -o ptex.exe ptexdir/ptex-ptexextra.o ptex-ptexini.o ptex-ptex0.o ptex-ptex-pool.o libkanji.a lib/libp.a ../../texk/ptexenc/.libs/libptexenc.a lib/lib.a ../../texk/kpathsea/.libs/libkpathsea.a ../../libs/zlib/libz.a -lwsock32 || \
-            echo -e "**\n** fail to link ptex.exe"
-
           echo -e "###\n### link without libtool  uptex.exe\n###"
           gcc -Wimplicit -Wreturn-type -g -O2   -o uptex.exe uptexdir/uptex-uptexextra.o uptex-uptexini.o uptex-uptex0.o uptex-uptex-pool.o libukanji.a lib/libp.a ../../texk/ptexenc/.libs/libptexenc.a lib/lib.a ../../texk/kpathsea/.libs/libkpathsea.a ../../libs/zlib/libz.a -lwsock32 || \
             echo -e "**\n** fail to link uptex.exe"
@@ -303,8 +298,6 @@ jobs:
           ./tex.exe --version || echo "tex"
           echo ""
           ./etex.exe --version || echo "etex"
-          echo ""
-          ./ptex.exe --version || echo "ptex"
           echo ""
           ./uptex.exe --version || echo "uptex"
           echo ""
@@ -367,11 +360,6 @@ jobs:
           export KPSEWHICH="../kpathsea/kpsewhich.exe"
           export LN_S=cp
 
-          $srcdir/ptexdir/pver.test             || echo -e "**\n** failed: p/pver.test\n**"
-          echo ""
-          $srcdir/ptexdir/wcfname.test          || echo -e "**\n** failed: p/wcfname.test\n**"
-          echo ""
-
           $srcdir/uptexdir/upver.test           || echo -e "**\n** failed: up/upver.test\n**"
           echo ""
           $srcdir/uptexdir/upkcat.test          || echo -e "**\n** failed: up/upkcat.test\n**"
@@ -393,8 +381,6 @@ jobs:
           export abs_srcdir=../$srcdir
           export DIFF=diff
           export DIFFFLAGS="--strip-trailing-cr --ignore-matching-lines 'DVItype'"
-          $srcdir/ptexdir/ptriptest.test || cat ptripdir/ptrip.log
-          echo ""
           $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
           echo ""
           $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log

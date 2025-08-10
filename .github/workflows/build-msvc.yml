@@ -190,8 +190,6 @@ jobs:
           echo ""
           ./ctangle.exe --version || echo "ctangle"
           echo ""
-          ./ptex.exe --version || echo "ptex"
-          echo ""
           ./uptex.exe --version || echo "uptex"
           echo ""
           ls -lR
@@ -246,10 +244,6 @@ jobs:
         run: |
           cd ./Work
           export BinDir=./Debug/bin ExeExt=.exe KpsDir=./Debug/bin W2CDir=../Debug/bin srcdir=../source/texk/web2c abs_srcdir=../../source/texk/web2c
-          $srcdir/ptexdir/ptriptest.test   || echo -e "**\n** failed: p/ptriptest.test\n**"
-          $srcdir/ptexdir/pver.test        || echo -e "**\n** failed: p/pver.test\n**"
-          $srcdir/ptexdir/wcfname.test     || echo -e "**\n** failed: p/wcfname.test\n**"
-
           $srcdir/uptexdir/uptriptest.test || echo -e "**\n** failed: up/uptriptest.test\n**"
           $srcdir/uptexdir/ptriptest.test  || echo -e "**\n** failed: up/ptriptest.test\n**"
           $srcdir/uptexdir/upver.test      || echo -e "**\n** failed: up/upver.test\n**"
@@ -287,8 +281,6 @@ jobs:
           # echo ""
           # ./etex.exe --version || echo "etex"
           # echo ""
-          ./ptex.exe --version || echo "ptex"
-          echo ""
           ./uptex.exe --version || echo "uptex"
           echo ""
           ./euptex.exe --version || echo "euptex"

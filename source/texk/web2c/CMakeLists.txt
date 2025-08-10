@@ -67,9 +67,6 @@ include(cmake/bootstrap.cmake)
 include(cmake/web.cmake)
 include(cmake/cweb.cmake)
 
-# pTeX
-include(cmake/ptex.cmake)
-
 # upTeX
 include(cmake/uptex.cmake)
 
