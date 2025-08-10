@@ -381,6 +381,7 @@ jobs:
           export abs_srcdir=../$srcdir
           export DIFF=diff
           export DIFFFLAGS="--strip-trailing-cr --ignore-matching-lines 'DVItype'"
+          export ExeExt=.exe
           $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
           echo ""
           $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
