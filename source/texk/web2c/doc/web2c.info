@@ -58,7 +58,7 @@ Web2c
 
 This document describes how to install and use the programs in the Web2c
 implementation of the TeX system, especially for Unix systems.  It
-corresponds to Web2c version 2025, released in July 2025.
+corresponds to Web2c version 2025, released in September 2025.
 
 * Menu:
 
@@ -83,7 +83,8 @@ File: web2c.info,  Node: Introduction,  Next: Installation,  Prev: Top,  Up: Top
 1 Introduction
 **************
 
-This manual corresponds to version 2025 of Web2c, released in July 2025.
+This manual corresponds to version 2025 of Web2c, released in September
+2025.
 
    “Web2c” (also spelled Web2C) is the name of a TeX implementation,
 originally for Unix, but now also running under Windows and other
@@ -400,8 +401,8 @@ File: web2c.info,  Node: Option conventions,  Next: Common options,  Up: Commona
 
 To provide a clean and consistent behavior, we chose to have all these
 programs use the GNU function ‘getopt_long_only’ to parse command lines.
-However, we do use in a restricted mode, where all the options have to
-come before the rest of the arguments.
+It is used in a restricted mode where all the options have to come
+before the rest of the arguments.
 
    As a result, you can:
    • use ‘-’ or ‘--’ to start an option name;
@@ -923,21 +924,21 @@ and MetaPost, the statement terminator ‘;’ also works.  (LaTeX and other
 macro packages provide other interfaces to ‘\input’ that allow different
 notation; here we are concerned only with the primitive operation.)
 
-   As (allowed) extensions to standard TeX, Web2c also supports
-specifying the filename in double quotes (‘"some name"’) and in braces
-(‘{some name}’), which is convenient for filenames containing spaces or
-other special characters, as described in the sections below.
+   As an extension to standard TeX (allowed by Knuth's conditions),
+Web2c also supports specifying the filename in double quotes (‘"some
+name"’) and in a group, i.e., braces (‘{some name}’), which is
+convenient for filenames containing spaces or other special characters,
+as described in the sections below.
 
    In all cases, space tokens are ignored after the filename is read.
 
    Also, double quote (‘"’) characters are ignored within the filename;
 there is no way to read files whose names contain a ‘"’.
 
-   However, for maximal portability of your document across systems, use
-only the characters ‘a’-‘z’, ‘0’-‘9’, and at most one ‘.’.  Do not use
-anything but simple filenames, since directory separators vary among
-systems; instead, add the necessary directories to the appropriate
-search path.
+   For maximal portability of your document across systems, use only the
+characters ‘a’-‘z’, ‘0’-‘9’, and at most one ‘.’.  Do not use anything
+but simple filenames, since directory separators vary among systems;
+instead, add the necessary directories to the appropriate search path.
 
 * Menu:
 
@@ -1002,27 +1003,33 @@ generally be seen as a single space, active characters such as ‘~’ are
 expanded first (generally causing an error), and so on.  More examples
 below.
 
-   On the other hand, various C library routines and Unix itself use the
-null byte (character code zero, ASCII NUL) to terminate strings.  So
-filenames in Web2c cannot contain nulls, even though TeX itself does not
-treat NUL specially.
+   Various C library routines and Unix itself use the null byte
+(character code zero, ASCII NUL) to terminate strings.  So filenames in
+Web2c cannot contain nulls, even though TeX itself does not treat NUL
+specially.
+
+   Windows reserves a long list of alphanumeric filenames,
+case-insensitive and with any extension, such as ‘CON’, ‘NUL’, ‘COM1’,
+‘con.tex’, etc.; see Windows systems documentation for the whole list.
+Trying to use such names will cause a system error on Windows.
 
    Finally, the present Web2c implementation does ‘~’ and ‘$’ expansion
-on NAME, unlike Knuth's original implementation.  Thus:
+on NAME, on all platforms, unlike Knuth's original program.  Thus:
+
      \input ~jsmith/$foo.bar
-   will dereference the environment variable or Kpathsea config file
-value ‘foo’ and read that file, extended with ‘.bar’, in user ‘jsmith’'s
-home directory.  You can also use braces in the variable expansion, as
-in ‘${foo}bar’, if you want to follow the variable name with a letter,
+
+will dereference the environment variable or Kpathsea config file value
+‘foo’ and read that file, extended with ‘.bar’, in user ‘jsmith’'s home
+directory.  You can also use braces in the variable expansion, as in
+‘${foo}bar’, if you want to follow the variable name with a letter,
 numeral, or ‘_’.
 
-   (So another way to get a program to read a filename containing
+   (So, another way to get a program to read a filename containing
 whitespace is to define an environment variable and dereference it.)
 
-   In all the common TeX formats (plain TeX, LaTeX, ConTeXt, AMSTeX,
-...), the characters ‘~’ and ‘$’ have special category codes, so to
-actually use these in a document you have to change their catcodes or
-use ‘\string’.
+   In all the common TeX formats (plain TeX, LaTeX, ConTeXt, ...), the
+characters ‘~’ and ‘$’ have special category codes, so to use them
+within a document you have to change their catcodes or use ‘\string’.
 
 
 File: web2c.info,  Node: TeX,  Next: Metafont,  Prev: Three programs,  Up: Top
@@ -1067,56 +1074,77 @@ language, see ‘The TeXbook’ (*note References::).
 and determine their memory dump (fmt) file in the same way (*note Memory
 dumps::).  Synopses:
 
-     tex [OPTION]... [TEXNAME[.tex]] [TEX-COMMANDS]
-     tex [OPTION]... \FIRST-LINE
-     tex [OPTION]... &FMT ARGS
+     tex [OPTION]... [TEXNAME[.tex]] [MORE-INPUT]
+     tex [OPTION]... \MORE-INPUT
+     tex [OPTION]... &FMT FIRST-LINE
+
+   In short, TeX prepends ‘\input ’ to non-option command line arguments
+or the input to the ‘**’ prompt, and then processes the result as normal
+TeX input, including expansion.
+
+   The most common invocation is ‘tex somefile’, which reads
+‘somefile.tex’, normally from the current directory.  It is equivalent
+to ‘\input somefile’.
+
+   In more detail:
 
    TeX searches the usual places for the main input file TEXNAME (*note
 (kpathsea)Supported file formats::), extending TEXNAME with ‘.tex’ if
 necessary.  To see all the relevant paths, set the environment variable
 ‘KPATHSEA_DEBUG’ to ‘-1’ before running the program.
 
-   After TEXNAME is read, TeX processes any remaining TEX-COMMANDS on
-the command line as regular TeX input.  Also, if the first non-option
+   After TEXNAME is read, TeX processes any remaining MORE-INPUT on the
+command line as regular TeX input.  Also, if the first non-option
 argument begins with a TeX escape character (usually ‘\’), TeX processes
 all non-option command-line arguments as a line of regular TeX input.
+The backslash or other escape character usually has to be escaped to
+avoid being processed by your shell.
 
    If no arguments or options are specified, TeX prompts for an input
-filename with ‘**’.
+filename with ‘**’.  Whatever input is given in response to ‘**’ is
+processed exactly like a command line not starting with an escape
+character, i.e., ‘\input’ is prepended and then the entire line is
+processed as normal TeX intput.
 
-   TeX writes the main DVI output to the file ‘BASETEXNAME.dvi’, where
+   Thus, the text of an input filename, as well as any text following a
+filename, is subject to TeX's normal macro expansion.  As a result, a
+‘~’ character is normally not usable within a filename, since by default
+‘~’ is defined (in plain TeX, LaTeX, etc.) to be an active character
+that expands into several primitive tokens that can't be part of a
+filename.  As a special case in Web2c, a ‘~’ _beginning_ a filename
+refers to a user's home directory (*note \input filename caveats::), but
+you still have to arrange for TeX to see a ‘~’ character rather than the
+expansion of ‘~’.
+
+   To summarize the usual cases (in all these cases, ‘tex’ also reads
+‘tex.fmt’ before starting any processing):
+
+   • ‘tex foo’ executes ‘\input foo’.
+
+   • ‘tex foo bar’ executes ‘\input foo bar’, which inputs ‘foo.tex’ and
+     then typesets ‘bar’.
+
+   • ‘tex \\end’ executes ‘\end’; here the double backslash is one
+     common way of escaping the backslash for the shell.  TeX only sees
+     one backslash.
+
+   • ‘tex’ with no arguments prints a ‘**’ prompt.  Entering ‘foo bar’
+     at the ‘**’ prompt again executes ‘\input foo’ and typesets ‘bar’.
+
+   TeX writes its main output, a DVI file, to ‘BASETEXNAME.dvi’, where
 BASETEXNAME is the basename of TEXNAME, or ‘texput’ if no input file was
-specified.  A DVI file is a device-independent binary representation of
-your TeX document.  The idea is that after running TeX, you translate
-the DVI file using a separate program to the commands for a particular
-output device, such as a PostScript printer (*note Introduction:
-(dvips)Top.) or an X Window System display (see xdvi(1)).
+specified.
 
-   TeX also reads TFM files for any fonts you load in your document with
-the ‘\font’ primitive.  By default, it runs an external program named
-‘mktextfm’ to create any nonexistent TFM files.  You can disable this at
-configure-time or runtime (*note (kpathsea)mktex configuration::).  This
-is enabled mostly for the sake of the EC fonts, which can be generated
-at any size.
-
-   TeX can write output files, via the ‘\openout’ primitive; this opens
-a security hole vulnerable to Trojan horse attack: an unwitting user
-could run a TeX program that overwrites, say, ‘~/.rhosts’.  (MetaPost
-has a ‘write’ primitive with similar implications).  To alleviate this
-and similar problems the functions ‘kpathsea_out_name_ok’ and
-‘kpathsea_in_name_ok’ from the Kpathsea library (*note (kpathsea)Calling
-sequence::) are used to determine if a given filename is acceptable to
-be opened for output or input, depending on the setting of the
-configuration variables ‘openout_any’ and ‘openin_any’: ‘a’ (for "any",
-the default for ‘openin_any’), ‘r’ (for "restricted"), or ‘p’ (for
-"paranoid", the default for ‘openout_any’).
-
-   In any case, all ‘\openout’ filenames are recorded in the log file,
-except those opened on the first line of input, which is processed when
-the log file has not yet been opened.
+   A DVI file is a device-independent binary representation of your
+document.  You can translate the DVI file, using independent programs,
+to whatever may be needed, such as a PDF file (see dvipdfmx(1)), a
+PostScript file (*note Introduction: (dvips)Top.), an SVG file (see
+dvisvgm(1)), etc.  There are also variants of TeX that can produce PDF
+files directly, namely pdfTeX and LuaTeX (*note TeX extensions::).
 
    The program accepts the following options, as well as the standard
 ‘-help’ and ‘-version’ (*note Common options::):
+
 ‘-enc’
 ‘-[no]-file-line-error’
 ‘-fmt=FMTNAME’
@@ -1174,7 +1202,7 @@ the log file has not yet been opened.
 ‘-no-shell-escape’
 ‘-shell-restricted’
      Enable, or disable, or enable with restrictions the
-     ‘\write18{SHELL-COMMAND}’ feature for external executing shell
+     ‘\write18{SHELL-COMMAND}’ feature for external execution of shell
      commands.  *Note Shell escapes::.
 
 ‘-enable-write18’
@@ -1213,7 +1241,34 @@ the log file has not yet been opened.
      option.  The commands inserted into the token stream are hard-coded
      to always use the ‘\special’ primitive.
 
-     TeX does not pass the trip test when this option is enabled.
+     TeX does not pass the ‘TRIP’ test when this option is enabled.
+
+   Other input and output that can happen:
+
+   • TeX also reads TFM files for any fonts you load in your document
+     with the ‘\font’ primitive.  By default, it runs an external
+     program named ‘mktextfm’ to create any nonexistent TFM files.  You
+     can disable this at configure-time or runtime (*note
+     (kpathsea)mktex configuration::).
+
+   • TeX can write output files, via the ‘\openout’ primitive.  This
+     raises the possibility of a Trojan horse attack: an unwitting user
+     could run a TeX program that overwrites, say,
+     ‘$HOME/.ssh/authorized_keys’.  (MetaPost has a ‘write’ primitive
+     with similar implications.)
+
+     To alleviate this and similar problems, the functions
+     ‘kpathsea_out_name_ok’ and ‘kpathsea_in_name_ok’ from the Kpathsea
+     library (*note (kpathsea)Calling sequence::) are used to determine
+     if a given filename is acceptable to be opened for output or input,
+     depending on the setting of the configuration variables
+     ‘openout_any’ and ‘openin_any’: ‘a’ (for "any", the default for
+     ‘openin_any’), ‘r’ (for "restricted"), or ‘p’ (for "paranoid", the
+     default for ‘openout_any’).
+
+     In any case, all ‘\openout’ filenames are recorded in the log file,
+     except those opened on the first line of input, which is processed
+     before the log file has been opened.
 
 
 File: web2c.info,  Node: Initial TeX,  Next: Formats,  Prev: tex invocation,  Up: TeX
@@ -1229,21 +1284,21 @@ comparison of virgin and initial forms, *note Initial and virgin::.
    For a list of options and other information, *note tex invocation::.
 
    Unlike Metafont and MetaPost, many format files are commonly used
-with TeX.  The standard one implementing the features described in the
-‘TeXbook’ is ‘plain.fmt’, also known as ‘tex.fmt’ (again, *note Memory
+with TeX.  The standard one implementing the features described in ‘The
+TeXbook’ is ‘plain.fmt’, also known as ‘tex.fmt’ (again, *note Memory
 dumps::).  It is created by default during installation, but you can
-also do so by hand if necessary (e.g., if an update to ‘plain.tex’ is
-issued):
-     tex -ini '\input plain \dump'
-(The quotes prevent interpretation of the backslashes from the shell.)
-Then install the resulting ‘plain.fmt’ in ‘$(fmtdir)’
-(‘/usr/local/share/texmf/web2c’ by default), and link ‘tex.fmt’ to it.
+also do so by hand if necessary:
 
-   The necessary invocation for generating a format file differs for
-each format, so instructions that come with the format should explain.
-The top-level ‘web2c’ Makefile has targets for making most common
-formats: plain latex amstex texinfo eplain.  *Note Formats::, for more
-details on TeX formats.
+     tex -ini '\input plain \dump'
+
+(The quotes prevent interpretation of the backslashes from the shell.)
+Then put the resulting ‘plain.fmt’ where TeX will find it, and link
+‘tex.fmt’ to it.  Any existing ‘tex.fmt’ can be found with the
+invocation:
+
+     kpsewhich --all --engine=/ tex.fmt
+
+   *Note Formats::, for more details on TeX formats.
 
 
 File: web2c.info,  Node: Formats,  Next: Languages and hyphenation,  Prev: Initial TeX,  Up: TeX
@@ -1253,59 +1308,54 @@ File: web2c.info,  Node: Formats,  Next: Languages and hyphenation,  Prev: Initi
 
 TeX “formats” are large collections of macros, often dumped into a
 ‘.fmt’ file (*note Memory dumps::) by ‘tex -ini’ (*note Initial TeX::).
-A number of formats are in reasonably widespread use, and the Web2c
-Makefile has targets to make the versions current at the time of
-release.  You can change which formats are automatically built by
-setting the ‘fmts’ Make variable; by default, only the ‘plain’ and
-‘latex’ formats are made.
-
-   Nowadays, the formats are generally installed and updated as part of
-a larger TeX distribution, such as TeX Live (<https://tug.org/texlive>).
+A number of formats are in reasonably widespread use.  The formats are
+generally selected, installed, and updated as part of a larger TeX
+distribution, such as TeX Live (<https://tug.org/texlive>).
 
 latex
-     The most widely used format.  The current release is named
-     'LaTeX2e'; new versions are released approximately every six
-     months, with patches issued as needed.  The old release was called
-     'LaTeX 2.09', and is no longer maintained or supported.  LaTeX
-     attempts to provide generic markup instructions, such as
-     "emphasize", instead of specific typesetting instructions, such as
-     "use the 10pt Computer Modern italic font".  The LaTeX home page:
-     <https://www.latex-project.org>.
+     The most widely used format, named 'LaTeX2e'; new versions are
+     released approximately every six months, with patches issued as
+     needed.  The old release was called 'LaTeX 2.09', and is no longer
+     maintained or supported, though compatibility for 2.09 documents is
+     retained.  LaTeX attempts to provide generic markup instructions,
+     such as "emphasize", instead of specific typesetting instructions,
+     such as "use the 10pt Computer Modern italic font".  The LaTeX home
+     page: <https://www.latex-project.org>.
 
 context
      ConTeXt is an independent macro package which has a basic document
      structuring approach similar to LaTeX.  It also supports creating
      interactive PDF files and has integrated MetaPost support, among
-     many other interesting features.  The ConTeXt home page:
+     many other advanced features.  The ConTeXt home page:
      <http://www.pragma-ade.com>.
 
-amstex
-     The official typesetting system of the American Mathematical
-     Society.  Like LaTeX, it encourages generic markup commands.  The
-     AMS also provides many LaTeX packages for authors who prefer LaTeX.
-     Taken together, they are used to produce nearly all AMS
-     publications, e.g., ‘Mathematical Reviews’.  The AMSTeX home page:
-     <https://www.ams.org/tex>.
+eplain
+     An "expanded plain" format that provides various common features
+     (e.g., symbolic cross-referencing, tables of contents, indexing,
+     citations using BibTeX), for those authors who prefer to handle
+     their own high-level formatting.  The Eplain home page:
+     <https://tug.org/eplain>.
 
 texinfo
      The documentation system developed and maintained by the Free
      Software Foundation for their software manuals.  It can be
-     automatically converted into plain text, a machine-readable on-line
-     format called 'info', HTML, etc.  The Texinfo home page:
+     automatically converted into HTML, plain text, a machine-readable
+     online format called Info, etc.  The Texinfo home page:
      <https://www.gnu.org/software/texinfo>.
 
-eplain
-     The "expanded plain" format provides various common features (e.g.,
-     symbolic cross-referencing, tables of contents, indexing, citations
-     using BibTeX), for those authors who prefer to handle their own
-     high-level formatting.  The Eplain home page:
-     <https://tug.org/eplain>.
+amstex
+     This was the official typesetting system of the American
+     Mathematical Society; nowadays, the AMS recommends authors use
+     LaTeX; the AMS provides a number of LaTeX packages important for
+     math typesetting.  The AMS's TeX page: <https://www.ams.org/tex>.
 
 slitex
-     An obsolete LaTeX 2.09 format for making slides.  It is replaced by
-     the ‘slides’ document class, although the ‘beamer’ package is the
-     most commonly method for making slides nowadays.  The Beamer page
-     on CTAN: <https://ctan.org/pkg/beamer>.
+     An obsolete LaTeX 2.09 format for making slides.  In core LaTeX2e,
+     it is replaced by the ‘slides’ document class.  As of 2025, the
+     ‘ltx-talk’ class is also provided for typesetting presentations,
+     including accessibility support: <https://ctan.org/pkg/ltx-talk>.
+     The ‘beamer’ package is perhaps the most commonly used method for
+     making slides nowadays: <https://ctan.org/pkg/beamer>.
 
 
 File: web2c.info,  Node: Languages and hyphenation,  Next: Shell escapes,  Prev: Formats,  Up: TeX
@@ -1701,14 +1751,14 @@ pdfTeX
      micro-typography, reading/writing from pipes, and much more.  In
      TeX Live, the command ‘etex’ invokes pdfTeX to make all these
      additions available with DVI output.  Home page:
-     <http://pdftex.org>.
+     <https://pdftex.org>.
 
 LuaTeX
      Embeds the Lua programming language (<http://lua.org>) and opens up
      the TeX typesetting engine to control from Lua, starting from the
      pdfTeX capabilities as a base.  Also natively supports UTF-8 input,
      the OpenType and TrueType font formats, and use of system fonts.
-     Home page: <http://luatex.org>.
+     Home page: <https://luatex.org>.
 
 XeTeX
      Combines support for Unicode input, the OpenType and TrueType font
@@ -1869,11 +1919,11 @@ invocation::.
    The only memory dump file commonly used with Metafont is the default
 ‘plain.base’, also known as ‘mf.base’ (again, *note Memory dumps::).  It
 is created by default during installation, but you can also do so by
-hand if necessary (e.g., if a Metafont update is issued):
+hand if necessary:
      mf -ini '\input plain; input modes; dump'
 (The quotes prevent interpretation of the backslashes from the shell.)
-Then install the resulting ‘plain.base’ in ‘$(basedir)’
-(‘/usr/local/share/texmf/web2c’ by default), and link ‘mf.base’ to it.
+Then install the resulting ‘plain.base’ where Metafont will find it, and
+link ‘mf.base’ to it.
 
    For an explanation of the additional ‘modes.mf’ file, see *note
 Modes::.  This file has no counterpart in TeX or MetaPost.
@@ -1883,9 +1933,8 @@ Modes::.  This file has no counterpart in TeX or MetaPost.
 included in the base file.  Nowadays, however, the additional time
 required to read ‘cmbase.mf’ is exceedingly small, usually not enough to
 be worth the administrative hassle of updating the ‘cmmf.base’ file when
-you install a new version of ‘modes.mf’.  People actually working on a
-typeface may still find it worthwhile to create their own base file, of
-course.
+you install a new version of ‘modes.mf’.  People developing a typeface
+with Metafont may find it worthwhile to create their own base file.
 
 
 File: web2c.info,  Node: Modes,  Next: Online Metafont graphics,  Prev: Initial Metafont,  Up: Metafont
@@ -3601,7 +3650,7 @@ Index
                                                               (line  20)
 * --enable-hp2627win:                    Online Metafont graphics.
                                                               (line  28)
-* --enable-ipc configure option:         tex invocation.      (line  93)
+* --enable-ipc configure option:         tex invocation.      (line 114)
 * --enable-mftalkwin:                    Online Metafont graphics.
                                                               (line  31)
 * --enable-next:                         Online Metafont graphics.
@@ -3633,10 +3682,10 @@ Index
 * -D compiler options:                   Compile-time options.
                                                               (line   6)
 * -debug:                                mpost invocation.    (line 108)
-* -disable-write18:                      tex invocation.      (line 128)
+* -disable-write18:                      tex invocation.      (line 149)
 * -dpi=REAL:                             dvitype invocation.  (line  24)
-* -enable-write18:                       tex invocation.      (line 127)
-* -enc:                                  tex invocation.      (line  86)
+* -enable-write18:                       tex invocation.      (line 148)
+* -enc:                                  tex invocation.      (line 107)
 * -file-line-error:                      Common options.      (line  30)
 * -file-line-error-style:                Common options.      (line  31)
 * -fmt=DUMPNAME:                         Common options.      (line  39)
@@ -3649,8 +3698,8 @@ Index
 * -ini:                                  Common options.      (line  50)
 * -ini <1>:                              Initial and virgin.  (line  10)
 * -interaction=STRING:                   Common options.      (line  55)
-* -ipc:                                  tex invocation.      (line  93)
-* -ipc-start:                            tex invocation.      (line  93)
+* -ipc:                                  tex invocation.      (line 114)
+* -ipc-start:                            tex invocation.      (line 114)
 * -jobname=STRING:                       Common options.      (line  60)
 * -kpathsea-debug=NUMBER:                Common options.      (line  64)
 * -length=NUMBER:                        tangle invocation.   (line  27)
@@ -3664,17 +3713,17 @@ Index
 * -mem=DUMPNAME:                         Common options.      (line  39)
 * -min-crossrefs=N:                      bibtex invocation.   (line  31)
 * -mixedcase:                            tangle invocation.   (line  35)
-* -mktex=FILETYPE:                       tex invocation.      (line 103)
+* -mktex=FILETYPE:                       tex invocation.      (line 124)
 * -mktex=FILETYPE <1>:                   mf invocation.       (line  87)
-* -mltex:                                tex invocation.      (line 108)
+* -mltex:                                tex invocation.      (line 129)
 * -mnemonics:                            gftype invocation.   (line  29)
 * -no-file-line-error:                   Common options.      (line  31)
-* -no-mktex=FILETYPE:                    tex invocation.      (line 103)
+* -no-mktex=FILETYPE:                    tex invocation.      (line 124)
 * -no-mktex=FILETYPE <1>:                mf invocation.       (line  87)
 * -no-parse-first-line:                  Common options.      (line  79)
-* -no-shell-escape:                      tex invocation.      (line 121)
+* -no-shell-escape:                      tex invocation.      (line 142)
 * -numbersystem:                         mpost invocation.    (line 115)
-* -output-comment=STRING:                tex invocation.      (line 113)
+* -output-comment=STRING:                tex invocation.      (line 134)
 * -output-directory:                     Common options.      (line  71)
 * -output-directory <1>:                 Output file location.
                                                               (line  24)
@@ -3689,8 +3738,8 @@ Index
 * -recorder:                             Common options.      (line  91)
 * -restricted:                           mpost invocation.    (line 119)
 * -s:                                    mpost invocation.    (line 122)
-* -shell-escape:                         tex invocation.      (line 120)
-* -shell-restricted:                     tex invocation.      (line 122)
+* -shell-escape:                         tex invocation.      (line 141)
+* -shell-restricted:                     tex invocation.      (line 143)
 * -show-opcodes:                         dvitype invocation.  (line  52)
 * -strict:                               tangle invocation.   (line  46)
 * -style=MFTFILE:                        mft invocation.      (line  66)
@@ -3718,20 +3767,20 @@ Index
 * .NNNgf generic fonts:                  mf invocation.       (line  34)
 * .tcx character translation files:      Common options.      (line 105)
 * .tcx character translation files <1>:  TCX files.           (line   6)
-* .tex:                                  tex invocation.      (line  20)
+* .tex:                                  tex invocation.      (line  30)
 * .tfm output:                           mf invocation.       (line  43)
 * .tfm output <1>:                       mpost invocation.    (line  30)
 * .Xdefaults:                            Online Metafont graphics.
                                                               (line  69)
 * .Xresources:                           Online Metafont graphics.
                                                               (line  69)
-* " character, ignored in filenames:     \input filenames.    (line  22)
+* " character, ignored in filenames:     \input filenames.    (line  23)
 * \bibliography:                         bibtex invocation.   (line  18)
 * \bibliographystyle:                    bibtex invocation.   (line  18)
 * \charsubdef and MLTeX:                 \charsubdef.         (line   6)
 * \countN:                               dvicopy invocation.  (line  28)
 * \countN <1>:                           dvitype invocation.  (line  46)
-* \font and dynamic generation:          tex invocation.      (line  41)
+* \font and dynamic generation:          tex invocation.      (line 187)
 * \fontdimen:                            tftopl invocation.   (line  99)
 * \immediate\write18:                    Shell escapes.       (line   6)
 * \input braced (grouped) filename:      \input braced filename.
@@ -3745,12 +3794,12 @@ Index
 * \mag:                                  dvicopy invocation.  (line  20)
 * \mag <1>:                              dvitype invocation.  (line  28)
 * \openin, and pipes:                    Shell escapes.       (line  64)
-* \openout and security:                 tex invocation.      (line  48)
+* \openout and security:                 tex invocation.      (line 193)
 * \openout, and pipes:                   Shell escapes.       (line  64)
 * \output routine, and \write:           Shell escapes.       (line  28)
 * \pdfshellescape:                       Shell escapes.       (line  64)
 * \string, and \input filenames:         \input filename caveats.
-                                                              (line  29)
+                                                              (line  36)
 * \tracingcharsubdef and MLTeX:          \tracingcharsubdef.  (line   6)
 * \tracinglostchars and MLTeX:           \tracingcharsubdef.  (line  11)
 * \write18 shell escape extension:       Shell escapes.       (line   6)
@@ -3762,9 +3811,9 @@ Index
                                                               (line  19)
 * ^^ notation, avoiding:                 TCX files.           (line  87)
 * ~ expansion in filenames:              \input filename caveats.
-                                                              (line  17)
+                                                              (line  22)
 * $ expansion in filenames:              \input filename caveats.
-                                                              (line  17)
+                                                              (line  22)
 * 2602gf:                                mf invocation.       (line  48)
 * 32-bit architecture:                   Hardware and memory dumps.
                                                               (line   6)
@@ -3777,7 +3826,7 @@ Index
                                                               (line  16)
 * accented character:                    TCX files.           (line   6)
 * accents, hyphenating words with:       MLTeX.               (line   6)
-* acknowledgements:                      Introduction.        (line  62)
+* acknowledgements:                      Introduction.        (line  63)
 * acm.bst:                               Basic BibTeX style files.
                                                               (line  19)
 * Ada, WEB for:                          WEB.                 (line  12)
@@ -3792,8 +3841,8 @@ Index
 * aliases for fonts:                     Path searching.      (line  14)
 * alpha.bst:                             Basic BibTeX style files.
                                                               (line  22)
-* American Mathematical Society, typesetting system: Formats. (line  35)
-* AMSTeX:                                Formats.             (line  35)
+* American Mathematical Society, typesetting system: Formats. (line  44)
+* AMSTeX:                                Formats.             (line  44)
 * apalike.bst:                           Basic BibTeX style files.
                                                               (line  25)
 * architecture dependencies:             Hardware and memory dumps.
@@ -3819,9 +3868,9 @@ Index
 * batch languages:                       TeX.                 (line   9)
 * BDF and GF conversion:                 Font utilities available elsewhere.
                                                               (line  15)
-* beamer, package:                       Formats.             (line  57)
+* beamer, package:                       Formats.             (line  50)
 * beginfig:                              mpost invocation.    (line  30)
-* Berry, Karl:                           Introduction.        (line  43)
+* Berry, Karl:                           Introduction.        (line  44)
 * BIBINPUTS, search path for bib files:  bibtex invocation.   (line  18)
 * bibliographies, creating:              BibTeX.              (line   6)
 * bibliography:                          References.          (line   6)
@@ -3839,7 +3888,7 @@ Index
 * braced filename for \input:            \input braced filename.
                                                               (line   6)
 * breakpoints, memory for:               Runtime options.     (line  20)
-* Breitenlohner, Peter:                  Introduction.        (line   8)
+* Breitenlohner, Peter:                  Introduction.        (line   9)
 * BSTINPUTS, search path for bst files:  bibtex invocation.   (line  18)
 * btex for MetaPost labels:              mpost invocation.    (line  43)
 * btxdoc.bib:                            bibtex invocation.   (line  52)
@@ -3875,6 +3924,8 @@ Index
 * cmbase.mft:                            mft invocation.      (line  72)
 * cmmf.base not recommended:             Initial Metafont.    (line  26)
 * color, in DVItoMP:                     dvitomp invocation.  (line  15)
+* COM1..0, reserved filename on Windows: \input filename caveats.
+                                                              (line  17)
 * comments, in TCX files:                TCX files.           (line  70)
 * comments, MFT control:                 mft invocation.      (line  24)
 * common options:                        Common options.      (line   6)
@@ -3886,13 +3937,15 @@ Index
 * Computer Modern fonts, and Troff:      mpost invocation.    (line  60)
 * Computer Modern macros:                Initial Metafont.    (line  26)
 * Computer Modern Typefaces, production of: mft invocation.   (line  72)
+* CON, reserved filename on Windows:     \input filename caveats.
+                                                              (line  17)
 * configuration:                         Installation.        (line   6)
 * configuration file reading:            Path searching.      (line   6)
 * configuration file values:             Runtime options.     (line   6)
 * configuration, compile-time:           configure options.   (line   6)
 * configure --with/--enable options:     configure options.   (line   6)
 * CONTENTS.tex:                          weave invocation.    (line  26)
-* ConTeXt:                               Formats.             (line  28)
+* ConTeXt:                               Formats.             (line  23)
 * conventions for options,:              Option conventions.  (line   6)
 * conversion, DVI to plain text:         dvitype invocation.  (line   6)
 * conversion, GF to PK:                  gftopk invocation.   (line   6)
@@ -3912,7 +3965,7 @@ Index
 * cross-references, omitting:            weave invocation.    (line  26)
 * current directory, used for output:    Output file location.
                                                               (line   6)
-* Curtis, Pavel:                         Introduction.        (line  43)
+* Curtis, Pavel:                         Introduction.        (line  44)
 * Cweb:                                  WEB.                 (line  12)
 * CWEB:                                  WEB.                 (line  12)
 * date and time, in memory dumps:        Hardware and memory dumps.
@@ -3929,15 +3982,15 @@ Index
 * directory structure:                   Installation.        (line  33)
 * DISPLAY:                               Online Metafont graphics.
                                                               (line  76)
-* dot files, written by TeX programs:    tex invocation.      (line  48)
+* dot files, written by TeX programs:    tex invocation.      (line 193)
 * double quote character, ignored in filenames: \input filenames.
-                                                              (line  22)
+                                                              (line  23)
 * downloading of fonts for MetaPost labels: mpost invocation. (line  65)
 * DrawingServant:                        Online Metafont graphics.
                                                               (line  35)
 * dump file:                             Common options.      (line  39)
 * dumping memory:                        Memory dumps.        (line   6)
-* DVI comment, specifying:               tex invocation.      (line 113)
+* DVI comment, specifying:               tex invocation.      (line 134)
 * DVI files, converting to MPX:          dvitomp invocation.  (line   6)
 * DVI files, explained:                  Font file formats.   (line  29)
 * DVI format definition:                 DVI utilities.       (line  14)
@@ -3959,8 +4012,7 @@ Index
 * e-circumflex:                          \charsubdef.         (line  20)
 * e-TeX:                                 TeX extensions.      (line  20)
 * e.mft:                                 mft invocation.      (line  72)
-* EC fonts:                              tex invocation.      (line  41)
-* EC fonts <1>:                          mf invocation.       (line  24)
+* EC fonts:                              mf invocation.       (line  24)
 * editing of bitmap fonts:               Font utilities available elsewhere.
                                                               (line  23)
 * editor invoked at error:               Editor invocation.   (line   6)
@@ -3970,7 +4022,7 @@ Index
 * endian dependencies:                   Hardware and memory dumps.
                                                               (line   6)
 * eoc GF command:                        gftype invocation.   (line  97)
-* Eplain:                                Formats.             (line  50)
+* Eplain:                                Formats.             (line  30)
 * epsf:                                  Online Metafont graphics.
                                                               (line  19)
 * epTeX:                                 TeX extensions.      (line  66)
@@ -3984,7 +4036,7 @@ Index
 * executables, shared initial and virgin: Initial and virgin. (line   6)
 * exit status, of shell escape:          Shell escapes.       (line  34)
 * expand_depth:                          Runtime options.     (line  24)
-* expanded plain format:                 Formats.             (line  50)
+* expanded plain format:                 Formats.             (line  30)
 * expansion limit, recursive:            Runtime options.     (line  25)
 * expansion, and \input filenames:       \input filename caveats.
                                                               (line   6)
@@ -4033,10 +4085,10 @@ Index
 * formats Make target:                   Additional targets.  (line  17)
 * fraction routines:                     Compile-time options.
                                                               (line  21)
-* Free Software Foundation documentation system: Formats.     (line  43)
-* freedom of Web2c:                      Introduction.        (line  23)
+* Free Software Foundation documentation system: Formats.     (line  37)
+* freedom of Web2c:                      Introduction.        (line  24)
 * ftp.math.utah.edu:                     bibtex invocation.   (line  58)
-* generating source specials:            tex invocation.      (line 134)
+* generating source specials:            tex invocation.      (line 155)
 * geometric designs:                     Metafont.            (line   6)
 * geometric font scaling:                Font file formats.   (line  21)
 * geometry for Metafont:                 Online Metafont graphics.
@@ -4075,9 +4127,9 @@ Index
                                                               (line  20)
 * hex character codes, in TCX files:     TCX files.           (line  77)
 * HINT (Hint Is Not TeX):                TeX extensions.      (line  53)
-* history:                               Introduction.        (line  43)
+* history:                               Introduction.        (line  44)
 * hiTeX:                                 TeX extensions.      (line  53)
-* Hobby, John:                           Introduction.        (line   8)
+* Hobby, John:                           Introduction.        (line   9)
 * horizontal escapement:                 pktype invocation.   (line  57)
 * horizontal escapement <1>:             gftype invocation.   (line 106)
 * hp2627:                                Online Metafont graphics.
@@ -4093,7 +4145,7 @@ Index
 * hyphenation and languages:             Languages and hyphenation.
                                                               (line   6)
 * hyphenation patterns, creating:        patgen invocation.   (line   6)
-* ice cream:                             Introduction.        (line  23)
+* ice cream:                             Introduction.        (line  24)
 * identifier case:                       tangle invocation.   (line  35)
 * identifier collisions:                 tangle invocation.   (line  46)
 * identifier length:                     tangle invocation.   (line  27)
@@ -4102,7 +4154,7 @@ Index
                                                               (line  31)
 * il1-t1.tcx:                            TCX files.           (line  48)
 * il2-t1.tcx:                            TCX files.           (line  48)
-* Info format:                           Formats.             (line  43)
+* Info format:                           Formats.             (line  37)
 * initial form, enabling:                Common options.      (line  50)
 * initial Metafont:                      Initial Metafont.    (line   6)
 * initial MetaPost:                      Initial MetaPost.    (line   6)
@@ -4128,7 +4180,7 @@ Index
 * job name:                              Common options.      (line  60)
 * kerning table, in TFM files:           tftopl invocation.   (line 101)
 * keyboard character code, translating:  TCX files.           (line 101)
-* Knuth, Donald E.:                      Introduction.        (line   8)
+* Knuth, Donald E.:                      Introduction.        (line   9)
 * Knuth, Donald E. <1>:                  mft invocation.      (line  56)
 * KPATHSEA_DEBUG:                        Common options.      (line  64)
 * KRN property:                          tftopl invocation.   (line 101)
@@ -4137,14 +4189,14 @@ Index
 * language support in TeX:               Languages and hyphenation.
                                                               (line   6)
 * languages, hyphenation rules for:      patgen invocation.   (line   6)
-* LaTeX:                                 Formats.             (line  18)
+* LaTeX:                                 Formats.             (line  13)
 * Latin Modern:                          Font utilities available elsewhere.
                                                               (line  18)
 * left side bearing:                     pktype invocation.   (line  66)
 * left side bearing <1>:                 gftype invocation.   (line  82)
 * legalisms:                             Legalisms.           (line   6)
 * libsigsegv library:                    Runtime options.     (line  33)
-* licensing terms:                       Introduction.        (line  23)
+* licensing terms:                       Introduction.        (line  24)
 * LIG property:                          tftopl invocation.   (line 101)
 * ligature table, in TFM files:          tftopl invocation.   (line 101)
 * LIGTABLE property:                     tftopl invocation.   (line 101)
@@ -4158,6 +4210,7 @@ Index
 * log file, BibTeX:                      bibtex invocation.   (line  14)
 * long data type, size of:               Hardware and memory dumps.
                                                               (line   6)
+* ltx-talk, package:                     Formats.             (line  50)
 * Lua:                                   TeX extensions.      (line  40)
 * LuaTeX:                                TeX extensions.      (line  40)
 * machine dependencies:                  Hardware and memory dumps.
@@ -4174,8 +4227,8 @@ Index
 * magnification <1>:                     dvitype invocation.  (line  28)
 * main_memory:                           Runtime options.     (line  15)
 * Make targets, additional:              Additional targets.  (line   6)
-* Martin, Rick:                          Introduction.        (line  62)
-* Mathematical Reviews:                  Formats.             (line  35)
+* Martin, Rick:                          Introduction.        (line  63)
+* Mathematical Reviews:                  Formats.             (line  44)
 * mathematical typesetting:              TeX.                 (line   6)
 * mem file, determining:                 Determining the memory dump to use.
                                                               (line   6)
@@ -4230,17 +4283,17 @@ Index
 * mftmac.tex:                            mft invocation.      (line   6)
 * micro-typography:                      TeX extensions.      (line  32)
 * mktexmf, disabling:                    mf invocation.       (line  24)
-* mktextfM, disabling:                   tex invocation.      (line  41)
+* mktextfm, disabling:                   tex invocation.      (line 187)
 * mltex:                                 MLTeX.               (line   6)
-* MLTeX, enabling:                       tex invocation.      (line 108)
+* MLTeX, enabling:                       tex invocation.      (line 129)
 * mode needed to run Metafont:           mf invocation.       (line  48)
 * mode_def:                              Modes.               (line  15)
 * mode_setup:                            Modes.               (line  15)
 * modes file needed for Metafont:        Modes.               (line   6)
 * modes.mf recommended modes file:       Modes.               (line  10)
 * modifying texmf.cnf in TeX Live:       Runtime options.     (line  56)
-* Morgan, Tim:                           Introduction.        (line  43)
-* Morris, Bob:                           Introduction.        (line  62)
+* Morgan, Tim:                           Introduction.        (line  44)
+* Morris, Bob:                           Introduction.        (line  63)
 * MPEDIT:                                Editor invocation.   (line  10)
 * mpgraph.pdf:                           mpost invocation.    (line  14)
 * mpman.pdf:                             mpost invocation.    (line   6)
@@ -4266,8 +4319,10 @@ Index
 * non-Unix system, compiling on:         Additional targets.  (line  12)
 * non-windows-capable Metafont:          Online Metafont graphics.
                                                               (line  65)
-* NUL, not allowed in filenames:         \input filename caveats.
+* NUL bytes, not allowed in filenames:   \input filename caveats.
                                                               (line  12)
+* NUL, reserved filename on Windows:     \input filename caveats.
+                                                              (line  17)
 * octal character codes, in TCX files:   TCX files.           (line  77)
 * offset for overflow labels:            gftodvi invocation.  (line  59)
 * Omega:                                 TeX extensions.      (line  25)
@@ -4283,8 +4338,8 @@ Index
                                                               (line  24)
 * output file location:                  Output file location.
                                                               (line   6)
-* output files, written by TeX programs: tex invocation.      (line  48)
-* output_comment for DVI files:          tex invocation.      (line 113)
+* output files, written by TeX programs: tex invocation.      (line 193)
+* output_comment for DVI files:          tex invocation.      (line 134)
 * overflow label offset:                 gftodvi invocation.  (line  59)
 * overflow, of runtime stack:            Runtime options.     (line  25)
 * packet length:                         pktype invocation.   (line  50)
@@ -4304,6 +4359,7 @@ Index
 * pfaedit:                               Font utilities available elsewhere.
                                                               (line  30)
 * PiCTeX, increasing memory for:         Runtime options.     (line  20)
+* pid, used in recorder filename:        Common options.      (line  96)
 * pipes, reading and writing:            Shell escapes.       (line  64)
 * pixel height:                          pktype invocation.   (line  62)
 * pixel width:                           pktype invocation.   (line  62)
@@ -4335,7 +4391,7 @@ Index
 * Poole, Simon:                          Online Metafont graphics.
                                                               (line  50)
 * pooltype:                              pooltype invocation. (line   6)
-* portable filenames:                    \input filenames.    (line  25)
+* portable filenames:                    \input filenames.    (line  26)
 * PostScript fonts, and Troff:           mpost invocation.    (line  60)
 * PostScript meets Metafont:             MetaPost.            (line   6)
 * PostScript output:                     mpost invocation.    (line  30)
@@ -4357,7 +4413,7 @@ Index
                                                               (line  30)
 * program names, special:                Common options.      (line  50)
 * program names, special <1>:            Common options.      (line  84)
-* program names, special <2>:            tex invocation.      (line 108)
+* program names, special <2>:            tex invocation.      (line 129)
 * prologues:                             mpost invocation.    (line 126)
 * prologues, and EPSF output:            mpost invocation.    (line  75)
 * proof mode:                            mf invocation.       (line  48)
@@ -4377,7 +4433,7 @@ Index
 * Raichle, Bernd:                        MLTeX.               (line   6)
 * reading from the output directory:     Output file location.
                                                               (line  15)
-* reading, additional:                   Introduction.        (line  70)
+* reading, additional:                   Introduction.        (line  71)
 * readonly directory, running TeX in:    Output file location.
                                                               (line  53)
 * readonly directory, running TeX in <1>: Output file location.
@@ -4391,13 +4447,13 @@ Index
                                                               (line  39)
 * Regis graphics support:                Online Metafont graphics.
                                                               (line  40)
-* regression testing:                    tex invocation.      (line 113)
+* regression testing:                    tex invocation.      (line 134)
 * repeated rows:                         pktype invocation.   (line  76)
 * representation of strings:             pooltype invocation. (line  30)
 * restricted shell escapes:              Shell escapes.       (line   6)
 * right side bearing:                    pktype invocation.   (line  66)
 * right side bearing <1>:                gftype invocation.   (line  82)
-* Rokicki, Tomas:                        Introduction.        (line  43)
+* Rokicki, Tomas:                        Introduction.        (line  44)
 * run length encoded bitmaps:            pktype invocation.   (line  76)
 * run length encoded bitmaps <1>:        gftype invocation.   (line  89)
 * runtime options:                       Runtime options.     (line   6)
@@ -4405,8 +4461,8 @@ Index
 * scaled pixels:                         pktype invocation.   (line  57)
 * scaled pixels <1>:                     gftype invocation.   (line 106)
 * scaling of fonts:                      Font file formats.   (line  21)
-* security, and \openout:                tex invocation.      (line  48)
-* security, and output files:            tex invocation.      (line  48)
+* security, and \openout:                tex invocation.      (line 193)
+* security, and output files:            tex invocation.      (line 193)
 * security, and shell escapes:           Shell escapes.       (line   6)
 * security, and write:                   mpost invocation.    (line  87)
 * segmentation fault:                    Runtime options.     (line  25)
@@ -4422,20 +4478,21 @@ Index
 * side bearings <1>:                     gftype invocation.   (line  82)
 * SIGSEGV:                               Runtime options.     (line  25)
 * slant font:                            gftodvi invocation.  (line  39)
-* slides, producing:                     Formats.             (line  57)
-* SliTeX:                                Formats.             (line  57)
+* slides, package:                       Formats.             (line  50)
+* slides, producing:                     Formats.             (line  50)
+* SliTeX:                                Formats.             (line  50)
 * small Metafont memory and modes:       Modes.               (line  15)
 * smode and dynamic Metafont mode definition: Modes.          (line  28)
 * sockets:                               IPC and TeX.         (line   6)
 * space-terminated filenames:            \input filenames.    (line  10)
 * Spiderweb:                             WEB.                 (line  12)
-* Stallman, Richard:                     Introduction.        (line  62)
+* Stallman, Richard:                     Introduction.        (line  63)
 * starting page:                         dvicopy invocation.  (line  28)
 * starting page <1>:                     dvitype invocation.  (line  46)
 * Steele Jr., Guy L.:                    Hardware and memory dumps.
                                                               (line  39)
 * stopping at the first error:           Common options.      (line  46)
-* strategy, overall:                     Introduction.        (line  17)
+* strategy, overall:                     Introduction.        (line  18)
 * string numbers, displaying:            pooltype invocation. (line   6)
 * string pool, writing:                  tangle invocation.   (line  16)
 * string representation:                 pooltype invocation. (line  30)
@@ -4475,7 +4532,7 @@ Index
                                                               (line  11)
 * terminator for filenames:              \input filenames.    (line  10)
 * terse output:                          bibtex invocation.   (line  28)
-* teTeX distribution:                    Introduction.        (line  55)
+* teTeX distribution:                    Introduction.        (line  56)
 * tex:                                   tex invocation.      (line   6)
 * TeX, bibliographies for:               bibtex invocation.   (line  58)
 * TeX, creating from Metafont:           mft invocation.      (line   6)
@@ -4484,15 +4541,15 @@ Index
 * TeX, extensions to:                    TeX extensions.      (line   6)
 * TeX, format packages for:              Formats.             (line   6)
 * TeX, initial:                          Initial TeX.         (line   6)
-* TeX, input files found:                tex invocation.      (line  20)
+* TeX, input files found:                tex invocation.      (line  30)
 * TeX, invocation:                       tex invocation.      (line   6)
 * TeX, Metafont, and MetaPost:           Three programs.      (line   6)
-* TeX, Web2c implementation of:          Introduction.        (line   8)
+* TeX, Web2c implementation of:          Introduction.        (line   9)
 * tex.fmt:                               Initial TeX.         (line  13)
 * TEXBIB, search path for bib files:     bibtex invocation.   (line  18)
 * TEXEDIT:                               Editor invocation.   (line  10)
 * texfonts.map:                          Path searching.      (line  14)
-* Texinfo:                               Formats.             (line  43)
+* Texinfo:                               Formats.             (line  37)
 * texmf_casefold_search:                 Runtime options.     (line  42)
 * TEXMF_OUTPUT_DIRECTORY:                Output file location.
                                                               (line  31)
@@ -4504,7 +4561,7 @@ Index
                                                               (line  79)
 * TEXMFOUTPUT, used if . unwritable:     Output file location.
                                                               (line  53)
-* texput:                                tex invocation.      (line  33)
+* texput:                                tex invocation.      (line  73)
 * TFM files, converting property lists to: pltotf invocation. (line   6)
 * TFM files, explained:                  Font file formats.   (line  12)
 * TFM files, output by Metafont:         mf invocation.       (line  43)
@@ -4524,11 +4581,11 @@ Index
                                                               (line  59)
 * torture tests:                         Triptrap.            (line   6)
 * translation file for TeX, specifying:  Common options.      (line 105)
-* translation from WEB to C:             Introduction.        (line  17)
+* translation from WEB to C:             Introduction.        (line  18)
 * trap Make target:                      Additional targets.  (line  41)
 * trap test:                             Triptrap.            (line   6)
 * trapman.tex:                           Triptrap.            (line   6)
-* Trickey, Howard:                       Introduction.        (line  43)
+* Trickey, Howard:                       Introduction.        (line  44)
 * trip Make target:                      Additional targets.  (line  41)
 * trip test:                             Triptrap.            (line   6)
 * tripman.tex:                           Triptrap.            (line   6)
@@ -4536,7 +4593,7 @@ Index
 * Troff, and MetaPost:                   mpost invocation.    (line  60)
 * troff, supported in MetaPost:          MetaPost.            (line  12)
 * Troff, WEB for:                        WEB.                 (line  12)
-* Trojan horses and TeX programs:        tex invocation.      (line  48)
+* Trojan horses and TeX programs:        tex invocation.      (line 193)
 * TrueType support:                      TeX extensions.      (line  40)
 * TUGboat bibliography:                  bibtex invocation.   (line  58)
 * Type 1 conversion:                     Font utilities available elsewhere.
@@ -4549,14 +4606,14 @@ Index
 * typeface families:                     Metafont.            (line   6)
 * typesetting:                           TeX.                 (line   6)
 * Unicode:                               TeX extensions.      (line  25)
-* Unicode input:                         tex invocation.      (line  86)
+* Unicode input:                         tex invocation.      (line 107)
 * Unicode input, native:                 TeX extensions.      (line  47)
 * uniterm:                               Online Metafont graphics.
                                                               (line  50)
 * unsrt.bst:                             Basic BibTeX style files.
                                                               (line  39)
 * upTeX:                                 TeX extensions.      (line  59)
-* UTF-8 input:                           tex invocation.      (line  86)
+* UTF-8 input:                           tex invocation.      (line 107)
 * UTF-8 input, native:                   TeX extensions.      (line  40)
 * validation, of DVI files:              dvitype invocation.  (line   6)
 * validation, of GF files:               gftype invocation.   (line   6)
@@ -4583,7 +4640,7 @@ Index
 * WEB programs, compiling:               tangle invocation.   (line   6)
 * WEB programs, typesetting:             weave invocation.    (line   6)
 * WEB2C, search path for TCX files:      TCX files.           (line  35)
-* Weber, Olaf:                           Introduction.        (line  43)
+* Weber, Olaf:                           Introduction.        (line  44)
 * webmac.tex:                            weave invocation.    (line  26)
 * webman.tex:                            WEB.                 (line  12)
 * whitespace-terminated filenames:       \input filenames.    (line  10)
@@ -4626,78 +4683,79 @@ Index
 
 Tag Table:
 Node: Top2758
-Node: Introduction3829
-Node: Installation7604
-Node: configure options9690
-Node: Compile-time options11848
-Node: Additional targets12986
-Node: Triptrap14359
-Node: Commonalities15934
-Node: Option conventions16591
-Node: Common options17874
-Node: Path searching22784
-Node: Output file location23780
-Node: Three programs27001
-Node: Runtime options27712
-Node: Initial and virgin30897
-Node: Memory dumps31878
-Node: Creating memory dumps32334
-Node: Determining the memory dump to use33553
-Node: Hardware and memory dumps35198
-Node: Editor invocation38004
-Node: \input filenames38915
-Node: \input quoted filename40522
-Node: \input braced filename41315
-Node: \input filename caveats42265
-Node: TeX43827
-Node: tex invocation44999
-Node: Initial TeX52331
-Node: Formats53747
-Node: Languages and hyphenation56600
-Node: MLTeX57030
-Node: \charsubdef58686
-Node: \tracingcharsubdef61081
-Node: TCX files61680
-Node: patgen invocation67214
-Node: Shell escapes67937
-Node: IPC and TeX71827
-Node: TeX extensions72413
-Node: Metafont75202
-Node: mf invocation76494
-Node: Initial Metafont80475
-Node: Modes82165
-Node: Online Metafont graphics84483
-Node: gftodvi invocation88080
-Node: mft invocation91032
-Node: MetaPost95172
-Node: mpost invocation96008
-Node: Initial MetaPost101714
-Node: dvitomp invocation102711
-Node: BibTeX103408
-Node: bibtex invocation103769
-Node: Basic BibTeX style files106375
-Node: WEB107773
-Node: tangle invocation109006
-Node: weave invocation111206
-Node: pooltype invocation112825
-Node: DVI utilities113975
-Node: dvicopy invocation114921
-Node: dvitype invocation116250
-Node: dvitype output example118659
-Node: Font utilities121784
-Node: Font file formats122976
-Node: gftopk invocation126307
-Node: pktogf invocation127542
-Node: pktype invocation128752
-Node: gftype invocation131671
-Node: tftopl invocation136290
-Node: pltotf invocation141035
-Node: vftovp invocation142114
-Node: vptovf invocation144441
-Node: Font utilities available elsewhere145500
-Node: Legalisms147767
-Node: References149226
-Node: Index153444
+Node: Introduction3834
+Node: Installation7614
+Node: configure options9700
+Node: Compile-time options11858
+Node: Additional targets12996
+Node: Triptrap14369
+Node: Commonalities15944
+Node: Option conventions16601
+Node: Common options17875
+Node: Path searching22785
+Node: Output file location23781
+Node: Three programs27002
+Node: Runtime options27713
+Node: Initial and virgin30898
+Node: Memory dumps31879
+Node: Creating memory dumps32335
+Node: Determining the memory dump to use33554
+Node: Hardware and memory dumps35199
+Node: Editor invocation38005
+Node: \input filenames38916
+Ref: Input filenames39059
+Node: \input quoted filename40553
+Node: \input braced filename41346
+Node: \input filename caveats42296
+Node: TeX44117
+Node: tex invocation45289
+Node: Initial TeX54714
+Node: Formats55885
+Node: Languages and hyphenation58562
+Node: MLTeX58992
+Node: \charsubdef60648
+Node: \tracingcharsubdef63043
+Node: TCX files63642
+Node: patgen invocation69176
+Node: Shell escapes69899
+Node: IPC and TeX73789
+Node: TeX extensions74375
+Node: Metafont77166
+Node: mf invocation78458
+Node: Initial Metafont82439
+Node: Modes84038
+Node: Online Metafont graphics86356
+Node: gftodvi invocation89953
+Node: mft invocation92905
+Node: MetaPost97045
+Node: mpost invocation97881
+Node: Initial MetaPost103587
+Node: dvitomp invocation104584
+Node: BibTeX105281
+Node: bibtex invocation105642
+Node: Basic BibTeX style files108248
+Node: WEB109646
+Node: tangle invocation110879
+Node: weave invocation113079
+Node: pooltype invocation114698
+Node: DVI utilities115848
+Node: dvicopy invocation116794
+Node: dvitype invocation118123
+Node: dvitype output example120532
+Node: Font utilities123657
+Node: Font file formats124849
+Node: gftopk invocation128180
+Node: pktogf invocation129415
+Node: pktype invocation130625
+Node: gftype invocation133544
+Node: tftopl invocation138163
+Node: pltotf invocation142908
+Node: vftovp invocation143987
+Node: vptovf invocation146314
+Node: Font utilities available elsewhere147373
+Node: Legalisms149640
+Node: References151099
+Node: Index155317
 
 End Tag Table
 
