@@ -1,3 +1,21 @@
+2025-11-11  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (KPSE_HARFBUZZ_FLAGS): enable if hitex is enabled.
+	Report from balducci,
+	https://tug.org/pipermail/tex-k/2025-November/004229.html.
+
+2025-11-10  Karl Berry  <karl@freefriends.org>
+
+	* PROJECTS: typo.
+
+2025-11-05  Karl Berry  <karl@freefriends.org>
+
+	* ac/web2c.ac (kpse_tex_progs) <hitex>: now depends on harfbuzz.
+	* configure,
+	* Makefile.in: reautoconf.
+	However, undefined reference to `hb_ft_face_create_referenced' remains.
+	https://tug.org/pipermail/tlbuild/2025q4/005883.html
+
 2025-10-02  Karl Berry  <karl@freefriends.org>
 
 	* bibtex.web: version 0.99e, with fixes for weave (only).
@@ -10734,7 +10752,7 @@ Tue Apr 11 17:53:15 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
 	* mpext.c: discarded, using routines from ../lib/lib.a instead.
 	Moved code for callmakempx() to file ../lib/openinout.c.
 
-	* mpmath.c: preserved without changes. Ccomments refererring to 
+	* mpmath.c: preserved without changes. Comments refererring to 
 	site.h are no longer applicable when using ../lib/c-auto.h instead.
 
 	* pathexp.c: moved to ../mpware as only DMP uses the pathexpand() 

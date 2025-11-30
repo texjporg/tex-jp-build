@@ -165,6 +165,9 @@ if test -d "$bindir"; then
   if test "$count" -gt 0; then
     echo
     echo "$0: $count executables in $bindir."
+    echo "$0: These binaries do not constitute a directly usable system."
+    echo "$0: If you're trying to create a runnable TeX, please see:"
+    echo "$0: https://tug.org/texinfohtml/tlbuild.html#Installing"
   else
     echo "$0: Build failed, no executables under $bindir."
     echo "$0: Full log in: `pwd`/build.log"
@@ -175,7 +178,7 @@ if test -d "$bindir"; then
 fi
 
 status=`cat exitstatus.txt`
-if echo "$status" | egrep '^[0-9]+$' >/dev/null; then :; else
+if echo "$status" | grep '^[0-9][0-9]*$' >/dev/null; then :; else
   echo "$0: exitstatus.txt does not contain a number; disk full?" >&2
   status=1
 fi
