@@ -236,7 +236,7 @@ jobs:
             --enable-web-progs \
             --enable-synctex \
             --disable-mf  --disable-mf-nowin \
-            --disable-aleph \
+            --disable-aleph  --disable-hitex \
             --disable-luatex  --disable-luajittex  --disable-luahbtex  --disable-luajithbtex \
             --disable-xetex  --disable-xetex-synctex \
             --disable-mflua  --disable-mflua-nowin  --disable-mfluajit  --disable-mfluajit-nowin \
