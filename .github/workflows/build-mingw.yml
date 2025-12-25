@@ -382,13 +382,13 @@ jobs:
           export DIFF=diff
           export DIFFFLAGS="--strip-trailing-cr --ignore-matching-lines 'DVItype'"
           export ExeExt=.exe
-          $srcdir/uptexdir/ptriptest.test || cat upptripdir/ptrip.log
+          $srcdir/uptexdir/ptriptest.test || echo -e "**\n** failed: up/ptriptest.test\n**"
           echo ""
-          $srcdir/uptexdir/uptriptest.test || cat uptripdir/uptrip.log
+          $srcdir/uptexdir/uptriptest.test || echo -e "**\n** failed: up/uptriptest.test\n**"
           echo ""
-          $srcdir/euptexdir/eptriptest.test || cat eupptripdir/eptrip.log
+          $srcdir/euptexdir/eptriptest.test || echo -e "**\n** failed: eup/eptriptest.test\n**"
           echo ""
-          $srcdir/euptexdir/euptriptest.test || cat euptripdir/euptrip.log
+          $srcdir/euptexdir/euptriptest.test || echo -e "**\n** failed: eup/euptriptest.test\n**"
           echo ""
         env:
           srcdir: "../../../texk/web2c"
