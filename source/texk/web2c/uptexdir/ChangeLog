@@ -1,3 +1,17 @@
+2025-12-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* am/uptex.am (uptex_tests): Fix typo.
+
+2025-12-02  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am (up-basic.tex): $(srcdir) not $srcdir.
+
+2025-11-30  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am (uptex_tests): depend on up-basic{,-{euc,sjis}}.fmt
+	here to avoid race condition when running the tests. Define rules
+	to build them.
+
 2025-10.02  Andreas Scherer  <https://ascherer.github.io>
 
 	* upbibtex.ch: Minor improvements for TIE and WEAVE.
