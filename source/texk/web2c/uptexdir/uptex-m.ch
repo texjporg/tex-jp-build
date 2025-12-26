@@ -52,6 +52,7 @@
 % (2024-10-20) TTK  upTeX u2.00
 % (2025-01-02) TTK  Accept extended upTeX internal encoding also in pTeX-compatible EUC/SJIS mode.
 % (2025-04-05) TTK  upTeX u2.01
+% (2025-12-26) TTK  upTeX u2.02
 
 @x
 \def\pTeX{p\kern-.15em\TeX}
@@ -66,8 +67,8 @@
   {printed when \pTeX\ starts}
 @#
 @d upTeX_version=2
-@d upTeX_revision==".01"
-@d upTeX_version_string=='-u2.01' {current \upTeX\ version}
+@d upTeX_revision==".02"
+@d upTeX_version_string=='-u2.02' {current \upTeX\ version}
 @#
 @d upTeX_banner=='This is upTeX, Version 3.141592653',pTeX_version_string,upTeX_version_string
 @d upTeX_banner_k==upTeX_banner
