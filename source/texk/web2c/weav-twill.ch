@@ -453,7 +453,7 @@ Section 124.
 @.\\input webmac@>
 @.webmac@>
 
-If the user has sent the |pdf_output| flag (the `\.{-p}' option of the
+If the user has sent the |pdf_output| flag (the `\.{-p}' option on the
 command line), then we use alternative \TeX\ macros from `\.{\\input pwebmac}'.
 @.\\input pwebmac@>
 @.pwebmac@>
@@ -962,8 +962,9 @@ exit:end;
 
 @<Functions |alpha_out|, |beta_out|, and helpers@>=
 procedure out_const(@!n:sixteen_bits);
-var a,k:integer;
-begin a:=n; k:=0;
+var k:0..5; {index into |dig|}
+@!a:integer; {accumulator}
+begin k:=0; a:=n;
 if a>=32768 then
   begin out("-"); a:=65536-a;
   end;
