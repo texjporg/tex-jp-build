@@ -58,7 +58,7 @@ set(dist_euptex_SOURCES
 set(euptex_prereq
   euptexd.h
   etexdir/etex_version.h
-  ptexdir/ptex_version.h
+  uptexdir/ptex_version.h
   euptexdir/eptex_version.h
   uptexdir/uptex_version.h
   )
@@ -77,7 +77,7 @@ set(euptex_web_srcs
 
 set(euptex_ch_srcs
   euptexdir/etex.ch0
-  ptexdir/ptex-base.ch
+  uptexdir/ptex-base.ch
   uptexdir/uptex-m.ch
   euptexdir/eptex.ech
   euptexdir/etex.ch1

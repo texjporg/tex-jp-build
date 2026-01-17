@@ -79,7 +79,7 @@ target_link_libraries(libukanji ptexenc kpathsea zlib)
 #  )
 #
 #set(uptex_ch_srcs
-#  ptexdir/ptex-base.ch
+#  uptexdir/ptex-base.ch
 #  uptexdir/uptex-m.ch
 #  ${uptex_ch_synctex}
 #  tex-binpool.ch
