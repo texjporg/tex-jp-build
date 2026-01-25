@@ -4,7 +4,7 @@ This file documents the installation and use of the programs in Web2c,
 an implementation of Donald Knuth's TeX system.
 
    Copyright © 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
-2005, 2007, 2008, 2009, 2010-2023 Karl Berry & Olaf Weber.
+2005, 2007, 2008, 2009, 2010-2026 Karl Berry & Olaf Weber.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -1197,7 +1197,7 @@ files directly, namely pdfTeX and LuaTeX (*note TeX extensions::).
 ‘-no-mktex=FILETYPE’
      Turn on or off the ‘mktex’ script associated with FILETYPE.  For
      TeX proper, FILETYPE can only be ‘tex’ and ‘tfm’, but for pdfTeX
-     and luaTeX, it can also be ‘pk’.
+     and LuaTeX, it can also be ‘pk’.
 
 ‘-mltex’
      If we are ‘INITEX’ (*note Initial and virgin::), enable MLTeX
@@ -1326,20 +1326,32 @@ generally selected, installed, and updated as part of a larger TeX
 distribution, such as TeX Live (<https://tug.org/texlive>).
 
 latex
-     The most widely used format, named 'LaTeX2e'; new versions are
-     released approximately every six months, with patches issued as
-     needed.  The old release was called 'LaTeX 2.09', and is no longer
-     maintained or supported, though compatibility for 2.09 documents is
-     retained.  LaTeX attempts to provide generic markup instructions,
-     such as "emphasize", instead of specific typesetting instructions,
-     such as "use the 10pt Computer Modern italic font".  The LaTeX home
-     page: <https://www.latex-project.org>.
+     The most widely used format, called LaTeX, based on LaTeX2e and
+     also incorporating LaTeX3; new versions are released approximately
+     every six months, with patches issued as needed.  The old release
+     was called 'LaTeX 2.09', and is no longer maintained or supported,
+     though compatibility for 2.09 documents is retained.  LaTeX
+     attempts to provide generic markup instructions, such as
+     "emphasize", instead of specific typesetting instructions, such as
+     "use the 10pt Computer Modern italic font".  The LaTeX home page:
+     <https://www.latex-project.org>.
+
+latex-dev
+     A set of formats and executables made so that anyone interested can
+     easily help test upcoming LaTeX releases.  They correspond to new
+     formats which have been tested by the LaTeX team for stability and
+     usability.  Testing by as many users as possible is desired and
+     requested.  Simply changing the regular engine name (e.g.,
+     ‘pdflatex’), to have a -dev suffix (‘pdflatex-dev’) in your
+     invocations is all that should be needed.  No changes to source
+     documents should be required.
 
 context
-     ConTeXt is an independent macro package which has a basic document
-     structuring approach similar to LaTeX.  It also supports creating
-     interactive PDF files and has integrated MetaPost support, among
-     many other advanced features.  The ConTeXt home page:
+     ConTeXt is an independent macro package which also supports a
+     document structuring approach.  It can also create interactive PDF
+     files and has an integrated MetaPost library for graphics, among
+     many other advanced features.  It uses its own engine, LuaMetaTeX,
+     developed in tandem.  The ConTeXt home page:
      <http://www.pragma-ade.com>.
 
 eplain
@@ -1693,7 +1705,7 @@ included:
 
      shell_escape_commands = bibtex,kpsewhich,repstopdf,...
 
-   pdfTeX and luaTeX support reading (via ‘\input’ and ‘\openin’) and
+   pdfTeX and LuaTeX support reading (via ‘\input’ and ‘\openin’) and
 writing (via ‘\openout’) from pipes if the first character is ‘|’.  The
 following command is then treated exactly the same as the argument to
 ‘\write18’.  In these engines, the primitive variable ‘\pdfshellescape’
@@ -1741,7 +1753,7 @@ formats, notably LaTeX, can rely on it.  A list of this common extended
 functionality is in a ‘LaTeX News’ article,
 <https://www.latex-project.org/news/latex2e-news/ltnews31.pdf>.  For
 engines in TeX Live, the detailed documentation for these primitives is
-mostly in the pdfTeX manual (<http://pdftex.org>).
+mostly in the pdfTeX manual (<https://pdftex.org>).
 
    In addition, each engine (naturally) has its own particular features,
 described in its own manual.  Here's a partial list of the engines.
@@ -3878,10 +3890,10 @@ Index
 * aliases for fonts:                     Path searching.      (line  14)
 * alpha.bst:                             Basic BibTeX style files.
                                                               (line  22)
-* American Mathematical Society, typesetting system: Formats. (line  44)
+* American Mathematical Society, typesetting system: Formats. (line  56)
 * amiga:                                 Online Metafont graphics.
                                                               (line  30)
-* AMSTeX:                                Formats.             (line  44)
+* AMSTeX:                                Formats.             (line  56)
 * apalike.bst:                           Basic BibTeX style files.
                                                               (line  25)
 * architecture dependencies:             Hardware and memory dumps.
@@ -3907,7 +3919,7 @@ Index
 * batch languages:                       TeX.                 (line   9)
 * BDF and GF conversion:                 Font utilities available elsewhere.
                                                               (line  15)
-* beamer, package:                       Formats.             (line  50)
+* beamer, package:                       Formats.             (line  62)
 * beginfig:                              mpost invocation.    (line  30)
 * Berry, Karl:                           Introduction.        (line  44)
 * BIBINPUTS, search path for bib files:  bibtex invocation.   (line  18)
@@ -3984,7 +3996,7 @@ Index
 * configuration, compile-time:           configure options.   (line   6)
 * configure --with/--enable options:     configure options.   (line   6)
 * CONTENTS.tex:                          weave invocation.    (line  26)
-* ConTeXt:                               Formats.             (line  23)
+* ConTeXt:                               Formats.             (line  34)
 * conventions for options,:              Option conventions.  (line   6)
 * conversion, DVI to plain text:         dvitype invocation.  (line   6)
 * conversion, GF to PK:                  gftopk invocation.   (line   6)
@@ -4063,7 +4075,7 @@ Index
 * endian dependencies:                   Hardware and memory dumps.
                                                               (line   6)
 * eoc GF command:                        gftype invocation.   (line  97)
-* Eplain:                                Formats.             (line  30)
+* Eplain:                                Formats.             (line  42)
 * epsf:                                  Online Metafont graphics.
                                                               (line  33)
 * epTeX:                                 TeX extensions.      (line  66)
@@ -4077,7 +4089,7 @@ Index
 * executables, shared initial and virgin: Initial and virgin. (line   6)
 * exit status, of shell escape:          Shell escapes.       (line  34)
 * expand_depth:                          Runtime options.     (line  24)
-* expanded plain format:                 Formats.             (line  30)
+* expanded plain format:                 Formats.             (line  42)
 * expansion limit, recursive:            Runtime options.     (line  25)
 * expansion, and \input filenames:       \input filename caveats.
                                                               (line   6)
@@ -4126,7 +4138,7 @@ Index
 * formats Make target:                   Additional targets.  (line  17)
 * fraction routines:                     Compile-time options.
                                                               (line  21)
-* Free Software Foundation documentation system: Formats.     (line  37)
+* Free Software Foundation documentation system: Formats.     (line  49)
 * freedom of Web2c:                      Introduction.        (line  24)
 * ftp.math.utah.edu:                     bibtex invocation.   (line  58)
 * generating source specials:            tex invocation.      (line 155)
@@ -4195,7 +4207,7 @@ Index
                                                               (line  31)
 * il1-t1.tcx:                            TCX files.           (line  48)
 * il2-t1.tcx:                            TCX files.           (line  48)
-* Info format:                           Formats.             (line  37)
+* Info format:                           Formats.             (line  49)
 * initial form, enabling:                Common options.      (line  50)
 * initial Metafont:                      Initial Metafont.    (line   6)
 * initial MetaPost:                      Initial MetaPost.    (line   6)
@@ -4231,6 +4243,8 @@ Index
                                                               (line   6)
 * languages, hyphenation rules for:      patgen invocation.   (line   6)
 * LaTeX:                                 Formats.             (line  13)
+* LaTeX testing:                         Formats.             (line  24)
+* latex-dev:                             Formats.             (line  24)
 * Latin Modern:                          Font utilities available elsewhere.
                                                               (line  18)
 * left side bearing:                     pktype invocation.   (line  66)
@@ -4251,7 +4265,7 @@ Index
 * log file, BibTeX:                      bibtex invocation.   (line  14)
 * long data type, size of:               Hardware and memory dumps.
                                                               (line   6)
-* ltx-talk, package:                     Formats.             (line  50)
+* ltx-talk, package:                     Formats.             (line  62)
 * Lua:                                   TeX extensions.      (line  40)
 * Lua, and unportable memory dumps:      Hardware and memory dumps.
                                                               (line  12)
@@ -4271,7 +4285,7 @@ Index
 * main_memory:                           Runtime options.     (line  15)
 * Make targets, additional:              Additional targets.  (line   6)
 * Martin, Rick:                          Introduction.        (line  63)
-* Mathematical Reviews:                  Formats.             (line  44)
+* Mathematical Reviews:                  Formats.             (line  56)
 * mathematical typesetting:              TeX.                 (line   6)
 * memory dump to use, determining:       Determining the memory dump to use.
                                                               (line   6)
@@ -4520,9 +4534,9 @@ Index
 * side bearings <1>:                     gftype invocation.   (line  82)
 * SIGSEGV:                               Runtime options.     (line  25)
 * slant font:                            gftodvi invocation.  (line  39)
-* slides, package:                       Formats.             (line  50)
-* slides, producing:                     Formats.             (line  50)
-* SliTeX:                                Formats.             (line  50)
+* slides, package:                       Formats.             (line  62)
+* slides, producing:                     Formats.             (line  62)
+* SliTeX:                                Formats.             (line  62)
 * small Metafont memory and modes:       Modes.               (line  15)
 * smode and dynamic Metafont mode definition: Modes.          (line  28)
 * sockets:                               IPC and TeX.         (line   6)
@@ -4574,6 +4588,7 @@ Index
                                                               (line  17)
 * terminator for filenames:              \input filenames.    (line  10)
 * terse output:                          bibtex invocation.   (line  28)
+* testing LaTeX:                         Formats.             (line  24)
 * teTeX distribution:                    Introduction.        (line  56)
 * tex:                                   tex invocation.      (line   6)
 * TeX, bibliographies for:               bibtex invocation.   (line  58)
@@ -4591,7 +4606,7 @@ Index
 * TEXBIB, search path for bib files:     bibtex invocation.   (line  18)
 * TEXEDIT:                               Editor invocation.   (line  10)
 * texfonts.map:                          Path searching.      (line  14)
-* Texinfo:                               Formats.             (line  37)
+* Texinfo:                               Formats.             (line  49)
 * texmf_casefold_search:                 Runtime options.     (line  42)
 * TEXMF_OUTPUT_DIRECTORY:                Output file location.
                                                               (line  31)
@@ -4757,51 +4772,51 @@ Node: TeX44808
 Node: tex invocation45980
 Node: Initial TeX55405
 Node: Formats56576
-Node: Languages and hyphenation59253
-Node: MLTeX59683
-Node: \charsubdef61339
-Node: \tracingcharsubdef63734
-Node: TCX files64333
-Node: patgen invocation69867
-Node: Shell escapes70590
-Node: IPC and TeX74480
-Node: TeX extensions75066
-Node: Metafont77857
-Node: mf invocation79149
-Node: Initial Metafont83130
-Node: Modes84729
-Node: Online Metafont graphics87047
-Node: gftodvi invocation91195
-Node: mft invocation94147
-Node: MetaPost98505
-Node: mpost invocation99341
-Node: Initial MetaPost105047
-Node: dvitomp invocation106044
-Node: BibTeX106741
-Node: bibtex invocation107102
-Node: Basic BibTeX style files109708
-Node: WEB111106
-Node: tangle invocation112339
-Node: weave invocation114539
-Node: pooltype invocation116158
-Node: DVI utilities117308
-Node: dvicopy invocation118254
-Node: dvitype invocation119583
-Node: dvitype output example121992
-Node: Font utilities125117
-Node: Font file formats126309
-Node: gftopk invocation129640
-Node: pktogf invocation130875
-Node: pktype invocation132085
-Node: gftype invocation135004
-Node: tftopl invocation139623
-Node: pltotf invocation144368
-Node: vftovp invocation145447
-Node: vptovf invocation147774
-Node: Font utilities available elsewhere148833
-Node: Legalisms151100
-Node: References152559
-Node: Index156777
+Node: Languages and hyphenation59899
+Node: MLTeX60329
+Node: \charsubdef61985
+Node: \tracingcharsubdef64380
+Node: TCX files64979
+Node: patgen invocation70513
+Node: Shell escapes71236
+Node: IPC and TeX75126
+Node: TeX extensions75712
+Node: Metafont78504
+Node: mf invocation79796
+Node: Initial Metafont83777
+Node: Modes85376
+Node: Online Metafont graphics87694
+Node: gftodvi invocation91842
+Node: mft invocation94794
+Node: MetaPost99152
+Node: mpost invocation99988
+Node: Initial MetaPost105694
+Node: dvitomp invocation106691
+Node: BibTeX107388
+Node: bibtex invocation107749
+Node: Basic BibTeX style files110355
+Node: WEB111753
+Node: tangle invocation112986
+Node: weave invocation115186
+Node: pooltype invocation116805
+Node: DVI utilities117955
+Node: dvicopy invocation118901
+Node: dvitype invocation120230
+Node: dvitype output example122639
+Node: Font utilities125764
+Node: Font file formats126956
+Node: gftopk invocation130287
+Node: pktogf invocation131522
+Node: pktype invocation132732
+Node: gftype invocation135651
+Node: tftopl invocation140270
+Node: pltotf invocation145015
+Node: vftovp invocation146094
+Node: vptovf invocation148421
+Node: Font utilities available elsewhere149480
+Node: Legalisms151747
+Node: References153206
+Node: Index157424
 
 End Tag Table
 
