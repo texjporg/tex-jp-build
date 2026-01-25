@@ -1,7 +1,7 @@
 /* kpsewhich -- standalone path lookup and variable expansion for Kpathsea.
    Ideas from Thomas Esser, Pierre MacKay, and many others.
 
-   Copyright 1995-2025 Karl Berry & Olaf Weber.
+   Copyright 1995-2026 Karl Berry & Olaf Weber.
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -95,16 +95,30 @@ typedef struct
 static format_abbr_type format_abbrs[]
   = { { "bitmapfont", kpse_any_glyph_format },
       { "mpsupport", kpse_mpsupport_format },
+      { "psheader", kpse_tex_ps_header_format },
       { "doc", kpse_texdoc_format },
       { "source", kpse_texsource_format },
+      { "src", kpse_texsource_format },
       { "trofffont", kpse_troff_font_format },
+      { "type1", kpse_type1_format },
+      { "pfb", kpse_type1_format },
       { "dvipsconfig", kpse_dvips_config_format },
+      { "truetype", kpse_truetype_format, },
+      { "ttf", kpse_truetype_format, },
+      { "type42", kpse_type42_format, },
       { "web2c", kpse_web2c_format },
       { "othertext", kpse_program_text_format },
       { "otherbin", kpse_program_binary_format },
       { "miscfont", kpse_miscfonts_format },
+      { "enc", kpse_enc_format },
       { "cmap", kpse_cmap_format },
+      { "sfd", kpse_sfd_format, },
+      { "opentype", kpse_opentype_format, },
+      { "otf", kpse_opentype_format, },
       { "pdftexconfig", kpse_pdftex_config_format },
+      { "lig", kpse_lig_format },
+      { "fea", kpse_fea_format },
+      { "cidmap", kpse_cid_format },
       { NULL, kpse_last_format } };
 
 /* The function to look up STR in the abbr table above.
@@ -757,7 +771,7 @@ read_command_line (kpathsea kpse, int argc, string *argv)
 
     } else if (ARGUMENT_IS ("version")) {
       puts (kpathsea_version_string);
-      puts ("Copyright 2023 Karl Berry & Olaf Weber.\n\
+      puts ("Copyright 2026 Karl Berry & Olaf Weber.\n\
 License LGPLv2.1+: GNU Lesser GPL version 2.1 or later <https://gnu.org/licenses/lgpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n");

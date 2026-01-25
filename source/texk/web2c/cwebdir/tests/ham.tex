@@ -20,7 +20,7 @@ We use a utility field to record the vertex degrees.
 $\|u.{}$\|I\par
 \Y\B\8\#\&{include} \.{"gb\_graph.h"}\C{ the GraphBase data structures }\6
 \8\#\&{include} \.{"gb\_save.h"}\C{ \PB{\\{restore\_graph}} }\7
-\1\1\&{int} \\{main}(\&{int} \\{argc}${},\39{}$\&{char} ${}{*}\\{dmin}[\,])\2%
+\1\1\&{int} \\{main}(\&{int} \\{argc}${},\39{}$\&{char} ${}{*}\\{argv}[\,])\2%
 \2{}$\6
 ${}\{{}$\1\6
 \&{Graph} ${}{*}\|g;{}$\6
@@ -34,28 +34,31 @@ ${}\{{}$\1\6
 \X2:Process the command line, inputting the graph\X;\6
 \X3:Prepare \PB{\|g} for backtracking, and find a vertex \PB{\|x} of minimum
 degree\X;\6
-${}\\{len}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG\|n;{}$
-${}\|v\PP)\\{sscanf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\6
-\\{sscanf}(\.{"\\n"});\C{ TEMPORARY CHECK }\6
+\&{for} ${}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG\|n;{}$
+${}\|v\PP){}$\1\5
+${}\\{printf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\2\6
+\\{printf}(\.{"\\n"});\C{ TEMPORARY CHECK }\6
 \&{if} ${}(\|x\MG\\{deg}<\T{2}){}$\5
 ${}\{{}$\1\6
-${}\\{sscanf}(\.{"The\ minimum\ degree\ }\)\.{is\ \%ld\ (vertex\ \%s)!\\}\)%
+${}\\{printf}(\.{"The\ minimum\ degree\ }\)\.{is\ \%ld\ (vertex\ \%s)!\\}\)%
 \.{n"},\39\|x\MG\\{deg},\39\|x\MG\\{name});{}$\6
 \&{return} ${}{-}\T{1};{}$\6
-\4${}\}{}$\2\7
-\1\1${}\\{len}(\|b\K\|x\MG\\{arcs};{}$ ${}\|b\MG\\{next};{}$ ${}\|b\K\|b\MG%
-\\{next})\\{len}(\\{bb}\K\|b\MG\\{next};{}$ \\{bb}; ${}\\{bb}\K\\{bb}\MG%
-\\{next})\2\2{}$\6
+\4${}\}{}$\2\6
+\&{for} ${}(\|b\K\|x\MG\\{arcs};{}$ ${}\|b\MG\\{next};{}$ ${}\|b\K\|b\MG%
+\\{next}){}$\1\6
+\&{for} ${}(\\{bb}\K\|b\MG\\{next};{}$ \\{bb}; ${}\\{bb}\K\\{bb}\MG\\{next}){}$%
+\5
 ${}\{{}$\1\6
 ${}\|v\K\|b\MG\\{tip};{}$\6
 ${}\|z\K\\{bb}\MG\\{tip};{}$\6
 \X4:Find all simple paths of length \PB{$\|g\MG\|n-\T{2}$} from \PB{\|v} to %
 \PB{\|z}, avoiding \PB{\|x}\X;\6
-\4${}\}{}$\2\7
-${}\\{sscanf}(\.{"Altogether\ \%d\ solut}\)\.{ions.\\n"},\39\\{count});{}$\6
-${}\\{len}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG\|n;{}$
-${}\|v\PP)\\{sscanf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\6
-\\{sscanf}(\.{"\\n"});\C{ TEMPORARY CHECK, SHOULD AGREE WITH FORMER VALUES }\6
+\4${}\}{}$\2\2\6
+${}\\{printf}(\.{"Altogether\ \%d\ solut}\)\.{ions.\\n"},\39\\{count});{}$\6
+\&{for} ${}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG\|n;{}$
+${}\|v\PP){}$\1\5
+${}\\{printf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\2\6
+\\{printf}(\.{"\\n"});\C{ TEMPORARY CHECK, SHOULD AGREE WITH FORMER VALUES }\6
 \4${}\}{}$\2\par
 \mini
 \]{GB\_\,GRAPH}9 \|{u} \&{util}
@@ -63,7 +66,7 @@ ${}\|v\PP)\\{sscanf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\6
 \]{GB\_\,GRAPH}10 \\{next} \&{Arc} ${}{*}{}$
 \]{GB\_\,GRAPH}9 \\{arcs} \&{Arc} ${}{*}{}$
 \]{GB\_\,GRAPH}9 \\{name} \&{char} ${}{*}{}$
-\]"<stdio.h>" \\{sscanf} \zip
+\]"<stdio.h>" \\{printf} \zip
 \]{GB\_\,GRAPH}20 \|{n} \&{long}
 \]{GB\_\,GRAPH}20 \\{vertices} \&{Vertex} ${}{*}{}$
 \]{GB\_\,GRAPH}10 \&{Arc} =\&{struct}
@@ -77,16 +80,16 @@ ${}\|v\PP)\\{sscanf}(\.{"\ \%ld"},\39\|v\MG\\{deg});{}$\6
 \M{2}
 \B\X2:Process the command line, inputting the graph\X${}\E{}$\6
 \&{if} ${}(\\{argc}>\T{1}){}$\1\5
-${}\|g\K\\{restore\_graph}(\\{dmin}[\T{1}]){}$;\5
+${}\|g\K\\{restore\_graph}(\\{argv}[\T{1}]){}$;\5
 \2\&{else}\1\5
 ${}\|g\K\NULL;{}$\2\6
-\&{if} ${}(\\{argc}<\T{3}\V\\{sscanf}(\\{dmin}[\T{2}],\39\.{"\%d"},\39{\AND}%
+\&{if} ${}(\\{argc}<\T{3}\V\\{sscanf}(\\{argv}[\T{2}],\39\.{"\%d"},\39{\AND}%
 \\{modulus})\I\T{1}){}$\1\5
 ${}\\{modulus}\K\T{1000000000};{}$\2\6
 \&{if} ${}(\R\|g\V\\{modulus}\Z\T{0}){}$\5
 ${}\{{}$\1\6
 ${}\\{fprintf}(\\{stderr},\39\.{"Usage:\ \%s\ foo.gb\ [m}\)\.{odulus]\\n"},\39%
-\\{dmin}[\T{0}]);{}$\6
+\\{argv}[\T{0}]);{}$\6
 ${}\\{exit}({-}\T{1});{}$\6
 \4${}\}{}$\2\par
 \U1.
@@ -96,7 +99,7 @@ ${}\\{exit}({-}\T{1});{}$\6
 \]"<stdio.h>" \\{fprintf} \zip
 \[1 \\{modulus} \&{int}
 \]"<stdio.h>" \\{sscanf} \zip
-\[1 \\{dmin} \&{int}
+\[1 \\{argv} \&{char} ${}{*}[\,]{}$
 \]{GB\_\,SAVE}4 \\{restore\_graph} \&{Graph} ${}{*}(\,){}$
 \[1 \|{g} \&{Graph} ${}{*}{}$
 \[1 \\{argc} \&{int}
@@ -110,13 +113,14 @@ their \PB{\\{taken}} field is nonzero. Initially we make all those fields zero.
 $\|v.{}$\|I\par
 \Y\B\4\X3:Prepare \PB{\|g} for backtracking, and find a vertex \PB{\|x} of
 minimum degree\X${}\E{}$\6
-$\\{dmin}\K\|g\MG\|n;{}$\7
-\1\1${}\\{len}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG%
-\|n;{}$ ${}\|v\PP)\2\2{}$\6
+$\\{dmin}\K\|g\MG\|n;{}$\6
+\&{for} ${}(\|v\K\|g\MG\\{vertices};{}$ ${}\|v<\|g\MG\\{vertices}+\|g\MG\|n;{}$
+${}\|v\PP){}$\5
 ${}\{{}$\1\6
 ${}\|v\MG\\{taken}\K\T{0};{}$\6
 ${}\|d\K\T{0};{}$\6
-${}\\{len}(\|a\K\|v\MG\\{arcs};{}$ \|a; ${}\|a\K\|a\MG\\{next})\|d\PP;{}$\6
+\&{for} ${}(\|a\K\|v\MG\\{arcs};{}$ \|a; ${}\|a\K\|a\MG\\{next}){}$\1\5
+${}\|d\PP;{}$\2\6
 ${}\|v\MG\\{deg}\K\|d;{}$\6
 \&{if} ${}(\|d<\\{dmin}){}$\1\5
 ${}\\{dmin}\K\|d,\39\|x\K\|v;{}$\2\6
@@ -211,9 +215,9 @@ ${}\{{}$\1\6
 \&{if} ${}(\|t\E\\{tmax}){}$\1\5
 \X9:Record a solution\X;\2\6
 \&{goto} \\{backtrack};\6
-\4${}\}{}$\2\7
-\1\1${}\\{len}(\\{aa}\K\|v\MG\\{arcs},\39\|y\K\NULL;{}$ \\{aa}; ${}\\{aa}\K%
-\\{aa}\MG\\{next})\2\2{}$\6
+\4${}\}{}$\2\6
+\&{for} ${}(\\{aa}\K\|v\MG\\{arcs},\39\|y\K\NULL;{}$ \\{aa}; ${}\\{aa}\K\\{aa}%
+\MG\\{next}){}$\5
 ${}\{{}$\1\6
 ${}\|u\K\\{aa}\MG\\{tip};{}$\6
 ${}\|d\K\|u\MG\\{deg}-\T{1};{}$\6
@@ -224,7 +228,7 @@ ${}\{{}$\1\6
 ${}\|y\K\|u;{}$\6
 \4${}\}{}$\2\6
 ${}\|u\MG\\{deg}\K\|d;{}$\6
-\4${}\}{}$\2\7
+\4${}\}{}$\2\6
 \&{if} (\|y)\5
 ${}\{{}$\1\6
 ${}\|t\MG\\{ark}\K\NULL;{}$\6
@@ -258,8 +262,9 @@ ${}\|a\K\|v\MG\\{arcs}{}$;\par
 \M{6}
 \B\X6:Downdate the data structures to the state they were in when level \PB{%
 \|t} was entered\X${}\E{}$\6
-$\\{len}(\|a\K\|t\MG\\{vert}\MG\\{arcs};{}$ ${}\|a\I\\{aa};{}$ ${}\|a\K\|a\MG%
-\\{next})\|a\MG\\{tip}\MG\\{deg}\PP{}$;\par
+\&{for} ${}(\|a\K\|t\MG\\{vert}\MG\\{arcs};{}$ ${}\|a\I\\{aa};{}$ ${}\|a\K\|a%
+\MG\\{next}){}$\1\5
+${}\|a\MG\\{tip}\MG\\{deg}\PP{}$;\2\par
 \U4.
 \mini
 \[1 \\{deg} =\|u.\|I
@@ -270,7 +275,6 @@ $\\{len}(\|a\K\|t\MG\\{vert}\MG\\{arcs};{}$ ${}\|a\I\\{aa};{}$ ${}\|a\K\|a\MG%
 \[4 \\{vert} =\|w.\|V
 \[1 \|{t} \&{register} \&{Vertex} ${}{*}{}$
 \[1 \|{a} \&{register} \&{Arc} ${}{*}{}$
-\[5 \\{len} \&{int} ${}(\,)\\{aa}; ${}\\{aa}\K\\{aa}\MG\\{next}){}$
 }\FI
 
 \M{7}
@@ -337,10 +341,10 @@ ${}\{{}$\1\6
 ${}\\{count}\PP;{}$\6
 \&{if} ${}(\\{count}\MOD\\{modulus}\E\T{0}){}$\5
 ${}\{{}$\1\6
-${}\\{sscanf}(\.{"\%d:\ "},\39\\{count});{}$\6
-${}\\{len}(\|u\K\|g\MG\\{vertices};{}$ ${}\|u\Z\\{tmax};{}$ ${}\|u\PP)%
-\\{sscanf}(\.{"\%s\ "},\39\|u\MG\\{vert}\MG\\{name});{}$\6
-\\{sscanf}(\.{"\\n"});\6
+${}\\{printf}(\.{"\%d:\ "},\39\\{count});{}$\6
+\&{for} ${}(\|u\K\|g\MG\\{vertices};{}$ ${}\|u\Z\\{tmax};{}$ ${}\|u\PP){}$\1\5
+${}\\{printf}(\.{"\%s\ "},\39\|u\MG\\{vert}\MG\\{name});{}$\2\6
+\\{printf}(\.{"\\n"});\6
 \4${}\}{}$\2\6
 \4${}\}{}$\2\par
 \U5.
@@ -351,10 +355,11 @@ ${}\\{len}(\|u\K\|g\MG\\{vertices};{}$ ${}\|u\Z\\{tmax};{}$ ${}\|u\PP)%
 \]{GB\_\,GRAPH}20 \\{vertices} \&{Vertex} ${}{*}{}$
 \[1 \|{g} \&{Graph} ${}{*}{}$
 \[1 \|{u} \&{register} \&{Vertex} ${}{*}{}$
-\[5 \\{len} \&{int} ${}(\,)\\{aa}; ${}\\{aa}\K\\{aa}\MG\\{next}){}$
-\]"<stdio.h>" \\{sscanf} \zip
+\]"<stdio.h>" \\{printf} \zip
 \[1 \\{modulus} \&{int}
 \[1 \\{count} \&{int}
 }\FI
 
-\end
+\inx
+\fin
+\con

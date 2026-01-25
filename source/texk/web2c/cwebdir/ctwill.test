@@ -20,8 +20,8 @@ $DIFF --strip-trailing-cr $0 $0 \
 testdir=$srcdir/cwebdir/tests
 
 # Test CTWILL by running it twice
-TEXMFCNF=$srcdir/../kpathsea CWEBINPUTS=$testdir $_ctwill ham ham || exit 1
-TEXMFCNF=$srcdir/../kpathsea CWEBINPUTS=$testdir $_ctwill ham ham || exit 2
+CWEBINPUTS=$testdir $_ctwill ham ham || exit 1
+CWEBINPUTS=$testdir $_ctwill ham ham || exit 2
 diff ham.tex $testdir/ham.tex || exit 3
 
 # Test CTWILL-REFSORT
