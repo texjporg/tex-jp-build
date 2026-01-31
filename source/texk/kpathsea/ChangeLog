@@ -1,3 +1,23 @@
+2026-01-28  Karl Berry  <karl@freefriends.org>
+
+	* getopt.h (getopt): do not declare with empty parens under C23:
+	defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+	Otherwise compilation breaks on musl systems, such as Alpine.
+	https://tug.org/pipermail/tex-k/2026-January/004247.html
+
+2026-01-25  Karl Berry  <karl@freefriends.org>
+
+	* xgetcwd.c: remove all traces of getwd, since recent GNU
+	ld gives an unconditional warning if it is used. We didn't in	
+	fact use it on any system with a non-forking getcwd, i.e.,
+	essentially all of them nowadays, but a call to it was still
+	compiled in.
+
+2026-01-21  Karl Berry  <karl@freefriends.org>
+
+	* kpsewhich.c (format_abbrs): add src as another abbreviation for
+	kpse_texsource_format, and various others to 
+
 2026-01-07  Karl Berry  <karl@freefriends.org>
 
 	* version.ac (kpse_dev): remove /dev, for TL26.
