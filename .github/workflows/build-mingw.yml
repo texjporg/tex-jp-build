@@ -164,7 +164,7 @@ jobs:
           ../../../texk/dviout-util/configure
           make
           ## link without libtool
-          echo -e "###\n### link without libtool  dvispc.exe\n###"
+          echo -e "###\n### link without libtool  dvispc.exe, chkdvifont.exe \n###"
           gcc -Wimplicit -Wreturn-type -g -O2   -o dvispc.exe dvispc.o ../../texk/kpathsea/.libs/libkpathsea.a ../../texk/ptexenc/.libs/libptexenc.a || \
             echo -e "**\n** fail to link dvispc.exe"
           gcc -Wimplicit -Wreturn-type -g -O2   -o chkdvifont.exe chkdvifont.o ../../texk/kpathsea/.libs/libkpathsea.a || \
