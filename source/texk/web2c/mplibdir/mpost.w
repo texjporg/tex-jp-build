@@ -34,10 +34,8 @@ have our customary command-line interface.
 
 @ First, here are the \CEE/ includes.
 
-@d true 1
-@d false 0
- 
 @c
+#include "mpconfig.h"
 #include <w2c/config.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,6 +106,32 @@ static char *mpost_itoa (int i) {
   }
   return mpost_xstrdup(res+idx+1);
 }
+static char *mpost_i64toa (integer64 i) {
+  char res[32] ;
+  unsigned idx = 30;
+  integer64 v = 0; 
+  
+  if (i==INT64_MIN){
+   return strdup("-9223372036854775808\0");
+  } else {
+    v = i>=0?i:-i;
+  }
+  
+  memset(res,0,32*sizeof(char));
+  while (v>=10) {
+    char d = (char)(v % 10);
+    v = v / 10;
+    res[idx--] = d  + '0';
+  }
+  res[idx--] = (char)v + '0';
+  if (i<0) {
+      res[idx--] = '-';
+  }
+  return strdup(res+idx+1);
+}
+
+
+
 
 
 @ @c
@@ -118,7 +142,7 @@ Isspace (char c)
   return (c == ' ' || c == '\t');
 }
 #endif 
-static void mpost_run_editor (MP mp, char *fname, int fline) {
+static void mpost_run_editor (MP mp, char *fname, integer64 fline) {
   char *temp, *command, *fullcmd, *edit_value;
   char c;
   boolean sdone, ddone;
@@ -162,7 +186,7 @@ static void mpost_run_editor (MP mp, char *fname, int fline) {
               fprintf (stderr,"call_edit: `%%d' appears twice in editor command\n");
               exit(EXIT_FAILURE);  
             } else {
-              char *s = mpost_itoa(fline);
+              char *s = mpost_i64toa(fline);
               char *ss = s;
               if (s != NULL) {
                 while (*s != '\0')
@@ -570,7 +594,7 @@ options->random_seed = get_random_seed();
 
 @c
 static char *mpost_find_in_output_directory(const char *s,const char *fmode)
-{
+{   (void)fmode;
     if (output_directory && !kpse_absolute_p(s, false)) {
         char *ftemp = concat3(output_directory, DIR_SEP_STRING, s);
         return ftemp;
@@ -958,9 +982,10 @@ static struct option mpost_options[]
     } else if (ARGUMENT_IS("8bit") ||
                ARGUMENT_IS("parse-first-line")) {
       /* do nothing, these are always on */
+      fprintf(stdout,"warning: %s: option -%s is always enabled\n", argv[0], mpost_options[optionid].name);
     } else if (ARGUMENT_IS("translate-file") ||
                ARGUMENT_IS("no-parse-first-line")) {
-      fprintf(stdout,"warning: %s: unimplemented option %s\n", argv[0], argv[optind]);
+      fprintf(stdout,"warning: %s: unimplemented option -%s\n", argv[0], mpost_options[optionid].name);
     } 
   } 
   options->ini_version = (int)ini_version_test;
@@ -1029,32 +1054,43 @@ fprintf(stdout,
 "  With a --dvitomp argument, MetaPost acts as DVI-to-MPX converter only.\n"
 "  Call MetaPost with --dvitomp --help for option explanations.\n\n");
 fprintf(stdout,
-"  -ini                      do not load any preload file\n"
-"  -interaction=STRING       set interaction mode (STRING=batchmode/nonstopmode/\n"
-"                            scrollmode/errorstopmode)\n"
-"  -numbersystem=STRING      set number system mode (STRING=scaled/double/binary/interval/decimal)\n"
-"  -jobname=STRING           set the job name to STRING\n"
-"  -progname=STRING          set program (and mem) name to STRING\n"
-"  -tex=TEXPROGRAM           use TEXPROGRAM for text labels\n"
-"  [-no]-file-line-error     disable/enable file:line:error style messages\n"
-"  -no-kpathsea              Do not use the kpathsea program to find files.\n"
-"                            All files have to be in the current directory\n" 
-"                            or specified via a full path.\n"
-);
-fprintf(stdout,
-"  -debug                    print debugging info and leave temporary files in place\n"
-"  -kpathsea-debug=NUMBER    set path searching debugging flags according to\n"
-"                            the bits of NUMBER\n"
-"  -mem=STRING               Use STRING for the name of the file that contains macros\n"
-"                            to be preloaded (same as &MPNAME)\n" 
-"  -recorder                 enable filename recorder\n"
+"MetaPost options:\n"  
+"  -debug                    print debugging info and leave temporary files\n"
+"                            in place\n"
+"  -mem=STRING               Use STRING for the name of the file that contains\n"
+"                            macros to be preloaded (same as &MPNAME)\n" 
+"  -numbersystem=STRING      set number system mode\n"
+"                            (STRING=scaled/double/binary/interval/decimal)\n"
 "  -restricted               be secure: disable tex, makempx and editor commands\n"
-"  -troff                    set prologues:=1 and assume TEXPROGRAM is really troff\n"
+"  -tex=TEXPROGRAM           use TEXPROGRAM for text labels\n"
+"  -troff                    set prologues:=1 and assume TEXPROGRAM is\n"
+"                            really troff\n"
 "  -T                        same as -troff\n"
 "  -s INTERNAL=\"STRING\"      set internal INTERNAL to the string value STRING\n"
 "  -s INTERNAL=NUMBER        set internal INTERNAL to the integer value NUMBER\n"
+);
+fprintf(stdout,
+"\n"
+"Common options:\n"
+"  [-no]-file-line-error     disable/enable file:line:error style messages\n"
+"  -halt-on-error            stop processing at the first error\n"
 "  -help                     display this help and exit\n"
+"  -ini                      do not load any preload file\n"
+"  -interaction=STRING       set interaction mode (STRING=batchmode/nonstopmode/\n"
+"                            scrollmode/errorstopmode)\n"
+"  -jobname=STRING           set the job name to STRING\n"
+"  -kpathsea-debug=NUMBER    set path searching debugging flags according to\n"
+"                            the bits of NUMBER\n"
+"  -no-kpathsea              Do not use the kpathsea program to find files.\n"
+"                            All files have to be in the current directory\n"
+"                            or specified via a full path.\n"
+"  -output-directory=DIR     use existing DIR as the directory\n"
+"                            to write files in\n"
+"  -progname=STRING          set program (and mem) name to STRING\n"
+"  -recorder                 enable filename recorder\n"
 "  -version                  output version information and exit\n"
+);
+fprintf(stdout,
 "\n"
 "Email bug reports to mp-implementors@@tug.org.\n"
 "\n");

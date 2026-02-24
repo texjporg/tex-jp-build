@@ -59,7 +59,8 @@ TESTS = tests/upmendex.test \
 EXTRA_DIST += $(TESTS)
 
 ## tests/upmendex.test
-EXTRA_DIST += tests/foo.idx tests/foo.ind \
+EXTRA_DIST += tests/sample.idx tests/sample.ind \
+	tests/foo.idx tests/foo.ind \
 	tests/uni.idx tests/uni.dict tests/uni.ist \
 	tests/uni1.ist tests/uni2.ist tests/uni.ind \
 	tests/tort.idx tests/tortW.idx tests/head1.ist \
@@ -67,8 +68,8 @@ EXTRA_DIST += tests/foo.idx tests/foo.ind \
 DISTCLEANFILES = foo.* uni.* tort*.*
 ## tests/pprec.test
 EXTRA_DIST += tests/range.idx \
-	tests/range1.ist tests/range2.ist tests/range3.ist \
-	tests/range1.ind tests/range2.ind tests/range3.ind \
+	tests/range1.ist tests/range2.ist tests/range3.ist tests/range4.ist \
+	tests/range1.ind tests/range2.ind tests/range3.ind tests/range4.ind \
 	tests/pprec0.ist tests/pprec1.ist tests/pprec2.ist tests/pprec3.ist \
 	tests/pprec4.ist tests/pprec5.ist tests/pprec6.ist tests/pprec7.ist \
 	tests/pprecA.idx tests/pprecA-0.ind tests/pprecA-1.ind tests/pprecA-2.ind \

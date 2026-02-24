@@ -1,3 +1,46 @@
+2026-01-24  Andreas Scherer  <https://ascherer.github.io>
+
+	* texk/web2c/cwebdir/texinputs/dcwebmac.tex,
+	* texk/web2c/cwebdir/texinputs/fcwebmac.tex,
+	* texk/web2c/cwebdir/texinputs/icwebmac.tex: Fix internal counter.
+
+2026-01-23  Andreas Scherer  <https://ascherer.github.io>
+
+	* examples/extex.w,
+	* examples/treeprint.w,
+	* examples/wc.w,
+	* examples/wmerge.w,
+	* examples/wordtest.w: Modernize classic CWEB examples.
+
+2025-12-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* common.c,
+	* ctangle.c,
+	* ctangle.w: Avoid spurious spaces in macro output.
+
+2025-07-27  Andreas Scherer  <https://ascherer.github.io>
+
+	* Makefile,
+	* comm-{mac,mini,ql,w2c}.ch,
+	* comm-w2c.h,
+	* common.h,
+	* common.w,
+	* ctang-{bs,pc,ql,vms,w2c,w32}.ch,
+	* ctangle.c,
+	* ctangle.w,
+	* ctwill-w2c.ch,
+	* cweav-{bs,pc,ql,vms,w2c,w32}.ch,
+	* cweave.w,
+	* cwebmac.tex,
+	* cwebman-w2c.ch,
+	* cwebman.tex,
+	* po/cweb.pot,
+	* po/de/cweb-tl.po,
+	* po/de/cweb.po,
+	* po/it/cweb.po,
+	* prod-{cweave,twill}.w,
+	* prod.w: CWEB 4.12.2 release.
+
 2025-04-30  Andreas Scherer  <https://ascherer.github.io>
 
 	* comm-w2c.ch,

@@ -290,6 +290,7 @@ int pnumconv(char *page, int attr)
 {
 	int i,cc=0;
 
+	if (attr<0) return 0;  /* inappropriate page type */
 	switch (page_precedence[attr]) {
 	case 'a':
 		cc=page[0]-'a'+1;
@@ -399,6 +400,7 @@ int pnumconv(char *page, int attr)
 			case 'c':
 			case 'C':
 				if (i==0) cc=100;
+				else {
 					switch (page[i-1]) {
 					case 'x':
 					case 'X':
@@ -417,6 +419,7 @@ int pnumconv(char *page, int attr)
 					default:
 						break;
 					}
+				}
 				break;
 
 			case 'd':
@@ -443,6 +446,7 @@ int pnumconv(char *page, int attr)
 			case 'm':
 			case 'M':
 				if (i==0) cc=1000;
+				else {
 					switch (page[i-1]) {
 					case 'c':
 					case 'C':
@@ -457,6 +461,7 @@ int pnumconv(char *page, int attr)
 					default:
 						break;
 					}
+				}
 				break;
 
 			default:

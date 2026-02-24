@@ -1,6 +1,11 @@
 #!/bin/sh -l
+# $Id$
+# (-l above is to make this a login shell.)
+# Public domain. Originally written by Norbert Preining.
+# 
+# The build script that is run by ../workflows/main.yml on github.
 
-set -e
+set -ex
 
 if [ "x$2" = "x" ]
 then
@@ -9,11 +14,11 @@ then
 fi
 
 arch="$1"
-echo "Building TL for arch = $arch"
+echo "$0: Building TL for arch = $arch"
 shift
 
 buildsys=$1
-echo "Building on $buildsys"
+echo "$0: Building on $buildsys"
 shift
 
 do_prepare=1
@@ -37,12 +42,6 @@ then
        yum install -y gcc-toolset-11 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
        . /opt/rh/gcc-toolset-11/enable
        ;;
-     centos)
-       yum update -y
-       yum install -y centos-release-scl
-       yum install -y devtoolset-9 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
-       . /opt/rh/devtoolset-9/enable
-       ;;
      alpine)
        apk update
        apk add --no-progress bash gcc g++ make perl fontconfig-dev libx11-dev libxmu-dev libxaw-dev
@@ -61,7 +60,7 @@ then
        /opt/csw/bin/pkgutil -y -i autoconf automake gcc5core libtool
        ;;
      *)
-       echo "Unsupported build system: $buildsys" >&2
+       echo "$0: Unsupported build system: $buildsys" >&2
        exit 1
        ;;
   esac
@@ -92,7 +91,7 @@ touch ./texk/dvipng/dvipng-src/dvipng.1
 
 # default settings
 TL_MAKE_FLAGS="-j 2"
-BUILDARGS=""
+BUILDARGS=
 
 # special cases
 case "$arch" in
@@ -111,6 +110,19 @@ case "$arch" in
     then
       export CC="gcc -m32"
       export CXX="g++ -m32"
+      # these commands make xdvipsk work:
+      #crle -c /var/ld/ld.config -l /opt/csw/lib:/lib:/usr/lib 
+      #ln -s /opt/csw/lib/i386/libstdc++.so.6 /opt/csw/lib/i386/libstdc++.so
+      # 
+      # But then the teckit test fails:
+      # https://productionresultssa8.blob.core.windows.net/actions-results/82cefd33-f0a7-4894-865c-1bae42b5ac50/workflow-job-run-bbd5b8bc-baf2-598b-9fc7-b95d5d1633d3/logs/job/job-logs.txt?rsct=text%2Fplain&se=2026-02-11T15%3A18%3A24Z&sig=csPwLvJqdKnEHfHtFtcn6mBU5WUgaULhUDZdmlknpuM%3D&ske=2026-02-11T18%3A54%3A36Z&skoid=ca7593d4-ee42-46cd-af88-8b886a2f84eb&sks=b&skt=2026-02-11T14%3A54%3A36Z&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skv=2025-11-05&sp=r&spr=https&sr=b&st=2026-02-11T15%3A08%3A19Z&sv=2025-11-05
+      # 2026-02-11T15:08:00.6384675Z + ./teckit_compile ../../../libs/teckit/tex-text.map -o xtex-text.tec
+      # 2026-02-11T15:08:00.6385253Z ld.so.1: teckit_compile: fatal: libstdc++.so.6: version 'GLIBCXX_3.4.29' not found (required by file teckit_compile)
+      # 2026-02-11T15:08:00.6385876Z ld.so.1: teckit_compile: fatal: teckit_compile: mismatched ELF symbol versioning
+      # 2026-02-11T15:08:00.6386286Z ../../../libs/teckit/teckit.test: line 7: 5876: Killed
+      # 
+      # So instead, let's disable xdvipsk.
+      BUILDARGS=--disable-xdvipsk
     else
       export CC="gcc -m64"
       export CXX="g++ -m64"
@@ -120,7 +132,7 @@ case "$arch" in
     export TL_MAKE=gmake
     export CC=gcc 
     export CXX=g++
-    export CFLAGS=-D_NETBSD_SOURCE
+    export CFLAGS='-D_NETBSD_SOURCE'
     export CXXFLAGS='-D_NETBSD_SOURCE -std=c++17'
     ;;
   x86_64-linux|i386-linux|x86_64-linuxmusl)
@@ -129,7 +141,32 @@ case "$arch" in
 esac
 export TL_MAKE_FLAGS
 
+# If we explicitly set CFLAGS or CXXFLAGS above, it's up to us to enable
+# optimization, since we are overriding what Autoconf does.
+test -n "$CFLAGS" && CFLAGS="$CFLAGS -O2"
+test -n "$CXXFLAGS" && CXXFLAGS="$CXXFLAGS -O2"
+
+echo "$0: variables set:"
+echo "  BUILDARGS=$BUILDARGS"
+echo "  CC=$CC"
+echo "  CXX=$CXX"
+echo "  CFLAGS=$CFLAGS"
+echo "  CXXFLAGS=$CXXFLAGS"
+echo "  TL_MAKE=$TL_MAKE"
+echo "  TL_MAKE_FLAGS=$TL_MAKE_FLAGS"
+echo "$0: (end variables)."
+
 ./Build -C $BUILDARGS
+
+# Let's make sure that we compiled with optimization. A normal
+# compilation line in the log will look like
+# libtool: compile: gcc ...args... -O2 ...more args...
+#
+build_log=Work/build.log
+if grep 'compile:.* -O' $build_log; then :; else
+  echo "$0: aborting, no optimization (compile:* -O) in $build_log" >&2
+  exit 1
+fi
 
 mv inst/bin/* $arch
 

@@ -1,3 +1,32 @@
+2026-02-20  Karl Berry  <karl@freefriends.org>
+
+	* kpse-harfbuzz-flags.m4 (KPSE_HARFBUZZ_SYSTEM_FLAGS):
+	When using --with-system-harfbuzz,
+	ask pkg-config for cflags/libs for harfbuzz-subset,
+	not harfbuzz, since luatex and hitex use subset functions.
+	Report and fix from Dan Ports,
+	https://tug.org/pipermail/tlbuild/2026q1/005946.html
+
+2026-01-25  Karl Berry  <karl@freefriends.org>
+
+	* kpse-common.m4 (KPSE_COMMON): do not check for getwd,
+	since recent GNU ld gives an unconditional warning if it is
+	used. (We didn't in fact use it on any normal system.)
+
+2026-01-21  Karl Berry  <karl@freefriends.org>
+
+	* kpse-pkgs.m4 (KPSE_TEXK_PKGS): add xdvipsk.
+
+2025-11-30  Karl Berry  <karl@freefriends.org>
+
+	* kpse-common.m4 (KPSE_MSG_WARN): explain termination due to
+	--disable-missing.
+
+2025-07-22  Karl Berry  <karl@freefriends.org>
+
+	* kpse-setup.m4: add tldbg debugging lines to help understand
+	when the recursion happens and when it's skipped.
+
 2025-01-15  J. Neusch\"afer  <j.ne@posteo.net>
 
 	configure support for system luajit library.

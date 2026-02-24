@@ -24,10 +24,11 @@
 # done only when a release is tagged, not from the
 # commit-triggered builds here.
 
-# only build on push to trunk, not branch.
+# only build manually, since asy updates are rare.
 on:
   workflow_dispatch:
 
+# not automatically on push.
 # push:
 #   branches:
 #     - trunk
@@ -51,13 +52,13 @@ jobs:
           - ${{ startsWith(github.ref, 'refs/tags/') }}
         include:
           - tl_name: i386-linux
-            image: i386/debian:buster
+            image: i386/debian:bullseye
             platform: 386
             ci_build: true
             use_qemu: false
             buildsys: ubuntu
           - tl_name: x86_64-linux
-            image: debian:buster
+            image: debian:bullseye
             platform: amd64
             ci_build: true
             use_qemu: false

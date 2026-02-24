@@ -3,7 +3,7 @@ tlbuild.texi.
 
 This file documents the TeX Live build system and more.
 
-Copyright (C) 2016-2025 Karl Berry.
+Copyright (C) 2016-2026 Karl Berry.
 Copyright (C) 2013-2015 Karl Berry & Peter Breitenlohner.
 
    Permission is granted to make and distribute verbatim copies of this
@@ -33,7 +33,7 @@ END-INFO-DIR-ENTRY
 
 File: tlbuild.info,  Node: Top,  Next: Introduction,  Up: (dir)
 
-Building TeX Live (2025)
+Building TeX Live (2026)
 ************************
 
 For an overview of this manual, *note Introduction::.
@@ -59,7 +59,7 @@ File: tlbuild.info,  Node: Introduction,  Next: Overview of build system,  Prev:
 1 Introduction
 **************
 
-This manual (dated January 2025) corresponds to the TeX Live 2025
+This manual (dated January 2026) corresponds to the TeX Live 2026
 release.
 
    This manual is aimed at system installers and programmers, and
@@ -215,8 +215,8 @@ expect:
      'configure.ac', 'Makefile.am', or their fragments) requires GNU M4,
      GNU Autoconf, GNU Automake, and GNU Libtool to update the generated
      files.  Furthermore, to reliably reproduce the build files, the
-     original GNU releases of these tools must be used, not any distro
-     packaging of them.  *Note Build system tools::, for more
+     latest original GNU releases of these tools must be used, not any
+     distro packaging of them.  *Note Build system tools::, for more
      discussion.
 
    If you haven't modified any source files, and infrastructure tools
@@ -490,7 +490,7 @@ To run only the tests for a given engine, say 'hitex':
      make -C $ww check SUBDIRS=. TESTS='$(hitex_tests)'
 
 where '$ww' is the web2c build directory, that is,
-'ww=/wherever/Build/source/Work/texk/web2c'.
+'ww=/.../Build/source/Work/texk/web2c'.
 
    It's also possible to run individual tests the same way, using the
 test name exactly as specified in the '.am' file:
@@ -506,8 +506,8 @@ will descend into every directory.
 lines, you can add the (GNU) make option '--no-print-dir'.
 
    You may find it useful to put lengthy incantations like this into a
-trivial shell script with a short name (say, 'hitst').  Then you just
-run 'hitst' and edit the file when necessary to change things around.
+trivial shell script with a short name (say, 'hitch').  Then you just
+run 'hitch' and edit the file when necessary to change the options.
 
 
 File: tlbuild.info,  Node: Cross compilation,  Prev: Build one engine,  Up: Building
@@ -635,16 +635,26 @@ File: tlbuild.info,  Node: Installing,  Next: Layout and infrastructure,  Prev: 
 
 This section discusses the results of 'make install' in the source tree.
 
-   The main consideration is that 'make install' is not enough to make a
-usable TeX installation.  Beyond the compiled binaries, (thousands of)
-support files are needed; just as a first example, 'plain.tex' is not in
-the source tree.
+   The main consideration is that 'make install' is nothing like enough
+to make a usable TeX installation.  It creates the compiled binaries,
+but (thousands of) support files are also needed; just as a first
+example, 'plain.tex' is not installed.  All the support files are
+maintained completely independently and are not present in the TL
+'Build/source' tree of sources to be compiled.
 
-   These support files are maintained completely independently and are
-not present in the TL source tree.  The best basis for dealing with them
-is the TeX Live (plain text) database in 'Master/tlpkg/texlive.tlpdb',
-and/or the TeX Live installer, 'install-tl'.  More information is under
-'Master/tlpkg' and at <https://tug.org/texlive/distro.html> and
+   Thus, perhaps the simplest way to get a running TeX system after
+building new binaries from these sources is to do a normal installation
+of TeX Live, and then use the new binaries as a so-called "custom"
+platform (<https://tug.org/texlive/custom-bin.html>).
+
+   Alternatively, the best general basis for dealing with them, for
+example if you're trying to figure out how to support TeX in a general
+distro, is the TeX Live (plain text) database in
+'Master/tlpkg/texlive.tlpdb', and/or the TeX Live installer,
+'install-tl'.
+
+   More information is under 'Master/tlpkg' and at
+<https://tug.org/texlive/distro.html> and
 <https://tug.org/texlive/build.html#deploy>.
 
 * Menu:
@@ -859,11 +869,11 @@ many extra hassles, so don't do that, tempting as it may be.
    Currently the versions we use are:
 
      autoconf (GNU Autoconf) 2.72
-     automake (GNU automake) 1.17
+     automake (GNU automake) 1.18.1
      bison (GNU Bison) 3.8.2
      flex 2.6.0
      ltmain.sh (GNU libtool) 2.5.4
-     m4 (GNU M4) 1.4.19
+     m4 (GNU M4) 1.4.21
      makeinfo (GNU texinfo) 7.2
 
    These versions should be used to update the generated files (e.g.,
@@ -1133,7 +1143,7 @@ due to the lack of symbolic links.
      scripts" (*note Linked scripts::).
 
  -- Macro: KPSE_WIN32_CALL
-     Call 'KPSE_COND_WIN32' and check if the file
+     Call 'KPSE_COND_WIN32' and check whether the file
      'texk/texlive/windows_wrapper/callexe.c' exists; if it does, create
      a symlink in the build tree.  Compiling 'callexe.c' with
      '-DEXEPROG='"FOO.exe"'' and installing 'callexe.exe' as 'BAR.exe'
@@ -1312,7 +1322,7 @@ modifications documented in 'TLpatches/*', and a wrapper 'configure.ac'
 and 'Makefile.am' that descends into 'xindy-src'.
 
    The 'xindy' build requires a 'make' that supports a 'VPATH' build,
-can handle all targets, and does not refer to '${top_srcdir}' or
+can handle all needed targets, and does not refer to '${top_srcdir}' or
 '${top_builddir}'.  The fragment 'xindy/ac/withenable.ac' contains
 
      KPSE_ENABLE_PROG([xindy], , [disable])
@@ -1373,12 +1383,22 @@ File: tlbuild.info,  Node: Extending TeX Live,  Prev: Program modules,  Up: Layo
 This section outlines the basic process for adding new packages to the
 TL build system.
 
-   In any case, a new package directory 'foo' should contain the
-original sources, modified only with changes necessary for TL, in
-'foo/foo-src'.  The changes should be documented in 'foo/TLpatches/*',
-and also be submitted upstream whenever reasonable.  In addition, 'foo/'
-will need the usual Automake build-related files ('configure.ac',
-'Makefile.am', etc.  Please maintain 'foo/ChangeLog' for all TL changes.
+   A new package directory 'foo' should be placed under
+'Build/source/texk/' if it uses Kpathsea (or another TeX-specific
+library), or under 'Build/source/utils' if it does not.
+
+   The new directory should normally have the original sources, modified
+only with changes necessary for TL, in a subdirectory 'foo/foo-src'.
+The changes should be documented in 'foo/TLpatches/*', and also be
+submitted upstream whenever reasonable.  In addition, 'foo/' will need
+the usual Automake build-related files ('configure.ac', 'Makefile.am',
+etc.  Please maintain 'foo/ChangeLog' for all TL changes.
+
+   It is also possible to add a package which is configured with
+Autoconf (or another 'make'-based system) and not Automake.  The package
+must still support the standard 'make' variables and targets, and
+'VPATH' builds (*note (automake)VPATH Builds::).  For Autoconf-only
+packages, it is probably not sensible to use a 'foo-src' subdirectory.
 
 * Menu:
 
@@ -1398,11 +1418,11 @@ TeX-specific libraries and is included by adding its name 'PROG' to the
 M4 list 'kpse_texk_pkgs' defined in 'm4/kpse-pkgs.m4'.
 
    A generic program module in a subdirectory 'utils/PROG' must not use
-the TeX-specific libraries and is included by adding its name 'PROG' to
-the M4 list 'kpse_utils_pkgs' in 'm4/kpse-pkgs.m4'.
+the TeX-specific libraries, notably Kpathsea, and is included by adding
+its name 'PROG' to the M4 list 'kpse_utils_pkgs' in 'm4/kpse-pkgs.m4'.
 
    In either case, the subdirectory 'texk/PROG' or 'utils/PROG' must
-provide a fragment 'ac/withenable.ac' that contains the M4 macro
+include a file 'ac/withenable.ac' which contains a call to the M4 macro
 'KPSE_ENABLE_PROG' defined in 'm4/kpse-setup.m4' with 'PROG' as the
 mandatory first argument and three optional arguments:
 
@@ -1897,8 +1917,8 @@ Include various types of non-X window support for Metafont (EPSF output,
 
 '--enable-tex-synctex', '--disable-etex-synctex', ...
 Build the TeX engines with or without 'SyncTeX' support; ignored for a
-native TeX Live build.  Defaults are defined in
-'texk/web2c/ac/web2c.ac'.
+native TeX Live build.  Defaults are defined in 'texk/web2c/ac/web2c.ac'
+(*note Autoconf macros::).
 
 '--disable-synctex'
 Do not build the 'SyncTeX' library and tool.
@@ -3110,7 +3130,7 @@ This script and its documentation were written for the TeX Live
 distribution (<https://tug.org/texlive>) and both are licensed under the
 GNU General Public License Version 2 or later.
 
-   $Id: install-tl 73024 2024-12-03 17:12:38Z karl $
+   $Id: install-tl 75865 2025-07-22 20:56:23Z karl $
 
 
 File: tlbuild.info,  Node: tlmgr,  Next: Index,  Prev: install-tl,  Up: Top
@@ -3377,8 +3397,10 @@ name and its value.
 *--no-execute-actions*
 
      Suppress the execution of the execute actions as defined in the
-     tlpsrc files.  Documented only for completeness, as this is only
-     useful in debugging.
+     tlpsrc files.  Unless you are going to do the postprocessing
+     yourself (as, for example, 'install-tl' does), this shouldn't be
+     specified.  Otherwise, format files and the filename database will
+     become stale, among other problems.
 
 *--package-logfile* _file_
 
@@ -4206,6 +4228,10 @@ that program.
    With a program given as the first argument and a paper size as the
 last argument (e.g., 'tlmgr dvips paper a4'), set the default for that
 program to that paper size.
+
+   If either 'pdftex' or 'context' is one of the arguments, whether
+implicitly or explicitly, existing formats are rebuilt (i.e., 'fmtutil
+--refresh' is called), unless '--no-execute-actions' is specified.
 
    With a program given as the first argument and '--list' given as the
 last argument (e.g., 'tlmgr dvips paper --list'), shows all valid paper
@@ -5759,7 +5785,7 @@ This script and its documentation were written for the TeX Live
 distribution (<https://tug.org/texlive>) and both are licensed under the
 GNU General Public License Version 2 or later.
 
-   $Id: tlmgr.pl 73493 2025-01-17 22:28:29Z karl $
+   $Id: tlmgr.pl 77655 2026-02-07 15:38:21Z karl $
 
 
 File: tlbuild.info,  Node: Index,  Prev: tlmgr,  Up: Top
@@ -5906,6 +5932,7 @@ Index
 * Autoconf:                              Overview of build system.
                                                               (line   6)
 * autoconf macros:                       Autoconf macros.     (line   6)
+* Autoconf, new package using only:      Extending TeX Live.  (line  20)
 * Automake:                              Overview of build system.
                                                               (line   6)
 * autoreconf, for new program:           Adding a new program module.
@@ -6224,6 +6251,7 @@ Index
 * motif:                                 Configure options for texk/xdvik.
                                                               (line   9)
 * native cross compilation:              Cross compilation.   (line  10)
+* new package using Autoconf only:       Extending TeX Live.  (line  20)
 * NEWPROG-SRC, original source subdirectory: Adding a new program module.
                                                               (line  33)
 * OBJCXX=OBJC-COMPILER:                  Build one package.   (line  77)
@@ -6375,428 +6403,428 @@ Node: Top1208
 Node: Introduction2118
 Node: Overview of build system3951
 Node: Prerequisites6002
-Ref: Prerequisites-Footnote-19001
-Node: Building9304
-Node: Build iteration10652
-Node: Build in parallel11696
-Node: Build distribution12447
-Node: Build one package13275
-Node: Build one engine17988
+Ref: Prerequisites-Footnote-19008
+Node: Building9311
+Node: Build iteration10659
+Node: Build in parallel11703
+Node: Build distribution12454
+Node: Build one package13282
+Node: Build one engine17995
 Node: Cross compilation20600
 Node: Cross configuring21879
 Node: Cross problems23556
 Node: Installing25218
-Node: Installation directories26286
-Node: Linked scripts28104
-Node: Distro builds30988
-Node: Layout and infrastructure33364
-Node: Build system tools34195
-Node: Top-level directories36410
-Node: Autoconf macros38646
-Node: General setup macros39408
-Node: Macros for programs40283
-Node: Macros for compilers41084
-Node: Macros for libraries42548
-Node: Macros for library and header flags42974
-Node: Macros for Windows44885
-Node: Library modules46480
-Node: png library46969
-Node: zlib library49317
-Node: freetype library49832
-Node: kpathsea library50528
-Node: Program modules51910
-Node: t1utils package52338
-Node: xindy package52883
-Node: xdvik package53999
-Node: asymptote55058
-Node: Extending TeX Live55562
-Node: Adding a new program module56369
-Node: Adding a new engine61132
-Node: Adding a new generic library module62917
-Node: Adding a new TeX-specific library module65138
-Node: Configure options65836
-Node: Global configure options67217
-Node: --disable-native-texlive-build67759
-Node: --prefix --bindir ...68721
-Node: --disable-largefile69261
-Node: --disable-missing69803
-Node: --enable-compiler-warnings=LEVEL70204
-Node: --enable-cxx-runtime-hack70860
-Node: --enable-maintainer-mode71280
-Node: --enable-multiplatform71809
-Node: --enable-shared72382
-Node: --enable-silent-rules72753
-Node: --without-ln-s73205
-Node: --without-x73552
-Node: Program-specific configure options73740
-Node: --enable-PROG --disable-PROG74383
-Node: --disable-all-pkgs74656
-Node: Configure options for texk/web2c75439
-Node: Configure options for texk/bibtex-x77977
-Node: Configure options for texk/dvipdfm-x78520
-Node: Configure options for texk/dvisvgm79296
-Node: Configure options for texk/texlive80177
-Node: Configure options for texk/xdvik80598
-Node: Configure options for utils/xindy81219
-Node: Library-specific configure options82109
-Node: Configure options for kpathsea83070
-Node: Variables for configure83774
-Node: Coding conventions85200
-Node: Declarations and definitions85915
-Node: Const88089
-Node: Continuous integration89953
-Node: Transfer from Subversion to Github90617
-Node: Automatic update of the Git mirror92779
-Node: CI testing on Travis-CI93361
-Node: Releases on Github94070
-Node: install-tl94510
-Node: install-tl NAME94954
-Node: install-tl SYNOPSIS95134
-Node: install-tl DESCRIPTION95372
-Node: install-tl REFERENCES96569
-Node: install-tl EXAMPLES97178
-Ref: install-tl install-tl --paper=letter97629
-Ref: install-tl install-tl --scheme _scheme_97765
-Ref: install-tl install-tl --no-interaction97920
-Ref: install-tl install-tl --profile _texlive.profile_98072
-Node: install-tl OPTIONS98340
-Ref: install-tl *-gui* [[=]_module_]98837
-Ref: install-tl *-no-gui*98848
-Ref: install-tl text99056
-Ref: install-tl tcl (or "perltk" or "wizard" or "expert" or nothing)99241
-Ref: install-tl *-lang* _llcode_99873
-Ref: install-tl *-repository* _url|path_100497
-Ref: install-tl *-select-repository*101391
-Ref: install-tl *-all-options*101809
-Ref: install-tl *-custom-bin* _path_102064
-Ref: install-tl *-debug-fakenet*102896
-Ref: install-tl *-debug-setup-vars*103110
-Ref: install-tl *-debug-translation*103258
-Ref: install-tl *-force-platform* _platform_103534
-Ref: install-tl *-help*, *--help*, *-?*103792
-Ref: install-tl *-in-place*104205
-Ref: install-tl *-init-from-profile* _profile_file_104750
-Ref: install-tl *-logfile* _file_105019
-Ref: install-tl *-no-cls*105370
-Ref: install-tl *-no-continue*105497
-Ref: install-tl *-no-doc-install*106068
-Ref: install-tl *-no-src-install*106087
-Ref: install-tl *-no-installation*106878
-Ref: install-tl *-no-interaction*107029
-Ref: install-tl *-no-persistent-downloads*107286
-Ref: install-tl *-persistent-downloads*107311
-Ref: install-tl *-no-verify-downloads*107918
-Ref: install-tl *-non-admin*108281
-Ref: install-tl *-paper* a4*|*letter108387
-Ref: install-tl *-portable*108583
-Ref: install-tl *-print-platform*108720
-Ref: install-tl *-profile* _profile_file_108918
-Ref: install-tl *-q*109139
-Ref: install-tl *-scheme* _scheme_109201
-Ref: install-tl *-texdir* _dir_109602
-Ref: install-tl *-texuserdir* _dir_110207
-Ref: install-tl *-texmflocal* _dir_110496
-Ref: install-tl *-texmfhome* _dir_111121
-Ref: install-tl *-texmfsysconfig* _dir_111430
-Ref: install-tl *-texmfsysvar* _dir_111452
-Ref: install-tl *-texmfconfig* _dir_111547
-Ref: install-tl *-texmfvar* _dir_111566
-Ref: install-tl *-v*111774
-Ref: install-tl *-version*, *--version*111930
-Node: install-tl PROFILES112064
-Ref: install-tl instopt_adjustpath (default 0 on Unix, 1 on Windows)115080
-Ref: install-tl instopt_adjustrepo (default 1)115156
-Ref: install-tl instopt_letter (default 0)115293
-Ref: install-tl instopt_portable (default 0)115384
-Ref: install-tl instopt_write18_restricted (default 1)115923
-Node: install-tl ENVIRONMENT VARIABLES117262
-Ref: install-tl NOPERLDOC117625
-Ref: install-tl TEXLIVE_DOWNLOADER117710
-Ref: install-tl TL_DOWNLOAD_PROGRAM117733
-Ref: install-tl TL_DOWNLOAD_ARGS117753
-Ref: install-tl TEXLIVE_PREFER_OWN117775
-Ref: install-tl TEXLIVE_INSTALL_ENV_NOCHECK118000
-Ref: install-tl TEXLIVE_INSTALL_NO_CONTEXT_CACHE118202
-Ref: install-tl TEXLIVE_INSTALL_NO_DISKCHECK118314
-Ref: install-tl TEXLIVE_INSTALL_NO_RESUME118730
-Ref: install-tl TEXLIVE_INSTALL_NO_WELCOME118882
-Ref: install-tl TEXLIVE_INSTALL_PAPER119003
-Ref: install-tl TEXLIVE_INSTALL_PREFIX119149
-Ref: install-tl TEXLIVE_INSTALL_TEXMFCONFIG119180
-Ref: install-tl TEXLIVE_INSTALL_TEXMFVAR119208
-Ref: install-tl TEXLIVE_INSTALL_TEXMFHOME119237
-Ref: install-tl TEXLIVE_INSTALL_TEXMFLOCAL119267
-Ref: install-tl TEXLIVE_INSTALL_TEXMFSYSCONFIG119301
-Ref: install-tl TEXLIVE_INSTALL_TEXMFSYSVAR119332
-Node: install-tl DIRECTORY TREES119770
-Node: install-tl BUGS122354
-Node: install-tl AUTHORS AND COPYRIGHT123234
-Node: tlmgr123632
-Node: tlmgr NAME124117
-Node: tlmgr SYNOPSIS124261
-Node: tlmgr DESCRIPTION124463
-Node: tlmgr EXAMPLES125574
-Ref: tlmgr tlmgr option repository ctan125837
-Ref: tlmgr tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet125910
-Ref: tlmgr tlmgr update --list126515
-Ref: tlmgr tlmgr update --all126608
-Ref: tlmgr tlmgr info _what_126765
-Ref: tlmgr tlmgr bug _what_126943
-Node: tlmgr OPTIONS127138
-Ref: tlmgr *--repository* _url|path_127671
-Ref: tlmgr /some/local/dir128857
-Ref: tlmgr file:/some/local/dir128886
-Ref: tlmgr ctan128959
-Ref: tlmgr https://mirror.ctan.org/systems/texlive/tlnet129013
-Ref: tlmgr http://server/path/to/tlnet129354
-Ref: tlmgr https://server/path/to/tlnet129735
-Ref: tlmgr ftp://server/path/to/tlnet130203
-Ref: tlmgr user@machine:/path/to/tlnet130335
-Ref: tlmgr scp://user@machine/path/to/tlnet130376
-Ref: tlmgr ssh://user@machine/path/to/tlnet130417
-Ref: tlmgr *--gui* [_action_]130811
-Ref: tlmgr *--gui-lang* _llcode_131625
-Ref: tlmgr *--command-logfile* _file_132367
-Ref: tlmgr *--debug-translation*132634
-Ref: tlmgr *--machine-readable*132838
-Ref: tlmgr *--no-execute-actions*133107
-Ref: tlmgr *--package-logfile* _file_133301
-Ref: tlmgr *--pause*133556
-Ref: tlmgr *--persistent-downloads*133712
-Ref: tlmgr *--no-persistent-downloads*133741
-Ref: tlmgr *--pin-file*134236
-Ref: tlmgr *--usermode*134455
-Ref: tlmgr *--usertree* _dir_134576
-Ref: tlmgr *--verify-repo=[none|main|all]*134703
-Node: tlmgr ACTIONS135602
-Node: tlmgr help136495
-Node: tlmgr version136972
-Node: tlmgr backup137235
-Ref: tlmgr *backup [_option_...] --all*137412
-Ref: tlmgr *backup [_option_...] _pkg_...*137445
-Ref: tlmgr *--backupdir* _directory_138512
-Ref: tlmgr *--all*138730
-Ref: tlmgr *--clean*[=_N_]138983
-Ref: tlmgr *--dry-run*139311
-Node: tlmgr bug [_search-string_]139441
-Node: tlmgr candidates _pkg_140028
-Node: tlmgr check [_option_...] [depends|executes|files|runfiles|texmfdbs|all]140398
-Ref: tlmgr *depends*140912
-Ref: tlmgr *executes*141254
-Ref: tlmgr *files*141369
-Ref: tlmgr *runfiles*141505
-Ref: tlmgr *texmfdbs*141642
-Ref: tlmgr - all items in TEXMFDBS have the !! prefix.141872
-Ref: tlmgr - all items in TEXMFBDS have an ls-R file (if they exist at all).141948
-Ref: tlmgr - all items in TEXMF with !! are listed in TEXMFDBS.142013
-Ref: tlmgr - all items in TEXMF with an ls-R file are listed in TEXMFDBS.142088
-Ref: tlmgr *--use-svn*142114
-Node: tlmgr conf142255
-Ref: tlmgr *conf [texmf|tlmgr|updmap [--conffile _file_] [--delete] [_key_ [_value_]]]*142545
-Ref: tlmgr *conf auxtrees [--conffile _file_] [show|add|remove] [_value_]*142610
-Node: tlmgr dump-tlpdb [_option_...] [--json]145026
-Ref: tlmgr *--local*145462
-Ref: tlmgr *--remote*145502
-Ref: tlmgr *--json*145541
-Node: tlmgr generate146113
-Ref: tlmgr *generate [_option_...] language*146309
-Ref: tlmgr *generate [_option_...] language.dat*146348
-Ref: tlmgr *generate [_option_...] language.def*146387
-Ref: tlmgr *generate [_option_...] language.dat.lua*146430
-Ref: tlmgr *--dest* _output_file_148760
-Ref: tlmgr *--localcfg* _local_conf_file_149337
-Ref: tlmgr *--rebuild-sys*149461
-Node: tlmgr gui150276
-Node: tlmgr info150456
-Ref: tlmgr *info [_option_...] _pkg_...*150618
-Ref: tlmgr *info [_option_...] collections*150652
-Ref: tlmgr *info [_option_...] schemes*150682
-Ref: tlmgr *--list*152213
-Ref: tlmgr *--only-files*152524
-Ref: tlmgr *--only-installed*152765
-Ref: tlmgr *--only-remote*152954
-Ref: tlmgr *--data item1,item2,...*153259
-Ref: tlmgr *--json* 1154632
-Node: tlmgr init-usertree155010
-Node: tlmgr install [_option_...] _pkg_...155391
-Ref: tlmgr *--dry-run* 1155900
-Ref: tlmgr *--file*156018
-Ref: tlmgr *--force*156241
-Ref: tlmgr *--no-depends*156462
-Ref: tlmgr *--no-depends-at-all*156622
-Ref: tlmgr *--reinstall*157023
-Ref: tlmgr *--with-doc*157402
-Ref: tlmgr *--with-src*157416
-Node: tlmgr key158144
-Ref: tlmgr *key list*158302
-Ref: tlmgr *key add _file_*158320
-Ref: tlmgr *key remove _keyid_*158342
-Node: tlmgr list158936
-Node: tlmgr option159098
-Ref: tlmgr *option [--json] [show]*159254
-Ref: tlmgr *option [--json] showall|help*159286
-Ref: tlmgr *option _key_ [_value_]*159312
-Node: tlmgr paper163889
-Ref: tlmgr *paper [a4|letter]*164038
-Ref: tlmgr *<[xdvi|pdftex|dvips|dvipdfmx|context|psutils] paper [_papersize_|--list]*>164115
-Ref: tlmgr *paper --json*164131
-Node: tlmgr path165346
-Ref: tlmgr *path [--windowsmode=user|admin] add*165512
-Ref: tlmgr *path [--windowsmode=user|admin] remove*165554
-Node: tlmgr pinning167069
-Ref: tlmgr pinning show167310
-Ref: tlmgr pinning add _repo_ _pkgglob_...167383
-Ref: tlmgr pinning remove _repo_ _pkgglob_...167502
-Ref: tlmgr pinning remove _repo_ --all167655
-Node: tlmgr platform167709
-Ref: tlmgr *platform list|add|remove _platform_...*167895
-Ref: tlmgr *platform set _platform_*167922
-Ref: tlmgr *platform set auto*167943
-Ref: tlmgr *--dry-run* 2168821
-Node: tlmgr postaction168940
-Ref: tlmgr *postaction [_option_...] install [shortcut|fileassoc|script] [_pkg_...]*169170
-Ref: tlmgr *postaction [_option_...] remove [shortcut|fileassoc|script] [_pkg_...]*169244
-Ref: tlmgr *--windowsmode=[user|admin]*169564
-Ref: tlmgr *--fileassocmode=[1|2]*169989
-Ref: tlmgr *--all* 1170275
-Node: tlmgr print-platform170330
-Node: tlmgr print-platform-info170661
-Node: tlmgr remove [_option_...] _pkg_...170961
-Ref: tlmgr *--all* 2171446
-Ref: tlmgr *--backup*171557
-Ref: tlmgr *--backupdir* _directory_ 1171584
-Ref: tlmgr *--no-depends* 1171989
-Ref: tlmgr *--no-depends-at-all* 1172052
-Ref: tlmgr *--force* 1172159
-Ref: tlmgr *--dry-run* 3172633
-Node: tlmgr repository173010
-Ref: tlmgr *repository list*173198
-Ref: tlmgr *repository list _path|url|tag_*173232
-Ref: tlmgr *repository add _path_ [_tag_]*173265
-Ref: tlmgr *repository remove _path|tag_*173297
-Ref: tlmgr *repository set _path_[#_tag_] [_path_[#_tag_] ...]*173351
-Ref: tlmgr *repository status*173372
-Ref: tlmgr The tag (which can be the same as the url);174643
-Node: tlmgr restore175121
-Ref: tlmgr *restore [_option_...] _pkg_ [_rev_]*175300
-Ref: tlmgr *restore [_option_...] --all*175331
-Ref: tlmgr *--all* 3176032
-Ref: tlmgr *--backupdir* _directory_ 2176247
-Ref: tlmgr *--dry-run* 4176429
-Ref: tlmgr *--force* 2176562
-Ref: tlmgr *--json* 2176609
-Node: tlmgr search176935
-Ref: tlmgr *search [_option_...] _what_*177099
-Ref: tlmgr *search [_option_...] --file _what_*177137
-Ref: tlmgr *search [_option_...] --all _what_*177174
-Ref: tlmgr *--file* 1177395
-Ref: tlmgr *--all* 4177458
-Ref: tlmgr *--global*177548
-Ref: tlmgr *--word*177676
-Ref: tlmgr *--json* 3178005
-Node: tlmgr shell178212
-Ref: tlmgr protocol178947
-Ref: tlmgr help 1179011
-Ref: tlmgr version 1179064
-Ref: tlmgr quit, end, bye, byebye, EOF179132
-Ref: tlmgr restart179153
-Ref: tlmgr load [local|remote]179276
-Ref: tlmgr save179346
-Ref: tlmgr get [_var_] =item set [_var_ [_val_]]179469
-Node: tlmgr show180070
-Node: tlmgr uninstall180237
-Node: tlmgr update [_option_...] [_pkg_...]180469
-Ref: tlmgr *--all* 5180841
-Ref: tlmgr *--self*183021
-Ref: tlmgr *--dry-run* 5183786
-Ref: tlmgr *--list* [_pkg_]183964
-Ref: tlmgr *--exclude* _pkg_184654
-Ref: tlmgr *--no-auto-remove* [_pkg_...]185455
-Ref: tlmgr *--no-auto-install* [_pkg_...]185940
-Ref: tlmgr *--reinstall-forcibly-removed*186703
-Ref: tlmgr *--backup* 1187239
-Ref: tlmgr *--backupdir* _directory_ 3187266
-Ref: tlmgr *--no-depends* 2188433
-Ref: tlmgr *--no-depends-at-all* 2188637
-Ref: tlmgr *--force* 3188744
-Node: tlmgr CONFIGURATION FILE FOR TLMGR189735
-Ref: tlmgr auto-remove = 0 or 1 (default 1), same as command-line option.190737
-Ref: tlmgr gui-expertmode = 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.190869
-Ref: tlmgr gui-lang = _llcode_, with a language code value as with the command-line option.190953
-Ref: tlmgr no-checksums = 0 or 1 (default 0, see below).191002
-Ref: tlmgr persistent-downloads = 0 or 1 (default 1), same as command-line option.191077
-Ref: tlmgr require-verification = 0 or 1 (default 0), same as command-line option.191152
-Ref: tlmgr tkfontscale = _floating-point number_ (default 1.0); scaling factor for fonts in the Tk-based frontends.191260
-Ref: tlmgr update-exclude = _comma-separated list of packages_ (no spaces allowed). Same as the command line option --exclude for the update action.191405
-Ref: tlmgr verify-downloads = 0 or 1 (default 1), same as command-line option.191476
-Ref: tlmgr allowed-actions = _action1_[,_action2_,...] The value is a comma-separated list (no spaces) of tlmgr actions which are allowed to be executed when tlmgr is invoked in system mode (that is, without --usermode). This allows distributors to include tlmgr in their packaging, but allow only a restricted set of actions that do not interfere with their distro package manager. For native TeX Live installations, it doesn't make sense to set this.191993
-Node: tlmgr CRYPTOGRAPHIC VERIFICATION192825
-Node: tlmgr Configuration of GnuPG invocation194998
-Node: tlmgr USER MODE195636
-Node: tlmgr User mode install198507
-Node: tlmgr User mode backup, restore, remove, update199653
-Node: tlmgr User mode generate, option, paper200099
-Node: tlmgr User mode logs200466
-Node: tlmgr MULTIPLE REPOSITORIES200764
-Node: tlmgr Pinning202493
-Node: tlmgr GUI FOR TLMGR204416
-Node: tlmgr Main display206065
-Node: tlmgr Display configuration area206317
-Ref: tlmgr Status206678
-Ref: tlmgr Category206842
-Ref: tlmgr Match207028
-Ref: tlmgr Selection207209
-Ref: tlmgr Display configuration buttons207413
-Node: tlmgr Package list area207596
-Ref: tlmgr a checkbox208180
-Ref: tlmgr package name208316
-Ref: tlmgr local revision (and version)208415
-Ref: tlmgr remote revision (and version)208790
-Ref: tlmgr short description209087
-Node: tlmgr Main display action buttons209132
-Ref: tlmgr Update all installed209398
-Ref: tlmgr Update209770
-Ref: tlmgr Install209820
-Ref: tlmgr Remove210006
-Ref: tlmgr Backup210184
-Node: tlmgr Menu bar210341
-Ref: tlmgr tlmgr menu210564
-Ref: tlmgr Options menu210872
-Ref: tlmgr Actions menu211955
-Ref: tlmgr Help menu212383
-Node: tlmgr GUI options212517
-Ref: tlmgr -background _color_212763
-Ref: tlmgr -font " _fontname_ _fontsize_ "212828
-Ref: tlmgr -foreground _color_212986
-Ref: tlmgr -geometry _geomspec_213038
-Ref: tlmgr -xrm _xresource_213230
-Node: tlmgr MACHINE-READABLE OUTPUT213499
-Node: tlmgr Machine-readable update and install output214313
-Ref: tlmgr location-url _location_215589
-Ref: tlmgr total-bytes _count_215805
-Ref: tlmgr _pkgname_216215
-Ref: tlmgr _status_216425
-Ref: tlmgr d216503
-Ref: tlmgr f216563
-Ref: tlmgr u216742
-Ref: tlmgr r216788
-Ref: tlmgr a216911
-Ref: tlmgr i217089
-Ref: tlmgr I217208
-Ref: tlmgr _localrev_217310
-Ref: tlmgr _serverrev_217417
-Ref: tlmgr _size_217529
-Ref: tlmgr _runtime_217698
-Ref: tlmgr _esttot_217768
-Node: tlmgr Machine-readable option output217801
-Node: tlmgr ENVIRONMENT VARIABLES218313
-Ref: tlmgr TEXLIVE_COMPRESSOR218824
-Ref: tlmgr TEXLIVE_DOWNLOADER219672
-Ref: tlmgr TL_DOWNLOAD_PROGRAM219695
-Ref: tlmgr TL_DOWNLOAD_ARGS219715
-Ref: tlmgr TEXLIVE_PREFER_OWN220741
-Node: tlmgr AUTHORS AND COPYRIGHT221565
-Node: Index221963
+Node: Installation directories26707
+Node: Linked scripts28525
+Node: Distro builds31409
+Node: Layout and infrastructure33785
+Node: Build system tools34616
+Node: Top-level directories36833
+Node: Autoconf macros39069
+Node: General setup macros39831
+Node: Macros for programs40706
+Node: Macros for compilers41507
+Node: Macros for libraries42971
+Node: Macros for library and header flags43397
+Node: Macros for Windows45308
+Node: Library modules46908
+Node: png library47397
+Node: zlib library49745
+Node: freetype library50260
+Node: kpathsea library50956
+Node: Program modules52338
+Node: t1utils package52766
+Node: xindy package53311
+Node: xdvik package54434
+Node: asymptote55493
+Node: Extending TeX Live55997
+Node: Adding a new program module57322
+Node: Adding a new engine62111
+Node: Adding a new generic library module63896
+Node: Adding a new TeX-specific library module66117
+Node: Configure options66815
+Node: Global configure options68196
+Node: --disable-native-texlive-build68738
+Node: --prefix --bindir ...69700
+Node: --disable-largefile70240
+Node: --disable-missing70782
+Node: --enable-compiler-warnings=LEVEL71183
+Node: --enable-cxx-runtime-hack71839
+Node: --enable-maintainer-mode72259
+Node: --enable-multiplatform72788
+Node: --enable-shared73361
+Node: --enable-silent-rules73732
+Node: --without-ln-s74184
+Node: --without-x74531
+Node: Program-specific configure options74719
+Node: --enable-PROG --disable-PROG75362
+Node: --disable-all-pkgs75635
+Node: Configure options for texk/web2c76418
+Node: Configure options for texk/bibtex-x78982
+Node: Configure options for texk/dvipdfm-x79525
+Node: Configure options for texk/dvisvgm80301
+Node: Configure options for texk/texlive81182
+Node: Configure options for texk/xdvik81603
+Node: Configure options for utils/xindy82224
+Node: Library-specific configure options83114
+Node: Configure options for kpathsea84075
+Node: Variables for configure84779
+Node: Coding conventions86205
+Node: Declarations and definitions86920
+Node: Const89094
+Node: Continuous integration90958
+Node: Transfer from Subversion to Github91622
+Node: Automatic update of the Git mirror93784
+Node: CI testing on Travis-CI94366
+Node: Releases on Github95075
+Node: install-tl95515
+Node: install-tl NAME95959
+Node: install-tl SYNOPSIS96139
+Node: install-tl DESCRIPTION96377
+Node: install-tl REFERENCES97574
+Node: install-tl EXAMPLES98183
+Ref: install-tl install-tl --paper=letter98634
+Ref: install-tl install-tl --scheme _scheme_98770
+Ref: install-tl install-tl --no-interaction98925
+Ref: install-tl install-tl --profile _texlive.profile_99077
+Node: install-tl OPTIONS99345
+Ref: install-tl *-gui* [[=]_module_]99842
+Ref: install-tl *-no-gui*99853
+Ref: install-tl text100061
+Ref: install-tl tcl (or "perltk" or "wizard" or "expert" or nothing)100246
+Ref: install-tl *-lang* _llcode_100878
+Ref: install-tl *-repository* _url|path_101502
+Ref: install-tl *-select-repository*102396
+Ref: install-tl *-all-options*102814
+Ref: install-tl *-custom-bin* _path_103069
+Ref: install-tl *-debug-fakenet*103901
+Ref: install-tl *-debug-setup-vars*104115
+Ref: install-tl *-debug-translation*104263
+Ref: install-tl *-force-platform* _platform_104539
+Ref: install-tl *-help*, *--help*, *-?*104797
+Ref: install-tl *-in-place*105210
+Ref: install-tl *-init-from-profile* _profile_file_105755
+Ref: install-tl *-logfile* _file_106024
+Ref: install-tl *-no-cls*106375
+Ref: install-tl *-no-continue*106502
+Ref: install-tl *-no-doc-install*107073
+Ref: install-tl *-no-src-install*107092
+Ref: install-tl *-no-installation*107883
+Ref: install-tl *-no-interaction*108034
+Ref: install-tl *-no-persistent-downloads*108291
+Ref: install-tl *-persistent-downloads*108316
+Ref: install-tl *-no-verify-downloads*108923
+Ref: install-tl *-non-admin*109286
+Ref: install-tl *-paper* a4*|*letter109392
+Ref: install-tl *-portable*109588
+Ref: install-tl *-print-platform*109725
+Ref: install-tl *-profile* _profile_file_109923
+Ref: install-tl *-q*110144
+Ref: install-tl *-scheme* _scheme_110206
+Ref: install-tl *-texdir* _dir_110607
+Ref: install-tl *-texuserdir* _dir_111212
+Ref: install-tl *-texmflocal* _dir_111501
+Ref: install-tl *-texmfhome* _dir_112126
+Ref: install-tl *-texmfsysconfig* _dir_112435
+Ref: install-tl *-texmfsysvar* _dir_112457
+Ref: install-tl *-texmfconfig* _dir_112552
+Ref: install-tl *-texmfvar* _dir_112571
+Ref: install-tl *-v*112779
+Ref: install-tl *-version*, *--version*112935
+Node: install-tl PROFILES113069
+Ref: install-tl instopt_adjustpath (default 0 on Unix, 1 on Windows)116085
+Ref: install-tl instopt_adjustrepo (default 1)116161
+Ref: install-tl instopt_letter (default 0)116298
+Ref: install-tl instopt_portable (default 0)116389
+Ref: install-tl instopt_write18_restricted (default 1)116928
+Node: install-tl ENVIRONMENT VARIABLES118267
+Ref: install-tl NOPERLDOC118630
+Ref: install-tl TEXLIVE_DOWNLOADER118715
+Ref: install-tl TL_DOWNLOAD_PROGRAM118738
+Ref: install-tl TL_DOWNLOAD_ARGS118758
+Ref: install-tl TEXLIVE_PREFER_OWN118780
+Ref: install-tl TEXLIVE_INSTALL_ENV_NOCHECK119005
+Ref: install-tl TEXLIVE_INSTALL_NO_CONTEXT_CACHE119207
+Ref: install-tl TEXLIVE_INSTALL_NO_DISKCHECK119319
+Ref: install-tl TEXLIVE_INSTALL_NO_RESUME119735
+Ref: install-tl TEXLIVE_INSTALL_NO_WELCOME119887
+Ref: install-tl TEXLIVE_INSTALL_PAPER120008
+Ref: install-tl TEXLIVE_INSTALL_PREFIX120154
+Ref: install-tl TEXLIVE_INSTALL_TEXMFCONFIG120185
+Ref: install-tl TEXLIVE_INSTALL_TEXMFVAR120213
+Ref: install-tl TEXLIVE_INSTALL_TEXMFHOME120242
+Ref: install-tl TEXLIVE_INSTALL_TEXMFLOCAL120272
+Ref: install-tl TEXLIVE_INSTALL_TEXMFSYSCONFIG120306
+Ref: install-tl TEXLIVE_INSTALL_TEXMFSYSVAR120337
+Node: install-tl DIRECTORY TREES120775
+Node: install-tl BUGS123359
+Node: install-tl AUTHORS AND COPYRIGHT124239
+Node: tlmgr124637
+Node: tlmgr NAME125122
+Node: tlmgr SYNOPSIS125266
+Node: tlmgr DESCRIPTION125468
+Node: tlmgr EXAMPLES126579
+Ref: tlmgr tlmgr option repository ctan126842
+Ref: tlmgr tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet126915
+Ref: tlmgr tlmgr update --list127520
+Ref: tlmgr tlmgr update --all127613
+Ref: tlmgr tlmgr info _what_127770
+Ref: tlmgr tlmgr bug _what_127948
+Node: tlmgr OPTIONS128143
+Ref: tlmgr *--repository* _url|path_128676
+Ref: tlmgr /some/local/dir129862
+Ref: tlmgr file:/some/local/dir129891
+Ref: tlmgr ctan129964
+Ref: tlmgr https://mirror.ctan.org/systems/texlive/tlnet130018
+Ref: tlmgr http://server/path/to/tlnet130359
+Ref: tlmgr https://server/path/to/tlnet130740
+Ref: tlmgr ftp://server/path/to/tlnet131208
+Ref: tlmgr user@machine:/path/to/tlnet131340
+Ref: tlmgr scp://user@machine/path/to/tlnet131381
+Ref: tlmgr ssh://user@machine/path/to/tlnet131422
+Ref: tlmgr *--gui* [_action_]131816
+Ref: tlmgr *--gui-lang* _llcode_132630
+Ref: tlmgr *--command-logfile* _file_133372
+Ref: tlmgr *--debug-translation*133639
+Ref: tlmgr *--machine-readable*133843
+Ref: tlmgr *--no-execute-actions*134112
+Ref: tlmgr *--package-logfile* _file_134459
+Ref: tlmgr *--pause*134714
+Ref: tlmgr *--persistent-downloads*134870
+Ref: tlmgr *--no-persistent-downloads*134899
+Ref: tlmgr *--pin-file*135394
+Ref: tlmgr *--usermode*135613
+Ref: tlmgr *--usertree* _dir_135734
+Ref: tlmgr *--verify-repo=[none|main|all]*135861
+Node: tlmgr ACTIONS136760
+Node: tlmgr help137653
+Node: tlmgr version138130
+Node: tlmgr backup138393
+Ref: tlmgr *backup [_option_...] --all*138570
+Ref: tlmgr *backup [_option_...] _pkg_...*138603
+Ref: tlmgr *--backupdir* _directory_139670
+Ref: tlmgr *--all*139888
+Ref: tlmgr *--clean*[=_N_]140141
+Ref: tlmgr *--dry-run*140469
+Node: tlmgr bug [_search-string_]140599
+Node: tlmgr candidates _pkg_141186
+Node: tlmgr check [_option_...] [depends|executes|files|runfiles|texmfdbs|all]141556
+Ref: tlmgr *depends*142070
+Ref: tlmgr *executes*142412
+Ref: tlmgr *files*142527
+Ref: tlmgr *runfiles*142663
+Ref: tlmgr *texmfdbs*142800
+Ref: tlmgr - all items in TEXMFDBS have the !! prefix.143030
+Ref: tlmgr - all items in TEXMFBDS have an ls-R file (if they exist at all).143106
+Ref: tlmgr - all items in TEXMF with !! are listed in TEXMFDBS.143171
+Ref: tlmgr - all items in TEXMF with an ls-R file are listed in TEXMFDBS.143246
+Ref: tlmgr *--use-svn*143272
+Node: tlmgr conf143413
+Ref: tlmgr *conf [texmf|tlmgr|updmap [--conffile _file_] [--delete] [_key_ [_value_]]]*143703
+Ref: tlmgr *conf auxtrees [--conffile _file_] [show|add|remove] [_value_]*143768
+Node: tlmgr dump-tlpdb [_option_...] [--json]146184
+Ref: tlmgr *--local*146620
+Ref: tlmgr *--remote*146660
+Ref: tlmgr *--json*146699
+Node: tlmgr generate147271
+Ref: tlmgr *generate [_option_...] language*147467
+Ref: tlmgr *generate [_option_...] language.dat*147506
+Ref: tlmgr *generate [_option_...] language.def*147545
+Ref: tlmgr *generate [_option_...] language.dat.lua*147588
+Ref: tlmgr *--dest* _output_file_149918
+Ref: tlmgr *--localcfg* _local_conf_file_150495
+Ref: tlmgr *--rebuild-sys*150619
+Node: tlmgr gui151434
+Node: tlmgr info151614
+Ref: tlmgr *info [_option_...] _pkg_...*151776
+Ref: tlmgr *info [_option_...] collections*151810
+Ref: tlmgr *info [_option_...] schemes*151840
+Ref: tlmgr *--list*153371
+Ref: tlmgr *--only-files*153682
+Ref: tlmgr *--only-installed*153923
+Ref: tlmgr *--only-remote*154112
+Ref: tlmgr *--data item1,item2,...*154417
+Ref: tlmgr *--json* 1155790
+Node: tlmgr init-usertree156168
+Node: tlmgr install [_option_...] _pkg_...156549
+Ref: tlmgr *--dry-run* 1157058
+Ref: tlmgr *--file*157176
+Ref: tlmgr *--force*157399
+Ref: tlmgr *--no-depends*157620
+Ref: tlmgr *--no-depends-at-all*157780
+Ref: tlmgr *--reinstall*158181
+Ref: tlmgr *--with-doc*158560
+Ref: tlmgr *--with-src*158574
+Node: tlmgr key159302
+Ref: tlmgr *key list*159460
+Ref: tlmgr *key add _file_*159478
+Ref: tlmgr *key remove _keyid_*159500
+Node: tlmgr list160094
+Node: tlmgr option160256
+Ref: tlmgr *option [--json] [show]*160412
+Ref: tlmgr *option [--json] showall|help*160444
+Ref: tlmgr *option _key_ [_value_]*160470
+Node: tlmgr paper165047
+Ref: tlmgr *paper [a4|letter]*165196
+Ref: tlmgr *<[xdvi|pdftex|dvips|dvipdfmx|context|psutils] paper [_papersize_|--list]*>165273
+Ref: tlmgr *paper --json*165289
+Node: tlmgr path166711
+Ref: tlmgr *path [--windowsmode=user|admin] add*166877
+Ref: tlmgr *path [--windowsmode=user|admin] remove*166919
+Node: tlmgr pinning168434
+Ref: tlmgr pinning show168675
+Ref: tlmgr pinning add _repo_ _pkgglob_...168748
+Ref: tlmgr pinning remove _repo_ _pkgglob_...168867
+Ref: tlmgr pinning remove _repo_ --all169020
+Node: tlmgr platform169074
+Ref: tlmgr *platform list|add|remove _platform_...*169260
+Ref: tlmgr *platform set _platform_*169287
+Ref: tlmgr *platform set auto*169308
+Ref: tlmgr *--dry-run* 2170186
+Node: tlmgr postaction170305
+Ref: tlmgr *postaction [_option_...] install [shortcut|fileassoc|script] [_pkg_...]*170535
+Ref: tlmgr *postaction [_option_...] remove [shortcut|fileassoc|script] [_pkg_...]*170609
+Ref: tlmgr *--windowsmode=[user|admin]*170929
+Ref: tlmgr *--fileassocmode=[1|2]*171354
+Ref: tlmgr *--all* 1171640
+Node: tlmgr print-platform171695
+Node: tlmgr print-platform-info172026
+Node: tlmgr remove [_option_...] _pkg_...172326
+Ref: tlmgr *--all* 2172811
+Ref: tlmgr *--backup*172922
+Ref: tlmgr *--backupdir* _directory_ 1172949
+Ref: tlmgr *--no-depends* 1173354
+Ref: tlmgr *--no-depends-at-all* 1173417
+Ref: tlmgr *--force* 1173524
+Ref: tlmgr *--dry-run* 3173998
+Node: tlmgr repository174375
+Ref: tlmgr *repository list*174563
+Ref: tlmgr *repository list _path|url|tag_*174597
+Ref: tlmgr *repository add _path_ [_tag_]*174630
+Ref: tlmgr *repository remove _path|tag_*174662
+Ref: tlmgr *repository set _path_[#_tag_] [_path_[#_tag_] ...]*174716
+Ref: tlmgr *repository status*174737
+Ref: tlmgr The tag (which can be the same as the url);176008
+Node: tlmgr restore176486
+Ref: tlmgr *restore [_option_...] _pkg_ [_rev_]*176665
+Ref: tlmgr *restore [_option_...] --all*176696
+Ref: tlmgr *--all* 3177397
+Ref: tlmgr *--backupdir* _directory_ 2177612
+Ref: tlmgr *--dry-run* 4177794
+Ref: tlmgr *--force* 2177927
+Ref: tlmgr *--json* 2177974
+Node: tlmgr search178300
+Ref: tlmgr *search [_option_...] _what_*178464
+Ref: tlmgr *search [_option_...] --file _what_*178502
+Ref: tlmgr *search [_option_...] --all _what_*178539
+Ref: tlmgr *--file* 1178760
+Ref: tlmgr *--all* 4178823
+Ref: tlmgr *--global*178913
+Ref: tlmgr *--word*179041
+Ref: tlmgr *--json* 3179370
+Node: tlmgr shell179577
+Ref: tlmgr protocol180312
+Ref: tlmgr help 1180376
+Ref: tlmgr version 1180429
+Ref: tlmgr quit, end, bye, byebye, EOF180497
+Ref: tlmgr restart180518
+Ref: tlmgr load [local|remote]180641
+Ref: tlmgr save180711
+Ref: tlmgr get [_var_] =item set [_var_ [_val_]]180834
+Node: tlmgr show181435
+Node: tlmgr uninstall181602
+Node: tlmgr update [_option_...] [_pkg_...]181834
+Ref: tlmgr *--all* 5182206
+Ref: tlmgr *--self*184386
+Ref: tlmgr *--dry-run* 5185151
+Ref: tlmgr *--list* [_pkg_]185329
+Ref: tlmgr *--exclude* _pkg_186019
+Ref: tlmgr *--no-auto-remove* [_pkg_...]186820
+Ref: tlmgr *--no-auto-install* [_pkg_...]187305
+Ref: tlmgr *--reinstall-forcibly-removed*188068
+Ref: tlmgr *--backup* 1188604
+Ref: tlmgr *--backupdir* _directory_ 3188631
+Ref: tlmgr *--no-depends* 2189798
+Ref: tlmgr *--no-depends-at-all* 2190002
+Ref: tlmgr *--force* 3190109
+Node: tlmgr CONFIGURATION FILE FOR TLMGR191100
+Ref: tlmgr auto-remove = 0 or 1 (default 1), same as command-line option.192102
+Ref: tlmgr gui-expertmode = 0 or 1 (default 1). This switches between the full GUI and a simplified GUI with only the most common settings.192234
+Ref: tlmgr gui-lang = _llcode_, with a language code value as with the command-line option.192318
+Ref: tlmgr no-checksums = 0 or 1 (default 0, see below).192367
+Ref: tlmgr persistent-downloads = 0 or 1 (default 1), same as command-line option.192442
+Ref: tlmgr require-verification = 0 or 1 (default 0), same as command-line option.192517
+Ref: tlmgr tkfontscale = _floating-point number_ (default 1.0); scaling factor for fonts in the Tk-based frontends.192625
+Ref: tlmgr update-exclude = _comma-separated list of packages_ (no spaces allowed). Same as the command line option --exclude for the update action.192770
+Ref: tlmgr verify-downloads = 0 or 1 (default 1), same as command-line option.192841
+Ref: tlmgr allowed-actions = _action1_[,_action2_,...] The value is a comma-separated list (no spaces) of tlmgr actions which are allowed to be executed when tlmgr is invoked in system mode (that is, without --usermode). This allows distributors to include tlmgr in their packaging, but allow only a restricted set of actions that do not interfere with their distro package manager. For native TeX Live installations, it doesn't make sense to set this.193358
+Node: tlmgr CRYPTOGRAPHIC VERIFICATION194190
+Node: tlmgr Configuration of GnuPG invocation196363
+Node: tlmgr USER MODE197001
+Node: tlmgr User mode install199872
+Node: tlmgr User mode backup, restore, remove, update201018
+Node: tlmgr User mode generate, option, paper201464
+Node: tlmgr User mode logs201831
+Node: tlmgr MULTIPLE REPOSITORIES202129
+Node: tlmgr Pinning203858
+Node: tlmgr GUI FOR TLMGR205781
+Node: tlmgr Main display207430
+Node: tlmgr Display configuration area207682
+Ref: tlmgr Status208043
+Ref: tlmgr Category208207
+Ref: tlmgr Match208393
+Ref: tlmgr Selection208574
+Ref: tlmgr Display configuration buttons208778
+Node: tlmgr Package list area208961
+Ref: tlmgr a checkbox209545
+Ref: tlmgr package name209681
+Ref: tlmgr local revision (and version)209780
+Ref: tlmgr remote revision (and version)210155
+Ref: tlmgr short description210452
+Node: tlmgr Main display action buttons210497
+Ref: tlmgr Update all installed210763
+Ref: tlmgr Update211135
+Ref: tlmgr Install211185
+Ref: tlmgr Remove211371
+Ref: tlmgr Backup211549
+Node: tlmgr Menu bar211706
+Ref: tlmgr tlmgr menu211929
+Ref: tlmgr Options menu212237
+Ref: tlmgr Actions menu213320
+Ref: tlmgr Help menu213748
+Node: tlmgr GUI options213882
+Ref: tlmgr -background _color_214128
+Ref: tlmgr -font " _fontname_ _fontsize_ "214193
+Ref: tlmgr -foreground _color_214351
+Ref: tlmgr -geometry _geomspec_214403
+Ref: tlmgr -xrm _xresource_214595
+Node: tlmgr MACHINE-READABLE OUTPUT214864
+Node: tlmgr Machine-readable update and install output215678
+Ref: tlmgr location-url _location_216954
+Ref: tlmgr total-bytes _count_217170
+Ref: tlmgr _pkgname_217580
+Ref: tlmgr _status_217790
+Ref: tlmgr d217868
+Ref: tlmgr f217928
+Ref: tlmgr u218107
+Ref: tlmgr r218153
+Ref: tlmgr a218276
+Ref: tlmgr i218454
+Ref: tlmgr I218573
+Ref: tlmgr _localrev_218675
+Ref: tlmgr _serverrev_218782
+Ref: tlmgr _size_218894
+Ref: tlmgr _runtime_219063
+Ref: tlmgr _esttot_219133
+Node: tlmgr Machine-readable option output219166
+Node: tlmgr ENVIRONMENT VARIABLES219678
+Ref: tlmgr TEXLIVE_COMPRESSOR220189
+Ref: tlmgr TEXLIVE_DOWNLOADER221037
+Ref: tlmgr TL_DOWNLOAD_PROGRAM221060
+Ref: tlmgr TL_DOWNLOAD_ARGS221080
+Ref: tlmgr TEXLIVE_PREFER_OWN222106
+Node: tlmgr AUTHORS AND COPYRIGHT222930
+Node: Index223328
 
 End Tag Table
 

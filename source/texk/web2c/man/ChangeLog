@@ -1,3 +1,59 @@
+2026-02-14  Karl Berry  <karl@freefriends.org>
+
+	* pdftex.man: mention supp-pdf{.tex,mkii}, and TEXMF_DEBUG_PNG_COPY.
+	* luatex.man: mention supp-pdf{.tex,mkii}, and luajittex explicitly.
+
+2026-02-03  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* twill.man: Minor amendments re the CTWILL user manual.
+
+2026-02-03  Karl Berry  <karl@freefriends.org>
+
+	*.man: overhaul most, with the exception of cweb and tie. Globally:
+	Update for current behavior in TeX Live, specifically.
+	Add web, CTAN, TUGboat, etc., references.
+ 	Replace duplicate text with cross-references, especially to tex(1).
+	Use - instead of \- for options, since options start with hyphens
+	  not en-dashes.
+	Don't routinely use \& for every sentence, since most periods end
+	  sentences.
+	Avoid all-caps for metavariables, as this is not Texinfo.
+	Updated TX and related macros to be closer to the TeX logos.
+	Reduce use of macros; simply "Metafont" and "WEB" are fine,
+	  no need for small caps. Don't use macros in synopsis lines.
+	* Makefile.am (testmans): also pdfconcat all the man pages into one.
+
+2026-01-19  Karl Berry  <karl@freefriends.org>
+
+	* pdfetex.man: remove, will add to pdftex.man.
+	* Makefile.am (misc_man_sources): remove here too.
+
+2025-01-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* twill.man: Fix info about CONTENTS.tex.
+
+2025-11-30  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (spell): new target as hint for spellcheck.
+
+2025-09-29  Karl Berry  <karl@freefriends.org>
+
+	* tex.man: try to clarify command-line/first-line processing,
+	including input filename expansion. Original report from Duncan
+	Murdoch, https://tug.org/pipermail/tex-live/2025-August/051650.html.
+	Other updates, suggested by Max Chernoff: - and -- both allowed,
+	etc.; shell escape description updated.
+	Other updates made in passing.
+
+	* Makefile.am (testman, testmans): new targets to generate
+	pdf output from man pages.
+
+2025-07-27  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill.man,
+	* cweb.man: CWEB 4.12.2 release.
+
 2025-04-30  Andreas Scherer  <https://ascherer.github.io>
 
 	* ctwill.man,

@@ -4,8 +4,8 @@
 % If you modify this original file, YOUR CHANGES WILL BE LOST when it is
 % updated.  Instead, put your changes -- and only your changes, not an
 % entire copy! -- in ../../texmf.cnf.  That is, if this file is
-% installed in /some/path/to/texlive/2025/texmf-dist/web2c/texmf.cnf,
-% put your custom settings in /some/path/to/texlive/2025/texmf.cnf.
+% installed in /some/path/to/texlive/2026/texmf-dist/web2c/texmf.cnf,
+% put your custom settings in /some/path/to/texlive/2026/texmf.cnf.
 % (Below, we use YYYY in place of the specific year.)
 % 
 % What follows is a super-summary of what this .cnf file can
@@ -87,10 +87,10 @@ TEXMFSYSCONFIG = $TEXMFROOT/texmf-config
 TEXMFHOME = ~/texmf
 
 % TEXMFVAR, where texconfig/updmap/fmtutil store cached runtime data.
-TEXMFVAR = ~/.texlive2025/texmf-var
+TEXMFVAR = ~/.texlive2026/texmf-var
 
 % TEXMFCONFIG, where texconfig/updmap/fmtutil store configuration data.
-TEXMFCONFIG = ~/.texlive2025/texmf-config
+TEXMFCONFIG = ~/.texlive2026/texmf-config
 
 % This is the value manipulated by tlmgr's auxtrees subcommand in the
 % root texmf.cnf. Kpathsea warns about a literally empty string for a
@@ -686,15 +686,30 @@ shell_escape.initex = f
 TEXMF_RESTRICTED_SCRIPTS = \
   {!!$TEXMFLOCAL,!!$TEXMFDIST}/scripts/{$progname,$engine,}//
 
-% Do we allow TeX \input or \openin (openin_any), or \openout
-% (openout_any) on filenames starting with `.' (e.g., .rhosts) or
-% outside the current tree (e.g., /etc/passwd)?
+% The openout_any parameter says whether to allow TeX \openout, etc. on
+% filenames starting with `.' (e.g., .rhosts) or outside the current
+% tree (e.g., /etc/passwd). Not likely,
 % a (any)        : any file can be opened.
 % r (restricted) : disallow opening dot files
 % p (paranoid)   : as `r' and disallow going to parent directories, and
 %                  restrict absolute paths to be under $TEXMFOUTPUT.
-openin_any = a
 openout_any = p
+
+% On the other hand, as of 2026, openin_any no longer has any effect;
+% the underlying kpse_in_name_ok and related functions always return
+% true. It used to be analogous to openout_any, but in practice, normal
+% (La)TeXruns would fail with anything but `a', e.g., luaotfload uses
+% absolute paths. Meanwhile, there were obscure ways to inject arbitrary
+% input from the supposedly-forbidden areas, so it gave a false sense of
+% security. Since it apparently has no practical use, seems best to
+% simply declare it a no-op.
+% 
+% We leave the openin_any variable in place despite being a no-op, so that any
+% workflows that might depend on retrieving it, e.g., with kpsewhich,
+% don't gratuitously fail, but it has no effect.  Similarly, the
+% underlying functions remain in the library to avoid linking failures.
+% Thread: https://tug.org/pipermail/tex-live/2025-December/051965.html
+openin_any = a
 
 % Write .log/.dvi/.aux/etc. files here, if they can't be written in the
 % current directory.
@@ -781,10 +796,20 @@ BIBTEX_CSFILE = 88591lat.csf
 
 % This variable is specific to Unix, to fall back to case-insensitive
 % search in non-system directories if there is no exact match. It is
-% enabled by default in texmf.cnf, but not enabled by default at
+% enabled by default here in texmf.cnf, but not enabled by default at
 % compile-time.
+% See https://tug.org/texinfohtml/kpathsea.html#Casefolding-search.
 %
 texmf_casefold_search = 1
+
+% This variable is specific to Unix, to enable or disable the check
+% for st_nlink=2 to determine if a directory is a leaf.  The check is
+% disabled by default, since it's relevant only for non-!!
+% trees, such as TEXMFHOME and TEXMF[SYS]VAR, which are almost always tiny,
+% and new filesystems tend to break the longstanding semantics.
+% See https://tug.org/texinfohtml/kpathsea.html#Subdirectory-expansion.
+%
+texmf_nlink_for_leaf = 0 % set to 1 to enable st_nlink check in non-!! trees
 
 % This variable is specific to Windows.  It must be set to 0 or 1.  The
 % default is 0.  Setting it to 1 tells the Windows script wrappers to
@@ -932,7 +957,8 @@ guess_input_kanji_encoding.mendex = 1
 % uptex, euptex, pdftex, xetex, and 2 drivers: dvips, [x]dvipdfmx.
 % Several applications also are affected by the variable:
 % bibtex8.exe, bibtexu.exe, dvi2tty.exe, disdvi.exe, dvibook.exe,
-% dviconcat.exe, dviselect.exe, dvitodvi.exe, and dvidvi.exe.
+% dviconcat.exe, dviselect.exe, dvitodvi.exe, dvidvi.exe, dvispc.exe,
+% and chkdvifont.exe.
 % Only values utf8 or utf-8 are meaningful. Other values are simply
 % ignored. If file names in sources and DVI or XDV files are ASCII
 % only, the value of command_line_encoding is irrelevant.

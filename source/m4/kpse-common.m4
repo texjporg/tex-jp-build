@@ -1,6 +1,6 @@
 # $Id$
 # Public macros for the TeX Live (TL) tree.
-# Copyright 1995-2009, 2015-2024 Karl Berry <tex-live@tug.org>
+# Copyright 1995-2009, 2015-2026 Karl Berry <tex-live@tug.org>
 # Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 #
 # This file is free software; the copyright holders
@@ -269,11 +269,11 @@ AC_HEADER_DIRENT
 AC_FUNC_CLOSEDIR_VOID
 AC_CHECK_HEADERS([assert.h float.h limits.h pwd.h stdlib.h sys/param.h])
 dnl
-dnl Replacement functions that may be required on ancient broken system.
+dnl Replacement functions that may be required on old systems.
 AC_CHECK_FUNCS([putenv])
 dnl
-dnl More common functions
-AC_CHECK_FUNCS([getcwd getwd memcmp memcpy mkstemp mktemp strchr strrchr])
+dnl More common functions.
+AC_CHECK_FUNCS([getcwd memcmp memcpy mkstemp mktemp strchr strrchr])
 dnl
 AC_C_CONST
 AC_C_INLINE
@@ -297,12 +297,12 @@ AC_DEFUN([KPSE_MSG_WARN],
 [AC_REQUIRE([_KPSE_MSG_WARN_PREPARE])[]dnl
 AC_MSG_WARN([$1])
 AS_IF([test "x$enable_missing" = xno],
-      [AC_MSG_ERROR([terminating.])])
+      [AC_MSG_ERROR([kpse_msg_warn: terminating rather than warning since we have disable-missing.])])
 ]) # KPSE_MSG_WARN
 
 # _KPSE_MSG_WARN_PREPARE
 # ----------------------
-# Internal subroutine.
+# Declare the --enable-missing option.
 AC_DEFUN([_KPSE_MSG_WARN_PREPARE],
 [AC_ARG_ENABLE([missing],
                AS_HELP_STRING([--disable-missing],

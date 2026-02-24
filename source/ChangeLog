@@ -1,3 +1,41 @@
+2026-02-15  Karl Berry  <karl@freefriends.org>
+
+	* .github/scripts/build-tl.sh (CFLAGS, CXXFLAGS): add -O2 if we
+	set these vars; report all vars we set.
+
+	* Build: do not set CFLAGS unless one of the TL_* variables is
+	set; otherwise we lose Autoconf's normal CFLAGS of -g -O2.
+	Report from Petr Olsak:
+	https://tug.org/pipermail/tex-live/2026-February/052146.html
+
+	* configure.ac (summary): report CFLAGS, CXXFLAGS, and some of
+	Build's TL_* variables (in quotes, so whitespace-only values will
+	be visible).
+	
+	* README (cygwin): additional arg reported by Ken.
+	https://tug.org/pipermail/tlbuild/2026q1/005916.html
+
+2025-10-16  Karl Berry  <karl@freefriends.org>
+
+	* Build (status): avoid using egrep.
+	Report from Jan Kasprzak,
+	https://tug.org/pipermail/tex-k/2025-October/004217.html.
+
+2025-09-07  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (install_target): new variable, install-strip by default.
+	(world): use it.
+
+2025-07-22  Karl Berry  <karl@freefriends.org>
+
+	* reautoconf: mention that autoconf-only packages need to be
+	explicitly added; would be better to read kpse-pkgs.m4.
+	Also reautoconf tree for kpse-setup.m4 changes.
+
+2025-06-26  Karl Berry  <karl@freefriends.org>
+
+	* automake 1.18.1.
+
 2025-04-30  Karl Berry  <karl@freefriends.org>
 
 	* Build: incorporate original CFLAGS, CXXFLAGS, OBJCXXFLAGS values.

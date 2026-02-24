@@ -1,3 +1,21 @@
+2026-02-18  Karl Berry  <karl@freefriends.org>
+
+	* makefont.c: remove () declaration of getenv, etc.
+	Unused, but keeping in sync with xdvipsk.
+
+2026-01-30  Karl Berry  <karl@freefriends.org>
+
+	* dvips.texi: fix a couple of urls.
+
+2026-01-07  Karl Berry  <karl@freefriends.org>
+
+	* NEWS,
+	* afm2tfm.c,
+	* dvips.c,
+	* dvips.h,
+	* dvips.texi,
+	* configure.ac: version 2026.1 and copyright 2026.
+
 2025-04-08  Karl Berry  <karl@freefriends.org>
 
 	* t1part.h (search),

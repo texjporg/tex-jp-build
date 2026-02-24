@@ -855,22 +855,22 @@ static const flex_int16_t yy_rule_linenum[130] =
 char *yytext;
 #line 1 "lexer.l"
 #line 2 "lexer.l"
-	/*552:*/
-	#line 11598 "format.w"
+	/*555:*/
+	#line 11640 "format.w"
 	
 #include "hibasetypes.h"
 #include "hierror.h"
 #include "hiformat.h"
 #include "hiput.h"
 
-	/*462:*/
+	/*464:*/
 #ifdef DEBUG
 #define  YYDEBUG 1
 extern int yydebug;
 #else
 #define YYDEBUG 0
 #endif
-	/*:462*/
+	/*:464*/
 #include "hiparser.h"
 
 	/*23:*/
@@ -895,7 +895,7 @@ static int str_length;
 	/*:43*/	/*45:*/
 #define SCAN_UTF8_3(S)   yylval.u= (((S)[0]&0x0F)<<12)+(((S)[1]&0x3F)<<6)+((S)[2]&0x3F)
 	/*:45*/	/*47:*/
-#define SCAN_UTF8_4(S)   yylval.u= (((S)[0]&0x03)<<18)+(((S)[1]&0x3F)<<12)+(((S)[2]&0x3F)<<6)+((S)[3]&0x3F)
+#define SCAN_UTF8_4(S)   yylval.u= (((S)[0]&0x07)<<18)+(((S)[1]&0x3F)<<12)+(((S)[2]&0x3F)<<6)+((S)[3]&0x3F)
 	/*:47*/	/*58:*/
 #define SCAN_DECFLOAT       yylval.f= atof(yytext)
 	/*:58*/	/*61:*/
@@ -912,7 +912,7 @@ static int scan_level= 0;
 
 float64_t xtof(char*x)
 {
-	#line 1387 "format.w"
+	#line 1390 "format.w"
 	int sign,digits,exp;
 	uint64_t mantissa= 0;
 	DBG(DBGFLOAT,"converting %s:\n",x);
@@ -992,7 +992,7 @@ float64_t xtof(char*x)
 	}
 	/*:62*/
 int yywrap(void){
-	#line 11609 "format.w"
+	#line 11651 "format.w"
 	return 1;}
 #ifdef _MSC_VER
 #pragma  warning( disable : 4267)
@@ -2047,37 +2047,37 @@ YY_RULE_SETUP
 #line 344 "lexer.l"
 return SECTION;
 	YY_BREAK
-/*:355*/	/*376:*/
+/*:355*/	/*378:*/
 case 123:
 YY_RULE_SETUP
 #line 346 "lexer.l"
 return DEFINITIONS;
 	YY_BREAK
-/*:376*/	/*384:*/
+/*:378*/	/*386:*/
 case 124:
 YY_RULE_SETUP
 #line 348 "lexer.l"
 return MAX;
 	YY_BREAK
-/*:384*/	/*399:*/
+/*:386*/	/*401:*/
 case 125:
 YY_RULE_SETUP
 #line 350 "lexer.l"
 return PARAM;
 	YY_BREAK
-/*:399*/	/*408:*/
+/*:401*/	/*410:*/
 case 126:
 YY_RULE_SETUP
 #line 352 "lexer.l"
 return FONT;
 	YY_BREAK
-/*:408*/	/*441:*/
+/*:410*/	/*443:*/
 case 127:
 YY_RULE_SETUP
 #line 354 "lexer.l"
 return CONTENT;
 	YY_BREAK
-/*:441*/
+/*:443*/
 case 128:
 YY_RULE_SETUP
 #line 356 "lexer.l"
@@ -3260,5 +3260,5 @@ void yyfree (void * ptr )
 
 #line 359 "lexer.l"
 
-	/*:552*/
+	/*:555*/
 

@@ -1,6 +1,9 @@
 #!/bin/sh -l
+# $Id$
+# (-l above is to make this a login shell.)
+# Build script for asymptote on github. Norbert Preining. Public domain.
 
-set -e
+set -ex
 
 if [ "x$2" = "x" ]
 then
@@ -31,10 +34,10 @@ then
        export LC_ALL=C.UTF-8
        apt-get update -q -y
        apt-get install -y --no-install-recommends bash gcc g++ make perl libfontconfig-dev libx11-dev libxmu-dev libxaw7-dev build-essential libtool-bin
-       apt-get install -y --no-install-recommends build-essential pkg-config libeigen3-dev libcurl4-openssl-dev libreadline-dev libboost-filesystem-dev flex libglu1-mesa-dev freeglut3-dev libosmesa6-dev libreadline6-dev zlib1g-dev bison libglm-dev libncurses-dev python3 libtirpc-dev
+       apt-get install -y --no-install-recommends build-essential pkg-config libeigen3-dev libcurl4-openssl-dev libreadline-dev libboost-filesystem-dev flex libglu1-mesa-dev freeglut3-dev libosmesa6-dev libreadline6-dev zlib1g-dev bison libglm-dev libncurses-dev python3 libtirpc-dev cmake
        ;;
      freebsd)
-       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5 eigen readline flex libGLU freeglut libosmesa zlib-ng bison glm ncurses python python3 libtool
+       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5 eigen readline flex libGLU freeglut libosmesa zlib-ng bison glm ncurses python python3 libtool cmake
        ;;
      *)
        echo "Unsupported build system: $buildsys" >&2
@@ -67,6 +70,20 @@ case "$arch" in
     ;;
 esac
 
+# If we explicitly set CFLAGS or CXXFLAGS above, it's up to us to enable
+# optimization, since we are overriding what Autoconf does.
+test -n "$CFLAGS" && CFLAGS="$CFLAGS -O2"
+test -n "$CXXFLAGS" && CXXFLAGS="$CXXFLAGS -O2"
+
+echo "$0: variables set:"
+echo "  BUILDARGS=$BUILDARGS"
+echo "  CC=$CC"
+echo "  CXX=$CXX"
+echo "  CFLAGS=$CFLAGS"
+echo "  CXXFLAGS=$CXXFLAGS"
+echo "  TL_MAKE=$TL_MAKE"
+echo "  TL_MAKE_FLAGS=$TL_MAKE_FLAGS"
+echo "$0: (end variables)."
 
 find . -name \*.info -exec touch '{}' \;
 touch ./utils/asymptote/camp.tab.cc
@@ -74,12 +91,11 @@ touch ./utils/asymptote/camp.tab.h
 touch ./configure ./Makefile.in
 
 cd utils/asymptote
-./configure --prefix=/tmp/asyinst --enable-static --enable-texlive-build \
-	--disable-gsl --disable-fftw --disable-lsp --disable-curl
-	LDFLAGS="-static-libgcc -static-libstdc++"
-$TL_MAKE SIlENT_MAKE= -j2
+sh -vx ./configure \
+  --prefix=/tmp/asyinst --enable-static --enable-texlive-build \
+  --disable-gsl --disable-fftw --disable-curl \
+  LDFLAGS="-static-libgcc -static-libstdc++"
+$TL_MAKE SILENT_MAKE= -j2
 
 strip asy
-
 mv asy ../../asy-$arch
-

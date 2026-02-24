@@ -3,7 +3,7 @@ kpathsea.texi.
 
 This file documents the Kpathsea library for path searching.
 
-   Copyright © 1996-2025 Karl Berry & Olaf Weber.
+   Copyright © 1996-2026 Karl Berry & Olaf Weber.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -37,7 +37,7 @@ Kpathsea library
 ****************
 
 This manual documents the Kpathsea library for path searching.  It
-corresponds to version 6.4.0, released in January 2025.
+corresponds to version 6.4.2/dev, released in January 2026.
 
 * Menu:
 
@@ -61,8 +61,8 @@ File: kpathsea.info,  Node: Introduction,  Next: unixtex.ftp,  Prev: Top,  Up: T
 1 Introduction
 **************
 
-This manual corresponds to version 6.4.0 of the Kpathsea library,
-released in January 2025.
+This manual corresponds to version 6.4.2/dev of the Kpathsea library,
+released in January 2026.
 
    The library's fundamental purpose is to return a filename from a list
 of directories specified by the user, similar to what shells do when
@@ -239,20 +239,21 @@ illegitimate root access.
 
    Thus, the general goal of our security measures is to make an
 untrusted TeX document safe to execute, in the sense of no document
-being able to change the system or user configuration, or somehow
-transmit information to an attacker.  Here are some of the steps that
-have been taken to make the TeX system safe in this regard:
+being able to change the system or user configuration, or transmit
+information to an attacker.  Here are some of the steps that have been
+taken to make the TeX system safe in this regard:
 
    • A TeX document can write to arbitrary files via ‘\openout’, e.g.,
      ‘~/.profile’, and thus an unwitting user who runs TeX on an
      untrusted document is vulnerable to a trojan horse attack.  This
      loophole is closed by default, but you can be permissive if you so
-     desire in ‘texmf.cnf’.  *Note (web2c)tex invocation::.  MetaPost
-     has the same issue.
+     desire in ‘texmf.cnf’; see the variable ‘openout_any’.  *Note
+     (web2c)tex invocation::.  MetaPost has the same issue (Metafont
+     cannot write arbitrary files).
 
    • Dvips, Xdvi, TeX, and others can execute shell commands.  By
-     default, only a handful of commands that are believed to be safe
-     (to the best of our ability to check) are allowed.  For the list,
+     default, only a handful of commands that are believed to be safe,
+     to the best of our ability to check, are allowed.  For the list,
      see the ‘shell_escape_commands’ variable in ‘texmf.cnf’ (*note
      (web2c)Shell escapes::).  For more information, e.g., to disable
      this completely, see the ‘-R’ option in *note (dvips)Option
@@ -261,20 +262,21 @@ have been taken to make the TeX system safe in this regard:
 
    • LuaTeX is a special case.  Since Lua is a general-purpose
      programming language, it has all the usual functionality for
-     writing files, executing shell commands, and plenty more.  When
-     LuaTeX is used in its so-called "kpse" mode, as with LuaLaTeX, we
-     have nevertheless done our best to also make it safe to execute by
-     default, by disabling or restricting the various problematic Lua
-     features.  *Note Safe filenames::, for a bit more about this.  (By
-     the way, when LuaTeX is run in non-kpse mode, as with ConTeXt MkIV,
-     everything is allowed; thus, untrusted documents should not be
-     processed without checking.)
+     writing files, executing shell commands, opening network
+     connections, and plenty more.  When LuaTeX is used in its so-called
+     "kpse" mode, as with LuaLaTeX, we have nevertheless done our best
+     to also make it safe to execute by default, by disabling or
+     restricting the various problematic Lua features.  *Note Safe
+     filenames::, for a bit more about this.  (When LuaTeX is run in
+     non-kpse mode, as with ConTeXt MkIV, everything is allowed; thus,
+     untrusted documents should not be processed.)
 
-   • There are some well-known ways to crash TeX, using (deliberately
-     unchecked) arithmetic overflow and other nefarious constructs (some
-     are listed at <https://tug.org/texmfbug/nobug.html>.  While
-     disturbing, TeX has no special system access and so these crashes
-     don't present a security risk.
+   • There are some well-known ways to crash TeX, using arithmetic
+     overflow, which Knuth deliberately left unchecked, and other
+     nefarious constructs; some are listed at
+     <https://tug.org/texmfbug/nobug.html>.  While disturbing, TeX has
+     no special system access and so these crashes don't present a
+     security risk.
 
    • One more issue is the desire for a globally writable font cache
      directory; see the section below for this (*note Global font cache
@@ -311,7 +313,7 @@ directories under ‘texmf’ be append-only with an option in ‘mktex.cnf’.
 make the ‘texmf’ tree writable only to that group (or user), and make
 ‘mktexpk’ et al. setgid to that group (or setuid to that user).  Then
 users must invoke the scripts to install things.  (If you're worried
-about the inevitable security holes in scripts, then you could write a C
+about the likelihood of security holes in scripts, you could write a C
 wrapper to exec the script.)
 
    The ‘mktex...’ scripts install files with the same read and write
@@ -323,8 +325,8 @@ permissions as their parent directory, unless the ‘appendonlydir’
 feature is used, in which case the sticky bit is always set.
 
    Nowadays, with bitmap files rarely used, and with individual systems
-being so much more powerful, this is less of an issue than it was in the
-past.  But the question still comes up occasionally.
+being so much more powerful, this is less of an issue than in the past.
+But the question still comes up occasionally.
 
 
 File: kpathsea.info,  Node: TeX directory structure,  Next: Path searching,  Prev: Security,  Up: Top
@@ -846,34 +848,46 @@ and so on, but not ‘/a/b/c’ or ‘/a/1’.
 
    You can include multiple ‘//’ constructs in the path.
 
-   ‘//’ at the beginning of a path is ignored; you didn't really want to
-search every directory on the system, did you?
+   ‘//’ at the beginning of a path is ignored.  Searching every
+directory on the system is not relevant for TeX.
 
-   I should mention one related implementation trick, which I took from
-GNU find.  Matthew Farwell suggested it, and David MacKenzie implemented
-it.
+   We need to discuss one related implementation trick, originally taken
+from GNU find.  Matthew Farwell suggested it, and David MacKenzie
+implemented it.
 
-   The trick is that in every real Unix implementation (as opposed to
-the POSIX specification), a directory which contains no subdirectories
-will have exactly two links (namely, one for ‘.’ and one for ‘..’).
-That is to say, the ‘st_nlink’ field in the ‘stat’ structure will be
-two.  Thus, we don't have to stat everything in the bottom-level (leaf)
+   The trick is that in normal Unix implementations (though not in the
+POSIX specification), a directory which contains no subdirectories will
+have exactly two links (namely, one for ‘.’ and one for ‘..’).  That is
+to say, the ‘st_nlink’ field in the ‘stat’ structure will be two.  Thus,
+we don't have to stat everything in the bottom-level (leaf)
 directories--we can just check ‘st_nlink’, notice it's two, and do no
 more work.
 
-   But if you have a directory that contains a single subdirectory and
-500 regular files, ‘st_nlink’ will be 3, and Kpathsea has to stat every
-one of those 501 entries.  Therein lies slowness.
+   Kpathsea never does this ‘st_nlink=2’ check (or any disk checking)
+for ‘!!’ trees (*note ls-R::).  And the non-‘!!’ trees in a TeX Live
+installation are typically extremely small.  Therefore the ‘st_nlink’
+check is not performed by default at all, as of 2025 (Kpathsea 6.3.4).
+That way, two not-uncommon situations work out: 1) all ‘gvisor’-handled
+filesystems return ‘st_nlink=1’ before some post-2025 release
+(<https://tug.org/pipermail/texhax/2025-July/026772.html>); 2) a
+symbolic link to another directory in such an apparent leaf directory
+will get followed even though ‘st_nlink=2’
+(<https://tex.stackexchange.com/questions/132908>).
 
-   You can disable the trick by undefining ‘ST_NLINK_TRICK’ in
-‘kpathsea/config.h’.  (It is undefined by default except under Unix.)
+   If you have an extremely large non-‘!!’ tree, most likely
+‘TEXMFHOME’, you may find it useful to enable the check: you can do this
+by setting the configuration variable ‘texmf_nlink_for_leaf’ to 1.
+Alternatively, with such a large tree, you may find it even more useful
+to add the tree to ‘TEXMFDBS’ so that only ‘ls-R’ lookups are done
+(again, *note ls-R::).
 
-   Unfortunately, in some cases files in leaf directories are ‘stat’'d:
-if the path specification is, say, ‘$TEXMF/fonts//pk//’, then files in a
-subdirectory ‘.../pk’, even if it is a leaf, are checked.  The reason
-cannot be explained without reference to the implementation, so read
-‘kpathsea/elt-dirs.c’ (search for ‘may descend’) if you are curious.
-And if you find a way to solve the problem, please let me know.
+   Unfortunately, in some cases files in leaf directories are ‘stat’'d
+anyway: if the path specification is, say, ‘$TEXMF/fonts//pk//’, then
+files in a subdirectory ‘.../pk’, even if it is a leaf, are checked.
+The reason cannot be explained without reference to the implementation,
+so read ‘kpathsea/elt-dirs.c’ (search for ‘may descend’) if you are
+curious.  And if you find a way to solve the problem, please let me
+know.
 
    Subdirectory expansion is implemented in the source file
 ‘kpathsea/elt-dirs.c’.
@@ -1381,31 +1395,31 @@ lookups.
           tex: .tex  .sty .cls .fd .aux .bbl .def .clo .ldf
           TeX system documentation (doc):
           texpool: .pool
-          TeX system sources (source):  .dtx .ins
-          PostScript header:  .pro
+          TeX system source (source, src):  .dtx .ins
+          PostScript header (psheader):  .pro
           Troff fonts (trofffont):
           type1 fonts: .pfa .pfb
           vf: .vf
           dvips config (dvipsconfig):
           ist: .ist
-          truetype fonts: .ttf .ttc .TTF .TTC .dfont
-          type42 fonts: .t42 .T42
+          truetype fonts (truetype, ttf): .ttf .ttc .TTF .TTC .dfont
+          type42 fonts (type42): .t42 .T42
           web2c files (web2c):
           other text files (othertext):
           other binary files (otherbin):
           misc fonts (miscfont):
           web: .web  .ch
           cweb: .w .web  .ch
-          enc files: .enc
+          enc files (enc): .enc
           cmap files (cmap):
-          subfont definition files: .sfd
-          opentype fonts: .otf .OTF
+          subfont definition files (sfd): .sfd
+          opentype fonts (opentype, otf): .otf .OTF
           pdftex config (pdftexconfig):
-          lig files: .lig
+          lig files (lig): .lig
           texmfscripts:
           lua: .lua .luatex .luc .luctex .texlua .texluc .tlu
-          font feature files: .fea
-          cid maps: .cid .cidmap
+          font feature files (fea): .fea
+          cid maps (cidmap): .cid .cidmap
           mlbib: .mlbib .bib
           mlbst: .mlbst .bst
           clua: .dll .so
@@ -2640,7 +2654,8 @@ another.  *Note (web2c)Shell escapes::.
 if the final result is an acceptable directory; they are simply
 forbidden.  That is, Kpathsea merely considers the value as a string,
 not looking on the filesystem at all.  (However, if another program
-wants to do such resolutions and check the result, that's ok.)
+wants to do such resolutions and check the result, that's ok; possibly
+preferable.)
 
    For backwards compatibility, ‘y’ and ‘1’ are synonyms of ‘a’, while
 ‘n’ and ‘0’ are synonyms for ‘r’.
@@ -2654,12 +2669,13 @@ output or ‘false’ otherwise.  The Kpsewhich program has an option
 ‘kpathsea_out_name_ok_extended’, and the Kpsewhich option is
 ‘--safe-extended-out-name’.
 
-   Similarly, the function ‘kpathsea_in_name_ok’ (resp. ‘_extended’,
-with a filename as second argument, returns ‘true’ if that filename is
-acceptable to be opend for input or ‘false’ otherwise, depending on the
-value of the configuration variable ‘openin_any’.  Unfortunately, for
-reading, ‘a’ is the default default; too many system directories and
-files get involved to make ‘r’ or ‘p’ feasible.
+   Although the analogous functions ‘kpathsea_in_name_ok’ (resp.
+‘_extended’, as well as the others below, exist to check a filename
+being acceptable for reading, as of 2026, they always return true
+without checking anything.  This is because no other value was useful
+(or used) in practice.  More comments about this are in the default
+‘texmf.cnf’, at ‘openin_any’ (which variable is defined, but is now
+ignored).
 
    The functions above write a message to standard error if the usage is
 forbidden (so every caller does not have to do so).  Each function has a
@@ -3041,24 +3057,30 @@ debugging options helpful.  *Note Debugging::.
      such may be the culprit.
 
    • Your files reside in a directory that is only pointed to via a
-     symbolic link, in a leaf directory and is not listed in ‘ls-R’.
+     symbolic link within a leaf directory, and is not listed in ‘ls-R’.
 
-     Unfortunately, Kpathsea's subdirectory searching has an
-     irremediable deficiency: If a directory D being searched for
-     subdirectories contains plain files and symbolic links to other
-     directories, but no true subdirectories, D will be considered a
-     leaf directory, i.e., the symbolic links will not be followed.
-     *Note Subdirectory expansion::.
+     Unfortunately, Kpathsea's subdirectory searching has a problematic
+     deficiency: If a directory D being searched for subdirectories
+     contains symbolic links to other directories (and possibly other
+     plain files or symlinks), but no true subdirectories, by default D
+     will be considered a leaf directory, i.e., the symbolic links will
+     not be followed.  *Note Subdirectory expansion::.
 
      You can work around this problem by creating an empty dummy
      subdirectory in D.  Then D will no longer be a leaf, and the
      symlinks will be followed.
 
+     Another workaround is to set the configuration variable
+     ‘kpse_ignore_nlink_for_leaf’ to 1.  Then Kpathsea will look at all
+     entries in all directories in determining whether they are
+     (symlinks to) subdirectories.  This is not the default because it
+     is considerably expensive to consider the contents of every leaf
+     directory.
+
      The directory immediately followed by the ‘//’ in the path
-     specification, however, is always searched for subdirectories, even
-     if it is a leaf.  Presumably you would not have asked for the
-     directory to be searched for subdirectories if you didn't want it
-     to be.
+     specification is always searched for subdirectories, even if it is
+     a leaf.  Presumably you would not have asked for the directory to
+     be searched for subdirectories if you didn't want it to be.
 
    • If the fonts (or whatever) don't already exist, ‘mktexpk’ (or
      ‘mktexmf’ or ‘mktextfm’) will try to create them.  If these rather
@@ -3495,10 +3517,11 @@ Index
 * configuration file, source for path:   Path sources.        (line  20)
 * configuration of mktex scripts:        mktex configuration. (line   6)
 * configure options for mktex scripts:   mktex configuration. (line  12)
+* ConTeXt and (no) security:             Security.            (line  33)
 * context diff:                          Bug checklist.       (line  52)
 * continuation character:                Config files.        (line  37)
 * core dumps, reporting:                 Bug checklist.       (line  58)
-* crashes of TeX and security:           Security.            (line  43)
+* crashes of TeX and security:           Security.            (line  44)
 * crashes, reporting:                    Bug checklist.       (line  58)
 * CWEBINPUTS:                            Supported file formats.
                                                               (line  53)
@@ -3544,9 +3567,9 @@ Index
 * dynamic creation of files:             mktex scripts.       (line   6)
 * EC fonts, and dynamic source creation: mktex scripts.       (line   6)
 * elt-dirs.c:                            Subdirectory expansion.
-                                                              (line  41)
+                                                              (line  52)
 * elt-dirs.c <1>:                        Subdirectory expansion.
-                                                              (line  48)
+                                                              (line  60)
 * enabling mktex scripts:                mktex configuration. (line   6)
 * ENCFONTS:                              Supported file formats.
                                                               (line  61)
@@ -3680,25 +3703,25 @@ Index
 * kpathsea_find_glyph:                   Glyph lookup.        (line  26)
 * kpathsea_find_glyph <1>:               Calling sequence.    (line  70)
 * kpathsea_finish:                       Calling sequence.    (line  87)
-* kpathsea_in_name_ok:                   Safe filenames.      (line  59)
-* kpathsea_in_name_ok_extended:          Safe filenames.      (line  59)
-* kpathsea_in_name_ok_silent:            Safe filenames.      (line  72)
-* kpathsea_in_name_ok_silent_extended:   Safe filenames.      (line  72)
+* kpathsea_in_name_ok:                   Safe filenames.      (line  60)
+* kpathsea_in_name_ok_extended:          Safe filenames.      (line  60)
+* kpathsea_in_name_ok_silent:            Safe filenames.      (line  74)
+* kpathsea_in_name_ok_silent_extended:   Safe filenames.      (line  74)
 * kpathsea_init_prog:                    Fallback font.       (line  15)
 * kpathsea_init_prog <1>:                Calling sequence.    (line  53)
 * kpathsea_new:                          Calling sequence.    (line   9)
 * kpathsea_open_file:                    Calling sequence.    (line  79)
-* kpathsea_out_name_ok:                  Safe filenames.      (line  50)
-* kpathsea_out_name_ok_extended:         Safe filenames.      (line  55)
-* kpathsea_out_name_ok_silent:           Safe filenames.      (line  72)
-* kpathsea_out_name_ok_silent_extended:  Safe filenames.      (line  72)
+* kpathsea_out_name_ok:                  Safe filenames.      (line  51)
+* kpathsea_out_name_ok_extended:         Safe filenames.      (line  56)
+* kpathsea_out_name_ok_silent:           Safe filenames.      (line  74)
+* kpathsea_out_name_ok_silent_extended:  Safe filenames.      (line  74)
 * kpathsea_set_program_name:             Calling sequence.    (line  14)
 * kpathsea_var_value:                    Programming with config files.
                                                               (line  10)
 * KPATHSEA_WARNING:                      Config files.        (line  18)
 * kpathsea.h:                            Programming overview.
                                                               (line  26)
-* kpse mode of LuaTeX:                   Security.            (line  32)
+* kpse mode of LuaTeX:                   Security.            (line  33)
 * KPSE_BITMAP_TOLERANCE:                 Basic glyph lookup.  (line  15)
 * KPSE_DEBUG_EXPAND (16):                Debugging.           (line  68)
 * KPSE_DEBUG_FOPEN (4):                  Debugging.           (line  53)
@@ -3745,7 +3768,7 @@ Index
 * LUAINPUTS:                             Supported file formats.
                                                               (line  94)
 * luaotfload:                            Safe filenames.      (line  26)
-* LuaTeX and security:                   Security.            (line  32)
+* LuaTeX and security:                   Security.            (line  33)
 * Mac filesystem, case-insensitive:      Casefolding rationale.
                                                               (line   6)
 * MacKenzie, David:                      History.             (line  44)
@@ -3832,6 +3855,7 @@ Index
                                                               (line 145)
 * online Metafont display, spurious:     Unable to generate fonts.
                                                               (line  36)
+* openin_any:                            Safe filenames.      (line  60)
 * openout_any:                           Safe filenames.      (line   6)
 * OPENTYPEFONTS:                         Supported file formats.
                                                               (line 149)
@@ -3933,7 +3957,7 @@ Index
                                                               (line  23)
 * SFDFONTS:                              Supported file formats.
                                                               (line 181)
-* shell commands, security:              Security.            (line  23)
+* shell commands, security:              Security.            (line  24)
 * shell variables:                       Variable expansion.  (line  17)
 * shell_escape, example for code:        Programming with config files.
                                                               (line  10)
@@ -3948,8 +3972,6 @@ Index
                                                               (line  30)
 * st_nlink:                              Subdirectory expansion.
                                                               (line  26)
-* ST_NLINK_TRICK:                        Subdirectory expansion.
-                                                              (line  38)
 * stack trace:                           Bug checklist.       (line  58)
 * standalone path searching:             Invoking kpsewhich.  (line   6)
 * standard error and debugging output:   Debugging.           (line  27)
@@ -4163,66 +4185,66 @@ Index
 
 Tag Table:
 Node: Top1479
-Node: Introduction2261
-Node: History4364
-Node: unixtex.ftp8984
-Node: Security10466
-Node: Global font cache and security13179
-Node: TeX directory structure15170
-Node: Path searching19345
-Node: Searching overview20303
-Node: Path sources24210
-Node: Config files25480
-Node: Path expansion30528
-Node: Default expansion31497
-Node: Variable expansion33619
-Node: Tilde expansion35088
-Node: Brace expansion36136
-Node: KPSE_DOT expansion37131
-Node: Subdirectory expansion37656
-Node: Casefolding search40096
-Node: Casefolding rationale40873
-Node: Casefolding examples42231
-Node: Filename database47453
-Node: ls-R48467
-Node: Filename aliases52339
-Node: Database format53581
-Node: Invoking kpsewhich54630
-Node: kpsewhich examples56021
-Node: Path searching options56909
-Node: Specially-recognized files67083
-Node: Auxiliary tasks68558
-Node: Standard options72702
-Node: TeX support73070
-Node: Supported file formats74428
-Node: File lookup83179
-Node: Glyph lookup84984
-Node: Basic glyph lookup86132
-Node: Fontmap87040
-Node: Fallback font89651
-Node: Suppressing warnings90587
-Node: mktex scripts91750
-Node: mktex configuration92993
-Node: mktex script names99086
-Node: mktex script arguments100769
-Node: Programming101684
-Node: Programming overview102327
-Node: Calling sequence105238
-Node: Safe filenames110575
-Ref: openout_any110734
-Node: Program-specific files114543
-Node: Programming with config files115596
-Node: Reporting bugs117243
-Node: Bug checklist117921
-Node: Mailing lists121478
-Node: Debugging122155
-Node: Logging127412
-Node: Common problems129319
-Node: Unable to find files129796
-Node: Slow path searching132252
-Node: Unable to generate fonts133647
-Node: TeX or Metafont failing136183
-Node: Index137385
+Node: Introduction2265
+Node: History4372
+Node: unixtex.ftp8992
+Node: Security10474
+Node: Global font cache and security13282
+Node: TeX directory structure15263
+Node: Path searching19438
+Node: Searching overview20396
+Node: Path sources24303
+Node: Config files25573
+Node: Path expansion30621
+Node: Default expansion31590
+Node: Variable expansion33712
+Node: Tilde expansion35181
+Node: Brace expansion36229
+Node: KPSE_DOT expansion37224
+Node: Subdirectory expansion37749
+Node: Casefolding search40910
+Node: Casefolding rationale41687
+Node: Casefolding examples43045
+Node: Filename database48267
+Node: ls-R49281
+Node: Filename aliases53153
+Node: Database format54395
+Node: Invoking kpsewhich55444
+Node: kpsewhich examples56835
+Node: Path searching options57723
+Node: Specially-recognized files67986
+Node: Auxiliary tasks69461
+Node: Standard options73605
+Node: TeX support73973
+Node: Supported file formats75331
+Node: File lookup84082
+Node: Glyph lookup85887
+Node: Basic glyph lookup87035
+Node: Fontmap87943
+Node: Fallback font90554
+Node: Suppressing warnings91490
+Node: mktex scripts92653
+Node: mktex configuration93896
+Node: mktex script names99989
+Node: mktex script arguments101672
+Node: Programming102587
+Node: Programming overview103230
+Node: Calling sequence106141
+Node: Safe filenames111478
+Ref: openout_any111637
+Node: Program-specific files115467
+Node: Programming with config files116520
+Node: Reporting bugs118167
+Node: Bug checklist118845
+Node: Mailing lists122402
+Node: Debugging123079
+Node: Logging128336
+Node: Common problems130243
+Node: Unable to find files130720
+Node: Slow path searching133563
+Node: Unable to generate fonts134958
+Node: TeX or Metafont failing137494
+Node: Index138696
 
 End Tag Table
 

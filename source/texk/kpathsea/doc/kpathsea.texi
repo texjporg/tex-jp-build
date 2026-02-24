@@ -2,13 +2,13 @@
 @setfilename kpathsea.info
 @settitle Kpathsea: A library for path searching
 
-@set version 6.4.0
-@set month-year January 2025
+@set version 6.4.2/dev
+@set month-year January 2026
 
 @copying
 This file documents the Kpathsea library for path searching.
 
-Copyright @copyright{} 1996--2025 Karl Berry & Olaf Weber.
+Copyright @copyright{} 1996--2026 Karl Berry & Olaf Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -287,9 +287,9 @@ illegitimate root access.
 
 Thus, the general goal of our security measures is to make an
 untrusted @TeX{} document safe to execute, in the sense of no document
-being able to change the system or user configuration, or somehow
-transmit information to an attacker.  Here are some of the steps that
-have been taken to make the @TeX{} system safe in this regard:
+being able to change the system or user configuration, or transmit
+information to an attacker.  Here are some of the steps that have been
+taken to make the @TeX{} system safe in this regard:
 
 @itemize
 @item
@@ -300,14 +300,15 @@ A @TeX{} document can write to arbitrary files via @code{\openout},
 e.g., @file{~/.profile}, and thus an unwitting user who runs @TeX{} on
 an untrusted document is vulnerable to a trojan horse attack.  This
 loophole is closed by default, but you can be permissive if you so
-desire in @file{texmf.cnf}.  @xref{tex invocation,,, web2c, Web2c}.
-MetaPost has the same issue.
+desire in @file{texmf.cnf}; see the variable @code{openout_any}.
+@xref{tex invocation,,, web2c, Web2c}.  MetaPost has the same issue
+(Metafont cannot write arbitrary files).
 
 @item
 @cindex shell commands, security
 Dvips, Xdvi, @TeX{}, and others can execute shell commands.  By
-default, only a handful of commands that are believed to be safe (to
-the best of our ability to check) are allowed.  For the list, see the
+default, only a handful of commands that are believed to be safe, to
+the best of our ability to check, are allowed.  For the list, see the
 @code{shell_escape_commands} variable in @file{texmf.cnf}
 (@pxref{Shell escapes,,, web2c, Web2c}).  For more information, e.g.,
 to disable this completely, see the @samp{-R} option in @ref{Option
@@ -317,29 +318,32 @@ invocation,,, web2c, Web2c}, respectively.
 @item
 @cindex Lua@TeX{} and security
 @cindex kpse mode of Lua@TeX{}
+@cindex Con@TeX{}t and (no) security
 Lua@TeX{} is a special case.  Since Lua is a general-purpose
 programming language, it has all the usual functionality for writing
-files, executing shell commands, and plenty more.  When Lua@TeX{} is
-used in its so-called ``kpse'' mode, as with Lua@LaTeX{}, we have
-nevertheless done our best to also make it safe to execute by default,
-by disabling or restricting the various problematic Lua features.
-@xref{Safe filenames}, for a bit more about this.  (By the way, when
-Lua@TeX{} is run in non-kpse mode, as with Con@TeX{}t MkIV, everything
-is allowed; thus, untrusted documents should not be processed without
-checking.)
+files, executing shell commands, opening network connections, and
+plenty more.  When Lua@TeX{} is used in its so-called ``kpse'' mode,
+as with Lua@LaTeX{}, we have nevertheless done our best to also make
+it safe to execute by default, by disabling or restricting the various
+problematic Lua features.  @xref{Safe filenames}, for a bit more about
+this.  (When Lua@TeX{} is run in non-kpse mode, as with Con@TeX{}t
+MkIV, everything is allowed; thus, untrusted documents should not be
+processed.)
 
 @item
 @cindex crashes of @TeX{} and security
-There are some well-known ways to crash @TeX{}, using (deliberately
-unchecked) arithmetic overflow and other nefarious constructs (some
-are listed at @url{https://tug.org/texmfbug/nobug.html}.  While
-disturbing, @TeX{} has no special system access and so these crashes
-don't present a security risk.
+There are some well-known ways to crash @TeX{}, using arithmetic
+overflow, which Knuth deliberately left unchecked, and other nefarious
+constructs; some are listed at
+@url{https://tug.org/texmfbug/nobug.html}.  While disturbing, @TeX{}
+has no special system access and so these crashes don't present a
+security risk.
 
 @item
 One more issue is the desire for a globally writable font cache
 directory; see the section below for this (@ref{Global font cache and
 security}).
+
 @end itemize
 
 @menu
@@ -376,7 +380,7 @@ Another approach is to establish a group (or user) for @TeX{} files,
 make the @file{texmf} tree writable only to that group (or user), and
 make @code{mktexpk} et al.@: setgid to that group (or setuid to that
 user).  Then users must invoke the scripts to install things.  (If
-you're worried about the inevitable security holes in scripts, then you
+you're worried about the likelihood of security holes in scripts, you
 could write a C wrapper to exec the script.)
 
 @cindex file permissions
@@ -393,8 +397,8 @@ same permissions as their parent directory, unless the
 always set.
 
 Nowadays, with bitmap files rarely used, and with individual systems
-being so much more powerful, this is less of an issue than it was in
-the past. But the question still comes up occasionally.
+being so much more powerful, this is less of an issue than in the
+past. But the question still comes up occasionally.
 
 
 @node TeX directory structure
@@ -1059,36 +1063,49 @@ subdirectories which match those components are included.  For example,
 
 You can include multiple @samp{//} constructs in the path.
 
-@samp{//} at the beginning of a path is ignored; you didn't really want
-to search every directory on the system, did you?
+@samp{//} at the beginning of a path is ignored.  Searching every
+directory on the system is not relevant for @TeX{}.
 
 @cindex trick for detecting leaf directories
 @cindex leaf directory trick
 @cindex Farwell, Matthew
 @cindex MacKenzie, David
-I should mention one related implementation trick, which I took from GNU
-find.  Matthew Farwell suggested it, and David MacKenzie implemented it.
+We need to discuss one related implementation trick, originally taken
+from GNU find.  Matthew Farwell suggested it, and David MacKenzie
+implemented it.
 
 @vindex st_nlink
-The trick is that in every real Unix implementation (as opposed to the
-POSIX specification), a directory which contains no subdirectories will
-have exactly two links (namely, one for @file{.} and one for @file{..}).
-That is to say, the @code{st_nlink} field in the @samp{stat} structure
-will be two.  Thus, we don't have to stat everything in the bottom-level
-(leaf) directories---we can just check @code{st_nlink}, notice it's two,
-and do no more work.
+The trick is that in normal Unix implementations (though not in the
+POSIX specification), a directory which contains no subdirectories
+will have exactly two links (namely, one for @file{.} and one for
+@file{..}).  That is to say, the @code{st_nlink} field in the
+@samp{stat} structure will be two.  Thus, we don't have to stat
+everything in the bottom-level (leaf) directories---we can just check
+@code{st_nlink}, notice it's two, and do no more work.
 
-But if you have a directory that contains a single subdirectory and 500
-regular files, @code{st_nlink} will be 3, and Kpathsea has to stat every
-one of those 501 entries.  Therein lies slowness.
+Kpathsea never does this @code{st_nlink=2} check (or any disk
+checking) for @code{!!} trees (@pxref{ls-R}).  And the non-@code{!!}
+trees in a @TeX{} Live installation are typically extremely small.
+Therefore the @code{st_nlink} check is not performed by default at
+all, as of 2025 (Kpathsea 6.3.4). That way, two not-uncommon
+situations work out: 1)@tie{}all @code{gvisor}-handled filesystems return
+@code{st_nlink=1} before some post-2025 release
+(@url{https://tug.org/pipermail/texhax/2025-July/026772.html});
+2)@tie{}a symbolic link to another directory in such an apparent leaf
+directory will get followed even though @code{st_nlink=2} 
+(@url{https://tex.stackexchange.com/questions/132908}).
 
-@vindex ST_NLINK_TRICK
-You can disable the trick by undefining @code{ST_NLINK_TRICK} in
-@file{kpathsea/config.h}. (It is undefined by default except under Unix.)
+If you have an extremely large non-@code{!!} tree, most likely
+@code{TEXMFHOME}, you may find it useful to enable the check: you can
+do this by setting the configuration variable
+@code{texmf_nlink_for_leaf} to 1. Alternatively, with such a large
+tree, you may find it even more useful to add the tree to
+@code{TEXMFDBS} so that only @code{ls-R} lookups are done (again,
+@pxref{ls-R}).
 
 @flindex elt-dirs.c
 Unfortunately, in some cases files in leaf directories are
-@code{stat}'d: if the path specification is, say,
+@code{stat}'d anyway: if the path specification is, say,
 @samp{$TEXMF/fonts//pk//}, then files in a subdirectory
 @samp{@dots{}/pk}, even if it is a leaf, are checked. The reason
 cannot be explained without reference to the implementation, so read
@@ -1697,31 +1714,31 @@ graphic/figure:  .eps .epsi
 tex: .tex  .sty .cls .fd .aux .bbl .def .clo .ldf
 TeX system documentation (doc):
 texpool: .pool
-TeX system sources (source):  .dtx .ins
-PostScript header:  .pro
+TeX system source (source, src):  .dtx .ins
+PostScript header (psheader):  .pro
 Troff fonts (trofffont):
 type1 fonts: .pfa .pfb
 vf: .vf
 dvips config (dvipsconfig):
 ist: .ist
-truetype fonts: .ttf .ttc .TTF .TTC .dfont
-type42 fonts: .t42 .T42
+truetype fonts (truetype, ttf): .ttf .ttc .TTF .TTC .dfont
+type42 fonts (type42): .t42 .T42
 web2c files (web2c):
 other text files (othertext):
 other binary files (otherbin):
 misc fonts (miscfont):
 web: .web  .ch
 cweb: .w .web  .ch
-enc files: .enc
+enc files (enc): .enc
 cmap files (cmap):
-subfont definition files: .sfd
-opentype fonts: .otf .OTF
+subfont definition files (sfd): .sfd
+opentype fonts (opentype, otf): .otf .OTF
 pdftex config (pdftexconfig):
-lig files: .lig
+lig files (lig): .lig
 texmfscripts:
 lua: .lua .luatex .luc .luctex .texlua .texluc .tlu
-font feature files: .fea
-cid maps: .cid .cidmap
+font feature files (fea): .fea
+cid maps (cidmap): .cid .cidmap
 mlbib: .mlbib .bib
 mlbst: .mlbst .bst
 clua: .dll .so
@@ -3304,13 +3321,13 @@ variable @code{KPATHSEA_DEBUG} (if that is set).
 @cindex SELFAUTOPARENT
 @cindex symlinks, resolving
 @cindex expanding symlinks
-Finally, it sets the environment variables @code{SELFAUTOLOC}, @code{SELFAUTODIR}
-and @code{SELFAUTOPARENT} to the location, parent and grandparent
-directory of the executable, removing @file{.} and @file{..} path
-elements and resolving symbolic links.  These are used in the default
-configuration file to allow people to invoke TeX from anywhere.  You
-can use @samp{kpsewhich --expand-var=\$SELFAUTOLOC}, etc., to see the
-values.
+Finally, it sets the environment variables @code{SELFAUTOLOC},
+@code{SELFAUTODIR} and @code{SELFAUTOPARENT} to the location, parent
+and grandparent directory of the executable, removing @file{.} and
+@file{..} path elements and resolving symbolic links.  These are used
+in the default configuration file to allow people to invoke TeX from
+anywhere.  You can use @samp{kpsewhich --expand-var=\$SELFAUTOLOC},
+etc., to see the values.
 
 @item
 @vindex kpse->debug @r{variable}
@@ -3471,7 +3488,8 @@ Kpathsea does not resolve @samp{..} components, or symbolic links, to
 see if the final result is an acceptable directory; they are simply
 forbidden.  That is, Kpathsea merely considers the value as a string,
 not looking on the filesystem at all.  (However, if another program
-wants to do such resolutions and check the result, that's ok.)
+wants to do such resolutions and check the result, that's ok; possibly
+preferable.)
 
 For backwards compatibility, @samp{y} and @samp{1} are synonyms of
 @samp{a}, while @samp{n} and @samp{0} are synonyms for @samp{r}.
@@ -3490,13 +3508,14 @@ For Lua@TeX{}'s extended mode, the function is
 
 @findex kpathsea_in_name_ok
 @findex kpathsea_in_name_ok_extended
-Similarly, the function @code{kpathsea_in_name_ok} (resp.@:
-@code{_extended}, with a filename as second argument, returns
-@code{true} if that filename is acceptable to be opend for input or
-@code{false} otherwise, depending on the value of the configuration
-variable @code{openin_any}.  Unfortunately, for reading, @samp{a} is
-the default default; too many system directories and files get
-involved to make @samp{r} or @samp{p} feasible.
+@vindex openin_any
+Although the analogous functions @code{kpathsea_in_name_ok} (resp.@:
+@code{_extended}, as well as the others below, exist to check a
+filename being acceptable for reading, as of 2026, they always return
+true without checking anything. This is because no other value was
+useful (or used) in practice.  More comments about this are in the
+default @file{texmf.cnf}, at @code{openin_any} (which variable is
+defined, but is now ignored).
 
 The functions above write a message to standard error if the usage is
 forbidden (so every caller does not have to do so).  Each function has
@@ -3964,22 +3983,29 @@ culprit.
 @cindex symbolic links not found
 @cindex leaf directories wrongly guessed
 Your files reside in a directory that is only pointed to via a symbolic
-link, in a leaf directory and is not listed in @file{ls-R}.
+link within a leaf directory, and is not listed in @file{ls-R}.
 
-Unfortunately, Kpathsea's subdirectory searching has an irremediable
+Unfortunately, Kpathsea's subdirectory searching has a problematic
 deficiency: If a directory @var{d} being searched for subdirectories
-contains plain files and symbolic links to other directories, but no
-true subdirectories, @var{d} will be considered a leaf directory, i.e.,
-the symbolic links will not be followed.  @xref{Subdirectory expansion}.
+contains symbolic links to other directories (and possibly other plain
+files or symlinks), but no true subdirectories, by default @var{d}
+will be considered a leaf directory, i.e., the symbolic links will not
+be followed.  @xref{Subdirectory expansion}.
 
 You can work around this problem by creating an empty dummy subdirectory
 in @var{d}. Then @var{d} will no longer be a leaf, and the symlinks will
 be followed.
 
+Another workaround is to set the configuration variable
+@code{kpse_ignore_nlink_for_leaf} to 1.  Then Kpathsea will look at
+all entries in all directories in determining whether they are
+(symlinks to) subdirectories. This is not the default because it is
+considerably expensive to consider the contents of every leaf directory.
+
 The directory immediately followed by the @samp{//} in the path
-specification, however, is always searched for subdirectories, even if
-it is a leaf.  Presumably you would not have asked for the directory to
-be searched for subdirectories if you didn't want it to be.
+specification is always searched for subdirectories, even if it is a
+leaf.  Presumably you would not have asked for the directory to be
+searched for subdirectories if you didn't want it to be.
 
 @item
 If the fonts (or whatever) don't already exist, @code{mktexpk} (or

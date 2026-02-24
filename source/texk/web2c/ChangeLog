@@ -1,3 +1,119 @@
+2026-01-30  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.tex: fix some outdated urls and references.
+
+2026-01-19  Karl Berry  <karl@freefriends.org>
+
+	* texmfmp-help.h: https for pdftex.org.
+
+2026-01-18  Karl Berry  <karl@freefriends.org>
+
+	* NEWS: \ignoreprimitiveerror output now goes only to the
+	log file, and without the word "error".
+
+2026-01-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch: Limit index into 'dig' array.,
+
+2026-01-08  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi: updates for memory dumps, LuaTeX, Metafont
+	windows, mft -metapost option.
+
+2026-01-06  Andreas Scherer  <https://ascherer.github.io>
+
+	* weav-twill.ch,
+	* weave.ch: Fix a few typos.
+
+2025-12-13  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* Makefile.am: sync with the upstream luatex.
+
+2025-12-11  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin,
+	* cwebboot.cin: Avoid spurious spaces in macro output.
+
+2025-11-30  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (XETEX_MACOSX): check for enable_xetex=yes
+	as well as for ApplicationServices. Stemmed from original report at
+	https://tug.org/pipermail/tex-k/2025-November/004226.html.
+	* configure: regenerate.
+
+2025-11-11  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (KPSE_HARFBUZZ_FLAGS): enable if hitex is enabled.
+	Report from balducci,
+	https://tug.org/pipermail/tex-k/2025-November/004229.html.
+
+2025-11-10  Karl Berry  <karl@freefriends.org>
+
+	* PROJECTS: typo.
+
+2025-11-05  Karl Berry  <karl@freefriends.org>
+
+	* ac/web2c.ac (kpse_tex_progs) <hitex>: now depends on harfbuzz.
+	* configure,
+	* Makefile.in: reautoconf.
+	However, undefined reference to `hb_ft_face_create_referenced' remains.
+	https://tug.org/pipermail/tlbuild/2025q4/005883.html
+
+2025-10-02  Karl Berry  <karl@freefriends.org>
+
+	* bibtex.web: version 0.99e, with fixes for weave (only).
+	- No more active `E (reported by Andreas Scherer and Norman Gray).
+	- Use \TeX in \BibTeX and \LaTeX definitions.
+	- Sort names of the sections better (from Andreas).
+	- Remove unused \titlepage macro.
+	- Assorted typos.
+	* bibtex.ch,
+	* uptexdir/upbibtex.ch: adapt.
+
+2025-09-30  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (tex invocation): try to clarify
+	command-line/first-line processing, including input filename
+	expansion. Original report from Duncan Murdoch,
+	https://tug.org/pipermail/tex-live/2025-August/051650.html.
+	Also, use @code{TRIP} since that's that Knuth does (noticed by Max
+	Chernoff).
+	(\input filename caveats): mention that Windows reserves CON[.tex],
+	etc. From Max.
+	
+	(Formats) <amstex>: no longer AMS's preferred system.
+	<slitex>: mention ltx-talk.
+	Other updates in passing.
+
+2025-08-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* ac/web2c.ac (ptex), Makefile.am, uptexdir/am/uptex.am,
+	euptexdir/am/euptex.am, ptexdir/*, texmfmem.h, texmfmp-help.h:
+	Remove ptex and ptexdir/.
+
+2025-07-27  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctangleboot.cin: CWEB 4.12.2 release.
+
+2025-07-21  Karl Berry  <karl@freefriends.org>
+
+	* doc/web2c.texi (mpost invocation): update option list.
+
+2025-07-19  David Fuchs  <drfuchs@yahoo.com>
+
+	* dvitype.web (scan_bop [99]): verbosely output fnt_def commands
+	that occur after the preamble and before the first bop, or between
+	eop/bop pairs. This replaces the change of 2022-02-24, which fixed
+	the original problem (lack of newline between such fnt_def cmds),
+	but output them tersely.
+	https://tug.org/texmfbug/newbug.html#% https://tug.org/texmfbug/newbug.html#dvitypefontoutput
+
+2025-07-19  David Fuchs  <drfuchs@yahoo.com>
+
+	* dvitype.web (skip_pages [95]): initialize w,x,y,z to protect
+	against use in first_par, which skip_pages can call.
+	https://tug.org/texmfbug/newbug.html#dvitypeinitglobal
+
 2025-05-05  Karl Berry  <karl@freefriends.org>
 
 	* tex.ch (26.449): avoid spurious additional errors
@@ -10679,7 +10795,7 @@ Tue Apr 11 17:53:15 1995  Ulrik Vieth  <vieth@thphy.uni-duesseldorf.de>
 	* mpext.c: discarded, using routines from ../lib/lib.a instead.
 	Moved code for callmakempx() to file ../lib/openinout.c.
 
-	* mpmath.c: preserved without changes. Ccomments refererring to 
+	* mpmath.c: preserved without changes. Comments refererring to 
 	site.h are no longer applicable when using ../lib/c-auto.h instead.
 
 	* pathexp.c: moved to ../mpware as only DMP uses the pathexpand() 

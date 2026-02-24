@@ -1,3 +1,19 @@
+2026-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* pmp.ch: Adapt to upstream mp.w. No need to export default_banner.
+
+2026-01-31  Karl Berry  <karl@tug.org>
+
+	* pmp.ch: MetaPost version now 3.0a.
+
+2025-12-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* pmp.ch: Bump upmpost version to 2.11-0.04-u2.02.
+
+2025-08-02  Akira Kakuto  <kakuto@jcom.zaq.ne.jp>
+
+	* pmp.ch, pmpost.ch: Adapt to upstream mp.w and mpost.w.
+
 2025-04-29  Andreas Scherer  <https://ascherer.github.io>
 
 	* pmpost.ch: Adapt to upstream mpost.w.

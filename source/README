@@ -6,20 +6,25 @@ http://tug.org/texlive/build.html.  In brief:
 
 - To configure and make the source tree, run ./Build.
   This builds in subdirectory Work/, and installs into subdirectory inst/.
+  (Nearly everything the Build script does can be overridden via
+   environment variables; just take a look at the script for the details.)
 
 - To build (mostly) without optimization, run ./Build --debug.
 
 - If the make fails and you want to rebuild without starting from scratch:
   cd Work/whatever/subdir && make
 
-Email tlbuild@tug.org if problems.
+- The result of make install is not a working TeX system, unfortunately.
+  Much more needs to be done afterwards.  For a starting point, see
+  the "Installing" chapter in the ./doc/tlbuild* document, online at
+  https://tug.org/texinfohtml/tlbuild.html#Installing.  Looking at how
+  various distros handle TeX can also be useful.
 
-(Nearly everything the Build script does can be overridden via
-environment variables; just take a look to see the names.)
+Email tlbuild@tug.org if problems with the build.
 
 Many more details about the TL build system, such as configuring to work
 on a single program, adding new programs or libraries, documentation
-about the many pieces of the system, etc., are in the doc/tlbuild*
+about the many pieces of the system, etc., are in the ./doc/tlbuild*
 document and the sibling README* files here (which are generated from
 that document).
 
@@ -27,14 +32,14 @@ that document).
 Build information for some of the platforms.
 See also Master/tlpkg/bin/tl-update-bindir.
 
-aarch64-linux: Built on github, see below;
-  except for asy, by jhielscher on Fedora 41 (glibc 2.40, GCC 14.2.1).
+aarch64-linux: Built on github, see below.
   ./Build --enable-arm-neon=on
 
 armhf-linux: github, see below.
 
 x86_64-cygwin: gcc-10.2.0, cygwin-3.1.7
   TL_CONFIGURE_ARGS="--enable-xindy --enable-shared CLISP=/path/to/clisp.exe
+    CXXFLAGS=-Wa,-mbig-obj
     LDFLAGS='-Wl,--no-insert-timestamp -Wl,--stack,0x800000'" \
   ./Build
   
@@ -57,6 +62,16 @@ universal-darwin: See Master/source/mactexdoc.tar.xz.
 windows:
   Makefiles written by hand, see Master/source/windows-src.tar.xz.
   Visual Studio 2010 and Visual Studio 2015.
+  
+  Although we do not use mingw for the distributed Windows
+  binaries, TL can be built with mingw by passing
+    --host=x86_64-w64-mingw32 --build=x86_64-linux-gnu
+  to configure. For a full invocation as of 2025, see:
+    https://tug.org/pipermail/tlbuild/2025q3/005847.html
+  For another invocation, and entire workflow (not just for Windows):
+    https://tug.org/pipermail/tlbuild/2025q2/005794.html
+  A shorter message with incantations:
+    https://github.com/vtex-soft/xdvipsk/issues/17
 
 x86_64-darwinlegacy: Built on ConTeXtGarden.
   Mac OS X 10.6, clang 5.0, libc++ required

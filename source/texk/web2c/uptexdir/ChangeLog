@@ -1,3 +1,50 @@
+2025-12-26  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* uptex-m.ch, upbibtex.ch, uptex_version.h:
+	upTeX version u2.02.
+	* uptex-m.ch, upbibtex.ch, kanji.c:
+	Update reference of Unicode blocks to
+	"Blocks-17.0.0.txt Date: 2025-08-01".
+	* tests/kcat.tex, tests/upkcat.txt: Update a test.
+
+2025-12-14  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* am/uptex.am (uptex_tests): Fix typo.
+
+2025-12-02  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am (up-basic.tex): $(srcdir) not $srcdir.
+
+2025-11-30  Karl Berry  <karl@freefriends.org>
+
+	* am/uptex.am (uptex_tests): depend on up-basic{,-{euc,sjis}}.fmt
+	here to avoid race condition when running the tests. Define rules
+	to build them.
+
+2025-10.02  Andreas Scherer  <https://ascherer.github.io>
+
+	* upbibtex.ch: Minor improvements for TIE and WEAVE.
+
+2025-10-02  Karl Berry  <karl@freefriends.org>
+
+	* upbibtex.ch: adapt to bibtex.web 0.99e and bibtex.ch.
+
+2025-08-10  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
+
+	* pTeX_doc/{{README,Changes,INSTALL}.txt,ChangeLog,
+	COPYRIGHT{,.ja}}: Move from ../ptexdir/*.
+	* uptexextra.h, am/uptex.am, ptriptest.test:
+	Remove ptex and ptexdir/.
+	* COPYRIGHT, COPYRIGHT.ja:
+	Add Japanese TeX Development Community to copyright holders.
+	https://github.com/texjporg/tex-jp-build/issues/32
+	* uptex-prntknj.test: Update tests.
+
+2025-08-10  Hironori Kitagawa  <h_kitagawa2001@yahoo.co.jp>
+
+	* am/uptex.am: Clean up unbalanced-braces*.ch .
+	https://github.com/texjporg/tex-jp-build/pull/187
+
 2025-06-22  TANAKA Takuji  <ttk@t-lab.opal.ne.jp>
 
 	* uptex-m.ch, kanji.[ch]:

@@ -25,7 +25,7 @@ If you have issues, please let us know from the above page.
 ## Contents
 
 The bundle includes sources of:
-ptex, uptex, euptex,
+uptex, euptex,
 dvips, dvipdfmx, dvi2tty, makejvf, mendex, upmendex,
 upbibtex, pmpost, upmpost,
 dviout-util (dvispc, chkdvifont),

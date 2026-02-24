@@ -1,3 +1,51 @@
+2026-02-20  Luigi Scarso <luigi.scarso@gmail.com>
+
+	*  better mp_flush_below_variable (H. Hagen) 
+
+2026-02-16  Andreas Scherer  <https://ascherer.github.io>
+
+	* mp.w: Merge version strings with the preprocessor.
+
+2026-02-15  Luigi Scarso <luigi.scarso@gmail.com>
+	
+        * MetaPost 3.00
+
+
+2026-02-08  Luigi Scarso <luigi.scarso@gmail.com>
+	* Purge 'mpconfig.h' from export list 'mp_c_h' (thanks to A. Scherer)
+
+
+2026-01-31  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* MetaPost 3.0a :
+	  Removed the redefinition of INTEGER_TYPE,
+          introduced mpinteger64 of type int64_t (same as integer64)
+
+
+2026-01-24  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* MetaPost 3.0a
+	* mp_number_to_scaled returns a 64bit signed integer instead of int
+          to solve the issue  reported at 
+              [metapost] Limit of arclength when calculating intersectiontimes ?
+	* code cleanup
+
+2025-11-10  Karl Berry  <karl@freefriends.org>
+
+	* mpxout.w: typo.
+
+2025-07-27  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* Fixed and reorganized the help message,
+	updated the manual for the supported 
+        option --output-directory (thanks to Karl Berry)
+
+
+2025-07-02  Luigi Scarso <luigi.scarso@gmail.com>
+
+	* Fixed two single unescaped '%' in mpxout.w;
+	makes MPXOUT.W formatting nicely with CWEAVE and pdfTeX (A. Scherer )
+
 2025-04-28  Luigi Scarso <luigi.scarso@gmail.com>
 
 	* Fixed --help to be consistent with the manual

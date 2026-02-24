@@ -85,10 +85,30 @@ fi
 # You can also set TL_{C,CXX,OBJCXX}FLAGS for per-language flags,
 # notably TL_CFLAGS=-Wdeclaration-after-statement to help Akira.
 #
-c="CFLAGS='$TL_COMPILER_GFLAGS $TL_CFLAGS $CFLAGS'"
-cxx="CXXFLAGS='$TL_COMPILER_GFLAGS $TL_CXXFLAGS $CXXFLAGS'"
-objcxx="OBJCXXFLAGS='$TL_COMPILER_GFLAGS $TL_OBJCXXFLAGS $OBJCXXFLAGS'"
-  # objcxx is only used on macs.
+# But if no TL_*FLAGS are set, don't set CFLAGS at all,
+# since then Autoconf's default setting (normally -g -O2) will be
+# overridden, and thus we'll have neither optimization nor debugging.
+# 
+if test -n "$TL_COMPILER_GFLAGS$TL_CFLAGS"; then
+  c="CFLAGS='$TL_COMPILER_GFLAGS $TL_CFLAGS $CFLAGS'"
+else
+  c=
+fi
+#
+if test -n "$TL_COMPILER_GFLAGS$TL_CXXFLAGS"; then
+  cxx="CXXFLAGS='$TL_COMPILER_GFLAGS $TL_CXXFLAGS $CXXFLAGS'"
+else
+  cxx=
+fi
+#
+# objcxx is only used on macs.
+if test -n "$TL_COMPILER_GFLAGS$TL_OBJCXXFLAGS"; then
+  objcxx="OBJCXXFLAGS='$TL_COMPILER_GFLAGS $TL_OBJCXXFLAGS $OBJCXXFLAGS'"
+else
+  objcxx=
+fi
+#
+# combine all those.
 TL_BUILD_ENV="$c $cxx $objcxx $TL_BUILD_ENV"
 
 # allow for changing the banner identification, e.g.,
@@ -165,6 +185,9 @@ if test -d "$bindir"; then
   if test "$count" -gt 0; then
     echo
     echo "$0: $count executables in $bindir."
+    echo "$0: These binaries do not constitute a directly usable system."
+    echo "$0: If you're trying to create a runnable TeX, please see:"
+    echo "$0: https://tug.org/texinfohtml/tlbuild.html#Installing"
   else
     echo "$0: Build failed, no executables under $bindir."
     echo "$0: Full log in: `pwd`/build.log"
@@ -175,7 +198,7 @@ if test -d "$bindir"; then
 fi
 
 status=`cat exitstatus.txt`
-if echo "$status" | egrep '^[0-9]+$' >/dev/null; then :; else
+if echo "$status" | grep '^[0-9][0-9]*$' >/dev/null; then :; else
   echo "$0: exitstatus.txt does not contain a number; disk full?" >&2
   status=1
 fi

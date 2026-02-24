@@ -6,7 +6,7 @@
 #define PTEXENC_C_AUTO_H
 
 /* ptexenc: the version string. */
-#define PTEXENCVERSION "ptexenc version 1.5.2/dev"
+#define PTEXENCVERSION "ptexenc version 1.5.2"
 
 /* Define to 1 if the 'closedir' function returns void instead of int. */
 #undef CLOSEDIR_VOID
@@ -36,9 +36,6 @@
 
 /* Define to 1 if you have the 'getcwd' function. */
 #undef HAVE_GETCWD
-
-/* Define to 1 if you have the 'getwd' function. */
-#undef HAVE_GETWD
 
 /* Define to 1 if you have the 'iconv' function. */
 #undef HAVE_ICONV
