@@ -567,10 +567,9 @@ in production versions of \TeX.
   length of \TeX's own strings, which is currently about 23000*/
 @!save_size=100000, /*space for saving values outside of current group; must be
   at most |max_halfword|*/
-@!trie_size=1000000, /*space for hyphenation patterns; should be larger for
+@!trie_size=1500000, /*space for hyphenation patterns; should be larger for
   \.{INITEX} than it is in production versions of \TeX*/
 @!trie_op_size=35111, /*space for ``opcodes'' in the hyphenation patterns*/
-@!dvi_buf_size=16384, /*size of the output buffer; must be a multiple of 8*/
 @!file_name_size=1024, /*file names shouldn't be longer than this*/
 @!xchg_buffer_size=64, /*must be at least 64*/
    /*size of |eight_bits| buffer for exchange with system routines*/
@@ -615,7 +614,6 @@ or something similar. (We can't do that until |max_halfword| has been defined.)
 bad=0;
 if ((half_error_line < 30)||(half_error_line > error_line-15)) bad=1;
 if (max_print_line < 60) bad=2;
-if (dvi_buf_size%8!=0) bad=3;
 if (mem_bot+1100 > mem_top) bad=4;
 if (hash_prime > hash_size) bad=5;
 if (max_in_open >= 128) bad=6;
@@ -1111,7 +1109,7 @@ the result is |true| if and only if the strings are equal.
 Empirical tests indicate that |str_eq_buf| is used in such a way that
 it tends to return |true| about 80 percent of the time.
 
-@p static bool str_eq_buf(str_number @!s, char *buf)
+@p static bool str_eq_buf(str_number @!s, unsigned char *buf)
    /*test equality of strings*/
 {@+ /*loop exit*/
 pool_pointer j; /*running index*/
@@ -4538,8 +4536,12 @@ locations for control sequences that are perpetually defined
 (since they are used in error recovery).
 
 @d active_base 1 /*beginning of region 1, for active character equivalents*/
-@d single_base (active_base+256) /*equivalents of one-character control sequences*/
-@d null_cs (single_base+256) /*equivalent of \.{\\csname\\endcsname}*/
+@d utf8_single_size 0x80 /*|0x80| UTF8 characters (|0|--|0x7F|), fit in a single byte*/
+@d active_hash_base (active_base+utf8_single_size)
+@d active_hash_bits 8
+@d active_hash_size (1<<active_hash_bits) /*other active characters share this region*/
+@d single_base (active_hash_base+active_hash_size) /*equivalents of one-character control sequences*/
+@d null_cs (single_base+utf8_single_size) /*equivalent of \.{\\csname\\endcsname}*/
 @d hash_base (null_cs+1) /*beginning of region 2, for the hash table*/
 @d frozen_control_sequence (hash_base+hash_size) /*for error recovery*/
 @d frozen_protection frozen_control_sequence /*inaccessible but definable*/
@@ -5639,15 +5641,14 @@ Otherwise the identifier is inserted into the hash table and its location
 is returned.
 
 @p static pointer id_lookup(int @!j, int @!l) /*search the hash table*/
-{@+ /*go here if you found it*/
-int h; /*hash code*/
+{@+int h; /*hash code*/
 int @!d; /*number of characters in incomplete current string*/
 pointer @!p; /*index in |hash| array*/
 int @!k; /*index in |buffer| array*/
 @<Compute the hash code |h|@>;
 p=h+hash_base; /*we start searching here; note that |0 <= h < hash_prime|*/
 loop@+{@+if (text(p) > 0) if (length(text(p))==l)
-    if (str_eq_buf(text(p), (char*)buffer+j)) goto found;
+    if (str_eq_buf(text(p), buffer+j)) goto found;
   if (next(p)==0)
     {@+if (no_new_control_sequence)
       p=undefined_control_sequence;
@@ -5714,7 +5715,9 @@ static void print_cs(int @!p) /*prints a purported control sequence*/
       }
   else if (p < active_base) print_esc("IMPOSSIBLE.");
 @.IMPOSSIBLE@>
-  else printn(p-active_base);
+  else if (p< active_hash_base) printn(p-active_base);
+  else if (active_hash[p]==0) print_esc("NONEXISTENT.");
+  else print_utf8(active_hash[p]);
 else if (p >= undefined_control_sequence) print_esc("IMPOSSIBLE.");
 else if ((text(p) < 0)||(text(p) >= str_ptr)) print_esc("NONEXISTENT.");
 @.NONEXISTENT@>
@@ -5729,11 +5732,12 @@ prints a space after the control sequence.
 @<Basic printing procedures@>=
 static void sprint_cs(pointer @!p) /*prints a control sequence*/
 {@+if (p < hash_base)
-  if (p < single_base) printn(p-active_base);
-  else if (p < null_cs) printn_esc(p-single_base);
-    else{@+print_esc("csname");print_esc("endcsname");
-      }
-else printn_esc(text(p));
+  { if (p< active_hash_base) printn(p-active_base);
+    else if (p < single_base) print_utf8(active_hash[p]);
+    else if (p < null_cs) printn_esc(p-single_base);
+    else{@+print_esc("csname");print_esc("endcsname"); }
+  }
+  else printn_esc(text(p));
 }
 
 @ We need to put \TeX's ``primitive'' control sequences into the hash
@@ -7585,7 +7589,7 @@ if (cur_cmd <= car_ret) if (cur_cmd >= tab_mark) if (align_state==0)
 @ @<Input from external file, |goto restart| if no input found@>=
 @^inner loop@>
 {@+get_cur_chr: if (loc <= limit)  /*current line not yet finished*/
-  {@+int prev_loc=loc;
+  {@+
   loc=utf8_get_cur_chr(buffer,loc,limit);
   reswitch: cur_cmd=cat_code(cur_chr);
   @<Change state if necessary, and |goto switch| if the current character
@@ -7710,21 +7714,23 @@ if (cur_cmd >= outer_call) check_outer_validity();
 state=mid_line;
 }
 
-@ To distinguis a single character control sequence
-from the control sequence associated with the same active character,
-we append a single byte |0xF8| to the ``name'' of the active character
-control sequence. Sind the largest byte that starts an UTF8 code is |0xF7|
-such a control sequence name can not occur otherwise in an input file.
+@ Active characters $x$ in the range 0 to |0x7F| are represented by single
+byte in UTF8 and the current equivalents are as usual in
+|eqtb[active_base + $x$]|. To extend this table to cover all
+active characters would be a waste of memory. Therefore, we store the equivalents
+of active characters $x$ in the range |0x80| and above in
+|eqtb[active_hash_base+$y$]| and determine $y$ from $x$ using a separate
+hashttable and a lookup function |active_lookup| that resembles |id_lookup|, except that
+the hash value is directly computed from the UTF codepoint, and
+the |text| field will not store a pointer into the string pool but
+directly the UTF codepoint.
+
 
 @<Process an active-character...@>=
-{@+if (cur_chr<0x100)
+{@+if (cur_chr<utf8_single_size)
      cur_cs=cur_chr+active_base;
    else
-   { uint8_t save_char=buffer[loc];
-     buffer[loc]=0xF8;
-     cur_cs=id_lookup(prev_loc, loc+1-prev_loc);
-     buffer[loc]=save_char;
-   }
+     cur_cs=active_lookup(cur_chr);
    cur_cmd=eq_type(cur_cs);cur_chr=equiv(cur_cs);state=mid_line;
    if (cur_cmd >= outer_call) check_outer_validity();
 }
@@ -7758,7 +7764,7 @@ control sequence is found, adjust |cur_cs| and |loc|, and |goto found|@>@;
   else@<If an expanded code is present, reduce it and |goto start_cs|@>;
   /*single character control sequence*/
   k=utf8_get_cur_chr(buffer, loc, limit);
-  if (cur_chr<0x100)
+  if (cur_chr<utf8_single_size)
   { cur_cs=single_base+cur_chr; loc=k; }
   else
   { cur_cs=id_lookup(loc, k-loc); loc=k;  }
@@ -9102,7 +9108,7 @@ static void scan_char_num(void)
 if ((cur_val < 0)||(cur_val > 0x10ffff))
   {@+print_err("Bad character code");
 @.Bad character code@>
-  help2("A character number must be between 0 and 255.",@/
+  help2("A character number must be between 0 and 0x10FFFF.",@/
     "I changed this one to zero.");int_error(cur_val);cur_val=0;
   }
 }
@@ -9211,7 +9217,11 @@ if (cur_tok < cs_token_flag)
     else decr(align_state);
   }
 else if (cur_tok < cs_token_flag+single_base)
-  cur_val=cur_tok-cs_token_flag-active_base;
+{ if (cur_tok < cs_token_flag+ active_hash_base)
+    cur_val=cur_tok-cs_token_flag-active_base;
+  else
+    cur_val=active_hash[cur_tok-cs_token_flag];
+}
 else if (cur_tok < cs_token_flag+null_cs)
    cur_val=cur_tok-cs_token_flag-single_base;
 else /* a single UTF8 character controll sequence with a value greater than 255 */
@@ -9645,24 +9655,40 @@ and everything else as type |other_char|.
 The token list created by |str_toks| begins at |link(temp_head)| and ends
 at the value |p| that is returned. (If |p==temp_head|, the list is empty.)
 
+The |str_toks_cat| function is the same, except that the catcode |cat| is
+stamped on all the characters, unless zero is passed in which case it
+chooses |spacer| or |other_char| automatically.
+
 @p @t\4@>@<Declare \eTeX\ procedures for token lists@>@;@/
-static pointer str_toks(pool_pointer @!b)
+static pointer str_toks_cat(pool_pointer @!b, small_number cat)
    /*converts |str_pool[b dotdot pool_ptr-1]| to a token list*/
 {@+pointer p; /*tail of the token list*/
 pointer @!q; /*new node being added to the token list via |store_new_token|*/
 halfword @!t; /*token being appended*/
+int save_chr;
 pool_pointer @!k; /*index into |str_pool|*/
+save_chr=cur_chr; /*not shure if this is necessary*/
 str_room(1);
 p=temp_head;link(p)=null;k=b;
 while (k < pool_ptr)
-  {@+t=str_pool[k];
-  if (t==' ') t=space_token;
-  else t=other_token+t;
-  fast_store_new_token(t);
-  incr(k);
+  {@+ k=utf8_get_cur_chr(str_pool,k,pool_ptr);
+  if (cur_chr==' ' && cat==0) t=space_token;
+  else if (cat==0) t=other_token+cur_chr;
+  else if (cat==active_char)
+  { if (cur_chr<utf8_single_size) t= cs_token_flag+active_base+cur_chr;
+    else t = cs_token_flag+ active_lookup(cur_chr);
   }
+  else t= cmd_token(cat) +cur_chr;
+  fast_store_new_token(t);
+  }
+cur_chr=save_chr;  
 pool_ptr=b;return p;
 }
+
+static pointer str_toks(pool_pointer @!b)
+{ return str_toks_cat(b,0); 
+}
+
 
 @ The main reason for wanting |str_toks| is the next function,
 |the_toks|, which has similar input/output characteristics.
@@ -9721,7 +9747,9 @@ return p;
 @d meaning_code 3 /*command code for \.{\\meaning}*/
 @d font_name_code 4 /*command code for \.{\\fontname}*/
 @d job_name_code 5 /*command code for \.{\\jobname}*/
-@d etex_convert_base (job_name_code+1) /*base for \eTeX's command codes*/
+@d Uchar_code 6    /*command code for \.{\\Uchar}*/
+@d Ucharcat_code 7 /*command code for \.{\\Ucharcat}*/
+@d etex_convert_base (Ucharcat_code+1) /*base for \eTeX's command codes*/
 @d eTeX_revision_code etex_convert_base /*command code for \.{\\eTeXrevision}*/
 @d etex_convert_codes (etex_convert_base+1) /*end of \eTeX's command codes*/
 @d eTeX_last_convert_cmd_mod etex_convert_codes
@@ -9739,6 +9767,12 @@ primitive("fontname", convert, font_name_code);@/
 @!@:font\_name\_}{\.{\\fontname} primitive@>
 primitive("jobname", convert, job_name_code);@/
 @!@:job\_name\_}{\.{\\jobname} primitive@>
+@#
+primitive("Uchar", convert, Uchar_code);@/
+@!@:Uchar\_}{\.{\\Uchar} primitive@>
+primitive("Ucharcat", convert, Ucharcat_code);@/
+@!@:Ucharcat\_}{\.{\\Ucharcat} primitive@>
+
 
 @ @<Cases of |print_cmd_chr|...@>=
 case convert: switch (chr_code) {
@@ -9748,6 +9782,8 @@ case convert: switch (chr_code) {
   case meaning_code: print_esc("meaning");@+break;
   case font_name_code: print_esc("fontname");@+break;
   case job_name_code: print_esc("jobname");@+break;
+  case Uchar_code: print_esc("Uchar");@+break;
+  case Ucharcat_code: print_esc("Ucharcat");@+break;
   case eTeX_revision_code: print_esc("eTeXrevision");@+break;
   @/@<Cases of |convert| for |print_cmd_chr|@>@/
   } @+break;
@@ -9759,16 +9795,17 @@ are allowed to follow `\.{\\string}' and `\.{\\meaning}'.
 @p static void conv_toks(void)
 {@+int old_setting; /*holds |selector| setting*/
 int @!c; /*desired type of conversion*/
+small_number cat; /*desired catcode, or 0 for automatic |spacer|/|other_char| selection*/
 small_number @!save_scanner_status; /*|scanner_status| upon entry*/
 pool_pointer @!b; /*base of temporary string*/
 int @!i, @!k, @!l; /*general purpose index*/
 pool_pointer @!m, @!n; /*general purpose pool pointer*/
 bool @!r; /*general purpose refraction i.e. changing the way*/
 str_number @!s, @!t; /*general purpose; de dicto*/
-c=cur_chr;@<Scan the argument for command |c|@>;
+cat=0; c=cur_chr;@<Scan the argument for command |c|@>;
 old_setting=selector;selector=new_string;b=pool_ptr;
 @<Print the result of command |c|@>;
-selector=old_setting;link(garbage)=str_toks(b);ins_list(link(temp_head));
+selector=old_setting;link(garbage)=str_toks_cat(b,cat);ins_list(link(temp_head));
 }
 
 @ @<Scan the argument for command |c|@>=
@@ -9779,6 +9816,26 @@ case string_code: case meaning_code: {@+save_scanner_status=scanner_status;
   } @+break;
 case font_name_code: scan_font_ident();@+break;
 case job_name_code: if (job_name==0) open_log_file();@+break;
+@#
+case Uchar_code: scan_char_num();@+break;
+case Ucharcat_code:
+     { int saved_val;
+       scan_char_num();
+       saved_val=cur_val;
+       scan_int();
+       if (cur_val<left_brace||cur_val>active_char||
+           cur_val==out_param||cur_val==ignore)
+       { print_err("Invalid code ("); print_int(cur_val);
+         @.Invalid code@>
+         print("), should be in the ranges 1..4, 6..8, 10..13");
+         help1("I'm going to use 12 instead of that illegal code value.");@/
+         error(); cat=12;
+       }
+       else
+         cat=cur_val;
+       cur_val=saved_val; 
+     }@+break;
+@#
 case eTeX_revision_code: do_nothing;@+break;
 @/@<Cases of `Scan the argument for command |c|'@>@/
 }  /*there are no other cases*/
@@ -9798,6 +9855,7 @@ case font_name_code: {@+printn(font_name[cur_val]);
   } @+break;
 case eTeX_revision_code: print(eTeX_revision);@+break;
 case job_name_code: printn(job_name);@+break;
+case Uchar_code: case Ucharcat_code: print_char(cur_val); break;
 @/@<Cases of `Print the result of command |c|'@>@/
 }  /*there are no other cases*/
 
@@ -10350,7 +10408,9 @@ active characters have the smallest tokens, among all control sequences.
   {@+get_x_token();
   if (cur_cmd==relax) if (cur_chr==no_expand_flag)
     {@+cur_cmd=active_char;
-    cur_chr=cur_tok-cs_token_flag-active_base;
+       cur_chr=cur_tok-cs_token_flag-active_base;
+       if (cur_chr>=utf8_single_size)
+         cur_chr=active_hash[cur_tok-cs_token_flag];
     }
   }
 
@@ -13089,7 +13149,7 @@ static pointer var_delimiter(pointer @!d, small_number @!s, scaled @!v)
 {@+
 pointer b; /*the box that will be constructed*/
 internal_font_number @!f, @!g; /*best-so-far and tentative font codes*/
-quarterword @!c, @!x, @!y; /*best-so-far and tentative character codes*/
+int @!c, @!x, @!y; /*best-so-far and tentative character codes*/
 int @!m, @!n; /*the number of extensible pieces*/
 scaled @!u; /*height-plus-depth of a tentative character*/
 scaled @!w; /*largest height-plus-depth so far*/
@@ -13155,12 +13215,12 @@ the height or depth of the character is negative; thus, this routine
 may deliver a slightly different result than |hpack| would produce.
 
 @<Declare subprocedures for |var_delimiter|@>=
-static pointer char_box(internal_font_number @!f, quarterword @!c)
+static pointer char_box(internal_font_number @!f, int @!c)
 {@+pointer @!b, @!p; /*the new box and its character node*/
 b=new_null_box();
 if (IS_X_FONT(f))
 { hb_codepoint_t glyph;
-  if (x_glyph(f,character(p),&glyph))
+  if (x_glyph(f,c,&glyph))
   { scaled ph, pd;
     width(b)=x_glyph_width(f,glyph)+x_glyph_italic(f,glyph);
     x_glyph_height_depth(f,glyph,&ph,&pd);
@@ -16847,7 +16907,7 @@ the language is used like a character to find the right entry point into
 the compressed table.
 
 @d max_language 255 /*the largest hyphenation language*/
-@d max_pattern_char 0x3000 /*the largest character in a pattern*/
+@d max_pattern_char 0xFFFF /*the largest character in a pattern*/
 @d biggest_char 0x10FFFF /*the largest UTF character*/
 
 @<Set initial values of key variables@>=
@@ -18104,11 +18164,13 @@ pool, even if they are used only by \.{INITEX}.)
 
 @<Enter all of the patterns into a linked trie...@>=
 k=0;hyf[0]=0;digit_sensed=false;
+pattern_warning_given=false;
 loop@+{@+get_x_token();
   switch (cur_cmd) {
   case letter: case other_char: @<Append a new letter or a hyphen level@>@;@+break;
   case spacer: case right_brace: {@+if (k > 0)
       @<Insert a new pattern into the linked trie@>;
+    skip_pattern=false;  
     if (cur_cmd==right_brace) goto done;
     k=0;hyf[0]=0;digit_sensed=false;
     } @+break;
@@ -18120,7 +18182,19 @@ loop@+{@+get_x_token();
   }
 done:
 
+@ Moving from 8-bit characters to UTF codepoints enlarges the range of |cur_chr|.
+The new upper bound of |0x10FFFF| would imply a huge waste of memory in
+the compacted tree representation. Therefor |max_pattern_char| is a
+smaller upper bound. Patterns using codepoints above this bound will
+be ignored. For each call of the \.{\\patterns} primitive only a
+single warning is given.
+
+@<Global...@>=
+static bool pattern_warning_given=false;
+static bool skip_pattern=false;
+
 @ @<Append a new letter or a hyphen level@>=
+if (skip_pattern) break;
 if (digit_sensed||(cur_chr < '0')||(cur_chr > '9'))
   {@+if (cur_chr=='.') cur_chr=0; /*edge-of-word delimiter*/
   else{@+cur_chr=lc_code(cur_chr);
@@ -18131,7 +18205,15 @@ if (digit_sensed||(cur_chr < '0')||(cur_chr > '9'))
       }
     }
   if (cur_chr > max_pattern_char-1)
-    overflow("character code in pattern",max_pattern_char-1);
+  { if (!pattern_warning_given)
+    { print_err("Character code "); print_int(cur_chr);
+      print(" exceeds "); print_int(max_pattern_char-1);
+      pattern_warning_given=true;
+    }
+    skip_pattern=true;
+    k=0;
+    break; 
+  }
   if (cur_chr > max_hyph_char) max_hyph_char=cur_chr;
   if (k < max_hyph_length)
   {@+incr(k);hc[k]=cur_chr;hyf[k]=0;digit_sensed=false;
@@ -20635,7 +20717,7 @@ case hmode+math_shift: init_math();@+break;
 @ @<Declare act...@>=
 static void init_math(void)
 {@+
-scaled w; /*new or partial |pre_display_size|*/
+scaled w=0; /*new or partial |pre_display_size|*/
 scaled @!l; /*new |display_width|*/
 scaled @!s; /*new |display_indent|*/
 pointer @!p; /*current node when calculating |pre_display_size|*/
@@ -20782,7 +20864,10 @@ else fam(p)=math_code_fam(c);
 @ An active character that is an |outer_call| is allowed here.
 
 @<Treat |cur_chr|...@>=
-{@+cur_cs=cur_chr+active_base;
+{@+ if (cur_chr<utf8_single_size)
+      cur_cs=cur_chr+active_base;
+    else
+      cur_cs=active_lookup(cur_chr);
 cur_cmd=eq_type(cur_cs);cur_chr=equiv(cur_cs);
 x_token();back_input();
 }
@@ -22315,7 +22400,12 @@ if (u >= hash_base) t=text(u);
 else if (u >= single_base)
   if (u==null_cs) t=s_no("FONT");@+else t=u-single_base;
 else{@+old_setting=selector;selector=new_string;
-  print("FONT");printn(u-active_base);selector=old_setting;
+  print("FONT");
+  if (u-active_base<utf8_single_size)
+    printn(u-active_base);
+  else
+    print_utf8(active_hash[u]);
+  selector=old_setting;
 @.FONTx@>
   str_room(1);t=make_string();
   }
@@ -22604,6 +22694,8 @@ We also change active characters, using the fact that
 t=info(p);
 if (t < cs_token_flag+single_base)
 {@+c=t%cmd_factor;
+  if (c>=utf8_single_size)
+    c=active_hash[c];
   if (b==utf_lc_code_base)
   { int d = utf_lccode(c);
     if (d!=0) info(p)=t-c+d;
@@ -22974,12 +23066,14 @@ undump_int(var_used);undump_int(dyn_used)
 @ @<Dump the table of equivalents@>=
 @<Dump regions 1 to 4 of |eqtb|@>;
 @<Dump regions 5 and 6 of |eqtb|@>;
+@<Dump the |active_hash| table@>@;
 dump_int(par_loc);dump_int(write_loc);@/
 dump_int(input_loc);@/
 @<Dump the hash table@>@;
 
 @ @<Undump the table of equivalents@>=
 @<Undump regions 1 to 6 of |eqtb|@>;
+@<Undump the |active_hash| table@>@;
 undump(hash_base, frozen_control_sequence, par_loc);
 par_token=cs_token_flag+par_loc;@/
 undump(hash_base, frozen_control_sequence, write_loc);@/
@@ -23168,6 +23262,8 @@ print_nl("Hyphenation trie of length ");print_int(trie_max);
 print(" has ");print_int(trie_op_ptr);print(" op");
 if (trie_op_ptr!=1) print_char('s');
 print(" out of ");print_int(trie_op_size);
+print_nl("Largest codepoint in hyphenation patterns ");print_int(max_hyph_char);
+print(" is lower than "); print_int(max_pattern_char);
 for (k=max_language; k>=0; k--) if (trie_used[k] > min_quarterword)
   {@+print_nl("  ");print_int(qo(trie_used[k]));
   print(" for language ");print_int(k);
@@ -34094,7 +34190,7 @@ Character codes less than |0x80| are stored as a single byte. This is the easy c
 
 @<input a single byte utf8 code@>=
   cur_chr=b[i]; incr(i);
-  if (cur_chr<0x80) return i;
+  if (cur_chr<0x80 || i>=k) return i;
 
 @ Values in the range |0x80| to |0x7ff| are encoded using two byte 
 with the first byte having three high bits |110|, indicating a two byte sequence, 
@@ -34115,17 +34211,17 @@ parts of the input file that a considered to be read by 8-bit \TeX\ engines.
 So when the |scanner_status| is |skipping|, we should not produce errors.
 
 @<input a continuation byte |d|@>=
-if (i <= k)
+if (i < k)
 {  d=b[i]; incr(i); 
    if ((d&0xC0)!=0x80 && scanner_status!=skipping)
    { print_err("Invalid UTF8 continuation byte in the input");
-     cur_chr=biggest_char;
+     int_error(d);
      return i;
    }
 }
 else if (scanner_status!=skipping)
 { print_err("Missing UTF8 continuation byte in the input");
-  cur_chr=biggest_char;
+  error();
   return i;
 }
 
@@ -34158,6 +34254,7 @@ if ((cur_chr&0xF8)==0xF0)
   cur_chr= (cur_chr<<6)+(d&0x3F);
   if (cur_chr>0x10FFFF && scanner_status!=skipping)
   { print_err("UTF8 code out of range in the input");
+    int_error(cur_chr);
     cur_chr=biggest_char;
   }
   return i;
@@ -34482,6 +34579,90 @@ for (k=248; k<=255; k++)
 }
 
 
+@ For multibyte UTF8 active characters $x$ we look up the position $y$ in |eqtb|
+by searching in a hashtable  with key $x$.
+
+@<Glob...@>=
+static uint32_t @!active_hash0[active_hash_size]={0},
+  *const @!active_hash = @!active_hash0-active_hash_base; /*the hash table*/
+static int active_used=0;
+
+@ The function |active_lookup| is a simplified version of |id_lookup|
+using Fibonacci hashing.
+
+@d fibonacci_factor 0x9F406BB9 /* See ``The MMIX Supplement'' */
+@d active_h1(A) (((A*fibonacci_factor)>>(32-active_hash_bits))|1)
+@d active_h2(A) (((A*fibonacci_factor)>>(32-2*active_hash_bits))|1)
+@d active_mask   (active_hash_size-1)
+
+
+@p
+static pointer active_lookup(uint32_t key) /*search the hash table*/
+{@+int h, h2; /*hash codes*/
+  pointer @!p; /*index in |active_hash| array*/
+  h=active_h1(key);
+  p=h+active_hash_base; /*we start searching here; note that |0 <= h < active_hash_size|*/
+  if (active_hash[p] == key) return p;
+  else if (active_hash[p] == 0) goto insert_key;
+  h2=active_h2(key);
+loop@+{@+
+  h=(h+h2)&active_mask;
+  p=h+active_hash_base; 
+  if (active_hash[p] == key) return p;
+  else if (active_hash[p] == 0) goto insert_key;
+}
+insert_key:
+  active_used++;
+  if (active_used>=active_hash_size)
+    overflow("active characters hash size", active_hash_size);
+  active_hash[p]=key;
+  return p;
+}
+
+
+@ Finaly we have to dump and undump the |active_hash| table. We do not expect
+to be too many active characters in the table when dumping or undumping.
+So we just dump the number of used entries and pack the distance to the next used
+entry together with the entry into a single integer, assuming that the distance
+fits into a single byte. If the distance to the next used entry is greater than
+255, we dump an empty entry, which is of course not counted in |active_used|
+
+@<Dump the |active_hash| table@>=
+dump_int(active_used);
+j=active_used;
+k=0;
+p=0;
+while (j>0)
+{ if (active_hash0[k]!=0)
+  { dump_int((k<<24)|active_hash0[k]);
+    j--;
+    p=k;
+  }
+  else if (k-p>=0xFF)
+  { dump_int(0xFF<<24);
+    p=k;
+  }
+  k++;
+  if (k>=active_hash_size) break; /*this should not happen*/
+}
+
+@ @<Undump the |active_hash| table@>=
+undump_int(active_used);
+j=active_used;
+k=0;
+p=0;
+while (j>0)
+{ unsigned int x;
+  undump_int(x);
+  k=k+((x>>24)&0xFF);
+  x=x&0x1FFFFF;
+  if (x!=0)
+  { if (k>=active_hash_size) break; /*this should not happen*/
+    active_hash0[k]=x;
+    j--;
+  }
+}    
+
 
 @ @<Forward declarations@>=
 static int utf8_get_cur_chr(unsigned char *b, int i, int k);
@@ -34509,7 +34690,7 @@ static scaled x_char_width(internal_font_number g, int c);
 static scaled x_char_height(internal_font_number g, int c);
 static scaled x_char_depth(internal_font_number g, int c);
 static scaled x_char_italic(internal_font_number g, int c);
-
+static pointer active_lookup(uint32_t k);
 
 
 
@@ -34659,10 +34840,10 @@ separate global variables.
 
 
 @<Split the font name into its components@>=
-{ f_name= (char *)str_pool+str_start[str_ptr];
-  int l = cur_length;
+{ int l = cur_length;
   int i=0;
   int d;
+  f_name= (char *)str_pool+str_start[str_ptr];
   if (f_name[i]=='[')
   { d=1;
     @<Find a bracketed file name@>@;
@@ -35078,7 +35259,7 @@ file.
   x_font[g]->subset=NULL;
   l=strlen(path);
   for (i=1; i<=font_ptr; i++)
-    if (i!=g && length(font_area[i])==l && str_eq_buf(font_area[i],path))
+    if (i!=g && length(font_area[i])==l && str_eq_buf(font_area[i],(unsigned char *)path))
     { font_area[g]=font_area[i];
       if (x_font[i]!=NULL)
       { x_font[g]->blob=x_font[i]->blob;
@@ -35298,7 +35479,6 @@ an extended font, the following code comes to life.
  
 @<Append characters from an extended font; |goto reswitch| when done@>=
 { hb_buffer_t *buf;
-  buf = hb_buffer_create();
   unsigned int glyph_count;
   hb_glyph_info_t *glyph_info;
   hb_glyph_position_t *glyph_pos;
@@ -35309,7 +35489,8 @@ an extended font, the following code comes to life.
     {HB_TAG('c','l','i','g'), 0, HB_FEATURE_GLOBAL_START, HB_FEATURE_GLOBAL_END},
     {HB_TAG('d','l','i','g'), 0, HB_FEATURE_GLOBAL_START, HB_FEATURE_GLOBAL_END},
     {HB_TAG('c','a','l','t'), 0, HB_FEATURE_GLOBAL_START, HB_FEATURE_GLOBAL_END}
-   };
+  };
+  buf = hb_buffer_create();
 for (len=0;len<256;len++) {
 if (!x_char_exists(main_f,cur_chr))
   {@+char_warning(cur_font, cur_chr);goto big_switch;

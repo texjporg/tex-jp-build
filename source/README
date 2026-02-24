@@ -32,14 +32,14 @@ that document).
 Build information for some of the platforms.
 See also Master/tlpkg/bin/tl-update-bindir.
 
-aarch64-linux: Built on github, see below;
-  except for asy, by jhielscher on Fedora 41 (glibc 2.40, GCC 14.2.1).
+aarch64-linux: Built on github, see below.
   ./Build --enable-arm-neon=on
 
 armhf-linux: github, see below.
 
 x86_64-cygwin: gcc-10.2.0, cygwin-3.1.7
   TL_CONFIGURE_ARGS="--enable-xindy --enable-shared CLISP=/path/to/clisp.exe
+    CXXFLAGS=-Wa,-mbig-obj
     LDFLAGS='-Wl,--no-insert-timestamp -Wl,--stack,0x800000'" \
   ./Build
   
@@ -68,6 +68,10 @@ windows:
     --host=x86_64-w64-mingw32 --build=x86_64-linux-gnu
   to configure. For a full invocation as of 2025, see:
     https://tug.org/pipermail/tlbuild/2025q3/005847.html
+  For another invocation, and entire workflow (not just for Windows):
+    https://tug.org/pipermail/tlbuild/2025q2/005794.html
+  A shorter message with incantations:
+    https://github.com/vtex-soft/xdvipsk/issues/17
 
 x86_64-darwinlegacy: Built on ConTeXtGarden.
   Mac OS X 10.6, clang 5.0, libc++ required

@@ -1750,7 +1750,7 @@ Optional Features:
   --disable-ttfdump       do not build the ttfdump package
   --disable-upmendex      do not build the upmendex package
   --disable-xdvik         do not build the xdvik package
-  --enable-xdvipsk        build the xdvipsk package
+  --disable-xdvipsk       do not build the xdvipsk package
   --disable-texlive       do not build the texlive (TeX Live scripts) package
   --disable-linked-scripts  do not install the linked scripts
   --disable-mktexmf-default   do not run mktexmf if MF source missing
@@ -7299,8 +7299,8 @@ fi
 
 ## texk/xdvipsk/ac/withenable.ac: configure.ac fragment for the TeX Live subdirectory texk/xdvipsk/
 ## configure options and TL libraries required for xdvipsk
-echo 'tldbg:KPSE_ENABLE_PROG called: prog=xdvipsk, libs=kpathsea zlib libpng freetype2 lua53, options=disable, comment=.' >&5
-echo 'tldbg:KPSE_ENABLE_PROG enabling: xdvipsk -> no' >&5
+echo 'tldbg:KPSE_ENABLE_PROG called: prog=xdvipsk, libs=kpathsea zlib libpng freetype2 lua53, options=, comment=.' >&5
+echo 'tldbg:KPSE_ENABLE_PROG enabling: xdvipsk -> yes' >&5
 # Check whether --enable-xdvipsk was given.
 if test ${enable_xdvipsk+y}
 then :
@@ -7313,7 +7313,7 @@ case $enable_xdvipsk in #(
      ;; #(
   *) :
 
-   enable_xdvipsk=no
+   enable_xdvipsk=$enable_all_pkgs
      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: Assuming \`--enable-xdvipsk=$enable_xdvipsk'" >&5
 printf "%s\n" "$as_me: Assuming \`--enable-xdvipsk=$enable_xdvipsk'" >&6;}
      ac_configure_args="$ac_configure_args '--enable-xdvipsk=$enable_xdvipsk'"
@@ -25854,11 +25854,11 @@ elif test "x$need_icu:$with_system_icu" = xyes:yes; then
   as_fn_error $? "did not find either pkg-config or icu-config; one is required for system icu library support" "$LINENO" 5
 fi
 
-if $PKG_CONFIG harfbuzz; then
-  HARFBUZZ_INCLUDES=`$PKG_CONFIG harfbuzz --cflags`
-  HARFBUZZ_LIBS=`$PKG_CONFIG harfbuzz --libs`
+if $PKG_CONFIG harfbuzz-subset; then
+  HARFBUZZ_INCLUDES=`$PKG_CONFIG harfbuzz-subset --cflags`
+  HARFBUZZ_LIBS=`$PKG_CONFIG harfbuzz-subset --libs`
 elif test "x$need_harfbuzz:$with_system_harfbuzz" = xyes:yes; then
-  as_fn_error $? "did not find harfbuzz" "$LINENO" 5
+  as_fn_error $? "did not find harfbuzz-subset" "$LINENO" 5
 fi
 
 if $PKG_CONFIG luajit; then
@@ -29167,10 +29167,26 @@ test -n "$cc_version" && cc_version=" ($cc_version)"
 cxx_version=`$CXX --version 2>/dev/null | sed 1q`
 test -n "$cxx_version" && cxx_version=" ($cxx_version)"
 
+# use quotes for the TL values since behavior of Build script may vary
+# even if they contain only whitespace.
+#
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result:
+   PATH:                         $PATH
    C compiler (CC):              $CC$cc_version
    C++ compiler (CXX):           $CXX$cxx_version
-   PATH:                         $PATH
+
+   CFLAGS:                       $CFLAGS
+   CXXFLAGS:                     $CXXFLAGS
+
+   TL_MAKE:                      \"$TL_MAKE\"
+   TL_MAKE_FLAGS:                \"$TL_MAKE_FLAGS\"
+   TL_TARGET:                    \"$TL_TARGET\"
+   TL_WORKDIR:                   \"$TL_WORKDIR\"
+   TL_BUILD_ENV:                 \"$TL_BUILD_ENV\"
+   TL_COMPILER_GFLAGS:           \"$TL_COMPILER_GFLAGS\"
+   TL_CFLAGS:                    \"$TL_CFLAGS\"
+   TL_CXXFLAGS:                  \"$TL_CXXFLAGS\"
+   TL_CONF_BANNER:               \"$TL_CONF_BANNER\"
 
    enable_native_texlive_build:  $enable_native_texlive_build
    enable_largefile:             $enable_largefile
@@ -29192,9 +29208,22 @@ test -n "$cxx_version" && cxx_version=" ($cxx_version)"
 ** Next run \`make' to configure and build each library and program.
 " >&5
 printf "%s\n" "
+   PATH:                         $PATH
    C compiler (CC):              $CC$cc_version
    C++ compiler (CXX):           $CXX$cxx_version
-   PATH:                         $PATH
+
+   CFLAGS:                       $CFLAGS
+   CXXFLAGS:                     $CXXFLAGS
+
+   TL_MAKE:                      \"$TL_MAKE\"
+   TL_MAKE_FLAGS:                \"$TL_MAKE_FLAGS\"
+   TL_TARGET:                    \"$TL_TARGET\"
+   TL_WORKDIR:                   \"$TL_WORKDIR\"
+   TL_BUILD_ENV:                 \"$TL_BUILD_ENV\"
+   TL_COMPILER_GFLAGS:           \"$TL_COMPILER_GFLAGS\"
+   TL_CFLAGS:                    \"$TL_CFLAGS\"
+   TL_CXXFLAGS:                  \"$TL_CXXFLAGS\"
+   TL_CONF_BANNER:               \"$TL_CONF_BANNER\"
 
    enable_native_texlive_build:  $enable_native_texlive_build
    enable_largefile:             $enable_largefile
