@@ -1,0 +1,29 @@
+2026-02-22  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-asy.sh: missed backslash for static-lib*,
+	 failed on amd64-freebsd.
+
+	* scripts/build-asy.sh,
+	* scripts/build-xdvipsk.sh: add -x
+
+2026-02-21  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-asy.sh (CFLAGS, CXXFLAGS): add -O2 if we set them.
+
+2026-02-20  Sigitas Tolušis  <sigitas@vtex.lt>
+
+	* workflows/xdvipsk-test.yml: sync docker build with main.
+
+2026-02-19  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-xdvipsk.sh: rename from build-tl-xdvipsk,
+	for faster completion.
+	* workflows/xdvipsk-test.yml: and here.
+
+2026-02-19  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh: check that we compiled with optimization.
+	Report from Petr Olsak,
+	https://tug.org/pipermail/tex-live/2026-February/052146.html
+
+(This ChangeLog public domain.)

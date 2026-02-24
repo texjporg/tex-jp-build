@@ -71,11 +71,11 @@ undergoes any modifications, so that it will be clear which version of
 @^extensions to \MP@>
 @^system dependencies@>
 
-@d default_banner "This is MetaPost, Version 3.0a" /* printed when \MP\ starts */
+@d default_banner "This is MetaPost, Version "metapost_version /* printed when \MP\ starts */
 
 
 @<\MP\ version header@>=
-#define metapost_version "3.0a"
+#define metapost_version "3.00"
 
 @ The external library header for \MP\ is |mplib.h|. It contains a
 few typedefs and the header defintions for the externally used
@@ -6883,7 +6883,7 @@ void mp_flush_below_variable (MP mp, mp_node p) {
     mp_recycle_value (mp, p);   /* this sets |type(p)=undefined| */
   } else {
     q = subscr_head (p);
-    while (mp_name_type (q) == mp_subscr) {
+    while (q && mp_name_type (q) == mp_subscr) {
       mp_flush_below_variable (mp, q);
       r = q;
       q = mp_link (q);
