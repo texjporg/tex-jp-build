@@ -50,3 +50,4 @@ mruckert = Martin Ruckert <martin.ruckert@hm.edu>
 ymorimi = Yukimasa Morimi  <h20y6m@yahoo.co.jp>
 mseven = Max Chernoff <mseven@telus.net>
 stolusis = Sigitas Tolusis <sigitas@vtex.lt>
+munepi = Munehiro Yamamoto <munepixyz@gmail.com>
