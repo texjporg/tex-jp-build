@@ -1,3 +1,18 @@
+2026-04-04  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebman-w2c.ch: How to make underline '_' searchable.
+
+2026-04-04  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch,
+	* cweave.w: Misleading indentation.
+
+2026-03-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-proofsort,
+	* twill-refsort: React to empty input. Purge SVN keywords. (kb)
+
 2026-03-07  Andreas Scherer  <https://ascherer.github.io>
 
 	* cwebman-w2c.ch: Remove outdated footnote.
