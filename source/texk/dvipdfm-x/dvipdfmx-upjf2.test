@@ -1,6 +1,6 @@
 #! /bin/sh -vx
 # $Id$
-# Copyright 2020-2024 Japanese TeX Development Community <issue@texjp.org>
+# Copyright 2020-2026 Japanese TeX Development Community <issue@texjp.org>
 # You may freely use, modify and/or distribute this file.
 
 KpsDir=${KpsDir:-../kpathsea}
