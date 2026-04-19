@@ -178,6 +178,9 @@ MEANING \meaning\ſ.\meaning\顛.%
 
 % check whether ^^^^0000 works or not
 \catcode`\@=11
+\ifx\kcatcode\undefined\else
+  \kcatcode`\@=14
+\fi
 \def\@empty{}
 \begingroup
   \catcode0=9 %

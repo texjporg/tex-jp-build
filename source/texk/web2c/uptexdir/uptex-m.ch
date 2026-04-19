@@ -711,7 +711,7 @@ hangul_code(mid_kanji):
        cd:=buffer[loc+5]; ce:=buffer[loc+6];
        if is_hex(c) and is_hex(cc) and is_hex(cd) and is_hex(ce) then
        begin long_hex_to_cur_chr;
-         if (cur_chr<max_latin_val) then begin
+         if (cur_chr<max_latin_val)and(kcat_code(kcatcodekey(cur_chr))<>not_cjk) then begin
            loc:=loc+7;
            goto reswitch;
            end;

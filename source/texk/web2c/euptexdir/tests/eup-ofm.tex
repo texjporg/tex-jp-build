@@ -35,7 +35,7 @@
 \catcode"C6=11  \catcode"D8=11  \catcode"DF=11
 \catcode"E6=11  \catcode"F8=11
 
-\char"C6\Uchar"D8\Ucharcat"DF"B^^e6^^^^00f8
+\char"C6\Uchar"D8\Ucharcat"DF"B^^e6^^f8
 
 ÆØßæø
 
@@ -48,7 +48,7 @@
 \kcatcode"2DA=15
 \catcode"2DA=11
 
-\char"C6\Uchar"A1^^c6\Ucharcat"BF"B^^^^02da
+\char"C6\Uchar"A1^^c6\Ucharcat"BF"B^^b4
 
 ơ% U+01A1 :: UTF-8 0xC6 0xA1
 ƿ% U+01BF :: UTF-8 0xC6 0xBF
@@ -56,15 +56,15 @@
 \setbox0\hbox{【ơ】}
 \showbox0
 
-\def\AAA{ơ ^^c6^^a1 ^^^^02da}\AAA
+\def\AAA{ơ ^^c6^^a1 ^^b4}\AAA
 \edef\mAAA{\meaning\AAA}\mAAA
 
 \kcatcode"A1=14
 \kcatcode"C6=14
 \kcatcode"123=14
-\catcode"123=11  \catcode"131=11  \catcode"152=11
-\catcode"153=11
-\kcatcode"2DA=14
+\catcode"123=11  \catcode"131=11
+\kcatcode"153=14 \kcatcode"2DA=14
+\catcode"152=11  \catcode"153=11
 \catcode"2DA=11
 
 \char"123\char"131\Uchar"152^^^^0153^^^^02da
