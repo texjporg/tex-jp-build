@@ -1108,9 +1108,16 @@ toucs_code: if (isinternalUPTEX) then print_int(toUCS(cur_val))
 
 @x
 ptex_revision_code: print(pTeX_revision);
+string_code:if cur_cs<>0 then sprint_cs(cur_cs)
+  else if KANJI(cx)=0 then print_char(cur_chr)
+  else print_kanji(cx);
 @y
 ptex_revision_code: print(pTeX_revision);
 uptex_revision_code: print(upTeX_revision);
+string_code:if cur_cs<>0 then sprint_cs(cur_cs)
+  else if KANJI(cx)=0 then begin
+    if (cur_chr<=255) then print_char(cur_chr) else print_uchar(cur_chr) end
+  else print_kanji(cx);
 @z
 
 @x
@@ -2706,6 +2713,15 @@ else begin
   if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
                       print_char(@"100+BYTE4(s));
   end;
+end;
+
+procedure print_uchar(@!s:KANJI_code); {prints a single Unicode character}
+begin
+s:=UCStoUTF8(toUCS(s mod max_ucs_val));
+if BYTE1(s)<>0 then print_char(@"100+BYTE1(s));
+if BYTE2(s)<>0 then print_char(@"100+BYTE2(s));
+if BYTE3(s)<>0 then print_char(@"100+BYTE3(s));
+                    print_char(@"100+BYTE4(s));
 end;
 
 function check_kcat_code(@!ct:integer;@!cx:integer):integer;
