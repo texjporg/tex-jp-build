@@ -37,9 +37,10 @@ $_uptex -fmt=up-basic                           -jobname=up-pknj-u -interaction=
 
 cat >up-pknj-x.filter <<-\_EOF
 	1d
-	s/strings out of 49[789]...$/strings out of 49XXXX/
-	s/characters out of 6219...$/characters out of 6219XXX/
-	s/97. multiletter/97X multiletter/
+	s/2[678] strings out of 497[6789]..$/2X strings out of 497XXX/
+	s/1[56]. string characters out of 621[56789]...$/1XX string characters out of 621XXXX/
+	s/7[56].. words of memory out of 5000000$/7XXX words of memory out of 5000000/
+	s/10[89]. multiletter/10XX multiletter/
 	_EOF
 
 sed -f up-pknj-x.filter up-pknj-s.log >up-pknj-s.out

@@ -212,15 +212,15 @@ l.164 \expandafter\show\csname 顛\endcsname
 SNOW SNOW 雪
 snow snow 雪
 
-ifx:TRUE
+ifx(x):TRUE,ifx(y):FALSE
 [39003]
-Memory usage before: 1274&5528; after: 118&5091; still untouched: 4992421
+Memory usage before: 1274&5545; after: 118&5108; still untouched: 4992408
  ) 
 Here is how much of TeX's memory you used:
- 26 strings out of 49XXXX
- 152 string characters out of 6219XXX
- 7579 words of memory out of 5000000
- 97X multiletter control sequences out of 15000+600000
+ 2X strings out of 497XXX
+ 1XX string characters out of 621XXXX
+ 7XXX words of memory out of 5000000
+ 978 multiletter control sequences out of 15000+600000
  3297 words of font info for 2 fonts, out of 8000000 for 9000
  0 hyphenation exceptions out of 8191
  6i,4n,2p,97b,22s stack positions out of 10000i,1000n,20000p,200000b,200000s

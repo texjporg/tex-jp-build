@@ -37,8 +37,9 @@ $_euptex -fmt=eup-basic                           -jobname=eup-pknj-u -interacti
 
 cat >eup-pknj-x.filter <<-\_EOF
 	1d
-	s/strings out of 497[67]..$/strings out of 497XXX/
-	s/characters out of 6215[6789]..$/characters out of 6215XXX/
+	s/2[678] strings out of 497[6789]..$/2X strings out of 497XXX/
+	s/1[56]. string characters out of 621[56789]...$/1XX string characters out of 621XXXX/
+	s/7[56].. words of memory out of 5000000$/7XXX words of memory out of 5000000/
 	s/10[89]. multiletter/10XX multiletter/
 	_EOF
 

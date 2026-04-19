@@ -178,21 +178,31 @@ MEANING \meaning\ſ.\meaning\顛.%
 
 % check whether ^^^^0000 works or not
 \catcode`\@=11
-\ifx\kcatcode\undefined\else
-  \kcatcode`\@=14
-\fi
 \def\@empty{}
 \begingroup
   \catcode0=9 %
   \catcode`\^=7 %
   \catcode`\^^^=12 %
+  \ifx\kcatcode\undefined\else\kcatcode`\@=14\fi%
   \def\x{^^^^0000}%
 \expandafter\endgroup
 \ifx\x\@empty
- \def\cmd{ifx:TRUE}
+ \def\cmdx{ifx(x):TRUE}
 \else
- \def\cmd{ifx:FALSE}
+ \def\cmdx{ifx(x):FALSE}
 \fi
-\message{^^J\cmd^^J}
+\begingroup
+  \catcode0=9 %
+  \catcode`\^=7 %
+  \catcode`\^^^=12 %
+  \ifx\kcatcode\undefined\else\kcatcode`\@=15\fi%
+  \def\y{^^^^0000}%
+\expandafter\endgroup
+\ifx\y\@empty
+ \def\cmdy{ifx(y):TRUE}
+\else
+ \def\cmdy{ifx(y):FALSE}
+\fi
+\message{^^J\cmdx,\cmdy^^J}
 
 \end
