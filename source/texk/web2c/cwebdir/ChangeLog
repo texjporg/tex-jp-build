@@ -1,8 +1,31 @@
+2026-04-04  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebman-w2c.ch: How to make underline '_' searchable.
+
+2026-04-04  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-w2c.ch,
+	* cweav-w2c.ch,
+	* cweave.w: Misleading indentation.
+
+2026-03-19  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-proofsort,
+	* twill-refsort: React to empty input. Purge SVN keywords. (kb)
+
+2026-03-07  Andreas Scherer  <https://ascherer.github.io>
+
+	* cwebman-w2c.ch: Remove outdated footnote.
+
+2026-03-03  Andreas Scherer  <https://ascherer.github.io>
+
+	* ctwill-hint.ch: Avoid linebreak in HINT output.
+
 2026-01-24  Andreas Scherer  <https://ascherer.github.io>
 
-	* texk/web2c/cwebdir/texinputs/dcwebmac.tex,
-	* texk/web2c/cwebdir/texinputs/fcwebmac.tex,
-	* texk/web2c/cwebdir/texinputs/icwebmac.tex: Fix internal counter.
+	* texinputs/dcwebmac.tex,
+	* texinputs/fcwebmac.tex,
+	* texinputs/icwebmac.tex: Fix internal counter.
 
 2026-01-23  Andreas Scherer  <https://ascherer.github.io>
 

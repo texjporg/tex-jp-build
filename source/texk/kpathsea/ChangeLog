@@ -1,3 +1,28 @@
+2026-03-22  Karl Berry  <karl@freefriends.org>
+
+	* variable.c (kpathsea_var_value): call FATAL instead of assert
+	when the arguments are found. Found by Luigi with, e.g,
+	luatex --lua=test-startup.lua --fmt=/any.fmt \\end
+	where test-startup.lua contains the one line "texconfig.kpse_init=0".
+
+	* lib.h (FATAL_PERROR, START_FATAL, LIB_START_FATAL): include
+	" (kpathsea) " in the prefix to the message.
+
+2026-03-14  Karl Berry  <karl@freefriends.org>
+
+	* kpsewhich.c (argv0): new global since we need to call
+	kpathsea_set_program_name in a subroutine.
+	(main): set and use argv0.
+	(find_format): special-case dvipdfmx.cfg like the others;
+	set program name to dvipdfmx unless explicitly set.
+	* NEWS: mention this.
+	* doc/kpathsea.texi (Specially-recognized files): add updmap.cfg
+	to the list. (dvipdfmx.cfg was already there, erroneously.)
+
+2026-03-02  Karl Berry  <karl@tug.org>
+
+	* TL'26 release.
+
 2026-02-19  Karl Berry  <karl@freefriends.org>
 
 	* getopt.c (getenv): do not declare with empty parens,
