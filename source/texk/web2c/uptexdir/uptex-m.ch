@@ -1116,7 +1116,8 @@ ptex_revision_code: print(pTeX_revision);
 uptex_revision_code: print(upTeX_revision);
 string_code:if cur_cs<>0 then sprint_cs(cur_cs)
   else if KANJI(cx)=0 then begin
-    if (cur_chr<=255) then print_char(cur_chr) else print_uchar(cur_chr) end
+    if (check_echar_range(cur_chr)=2) then print_char(cur_chr)
+      else print_uchar(cur_chr) end
   else print_kanji(cx);
 @z
 
