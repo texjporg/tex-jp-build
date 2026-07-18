@@ -123,7 +123,7 @@ Example from MMIX (https://github.com/ascherer/mmix, 'local' branch):
 
 =over
 
-=item $ tie -c mmotype-twill.ch mmotype.{w,ch} mmotype-mini.ch
+=item $ tie -c mmotype-twill.ch mmotype.{w,ch,tch}
 
 =item $ ctwill +P -x mmotype mmotype-twill (run this two times)
 
