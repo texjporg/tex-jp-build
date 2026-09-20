@@ -239,15 +239,12 @@ alleviated by laborious editing, but since there's no way to avoid GNU
 trouble.}
 
 @item
-@cindex C++11, required
-@cindex @code{dvisvgm}, requires C++11
-@cindex HarfBuzz, requires C++11
-@cindex ICU, requires C++11
-A C++11 compiler is similarly required because of the third-party
-libraries ICU and HarfBuzz (at least); the program @code{dvisvgm} also
-requires C++11.  It is possible to build what remains with older
-compilers, but you have to remove the C++11-dependent sources.
-@xref{Build one package}.
+The ICU and HarfBuzz libraries, as well as the @code{dvisvgm} program,
+generally require newer compilers than the rest of the tree (@pxref{C
+standards}). ICU is generally the most aggressive here: see
+@url{https://unicode-org.github.io/icu/userguide/icu4c/build.html}. It
+is possible to build other parts of TL with older compilers, but you
+have to remove these sources; @pxref{Build one package}.
 
 @item
 @cindex Python, required by ICU
@@ -555,11 +552,11 @@ and @code{configure} will terminate even with @code{--disable-xetex}.
 To proceed without such dependencies, specify @code{--enable-missing}
 also.
 
-As of 2022, HarfBuzz also requires C++11.  Therefore even more would
-have to be disabled and removed, notably including @code{luahbtex},
-the standard engine used for Lua@LaTeX{}.  Removing that would not
-be acceptable for builds intended for distribution; but perhaps for
-testing the above information could still be useful.
+HarfBuzz also requires C++11 (or perhaps newer).  Therefore even more
+would have to be disabled and removed, notably including
+@code{luahbtex}, the standard engine used for Lua@LaTeX{}.  Removing
+that would not be acceptable for builds intended for distribution; but
+perhaps for testing the above information could still be useful.
 
 @cindex removing build directories
 @cindex @code{configure} problems, work around by removing
@@ -2575,18 +2572,27 @@ maintained in the @TL{} tree.
 @node C standards
 @section C standards
 
-@cindex ANSI C
-@cindex C, ANSI, required
-@cindex C99, accepted
-
+@cindex C and C++standards versions
+@cindex standards, C and C++
+@cindex C99, required by Lua@TeX{}
+@cindex @code{dvisvgm}, compiler requirements
+@cindex HarfBuzz, compiler requirements
+@cindex ICU, compiler requirements
 In general, @TL{} should be compilable with a wide range of C and C++
 standards (no other compiled programming languages are currently used
-in TL). C99 is required to compile Lua@TeX{} and perhaps more, and
-ICU requires C++11, but many people compile smaller subsets of TL, so
-these are not overall requirements for the entire code base.  On the
-other hand, TL must stay compilable with (but not require) the newest
-standards, since many people will work with those.
+in TL). C99 is required to compile Lua@TeX{} (at least), and ICU,
+HarfBuzz, and @code{dvisvgm} (at least) require considerably newer
+compilers; we won't try to list their constantly-changing requirements
+here, but see
+@url{https://unicode-org.github.io/icu/userguide/icu4c/build.html} for
+ICU, or the respective source code in @file{libs/icu}, etc.  Since
+some people compile smaller subsets of TL, these are not overall
+requirements for the entire code base.  On the other hand, TL must
+stay compilable with (but not require) the newest standards, since
+some people will work with those.
 
+@cindex ANSI C compilers required
+@cindex C, ANSI, required
 @cindex declarations before statements, avoiding
 @cindex C++ comments in C code, avoiding
 Since most of TL can be compiled with any ANSI C compiler, it is best
