@@ -2585,11 +2585,12 @@ HarfBuzz, and @code{dvisvgm} (at least) require considerably newer
 compilers; we won't try to list their constantly-changing requirements
 here, but see
 @url{https://unicode-org.github.io/icu/userguide/icu4c/build.html} for
-ICU, or the respective source code in @file{libs/icu}, etc.  Since
-some people compile smaller subsets of TL, these are not overall
+ICU, or the respective source code in @file{libs/icu}, etc.
+
+Since some people compile smaller subsets of TL, these are not overall
 requirements for the entire code base.  On the other hand, TL must
-stay compilable with (but not require) the newest standards, since
-some people will work with those.
+stay compilable with (but not require) the newest compilers and
+standards, since some people will work with those.
 
 @cindex ANSI C compilers required
 @cindex C, ANSI, required
