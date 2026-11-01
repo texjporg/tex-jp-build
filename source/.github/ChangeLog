@@ -1,3 +1,106 @@
+2026-05-23  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-asy.sh: enable fftw and install its packages.
+	Document why we can't feasibly statically link libcurl or libgsl.
+
+	* scripts/build-tl.sh: doc tweak.
+
+2026-05-21  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh: generalize check for -fhardened; doc tweaks.
+
+2026-05-09  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh (almalinux): also install perl-interpreter
+	for the sake of our few tests in Perl (which we should rewrite).
+	Guess it must have been a dependency of gcc-toolset-11? Weird.
+
+	* scripts/build-tl.sh (almalinux): try gcc-toolset-15 instead of 11,
+	so we can use -fhardened.
+	(CFLAGS): add -fhardened if it's supported.
+	(showfile): new debug fn.
+
+2026-05-09  Karl Berry  <karl@freefriends.org>
+
+	* workflows/main.yml (x86_64-linuxmusl): update alpine from 3.12
+	to 3.22 (eol=1may2027).
+	* scripts/build-tl.sh (x86_64-linuxmusl): and 3.22 provides only
+	gcc14(?), which is the broken-wrt-__STDC__VERSION version as
+	explained in comments. Use -std=gnu11 so Autoconf won't use C23.
+
+2026-05-07  Karl Berry  <karl@freefriends.org>
+
+	* workflows/main.yml (debian): update from bullseye(11) to
+	bookworm (12), since bullseye support ends August 2026.
+	* scripts/build-tl.sh (CFLAGS): omit -fhardened for now;
+	requires gcc15. Warns on FreeBSD, where it is recognized but
+	unsupported.
+
+	* scripts/build-tl.sh (CFLAGS): add -fhardened. Try doing so
+	unconditionally, though it only has effect on GNU/Linux targets.
+	tlsecurity 29 Apr 2026 03:20:12 et al.
+
+2026-05-06  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh (alpine): seems we need musl-dev for
+	Scrt1.o crti.o ssp_nonshared.a; probably a dependency of g++,
+	which I had inadvertently taken out. Add both.
+	By the way, we are using the ancient alpine 3.12; the oldest
+	supported release is 3.21 (eol 1nov26). But since it still
+	works, don't change it, I guess.
+
+2026-05-04  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh (CXXFLAGS): always include -std=c++17,
+	since ICU requires it.
+
+2026-05-03  Karl Berry  <karl@freefriends.org>
+
+	* workflows/main.yml,
+	* workflows/build-asy.yml,
+	* workflows/xdvipsk-test.yml: switch to upload-artifact@v7
+	(https://github.com/actions/upload-artifact)
+	due to GitHub warning:
+    Node.js 20 actions are deprecated. The following actions are running on
+    Node.js 20 and may not work as expected:
+    actions/upload-artifact@v4. Actions will be forced to run with Node.js
+    24 by default starting June 2nd, 2026. Node.js 20 will be removed from
+    the runner on September 16th, 2026. Please check if updated versions of
+    these actions are available that support Node.js 24. To opt into Node.js
+    24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment
+    variable on the runner or in your workflow file. Once Node.js 24 becomes
+    the default, you can temporarily opt out by setting
+    ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see:
+    https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+2026-05-03  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh: wrongly added gcc15-devel to alpine (musl)
+	instead of freebsd.
+	Do stupid redundancy to keep ./Build's exit status without exiting.
+
+2026-05-02  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh: try gcc15 per Bruno:
+	https://tug.org/pipermail/tlbuild/2026q2/005996.html
+
+2026-04-29  Karl Berry  <karl@freefriends.org>
+
+	* scripts/build-tl.sh: always show build?*.log.
+
+	* workflows/main.yml: switch to freebsd 14.4 (the current 14.x)
+	https://en.wikipedia.org/wiki/FreeBSD_version_history#Version_history
+	since a) 13.5 [the last 13.x] will be unsupported as of tomorrow,
+	and b) we want to use gcc-15, since gcc-14 has only partial
+	support for C23, which is worse than no support at all.
+	(See luatex/ChangeLog and ustring.c.) Suggestion from Bruno:
+	https://tug.org/pipermail/tlbuild/2026q2/005996.html
+	
+	14.4 will also be unsupported by the time we release TL27,
+	but maybe there is nothing better to do. Neither building on
+	unsupported versions nor constantly churning the build os seem
+	good, but it seems there are no other options.
+
 2026-04-25  Karl Berry  <karl@freefriends.org>
 
 	* scripts/build-tl.sh: show build?*.log files on failure.

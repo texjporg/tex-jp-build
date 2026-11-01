@@ -1,3 +1,36 @@
+2026-06-20  Karl Berry  <karl@freefriends.org>
+
+	* Makefile.am (AM_CFLAGS): add $(KPSE_EXTRA_CFLAGS)
+	which can then be set to (e.g.) "-O0 -fanalyzer" without
+	affecting anything else in the build. Idea from Luigi.
+
+2026-05-25  Karl Berry  <karl@freefriends.org>
+
+	* kpsewhich.c (version): oops, had extra newline at end of
+	--version message.
+
+2026-05-09  Andreas Scherer  <https://ascherer.github.io>
+
+	* elt-dirs.c: Fix compiler warnings.
+
+2026-05-07  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (kb_cv_func_getcwd_forks): remove whole test;
+	rely on system getcwd(), unless the system has no getcwd() at all
+	(which should never be the case nowadays).
+	* xgetcwd.c: update comments.
+
+2026-05-06  Karl Berry  <karl@freefriends.org>
+
+	* configure.ac (kb_cv_func_getcwd_forks): don't declare
+	getcwd(), since C23 breaks that. Instead, rely on it being
+	declared in <unistd.h> (not <stdlib.h>).
+	The end result of the test failure being to use
+	our fallback getcwd() in xgetcwd.c, which stat(2)s pervasively,
+	and is unusable under NFS :(. Original report and patch
+	from Emmanuel Thome, bugs.debian.org/1135783 and
+	https://tug.org/pipermail/tex-k/2026-May/004322.html.
+
 2026-04-25  Karl Berry  <karl@freefriends.org>
 
 	* doc/kpathsea.texi (Casefolding search): describe earlier and
