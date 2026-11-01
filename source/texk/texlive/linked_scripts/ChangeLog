@@ -1,3 +1,15 @@
+2026-08-16  Karl Berry  <karl@tug.org>
+
+	* Makefile.am (scripts-lst): run $(MAKE) install-data-hook
+	in oder to update scripts-targets.lst. Also (from Andreas)
+	reinsert spuriously-removed space.
+
+2026-08-15  Karl Berry  <karl@tug.org>
+
+	* Makefile.am (texmf_other_scripts): add
+	texchanges/texchanges-merge.py.
+	(install-data_hook): be a bit more verbose.
+
 2026-03-01  Karl Berry  <karl@tug.org>
 
 	* Makefile.am (texmf_other_scripts): belatedly remove m-tx.lua.
