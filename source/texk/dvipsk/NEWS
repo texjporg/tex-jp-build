@@ -1,6 +1,10 @@
 $Id$
 This file records noteworthy changes.  (Public domain.)
 
+dvips 2027.1 (TeX Live 2027, tbd):
+  Recognize hypertex specials when emitted in vertical mode,
+  typically with plain TeX documents.
+
   Fix bug in PostScript output causing a large cmex9 character to
   disappear; mention -Ppk to force use of PK fonts where possible.
 
