@@ -6985,6 +6985,12 @@ else begin inhibit_glue_flag:=false;
 @!debug debug_format_file:=true; @+gubed;
 @z
 
+@x pTeX: avoid splitting multibyte filenames in file:line:error messages.
+    print_nl (""); print (full_source_filename_stack[level]); print (":");
+@y
+    print_nl (""); slow_print_filename (full_source_filename_stack[level]); print (":");
+@z
+
 @x pTeX: xchr
   if eight_bit_p then
     for k:=0 to 255 do
