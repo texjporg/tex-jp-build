@@ -1,7 +1,7 @@
 ## $Id$
 ## Makefile.am for the TeX Live subdirectory texk/dvipdfm-x/
 ##
-## Copyright 2015-2025 Karl Berry <tex-live@tug.org>
+## Copyright 2015-2026 Karl Berry <tex-live@tug.org>
 ## Copyright 2009-2015 Peter Breitenlohner <tex-live@tug.org>
 ## You may freely use, modify and/or distribute this file.
 ##
@@ -252,6 +252,7 @@ TESTS += dvipdfmx-ttf0.test
 TESTS += dvipdfmx-color.test
 TESTS += dvipdfmx-spot.test
 TESTS += dvipdfmx-mpclip.test
+TESTS += dvipdfmx-bmp.test
 xdvipdfmx.log xdvipdfm-ann.log xdvipdfm-bad.log xdvipdfm-bb.log \
 	xdvipdfm-bkm.log xdvipdfm-pdf.log xdvipdfm-psz.log \
 	xdvipdfm-ptx.log xdvipdfm-res.log \
@@ -261,7 +262,8 @@ xdvipdfmx.log xdvipdfm-ann.log xdvipdfm-bad.log xdvipdfm-bb.log \
 	dvipdfmx-ttf0.log \
 	dvipdfmx-color.log \
 	dvipdfmx-spot.log \
-	dvipdfmx-mpclip.log: \
+	dvipdfmx-mpclip.log \
+	dvipdfmx-bmp.log: \
 	xdvipdfmx$(EXEEXT)
 EXTRA_DIST = $(TESTS)
 ## xdvipdfmx.test
@@ -358,3 +360,10 @@ DISTCLEANFILES += spot_doublefree.pdf
 ## dvipdfmx-mpclip.test
 EXTRA_DIST += tests/mpclip.dvi tests/mpclip.tex tests/mpclip.mp tests/mpclip.mps
 DISTCLEANFILES += mpclip.pdf
+## dvipdfmx-bmp.test
+EXTRA_DIST += tests/badbmp.dvi tests/badbmp.tex
+EXTRA_DIST += tests/badbmp-hdr.bmp tests/badbmp-rle4delta.bmp
+EXTRA_DIST += tests/badbmp-rle8delta.bmp tests/badbmp-rle4bits.bmp
+EXTRA_DIST += tests/badbmp-rle8bits.bmp tests/badbmp-rle4odd.bmp
+EXTRA_DIST += tests/badbmp-size.bmp
+DISTCLEANFILES += badbmp.bmp badbmp.log badbmp.pdf
