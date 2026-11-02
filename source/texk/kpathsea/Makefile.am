@@ -285,12 +285,16 @@ TESTS += tests/cnfnull.test tests/cnfprog.test
 TESTS += tests/kpseaccess.test
 TESTS += tests/kpsereadlink.test
 TESTS += tests/kpsesafe.test tests/kpsestat.test tests/kpsewhich.test
+TESTS += tests/lsrparse.test
+TESTS += tests/hashdup.test
 #
 tests/cnfline.log tests/cnfnewline.log tests/cnfnull.log tests/cnfprog.log \
   tests/kpsesafe.log tests/kpsewhich.log: kpsewhich$(EXEEXT)
 tests/kpseaccess.log: kpseaccess$(EXEEXT)
 tests/kpsereadlink.log: kpsereadlink$(EXEEXT)
 tests/kpsestat.log: kpsestat$(EXEEXT)
+tests/lsrparse.log: kpsewhich$(EXEEXT)
+tests/hashdup.log: kpsewhich$(EXEEXT)
 #
 EXTRA_DIST += $(TESTS)
 EXTRA_DIST += tests/cnfline/texmf.cnf
