@@ -83,4 +83,4 @@ x86_64-linuxmusl,
 and others noted above for github:
   built at https://github.com/TeX-Live/texlive-source/releases.
   see ./github/scripts/build-tl.sh and workflows/main.yml.
-  Most asy binaries are also built here; see */build-asy.*.
+  Most asy binaries are also built here; see .github/*/build-asy.*.
