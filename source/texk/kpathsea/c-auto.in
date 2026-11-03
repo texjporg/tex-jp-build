@@ -28,10 +28,6 @@
 /* Define to 1 if the 'closedir' function returns void instead of int. */
 #undef CLOSEDIR_VOID
 
-/* Define to 1 if getcwd is implemented using fork or vfork. Let me know if
-   you have to add this by hand because configure failed to detect it. */
-#undef GETCWD_FORKS
-
 /* Define to 1 if you have the <assert.h> header file. */
 #undef HAVE_ASSERT_H
 
@@ -199,6 +195,10 @@
 /* Enable extensions on AIX, Interix, z/OS.  */
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE
+#endif
+/* Enable extensions on Cosmopolitan Libc. */
+#ifndef _COSMO_SOURCE
+# undef _COSMO_SOURCE
 #endif
 /* Enable general extensions on macOS.  */
 #ifndef _DARWIN_C_SOURCE

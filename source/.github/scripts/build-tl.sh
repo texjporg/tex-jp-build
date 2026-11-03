@@ -7,47 +7,50 @@
 
 set -ex
 
-if [ "x$2" = "x" ]
-then
-  echo "Usage: `basename $0` arch buildsys [no-prepare]" >&2
+if test "x$2" = "x"; then
+  echo "Usage: `basename $0` TLARCH BUILDSYS [no-prepare]" >&2
+  echo "TLARCH = TeX Live platform name"
+  echo "BUILDSYS = general distro name we will build on"
+  echo "no-prepare = omit BUILDSYS checks, to run locally on another system"
   exit 1
 fi
 
-arch="$1"
-echo "$0: Building TL for arch = $arch"
-shift
+arch=$1; shift
+echo "$0: Building TL for arch $arch"
 
-buildsys=$1
-echo "$0: Building on $buildsys"
-shift
+buildsys=$1; shift
 
 do_prepare=1
-if [ "$1" = "no-prepare" ]
-then
+if test x"$1" = xno-prepare; then
   do_prepare=0
 fi
 
-if [ $do_prepare = 1 ]
-then
+# emacs-page
+echo "$0: Building on $buildsys (do_prepare=$do_prepare)"
+
+if test $do_prepare = 1; then
   case $buildsys in 
      ubuntu|debian)
        export DEBIAN_FRONTEND=noninteractive
        export LANG=C.UTF-8
        export LC_ALL=C.UTF-8
        apt-get update -q -y
-       apt-get install -y --no-install-recommends bash gcc g++ make perl libfontconfig-dev libx11-dev libxmu-dev libxaw7-dev build-essential
+       apt-get install -y --no-install-recommends bash gcc g++ make perl \
+                            libfontconfig-dev libx11-dev libxmu-dev \
+                            libxaw7-dev build-essential
        ;;
      almalinux)
        yum update -y
-       yum install -y gcc-toolset-11 fontconfig-devel libX11-devel libXmu-devel libXaw-devel
-       . /opt/rh/gcc-toolset-11/enable
+       yum install -y gcc-toolset-15 fontconfig-devel perl-interpreter \
+                      libX11-devel libXmu-devel libXaw-devel
+       . /opt/rh/gcc-toolset-15/enable
        ;;
-     alpine)
+     alpine) # aka musl
        apk update
-       apk add --no-progress bash gcc g++ make perl fontconfig-dev libx11-dev libxmu-dev libxaw-dev
+       apk add --no-progress bash gcc g++ make musl-dev perl fontconfig-dev libx11-dev libxmu-dev libxaw-dev
        ;;
      freebsd)
-       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5
+       env ASSUME_ALWAYS_YES=YES pkg install -y gmake gcc15 pkgconf libX11 libXt libXaw fontconfig perl5
        ;;
      netbsd)
        pkg_add gmake gcc pkgconf libX11 libXt libXaw fontconfig perl5
@@ -89,25 +92,28 @@ touch ./utils/xindy/xindy-src/tex2xindy/tex2xindy.c
 touch ./texk/dvipng/doc/dvipng.1
 touch ./texk/dvipng/dvipng-src/dvipng.1
 
+# emacs-page
 # default settings
 TL_MAKE_FLAGS="-j 2"
 BUILDARGS=
 
 # special cases
 case "$arch" in
-  armhf-linux) # debian:buster
+  armhf-linux)
     TL_MAKE_FLAGS="-j 1"
-    export CXXFLAGS='-std=c++17'
     ;;
-  aarch64-linux) # debian:buster
+  aarch64-linux)
     BUILDARGS="--enable-arm-neon=on"
-    export CXXFLAGS='-std=c++17'
+    ;;
+  x86_64-linuxmusl)
+    # alpine3.22 provides only gcc14, and gcc14 is problematic,
+    # as explained under freebsd below. Force use of older C standard.
+    export CFLAGS="-std=gnu11"
     ;;
   *-solaris)
     export PATH=/opt/csw/bin:$PATH
     export TL_MAKE=gmake
-    if [ $arch = "i386-solaris" ]
-    then
+    if test $arch = "i386-solaris"; then
       export CC="gcc -m32"
       export CXX="g++ -m32"
       # these commands make xdvipsk work:
@@ -121,7 +127,7 @@ case "$arch" in
       # 2026-02-11T15:08:00.6385876Z ld.so.1: teckit_compile: fatal: teckit_compile: mismatched ELF symbol versioning
       # 2026-02-11T15:08:00.6386286Z ../../../libs/teckit/teckit.test: line 7: 5876: Killed
       # 
-      # So instead, let's disable xdvipsk.
+      # So instead, let's disable xdvipsk on i386-solaris.
       BUILDARGS=--disable-xdvipsk
     else
       export CC="gcc -m64"
@@ -129,22 +135,71 @@ case "$arch" in
     fi
     ;;
   *-freebsd)
+    export PATH=/usr/local/bin:$PATH # for gcc15
     export TL_MAKE=gmake
-    export CC=gcc 
-    export CXX=g++
+    # per https://tug.org/pipermail/tlbuild/2026q2/005996.html
+    # gcc14.x has only partial support for C23, despite defining
+    #   options to get it, which autoconf-2.73 finds :(.
+    #   So we need gcc15. See more comments in main.yml.
+    export CC="gcc15 -Wl,-rpath,/usr/local/lib/gcc15"
+    export CXX="g++15 -Wl,-rpath,/usr/local/lib/gcc15"
     export CFLAGS='-D_NETBSD_SOURCE'
-    export CXXFLAGS='-D_NETBSD_SOURCE -std=c++17'
-    ;;
-  x86_64-linux|i386-linux|x86_64-linuxmusl)
-    export CXXFLAGS='-std=c++17'
+    export CXXFLAGS='-D_NETBSD_SOURCE'
     ;;
 esac
 export TL_MAKE_FLAGS
 
-# If we explicitly set CFLAGS or CXXFLAGS above, it's up to us to enable
-# optimization, since we are overriding what Autoconf does.
-test -n "$CFLAGS" && CFLAGS="$CFLAGS -O2"
-test -n "$CXXFLAGS" && CXXFLAGS="$CXXFLAGS -O2"
+# ICU requires C++17, so we always need it.
+export CXXFLAGS="$CXXFLAGS -std=c++17"
+
+# Report the compiler version.
+echo "$0: checking \$CC --version:"
+${CC-gcc} --version || true # defeat -e, configure will fail anyway
+
+showfile() {
+  for f in "$@"; do
+    echo "$0: ==> $f"
+    cat $f
+    echo "$0: end $f <=="
+  done
+}
+
+# Make binaries harder to exploit with -fhardened. This option is only
+# supported on GNU/Linux, and only as of GCC 15. Older versions have
+# some support, but we'd have to specify a bunch of explicit options,
+# which seems a recipe for unnecessary maintenance pain.
+# 
+# Instead of hardwiring version numbers and platforms, try a test
+# compilation.
+# 
+touch empty.c
+# Let's check -fsanitize=undefined again after we update the
+# x86_64-linux build system. On Alma, it seems the necessary libubsan.a
+# is not installed as part of gcc-toolset-15. Also, we'll need to use
+# a hello,world test program instead of an empty file.
+for option in -fhardened; do
+  echo "$0: checking whether we can enable $option"
+  # Optimization is required for these; e.g., warnings about _FORTIFY_SOURCE.
+  if ${CC-gcc} $CFLAGS -O2 $option -c empty.c >empty.out 2>&1; then
+    # Although these are only warnings if not supported, e.g., on freebsd,
+    # it's too annoying to see the warning on every compile line.
+    if test -s empty.out; then
+      echo "$0: empty.c $option compilation got diagnostics, not setting."
+      showfile empty.out
+    else
+      echo "$0: empty.c $option compilation successful, setting."
+      export CFLAGS="$CFLAGS $option"
+    fi
+  else
+    echo "$0: empty.c $option compilation failed, not setting."
+    showfile empty.out
+  fi
+done
+
+# It's up to us to enable optimization if we are overriding the
+# compilation flags.
+test -z "$CFLAGS" || CFLAGS="$CFLAGS -O2"
+test -z "$CXXFLAGS" || CXXFLAGS="$CXXFLAGS -O2"
 
 echo "$0: variables set:"
 echo "  BUILDARGS=$BUILDARGS"
@@ -156,7 +211,27 @@ echo "  TL_MAKE=$TL_MAKE"
 echo "  TL_MAKE_FLAGS=$TL_MAKE_FLAGS"
 echo "$0: (end variables)."
 
-./Build -C $BUILDARGS
+# emacs-page
+printf "\n\f $0: build starting: `date`"
+if ./Build -C $BUILDARGS; then # thanks to -e; keep exit status without exiting
+  status=$?
+else
+  status=$?
+fi
+printf "\n\f $0: build finished: `date`"
+echo "$0: status = $status"
+echo "$0: Here are the Work/build?*.log files:" >&2
+showfile Work/build?*.log >&2
+
+if test $status = 0; then
+  echo "$0: succeeded: Build -C $BUILDARGS"
+  # continue below.
+else
+  echo "$0: failed: Build -C $BUILDARGS" >&2
+  showfile Work/config.log >&2
+  echo "$0: aborting with status $status." >&2
+  exit $status
+fi
 
 # Let's make sure that we compiled with optimization. A normal
 # compilation line in the log will look like
@@ -164,7 +239,7 @@ echo "$0: (end variables)."
 #
 build_log=Work/build.log
 if grep 'compile:.* -O' $build_log; then :; else
-  echo "$0: aborting, no optimization (compile:* -O) in $build_log" >&2
+  echo "$0: aborting, no optimization /compile:.* -O/ in $build_log" >&2
   exit 1
 fi
 
