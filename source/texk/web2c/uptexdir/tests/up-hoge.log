@@ -1,0 +1,11 @@
+ restricted \write18 enabled.
+
+(./up-pknj-あいうえおかきくけこさしすせそた
+ちつてとhoge.tex
+./up-pknj-あいうえおかきくけこさしすせそた
+ちつてとhoge.tex:1: Undefined control sequence.
+l.1 \hoge
+         
+No pages of output.
+Transcript written on up-pknj-あいうえおかきくけこ
+さしすせそたちつてとhoge.log.

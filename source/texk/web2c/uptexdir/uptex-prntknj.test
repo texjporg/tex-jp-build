@@ -63,3 +63,16 @@ diff $srcdir/uptexdir/tests/up-pknj-sa.typ uptests/xup-pknj-sa.typ || exit 20
 diff $srcdir/uptexdir/tests/up-pknj-ea.typ uptests/xup-pknj-ea.typ || exit 21
 diff $srcdir/uptexdir/tests/up-pknj-ua.typ uptests/xup-pknj-ua.typ || exit 22
 
+
+# file:line:error output
+HOGE='up-pknj-あいうえおかきくけこさしすせそたちつてとhoge'
+echo '\hoge' > $HOGE'.tex'
+
+max_print_line=60 $_uptex -fmt=up-basic \
+  -file-line-error -interaction=nonstopmode -halt-on-error \
+   $HOGE'.tex' >up-hoge.out || :
+
+sed 1d up-hoge.out > up-pknj-hoge.out
+
+diff $srcdir/uptexdir/tests/up-hoge.log up-pknj-hoge.out || exit 30
+

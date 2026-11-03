@@ -1,0 +1,12 @@
+ restricted \write18 enabled.
+entering extended mode
+
+(./eup-pknj-あいうえおかきくけこさしすせそた
+ちつてとhoge.tex
+./eup-pknj-あいうえおかきくけこさしすせそた
+ちつてとhoge.tex:1: Undefined control sequence.
+l.1 \hoge
+         
+No pages of output.
+Transcript written on eup-pknj-あいうえおかきくけ
+こさしすせそたちつてとhoge.log.
