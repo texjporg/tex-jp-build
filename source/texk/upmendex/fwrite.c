@@ -147,18 +147,42 @@ void verb_printf(FILE *fp, const char *format, ...)
 
 static int pnumconv2(struct page *p)
 {
-	int j,k,cc,pclen;
+	int i,j,pclen;
+	char buff[16],*p_curr,*p_next;
 
 	pclen=strlen(page_compositor);
-	for (j=k=cc=0;j<strlen(p->page);j++) {
-		if (strncmp(p->page+j,page_compositor,pclen)==0) {
-			j+=pclen;
-			k=j;
-			cc++;
-			continue;
-		}
+	if (pclen<=0) { /* exit(253) when page_compositor is an empty string. */
+		/* Maybe, this check should have been done earlier (e.g. when/after reading a style file). */
+		verb_printf(efp, "\nIllegal page_compositor specification: an empty string is not allowed.\n");
+		exit(253);
 	}
-	return pnumconv(p->page+k,p->attr[cc]);
+
+	for (i=0,p_curr=p->page;i<PAGE_COMPOSIT_DEPTH;i++,p_curr=p_next) {
+		p_next=strstr(p_curr,page_compositor);
+		if (!p_next) /* found a last field */
+			return pnumconv(p_curr,p->attr[i]);
+		if (p->attr[i]<0)
+			break;
+		p_next+=pclen;
+	}
+	if (i>=PAGE_COMPOSIT_DEPTH) {
+		/* should not come here */
+		verb_printf(efp, "\n%s:", "pnumconv2(struct page *p)");
+		verb_printf(efp, "\nToo many fields of page number \"%s\".\n", p->page);
+		exit(253);
+	}
+
+	/* in case p->attr[i]<0 and p_curr is not the last field of page number p->page */
+	j=p_next-p_curr;
+	if (j>=16) {
+		/* should not come here */
+		verb_printf(efp, "\n%s:", "pnumconv2(struct page *p)");
+		verb_printf(efp, "\nToo long page number string \"%s\".\n", p_curr);
+		exit(253);
+	}
+	strncpy(buff,p_curr,j);
+	buff[j]='\0';
+	return pnumconv(buff,p->attr[i]);
 }
 
 
