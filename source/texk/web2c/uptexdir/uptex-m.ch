@@ -762,6 +762,46 @@ start_cs:
 @z
 
 @x
+begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
+  begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
+    begin d:=2;
+    if is_hex(c) then @+if k+2<=limit then
+      begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
+      end;
+    if d>2 then
+      begin hex_to_cur_chr; buffer[k-1]:=cur_chr;
+      end
+    else if c<@'100 then buffer[k-1]:=c+@'100
+    else buffer[k-1]:=c-@'100;
+@y
+begin if buffer[k]=cur_chr then @+if cat=sup_mark then @+if k<limit then
+  begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
+    begin d:=2;
+    if is_hex(c) then @+if k+2<=limit then
+      begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
+      end;
+    if d>2 then
+      begin hex_to_cur_chr; buffer[k-1]:=cur_chr;
+      end
+    else if (c=cur_chr)and(k+6<=limit)and(buffer[k+2]=cur_chr) then begin
+      c:=buffer[k+3]; cc:=buffer[k+4]; cd:=buffer[k+5]; ce:=buffer[k+6];
+      if is_hex(c) and is_hex(cc) and is_hex(cd) and is_hex(ce) then
+        begin long_hex_to_cur_chr;
+        if (cur_chr<max_latin_val)and(kcat_code(kcatcodekey(cur_chr))<>not_cjk) then begin
+          buffer[k-1]:=cur_chr; d:=7;
+          end
+        end
+      else if (kcat_code(kcatcodekey(c))=latin_ucs) then begin
+        if c<@'100 then buffer[k-1]:=c+@'100
+        else buffer[k-1]:=c-@'100;
+        d:=4;
+        end;
+      end
+    else if c<@'100 then buffer[k-1]:=c+@'100
+    else buffer[k-1]:=c-@'100;
+@z
+
+@x
 begin repeat cur_chr:=buffer[k]; incr(k);
   if multistrlen(ustringcast(buffer), limit+1, k-1)=2 then
     begin cat:=kcat_code(kcatcodekey(fromBUFF(ustringcast(buffer), limit+1, k-1)));
