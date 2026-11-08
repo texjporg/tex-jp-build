@@ -836,6 +836,48 @@ begin repeat
 @z
 
 @x
+  while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
+    begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
+      begin d:=2;
+      if is_hex(c) then @+if k+2<=limit then
+        begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
+        end;
+      if d>2 then
+        begin hex_to_cur_chr;
+        end
+      else if c<@'100 then cur_chr:=c+@'100
+      else cur_chr:=c-@'100;
+@y
+  while (buffer[k]=cur_chr)and(cat=sup_mark)and(k<limit) do
+    begin c:=buffer[k+1]; @+if c<@'200 then {yes, one is indeed present}
+      begin d:=2;
+      if is_hex(c) then @+if k+2<=limit then
+        begin cc:=buffer[k+2]; @+if is_hex(cc) then incr(d);
+        end;
+      if d>2 then
+        begin hex_to_cur_chr;
+        end
+      else if (c=cur_chr)and(k+6<=limit)and(buffer[k+2]=cur_chr) then begin
+        c:=buffer[k+3]; cc:=buffer[k+4]; cd:=buffer[k+5]; ce:=buffer[k+6];
+        if is_hex(c) and is_hex(cc) and is_hex(cd) and is_hex(ce) then
+          begin long_hex_to_cur_chr;
+          if (cur_chr<max_latin_val)and(kcat_code(kcatcodekey(cur_chr))<>not_cjk) then begin
+            k:=k+6; d:=7;
+            end
+          else
+            cur_chr:=buffer[k+1]
+            end
+        else if (kcat_code(kcatcodekey(c))=latin_ucs) then begin
+          k:=k+3; d:=4;
+          if c<@'100 then cur_chr:=c+@'100
+          else cur_chr:=c-@'100;
+          end;
+        end
+      else if c<@'100 then cur_chr:=c+@'100
+      else cur_chr:=c-@'100;
+@z
+
+@x
 until not((cat=letter)or(cat=kanji)or(cat=kana))or(k>limit);
 {@@<If an expanded...@@>;}
 if not((cat=letter)or(cat=kanji)or(cat=kana)) then decr(k);
